@@ -5,6 +5,8 @@ import { object, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { Fragment, Frame, Text, Form } from '../index';
+import { SublayoutLegacy } from '../../components-legacy';
+
 import { isArray, isString, isObject, sort } from '../../../utils';
 
 class Recurser extends Component {
@@ -30,6 +32,8 @@ class Recurser extends Component {
           const baseEntityCode = child.code;
           const linkType = child.type;
 
+          console.log(baseEntityCode,linkType)
+
           if ( linkType === 'ask' ) {
             return (
               <Form
@@ -46,6 +50,15 @@ class Recurser extends Component {
                 key={baseEntityCode}
                 rootCode={baseEntityCode}
                 inheritedThemes={themes}
+              />
+            );
+          }
+
+          if ( linkType === 'sublayout' ) {
+            return (
+              <SublayoutLegacy
+                key={baseEntityCode}
+                layoutName={baseEntityCode}
               />
             );
           }

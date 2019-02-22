@@ -53,6 +53,7 @@ class Frame extends Component {
     ],
     linkTypes: [
       'asks', 'frames', 'themes',
+      'sublayouts' // legacy compatibility
     ],
     inheritedThemes: {},
   }
@@ -64,12 +65,15 @@ class Frame extends Component {
     linkTypes: array,
     rootCode: string,
     inheritedThemes: object,
+
+    sublayouts: object, // legacy compatibility
   }
 
   state = {
     frames: [],
     asks: [],
     themes: [],
+    sublayouts: [], // legacy compatibility
   }
 
   componentDidMount() {
@@ -86,7 +90,11 @@ class Frame extends Component {
     /* Check if any of the links of the root base entity have changed */
     if (  isObject( dlv( nextProps, `frames.${nextProps.rootCode}` ))) {
       /* Valid links are added to the state key that matches their link type, so check all the state arrays together */
-      const oldArray = this.state.frames.concat( this.state.asks, this.state.themes );
+      const oldArray = this.state.frames.concat(
+        this.state.asks,
+        this.state.themes,
+        this.state.sublayouts, // legacy compatiblity
+      );
       const newArray = dlv( nextProps, `frames.${nextProps.rootCode}.links` );
 
       const prevLinks = [];
@@ -172,11 +180,13 @@ class Frame extends Component {
     const linkedFrames = getLinksOfType( 'frame' );
     const linkedAsks = getLinksOfType( 'ask' );
     const linkedThemes = getLinksOfType( 'theme' );
+    const linkedSublayouts = getLinksOfType( 'sublayout' ); // legacy compatiblity
 
     /* update the state  */
     this.updateLinks( 'frames', linkedFrames );
     this.updateLinks( 'asks', linkedAsks );
     this.updateLinks( 'themes', linkedThemes );
+    this.updateLinks( 'sublayouts', linkedSublayouts ); // legacy compatiblity
   }
 
   updateLinks = ( stateKey, links ) => {
@@ -240,7 +250,10 @@ class Frame extends Component {
       return getStylingByPanel( panel, true );
     };
 
-    const panelContent = this.state.frames.concat( this.state.asks );
+    const panelContent = this.state.frames.concat(
+      this.state.asks,
+      this.state.sublayouts, // legacy compatibility
+    );
 
     const hasContent = ( panel ) => {
       return isArray( filterByPanel( panelContent, panel ), { ofMinLength: 1 });
@@ -396,6 +409,7 @@ const mapStateToProps = state => ({
   asks: state.vertx.asks,
   themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
+  sublayouts: state.vertx.layoutsLegacy.sublayouts,
 });
 
 export default connect( mapStateToProps )( Frame );

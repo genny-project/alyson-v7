@@ -31,6 +31,7 @@ const injectFrameIntoState = ({ item, state }) => {
           LNK_THEME: 'theme',
           LNK_FRAME: 'frame',
           LNK_ASK: 'ask',
+          LNK_LAYOUT: 'sublayout',
         };
 
         return {
