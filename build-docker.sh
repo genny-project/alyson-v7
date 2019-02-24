@@ -5,4 +5,4 @@ else
    version="${1}"
 fi
 
-docker build -t gennyproject/alyson-7:${version} .
+docker build -t gennyproject/alyson-v7:${version} .

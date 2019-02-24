@@ -7,7 +7,7 @@ else
 fi
 
 
-docker push gennyproject/alyson-7:${version}
-docker tag  gennyproject/alyson-7:${version} gennyproject/alyson-7:latest
-docker push gennyproject/alyson-7:latest
+docker push gennyproject/alyson-v7:${version}
+docker tag  gennyproject/alyson-v7:${version} gennyproject/alyson-v7:latest
+docker push gennyproject/alyson-v7:latest
 
