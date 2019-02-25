@@ -48,13 +48,6 @@ class LayoutLoader extends PureComponent {
   static getDerivedStateFromProps( props, state ) {
     const result = {};
 
-    // if (
-    //   state.sidebar.left.isOpen !== props.sidebar.left.isOpen ||
-    //   state.sidebar.right.isOpen !== props.sidebar.right.isOpen
-    // ) {
-    //   result.sidebar = props.sidebar;
-    // }
-
     if (
       props.params && (
         !state.navigation ||
@@ -70,12 +63,6 @@ class LayoutLoader extends PureComponent {
     return Object.keys( result ).length > 0 ? result : null;
   }
 
-  /* eslint-disable react/sort-comp */
-
-  handleOpenSidebar = side => () => {
-    this.props.openSidebar( side );
-  }
-
   /* eslint-enable react/sort-comp */
 
   state = {
@@ -84,10 +71,7 @@ class LayoutLoader extends PureComponent {
     time: timeUtils,
     user: this.props.data.user,
     sidebar: this.props.sidebar,
-    actions: {
-      openSidebar: this.handleOpenSidebar( 'left' ),
-      openSidebarRight: this.handleOpenSidebar( 'right' ),
-    },
+    actions: {},
     props: this.props.sublayoutProps,
     media: {
       window: windowDimensions,
@@ -96,22 +80,12 @@ class LayoutLoader extends PureComponent {
     },
   }
 
-  // shouldComponentUpdate( nextProps, nextState ) {
-  //   console.warn( 'LayoutLoader', nextProps != this.props, {
-  //     data: nextProps.data == this.props.data ,
-  //     router: nextProps.router == this.props.router ,
-  //     sidebar: nextProps.sidebar == this.props.sidebar ,
-  //     state: this.state == nextState,
-  //   }, { this: this.state, next: nextState });
-
-  //   return true;
-  // }
-
   componentDidUpdate( prevProps ) {
     if (
       this.props.layout && (
         this.props.data != prevProps.data ||
-        this.props.layout != prevProps.layout
+        this.props.layout != prevProps.layout ||
+        this.props.params != prevProps.params
       )
     ) {
       this.doDataQuery();
@@ -338,7 +312,6 @@ class LayoutLoader extends PureComponent {
 const mapStateToProps = state => ({
   data: state.vertx,
   router: state.router,
-  sidebar: state.sidebar,
 });
 
 export default connect( mapStateToProps, { openSidebar })( LayoutLoader );

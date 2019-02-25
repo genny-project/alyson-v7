@@ -10,6 +10,17 @@ import './utils/layouts-dev';
 
 console.disableYellowBox = true; // eslint-disable-line no-console
 
+// /* ------------------------ */
+// // if ( !this.f ) {
+// //   this.f = true;
+// //   global.LayoutsDev.load( 'internmatch-new' );
+// }
+// /* ------------------------ */
+
+if ( typeof window !== 'undefined' ) {
+  window.store = store;
+}
+
 const Root = () => (
   <ErrorBoundary>
     <ReduxProvider store={store}>

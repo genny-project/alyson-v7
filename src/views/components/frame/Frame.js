@@ -112,11 +112,18 @@ class Frame extends Component {
           /* Ask Bes are being passed to Frame via the baseEntity prop, while frames and themes have their own props
             so we need to check where we are looking for a base entity. If no entity is found that matches the
             target code  of the link, it is not added to the array of new links */
-          if ( isObject( dlv( nextProps, `${item.type === 'ask' ? 'asks' : `${item.type}s`}.${item.code}` ))) {
+          if ( isObject( dlv( nextProps,
+            item.type === 'sublayout' // legacy compatibility
+              ? `layoutsLegacy.${item.code.split('/')[0]}.${item.code.split('/').slice(1, item.code.split('/').length).join('/')}` // legacy compatibility
+              : `${item.type}s.${item.code}` )
+          )) {
+            // console.log(item.code)
             newLinks.push( item.code );
           }
         });
       }
+
+      // console.log(newLinks);
 
       /* Find the differences between the two sets of links */
       const toAdd = newLinks.filter( item => !prevLinks.includes( item ));
@@ -171,7 +178,11 @@ class Frame extends Component {
       return isArray( rootFrame.links, { ofMinLength: 1 })
         ? rootFrame.links.filter( link => (
           link.type === type &&
-          dlv( this.props, `${link.type === 'ask' ? 'asks' : `${link.type}s`}.${link.code}` ) != null
+          dlv( this.props,
+            link.type === 'sublayout'
+              ? `layoutsLegacy.${link.code.split('/')[0]}.${link.code.split('/').slice(1, link.code.split('/').length).join('/')}`
+              : `${link.type}s.${link.code}`
+          ) != null
         ))
         : [];
     };
@@ -233,7 +244,6 @@ class Frame extends Component {
           const themeData = dlv( themes, `${theme.code}.data` );
           const themeIsInheritable = dlv( themes, `${theme.code}.isInheritable` );
 
-          console.log
           if ( onlyInheritableThemes && !themeIsInheritable ) return;
 
           styling = {
@@ -409,7 +419,7 @@ const mapStateToProps = state => ({
   asks: state.vertx.asks,
   themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
-  sublayouts: state.vertx.layoutsLegacy.sublayouts,
+  layoutsLegacy: state.vertx.layoutsLegacy,
 });
 
 export default connect( mapStateToProps )( Frame );

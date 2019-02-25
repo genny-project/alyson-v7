@@ -23,8 +23,8 @@ class Dropdown extends Component {
   handleSelect = item => () => {
     if ( item.buttonCode ) {
       const {
-        value,
-        buttonCode = '',
+        value ,
+        buttonCode,
         messageType = 'BTN',
         eventType = 'BTN_CLICK',
       } = item;
@@ -45,6 +45,8 @@ class Dropdown extends Component {
           value: valueString || null,
         },
       });
+
+      // if ( this.props.onPress ) this.props.onPress();
     }
   }
 
@@ -75,6 +77,8 @@ class Dropdown extends Component {
       children,
       testID,
     } = this.props;
+
+    console.log( this.props, items );
 
     return (
       <Menu>

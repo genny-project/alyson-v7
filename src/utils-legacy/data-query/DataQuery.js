@@ -63,7 +63,7 @@ class DataQuery {
             output = result;
           }
         }
-        // console.warn({ q, output });
+        // console.warn({ query, output });
       }
     };
 

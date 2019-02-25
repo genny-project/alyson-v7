@@ -57,6 +57,7 @@ class FormInput extends Component {
       case 'dropdown':
       case 'dropdownmultiple':
       case 'tag':
+      case 'menu':
         return (
           <FormInputDropdown
             {...this.props}

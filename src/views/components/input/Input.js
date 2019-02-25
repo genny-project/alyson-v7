@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { string, object } from 'prop-types';
-import { Text, EventTouchable } from '../index';
+import { Text, EventTouchable, Dropdown, Icon, Box } from '../index';
+import { isArray } from '../../../utils';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
 import CheckBox from './checkbox';
@@ -366,6 +367,36 @@ class Input extends Component {
               text={inputProps.question.name}
             />
           </EventTouchable>
+        );
+
+      case 'menu':
+        return (
+          <Dropdown
+            items={isArray( inputProps.items )
+              ? inputProps.items.map( item => ({
+                text: item.label,
+                icon: 'person',
+                value: item.value,
+                buttonCode: inputProps.rootQuestionGroupCode,
+                eventType: 'TV_SELECT',
+                messageType: 'TV_EVENT',
+              }))
+              : null}
+          >
+            <Box
+              alignItems="center"
+            >
+              <Text
+                // {...inputProps}
+                text="Menu Input"
+              />
+              <Icon
+                name="expand_more"
+                color="white"
+                size="xs"
+              />
+            </Box>
+          </Dropdown>
         );
 
       default:

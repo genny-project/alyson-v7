@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { string, object, func } from 'prop-types';
 import { connect } from 'react-redux';
+import dlv from 'dlv';
 import { LayoutLoaderLegacy } from '../';
-import { isString, location, removeStartingAndEndingSlashes } from '../../../utils';
+import { isString, location, removeStartingAndEndingSlashes, isObject } from '../../../utils';
 
 class Sublayout extends Component {
   static propTypes = {
@@ -36,8 +37,20 @@ class Sublayout extends Component {
   }
 
   getLayout() {
-    const { sublayouts, layoutName } = this.props;
-    const layout = sublayouts[layoutName];
+    const { layoutsLegacy, layoutName, getLayoutTypeFromName } = this.props;
+    // const layout = sublayouts[layoutName];
+    // const layout = layoutsLegacy[layoutName];
+    const layoutPath = getLayoutTypeFromName
+      ? `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}`
+      : `sublayouts.${layoutName}`;
+    const layout = dlv( layoutsLegacy, `${layoutPath}` );
+
+    // console.log( getLayoutTypeFromName, layoutsLegacy );
+    // console.log( `${layoutName.split( '/' )[0]}` );
+    // console.log( `${layoutName.split( '/' )[0]}.${layoutName.split( '/' )}` );
+    // console.log( `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}` );
+    // console.log( dlv( layoutsLegacy, `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}` ));
+    // console.log( layoutName, layoutsLegacy, layout );
 
     if ( layout ) {
       this.setState({ layout });
@@ -49,7 +62,14 @@ class Sublayout extends Component {
   }
 
   getParams() {
-    const layoutPool = this.props.pages;
+    const layoutPool = dlv( this.props.layoutsLegacy, 'pages' );
+
+    // console.log( this.props.layoutsLegacy, layoutPool );
+
+    if ( !isObject( layoutPool )) return;
+
+    // console.log( 'params get' );
+
     const currentUrl = location.getBasePath();
 
     const strippedCurrentUrl = removeStartingAndEndingSlashes( currentUrl );
@@ -57,7 +77,7 @@ class Sublayout extends Component {
     const keys = Object.keys( layoutPool ).sort( this.handleSortPages );
     const fragments = strippedCurrentUrl.split( '/' );
 
-    const found = keys.some( key => {
+    keys.some( key => {
       const params = {};
 
       const splitKey = key.split( '/' ).map(( split, index ) => {
@@ -86,10 +106,10 @@ class Sublayout extends Component {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { sublayouts, dispatch, layoutName, ...restProps } = this.props;
-    const { layout, params, url } = this.state;
+    const { layoutsLegacy, dispatch, layoutName, ...restProps } = this.props;
+    const { layout, params } = this.state;
 
-    console.log( 'params', params, url, layout );
+    // console.log( params );
 
     return (
       <LayoutLoaderLegacy
@@ -97,14 +117,14 @@ class Sublayout extends Component {
         sublayoutProps={restProps}
         sublayout
         params={params}
+        identifier={this.props.getLayoutTypeFromName ? this.props.identifier : null}
       />
     );
   }
 }
 
 const mapStateToProps = state => ({
-  sublayouts: state.vertx.layoutsLegacy.sublayouts,
-  pages: state.vertx.layoutsLegacy.pages,
+  layoutsLegacy: state.vertx.layoutsLegacy,
 });
 
 export default connect( mapStateToProps )( Sublayout );

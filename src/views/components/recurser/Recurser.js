@@ -32,8 +32,6 @@ class Recurser extends Component {
           const baseEntityCode = child.code;
           const linkType = child.type;
 
-          console.log(baseEntityCode,linkType)
-
           if ( linkType === 'ask' ) {
             return (
               <Form
@@ -59,6 +57,8 @@ class Recurser extends Component {
               <SublayoutLegacy
                 key={baseEntityCode}
                 layoutName={baseEntityCode}
+                getLayoutTypeFromName
+                identifier="INITIAL"
               />
             );
           }
