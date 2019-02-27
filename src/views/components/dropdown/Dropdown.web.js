@@ -5,6 +5,29 @@ import { withRouter } from 'react-router-dom';
 import { isArray, isString, Bridge } from '../../../utils';
 import './Dropdown.css';
 
+const styles = {
+  menuButtonStyle: {
+    backgroundColor: 'transparent',
+    border: 0,
+    padding: 10,
+    fontSize: 16,
+    cursor: 'pointer',
+    color: 'black',
+  },
+  menuListStyle: {
+    // background: '#bbb',
+    borderWidth: 2,
+    borderColor: '#black',
+    borderStyle: 'solid',
+    padding: 5,
+  },
+  menuLinkStyle: {
+    textAlign: 'right',
+    padding: 15,
+    color: 'black',
+  },
+};
+
 class Dropdown extends Component {
   static propTypes = {
     items: array.isRequired,
@@ -12,10 +35,6 @@ class Dropdown extends Component {
     facingRight: bool,
     disabled: bool,
     testID: string,
-    menuButtonStyle: object,
-    menuListStyle: object,
-    menuLinkStyle: object,
-    menuItemStyle: object,
     children: any,
     history: object,
   }
@@ -69,10 +88,6 @@ class Dropdown extends Component {
       items,
       text,
       facingRight,
-      menuButtonStyle,
-      menuListStyle,
-      menuLinkStyle,
-      menuItemStyle,
       disabled,
       children,
       testID,
@@ -83,8 +98,12 @@ class Dropdown extends Component {
     return (
       <Menu>
         <MenuButton
+          onClick={( e ) => {
+            e.stopPropagation();
+            // TODO stop propagation wont work with onPress, as they are different event types.
+          }}
           disabled={disabled || !isArray( items, { ofMinLength: 1 })}
-          style={menuButtonStyle}
+          style={styles['menuButtonStyle']}
           data-testID={`dropdown ${testID}`}
         >
           {isValidElement( children ) ? children
@@ -107,7 +126,7 @@ class Dropdown extends Component {
               ...facingRight
                 ? { right: 0 }
                 : { left: 0 },
-              ...menuListStyle,
+              ...styles['menuListStyle'],
             }}
           >
             {items.map( item => {
@@ -122,8 +141,8 @@ class Dropdown extends Component {
                       : `/${item.href}`
                     )}
                     style={{
-                      ...menuItemStyle,
-                      ...menuLinkStyle,
+                      ...styles['menuItemStyle'],
+                      ...styles['menuLinkStyle'],
                     }}
                     onClick={this.handleNavigate( item )}
                   >
@@ -135,7 +154,7 @@ class Dropdown extends Component {
               return (
                 <MenuItem
                   key={item.text}
-                  style={menuItemStyle}
+                  style={styles['menuItemStyle']}
                   data-testID={`dropdown-item ${testID}`}
                   onSelect={this.handleSelect( item )}
                 >

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { string, object } from 'prop-types';
-import { Text, EventTouchable, Dropdown, Icon, Box } from '../index';
+import { Text, EventTouchable, Dropdown, Icon, Box, Touchable } from '../index';
 import { isArray } from '../../../utils';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
@@ -380,19 +380,20 @@ class Input extends Component {
                 buttonCode: inputProps.rootQuestionGroupCode,
                 eventType: 'TV_SELECT',
                 messageType: 'TV_EVENT',
+                ...item.value === 'SEL_USER_OPTIONS_LOGOUT' ? { href: 'logout' } : {}, // TODO remove when backend handles logout event
               }))
               : null}
           >
             <Box
               alignItems="center"
+              paddingRight={5}
             >
               <Text
-                // {...inputProps}
                 text="Menu Input"
               />
               <Icon
                 name="expand_more"
-                color="white"
+                color="black"
                 size="xs"
               />
             </Box>

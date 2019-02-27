@@ -524,13 +524,15 @@ class KeycloakProvider extends Component {
 
     this.setState({ isFetchingToken: true });
 
+    // console.log( 'FETCHPARAMS', { url, options });
+    // console.log( 'FETCHRESULT', fetch( url, options ));
+
     try {
       const response = await fetch( url, options );
       const responseJson = await response.json();
 
       // const { session_state } = responseJson;
       // const sessionState = await Storage.get( 'kcSessionState' );
-
       /* FIXME: fix check */
       // if ( session_state === sessionState )
 
