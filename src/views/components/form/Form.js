@@ -7,9 +7,8 @@ import dlv from 'dlv';
 import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
 import shallowCompare from '../../../utils/shallow-compare';
-import { Box, Text, Button, KeyboardAwareScrollView, Fragment, Collapsible } from '../index';
+import { Box, Text, KeyboardAwareScrollView, Fragment } from '../index';
 import FormGroup from './group';
-import FormInput from './input';
 
 class Form extends Component {
   static defaultProps = {
@@ -274,7 +273,7 @@ class Form extends Component {
   }
 
   doValidate = values => {
-    console.log( 'do validate' );
+    // console.log( 'do validate' );
     if ( !values )
       return {};
 
@@ -391,7 +390,7 @@ class Form extends Component {
   }
 
   handleSubmit = ( values, form ) => {
-    console.log( 'handle submit' );
+    // console.log( 'handle submit' );
     if ( form ) {
       const { setSubmitting } = form;
 
@@ -462,166 +461,28 @@ class Form extends Component {
     }
   }
 
-  renderInput = (
-    ask,
-    questionGroupCode,
-    index,
-    form,
-  ) => {
-    const {
-      baseEntities,
-    } = this.props;
-
-    // console.log( 'renderInput', ask );
-    const {
-      values,
-      errors,
-      touched,
-      setFieldValue,
-      setFieldTouched,
-      isSubmitting,
-      submitForm,
-      isFormValid,
-
-    } = form;
-    const { questionCode, attributeCode, mandatory, question, contextList, readonly } = ask;
-    const baseEntityDefinition = baseEntities.definitions.data[attributeCode];
-    const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
-
-    const isFormSubmit = isObject( contextList, { withProperty: 'isFormSubmit' }) ? contextList.isFormSubmit : false;
-
-    const inputProps = {
-      onChangeValue: this.handleChange( questionCode, setFieldValue, setFieldTouched, ask ),
-      value: values && values[questionCode],
-      type: isString( dataType ) ? dataType.toLowerCase() : dataType,
-      error: touched[questionCode] && errors[questionCode],
-      onBlur: this.handleBlur( ask, values, errors ),
-      required: mandatory,
-      question,
-      disabled: isFormSubmit
-        ? !isFormValid
-        : isSubmitting,
-      editable: !readonly,
-      onSubmitEditing: this.handleFocusNextInput( questionGroupCode, index ),
-      blurOnSubmit: (
-        !this.inputRefs[questionGroupCode] ||
-        !this.inputRefs[questionGroupCode][index + 1]
-      ),
-      ref: input => this.inputRefs[questionGroupCode] = {
+  renderQuestionGroup = ( questionGroup, index, form, ) => {
+    const functions = {
+      handleChange: ( questionCode, setFieldValue, setFieldTouched, ask ) => this.handleChange( questionCode, setFieldValue, setFieldTouched, ask ),
+      handleFocusNextInput: ( code, index ) => this.handleFocusNextInput( code, index ),
+      handleBlur: ( ask, values, errors ) => this.handleBlur( ask, values, errors ),
+      handleKeyPress: ( submitForm, index, questionGroupCode ) => this.handleKeyPress( submitForm, index, questionGroupCode ),
+      addRef: ( questionGroupCode, index, input ) => this.inputRefs[questionGroupCode] = {
         ...this.inputRefs[questionGroupCode],
         [index]: input,
       },
-      returnKeyType: (
-        this.inputRefs[questionGroupCode] &&
-        this.inputRefs[questionGroupCode][index + 1]
-      )
-        ? 'next'
-        : 'default',
-      onKeyPress: this.handleKeyPress( submitForm, index, questionGroupCode ),
-      onPress: () => {
-        console.log( 'onPress' );
-        submitForm();
-      },
-      testID: questionCode || '',
-      ...contextList,
-      rootQuestionGroupCode: this.props.questionGroupCode,
-      ...this.props.inheritedThemes,
     };
 
     return (
-      <FormInput
-        key={questionCode}
-        {...inputProps}
-      />
-    );
-  }
-
-  renderQuestionGroup = ( questionGroup, index, form, ) => {
-    const {
-      name,
-      childAsks,
-      question,
-      contextList,
-      questionCode,
-    } = questionGroup;
-
-    const isDropdown = isObject( contextList, { withProperty: 'isDropdown' }) ? contextList.isDropdown : false;
-
-    if ( isDropdown && question ) {
-      return (
-        <Collapsible
-          renderHeader={
-            this.renderInput(
-              questionGroup,
-              questionCode,
-              index,
-              form,
-            )
-          }
-          headerIconProps={{
-            ...this.props.inheritedThemes,
-          }}
-        >
-          <FormGroup
-            code={questionCode}
-            inheritedThemes={this.props.inheritedThemes}
-            index={index}
-            name={name}
-          >
-            {childAsks.map(( ask, index ) => {
-              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                return this.renderQuestionGroup(
-                  ask,
-                  index,
-                  form
-                );
-              }
-
-              return this.renderInput(
-                ask,
-                questionCode,
-                index,
-                form,
-              );
-            })}
-          </FormGroup>
-        </Collapsible>
-      );
-    }
-
-    return (
       <FormGroup
-        code={questionCode}
+        questionGroup={questionGroup}
+        form={form}
+        rootCode={this.props.questionGroupCode}
         inheritedThemes={this.props.inheritedThemes}
         index={index}
-        name={name}
-        renderQuestionForGroup={question
-          ? (
-            this.renderInput(
-              questionGroup,
-              questionCode,
-              index,
-              form,
-            )) : null
-        }
-      >
-        {childAsks.map(( ask, index ) => {
-          if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-            return this.renderQuestionGroup(
-              ask,
-              index,
-              form
-            );
-          }
-
-          return this.renderInput(
-            ask,
-            questionCode,
-            index,
-            form,
-          );
-        })}
-      </FormGroup>
+        functions={functions}
+        inputRefs={this.inputRefs}
+      />
     );
   }
 

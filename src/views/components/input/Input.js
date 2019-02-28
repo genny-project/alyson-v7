@@ -21,6 +21,8 @@ import InputPayment from './payment';
 import AudioRecord from './audio-record';
 import SegmentedControl from './segmented-control';
 import InputTag from './tag';
+import InputMenu from './menu';
+import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
 
@@ -354,50 +356,18 @@ class Input extends Component {
 
       case 'event':
         return (
-          <EventTouchable
-            withFeedback
-            eventType="TV_SELECT"
-            messageType="TV_EVENT"
-            value={inputProps.question.code}
-            buttonCode={inputProps.rootQuestionGroupCode}
+          <InputEvent
             {...inputProps}
-          >
-            <Text
-              {...inputProps}
-              text={inputProps.question.name}
-            />
-          </EventTouchable>
+          />
         );
 
       case 'menu':
+        console.log( inputProps );
+
         return (
-          <Dropdown
-            items={isArray( inputProps.items )
-              ? inputProps.items.map( item => ({
-                text: item.label,
-                icon: 'person',
-                value: item.value,
-                buttonCode: inputProps.rootQuestionGroupCode,
-                eventType: 'TV_SELECT',
-                messageType: 'TV_EVENT',
-                ...item.value === 'SEL_USER_OPTIONS_LOGOUT' ? { href: 'logout' } : {}, // TODO remove when backend handles logout event
-              }))
-              : null}
-          >
-            <Box
-              alignItems="center"
-              paddingRight={5}
-            >
-              <Text
-                text="Menu Input"
-              />
-              <Icon
-                name="expand_more"
-                color="black"
-                size="xs"
-              />
-            </Box>
-          </Dropdown>
+          <InputMenu
+            {...inputProps}
+          />
         );
 
       default:

@@ -37,6 +37,7 @@ class Dropdown extends Component {
     testID: string,
     children: any,
     history: object,
+    color: string,
   }
 
   handleSelect = item => () => {
@@ -91,9 +92,8 @@ class Dropdown extends Component {
       disabled,
       children,
       testID,
+      color,
     } = this.props;
-
-    console.log( this.props, items );
 
     return (
       <Menu>
@@ -103,7 +103,10 @@ class Dropdown extends Component {
             // TODO stop propagation wont work with onPress, as they are different event types.
           }}
           disabled={disabled || !isArray( items, { ofMinLength: 1 })}
-          style={styles['menuButtonStyle']}
+          style={{
+            ...styles['menuButtonStyle'],
+            color,
+          }}
           data-testID={`dropdown ${testID}`}
         >
           {isValidElement( children ) ? children
@@ -126,7 +129,10 @@ class Dropdown extends Component {
               ...facingRight
                 ? { right: 0 }
                 : { left: 0 },
-              ...styles['menuListStyle'],
+              ...{
+                ...styles['menuListStyle'],
+                color,
+              },
             }}
           >
             {items.map( item => {
@@ -143,6 +149,7 @@ class Dropdown extends Component {
                     style={{
                       ...styles['menuItemStyle'],
                       ...styles['menuLinkStyle'],
+                      color,
                     }}
                     onClick={this.handleNavigate( item )}
                   >
@@ -154,7 +161,10 @@ class Dropdown extends Component {
               return (
                 <MenuItem
                   key={item.text}
-                  style={styles['menuItemStyle']}
+                  style={{
+                    ...styles['menuItemStyle'],
+                    color,
+                  }}
                   data-testID={`dropdown-item ${testID}`}
                   onSelect={this.handleSelect( item )}
                 >

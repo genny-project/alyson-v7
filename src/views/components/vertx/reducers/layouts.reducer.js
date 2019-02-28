@@ -7,6 +7,7 @@ import { FETCH_PUBLIC_LAYOUTS_FAILURE, FETCH_PUBLIC_LAYOUTS_SUCCESS } from '../.
 const initialState = {
   frames: {},
   themes: {},
+  asks: {},
 };
 
 const injectFrameIntoState = ({ item, state }) => {
@@ -78,6 +79,37 @@ const injectThemeIntoState = ({ item, state }) => {
   }
 };
 
+const injectAskIntoState = ({ item, state }) => {
+  // console.log( 'injectAskIntoState', item, state, state.asks );
+  /* alter the state */
+
+  if ( state.asks ) {
+    state.asks[item.questionCode] = {
+      name: item.name,
+      code: item.questionCode,
+      ...( item.links
+        ? {
+          links: item.links.map( link => {
+            const linkTypes = {
+              LNK_THEME: 'theme',
+            };
+
+            return {
+              code: link.link.targetCode,
+              weight: link.link.weight,
+              type: linkTypes[link.link.attributeCode]
+                ? linkTypes[link.link.attributeCode]
+                : 'none',
+              created: link.created,
+            };
+          })
+        } : {}
+      ),
+      created: item.created,
+    };
+  }
+};
+
 const reducer = ( state = initialState, { type, payload }) => {
   // console.log( type, payload );
   switch ( type ) {
@@ -107,6 +139,30 @@ const reducer = ( state = initialState, { type, payload }) => {
         return newState;
       }, { ...state });
     }
+
+    case 'ASK_DATA':
+      console.log('ASK DATA', payload.items)
+      if ( !isArray( payload.items, { ofMinLength: 1 }))
+        return state;
+
+      /* Loop through all of the layouts and store them in their corresponding layout groups. */
+      return payload.items.reduce(( newState, item ) => {
+        // console.log( newState );
+        try {
+          if ( isString( item.questionCode, { startsWith: 'QUE_' })) {
+            injectAskIntoState({ item, state: newState });
+          }
+          else {
+            return state;
+          }
+        }
+        catch ( error ) {
+          // eslint-disable-next-line no-console
+          console.warn( 'Unable to add layout to reducer state', error, item.code, item );
+        }
+
+        return newState;
+      }, { ...state });
 
     case FETCH_PUBLIC_LAYOUTS_FAILURE:
     case FETCH_PUBLIC_LAYOUTS_SUCCESS:

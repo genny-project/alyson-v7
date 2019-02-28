@@ -138,7 +138,7 @@ class Frame extends Component {
 
         const isPanelMatch = oldBe.panel ===  newBe.panel;
 
-        if ( !isPanelMatch ) toChangePanel.push( item );
+        if ( !isPanelMatch ) toChangePanel.push( newLinkCode );
       });
 
       /* if any changes are found, update */
@@ -271,9 +271,6 @@ class Frame extends Component {
 
     /* Compile  all styling for the panel*/
     const getStyling = ( panel ) => {
-
-
-
       const checkPanelFlex = ( panel ) => {
         switch( panel ) {
           case 'north':
