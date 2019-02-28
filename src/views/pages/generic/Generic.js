@@ -14,7 +14,7 @@ class Generic extends Component {
 
   render() {
     return (
-      <Frame rootCode="FRAME_ROOT" />
+      <Frame rootCode="FRM_ROOT" />
     );
   }
 }
