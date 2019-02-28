@@ -3,6 +3,7 @@ import { array, bool, object, any, string } from 'prop-types';
 import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
 import { isArray, isString, Bridge } from '../../../utils';
+import { Fragment, Icon, Box } from '../index';
 import './Dropdown.css';
 
 const styles = {
@@ -97,92 +98,115 @@ class Dropdown extends Component {
 
     return (
       <Menu>
-        <MenuButton
-          onClick={( e ) => {
-            e.stopPropagation();
-            // TODO stop propagation wont work with onPress, as they are different event types.
-          }}
-          disabled={disabled || !isArray( items, { ofMinLength: 1 })}
-          style={{
-            ...styles['menuButtonStyle'],
-            color,
-          }}
-          data-testID={`dropdown ${testID}`}
-        >
-          {isValidElement( children ) ? children
-          : isString( text ) ? text
-          : isArray( children )
-            ? children.map(( child ) => (
-              isValidElement( child )
-                ? child
-                : null
-            ))
-            : null
-          }
-        </MenuButton>
-
-        {isArray( items, { ofMinLength: 1 }) && (
-          <MenuList
-            style={{
-              position: 'absolute',
-              top: '100%',
-              ...facingRight
-                ? { right: 0 }
-                : { left: 0 },
-              ...{
-                ...styles['menuListStyle'],
-                color,
-              },
-            }}
-          >
-            {items.map( item => {
-              if ( item.href ) {
-                return (
-                  <MenuLink
-                    key={item.text}
-                    data-testID={`dropdown-item ${testID}`}
-                    to={(
-                      item.href === 'home' ? '/'
-                      : item.href.startsWith( '/' ) ? item.href
-                      : `/${item.href}`
-                    )}
-                    style={{
-                      ...styles['menuItemStyle'],
-                      ...styles['menuLinkStyle'],
-                      color,
-                    }}
-                    onClick={this.handleNavigate( item )}
-                  >
-                    {item.text}
-                  </MenuLink>
-                );
-              }
-
-              return (
-                <MenuItem
-                  key={item.text}
-                  style={{
-                    ...styles['menuItemStyle'],
-                    color,
-                  }}
-                  data-testID={`dropdown-item ${testID}`}
-                  onSelect={this.handleSelect( item )}
+        {({ isOpen }) => {
+          return (
+            <Fragment>
+              <MenuButton
+                onClick={( e ) => {
+                  e.stopPropagation();
+                // TODO stop propagation wont work with onPress, as they are different event types.
+                }}
+                disabled={disabled || !isArray( items, { ofMinLength: 1 })}
+                style={{
+                  ...styles['menuButtonStyle'],
+                  color,
+                }}
+                data-testID={`dropdown ${testID}`}
+              >
+                <Box
+                  flex={1}
+                  justifyContent="space-between"
                 >
-                  {isValidElement( item.children ) ? item.children
-                  : isString( item.text ) ? item.text
-                  : isArray( item.children )
-                    ? item.children.map(( child ) => (
+                  {isValidElement( children ) ? children
+                  : isString( text ) ? text
+                  : isArray( children )
+                    ? children.map(( child ) => (
                       isValidElement( child )
                         ? child
                         : null
                     ))
                     : null
+                }
+                  <Box
+                    justifyContent="center"
+                    transform={[
+                      { rotate: isOpen ? '0deg' : '270deg' },
+                    ]}
+                  >
+                    <Icon
+                      name="expand_more"
+                      color={this.props.color || 'black'}
+                      size="xs"
+                    />
+                  </Box>
+                </Box>
+              </MenuButton>
+
+              {isArray( items, { ofMinLength: 1 }) && (
+              <MenuList
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  ...facingRight
+                    ? { right: 0 }
+                    : { left: 0 },
+                  ...{
+                    ...styles['menuListStyle'],
+                    color,
+                  },
+                }}
+              >
+                {items.map( item => {
+                  if ( item.href ) {
+                    return (
+                      <MenuLink
+                        key={item.text}
+                        data-testID={`dropdown-item ${testID}`}
+                        to={(
+                          item.href === 'home' ? '/'
+                          : item.href.startsWith( '/' ) ? item.href
+                          : `/${item.href}`
+                        )}
+                        style={{
+                          ...styles['menuItemStyle'],
+                          ...styles['menuLinkStyle'],
+                          color,
+                        }}
+                        onClick={this.handleNavigate( item )}
+                      >
+                        {item.text}
+                      </MenuLink>
+                    );
                   }
-                </MenuItem>
-              );
-            })}
-          </MenuList>
-        )}
+
+                  return (
+                    <MenuItem
+                      key={item.text}
+                      style={{
+                        ...styles['menuItemStyle'],
+                        color,
+                      }}
+                      data-testID={`dropdown-item ${testID}`}
+                      onSelect={this.handleSelect( item )}
+                    >
+                      {isValidElement( item.children ) ? item.children
+                      : isString( item.text ) ? item.text
+                      : isArray( item.children )
+                        ? item.children.map(( child ) => (
+                          isValidElement( child )
+                            ? child
+                            : null
+                        ))
+                        : null
+                      }
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+              )}
+            </Fragment>
+          );
+        }}
       </Menu>
     );
   }

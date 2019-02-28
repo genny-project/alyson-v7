@@ -18,8 +18,6 @@ class InputEvent extends Component {
       ...restProps
     } = this.props;
 
-    console.log( this.props );
-
     return (
       <EventTouchable
         {...restProps}

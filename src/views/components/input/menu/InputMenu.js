@@ -31,20 +31,10 @@ class InputMenu extends Component {
           }))
           : null}
       >
-        <Box
-          alignItems="center"
-          paddingRight={5}
-        >
-          <Text
-            color={this.props.color}
-            text="Menu Input"
-          />
-          <Icon
-            name="expand_more"
-            color={this.props.color || 'black'}
-            size="xs"
-          />
-        </Box>
+        <Text
+          color={this.props.color}
+          text="Menu Input"
+        />
       </Dropdown>
     );
   }

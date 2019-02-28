@@ -101,7 +101,7 @@ If these messages are sent from the backend...
         {
           "attributeCode": "PRI_CONTENT",
           "attributeName": "Content",
-          "baseEntityCode": "THEME_BACKGROUND_RED",
+          "baseEntityCode": "THM_BACKGROUND_RED",
           "created": "2018-08-29T03:00:39",
           "inferred": false,
           "privacyFlag": false,
@@ -110,7 +110,7 @@ If these messages are sent from the backend...
           "valueString": { "background": "red" }
         }
       ],
-      "code": "THEME_BACKGROUND_RED",
+      "code": "THM_BACKGROUND_RED",
       "created": "2019-02-06T04:24:10",
       "delete": false,
       "id": 1000,

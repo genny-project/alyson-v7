@@ -41,36 +41,29 @@ class FormGroup extends Component {
   }
 
   checkThemes = () => {
-    console.log( '================================' );
-    console.log( 'checkThemes', this.props );
     const { questionGroup, asks } = this.props;
     const { questionCode } = questionGroup;
 
-    console.log( asks, questionGroup, questionCode );
     if ( !asks || !asks[questionCode] ) {
       return null;
     }
 
     const askData = asks[questionCode];
 
-    console.log( askData );
-
     const getLinkedThemes = () => {
       return isArray( askData.links, { ofMinLength: 1 })
         ? askData.links.filter( link => {
-          if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( 'link', link );
-
           return dlv( this.props, `themes.${link.code}` ) != null;
         })
         : [];
     };
 
     if ( isObject( askData )) {
-      /* Valid links are added to the state key that matches their link type, so check all the state arrays together */
+      /* Valid links are added to the state key that matches
+      their link type, so check all the state arrays together */
       const oldArray = this.state.themes;
       const newArray = dlv( askData, 'links' );
 
-      if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( 'arrays', oldArray, newArray );
       const prevLinks = [];
       const newLinks = [];
 
@@ -83,38 +76,21 @@ class FormGroup extends Component {
 
       if ( isArray( newArray )) {
         newArray.forEach( item => {
-          /* Ask Bes are being passed to Frame via the baseEntity prop, while frames and themes have their own props
-            so we need to check where we are looking for a base entity. If no entity is found that matches the
-            target code  of the link, it is not added to the array of new links */
-          if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( 'item check', this.props.themes, item );
+          /* Ask Bes are being passed to Frame via the baseEntity prop, while
+          frames and themes have their own props so we need to check where we
+          are looking for a base entity. If no entity is found that matches
+          the target code of the link, it is not added to the array of new links */
           if ( isObject( dlv( this.props,`themes.${item.code}` )
           )) {
-            if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( 'item', item );
             newLinks.push( item.code );
           }
         });
       }
 
-      if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( 'newlinks', newLinks );
-
       /* Find the differences between the two sets of links */
       const toAdd = newLinks.filter( item => !prevLinks.includes( item ));
       const toRemove = prevLinks.filter( item => !newLinks.includes( item ));
 
-      // const toChangePanel = [];
-
-      /* For items that have the same target, check if the panel ( linkValue ) is the same*/
-      newLinks.filter( newLinkCode => prevLinks.includes( newLinkCode )).forEach( newLinkCode => {
-        const oldBe = oldArray.filter( link => link.code === newLinkCode )[0];
-        const newBe = newArray.filter( link => link.code === newLinkCode )[0];
-
-        // const isPanelMatch = oldBe.panel ===  newBe.panel;
-
-        // if ( !isPanelMatch ) toChangePanel.push( newLinkCode );
-      });
-
-      /* if any changes are found, update */
-      if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( 'diff', toAdd, toRemove );
       if (
         toAdd.length > 0 ||
         toRemove.length > 0
@@ -122,7 +98,6 @@ class FormGroup extends Component {
       ) {
         const linkedThemes = getLinkedThemes();
 
-        if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( linkedThemes );
         this.updateThemes( linkedThemes );
       }
     }
@@ -205,8 +180,6 @@ class FormGroup extends Component {
       ...inheritedStyling,
     };
 
-    if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( inheritedStyling );
-
     return (
       <FormInput
         key={questionCode}
@@ -216,8 +189,6 @@ class FormGroup extends Component {
   }
 
   renderQuestionGroup = ( ask, index, form ) => {
-    console.log( ask, index, form );
-
     const getStylingByPanel = ( onlyInheritableThemes ) => {
       let styling = {
         ...isObject( this.props.inheritedThemes ) ? this.props.inheritedThemes : {},
@@ -275,13 +246,6 @@ class FormGroup extends Component {
 
     const isDropdown = isObject( contextList, { withProperty: 'isDropdown' }) ? contextList.isDropdown : false;
 
-    console.log( 'isDropdown', questionCode, isDropdown, contextList, questionGroup );
-    if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( this.props );
-
-    if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( 'RENDER FORM GROUP', questionGroup, questionCode );
-
-    if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log( this.state.themes, inheritedThemes );
-
     const getStylingByPanel = ( onlyInheritableThemes ) => {
       let styling = {
         ...isObject( inheritedThemes ) ? inheritedThemes : {},
@@ -338,8 +302,6 @@ class FormGroup extends Component {
           >
             {childAsks.map(( childAsk, index ) => {
               if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
-                console.log( 'childAsk', childAsk );
-
                 return this.renderQuestionGroup(
                   childAsk,
                   index,
@@ -359,9 +321,6 @@ class FormGroup extends Component {
         </Collapsible>
       );
     }
-
-    if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log({ ...getStyling() });
-    if ( this.props.rootCode === 'QUE_PROJECT_USER_OPTIONS_GRP' ) console.log({ ...getStylingInheritable() });
 
     return (
       <Box

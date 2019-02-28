@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@reach/dialog": "^0.1.2",
-    "@reach/menu-button": "^0.1.7",
+    "@reach/menu-button": "^0.1.8",
     "@reach/visually-hidden": "^0.1.1",
     "@uppy/aws-s3": "0.26.0",
     "@uppy/core": "0.26.0",
