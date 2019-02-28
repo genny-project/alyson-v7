@@ -48,7 +48,10 @@ class MessageHandler {
      * individual messages, increasing performance.
      */
     if ( current.payload.aliasCode && current.payload.aliasCode !== current.payload.parentCode ) {
-      store.dispatch( current );
+      store.dispatch({
+        ...current,
+        links: ( current.questions ? current.links.concat( current.questions ) : current.links ),
+      });
 
       return output;
     }
@@ -63,6 +66,7 @@ class MessageHandler {
         totalCount: current.payload.returnCount,
         linkCode: current.payload.linkCode,
         ...item,
+        links: ( item.questions ? item.links.concat( item.questions ) : item.links ),
       })),
     ];
 
@@ -128,6 +132,7 @@ class MessageHandler {
           totalCount: payload.returnCount,
           replace: payload.replace,
           ...item,
+          links: ( item.questions ? item.links.concat( item.questions ) : item.links ),
         }));
       }
 
