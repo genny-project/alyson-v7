@@ -8,6 +8,7 @@ import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
 import shallowCompare from '../../../utils/shallow-compare';
 import { Box, Text, Button, KeyboardAwareScrollView, Fragment, Collapsible } from '../index';
+import FormGroup from './group';
 import FormInput from './input';
 
 class Form extends Component {
@@ -479,7 +480,6 @@ class Form extends Component {
       setFieldValue,
       setFieldTouched,
       isSubmitting,
-      submitCount,
       submitForm,
       isFormValid,
 
@@ -562,13 +562,11 @@ class Form extends Component {
             ...this.props.inheritedThemes,
           }}
         >
-          <Box
-            flexDirection="column"
-            zIndex={150 - index}
-            position="relative"
-            flex={1}
-            key={name}
-            {...this.props.inheritedThemes}
+          <FormGroup
+            code={questionCode}
+            inheritedThemes={this.props.inheritedThemes}
+            index={index}
+            name={name}
           >
             {childAsks.map(( ask, index ) => {
               if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
@@ -586,14 +584,18 @@ class Form extends Component {
                 form,
               );
             })}
-          </Box>
+          </FormGroup>
         </Collapsible>
       );
     }
 
     return (
-      <Fragment>
-        {question
+      <FormGroup
+        code={questionCode}
+        inheritedThemes={this.props.inheritedThemes}
+        index={index}
+        name={name}
+        renderQuestionForGroup={question
           ? (
             this.renderInput(
               questionGroup,
@@ -602,34 +604,24 @@ class Form extends Component {
               form,
             )) : null
         }
-        <Box
-          flexDirection="column"
-          zIndex={150 - index}
-          position="relative"
-          flex={1}
-          key={name}
-          // backgroundColor="rgba(255, 0, 0, 0.1)"
-          // paddingLeft={5}
-          {...this.props.inheritedThemes}
-        >
-          {childAsks.map(( ask, index ) => {
-            if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-              return this.renderQuestionGroup(
-                ask,
-                index,
-                form
-              );
-            }
-
-            return this.renderInput(
+      >
+        {childAsks.map(( ask, index ) => {
+          if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+            return this.renderQuestionGroup(
               ask,
-              questionCode,
               index,
-              form,
+              form
             );
-          })}
-        </Box>
-      </Fragment>
+          }
+
+          return this.renderInput(
+            ask,
+            questionCode,
+            index,
+            form,
+          );
+        })}
+      </FormGroup>
     );
   }
 

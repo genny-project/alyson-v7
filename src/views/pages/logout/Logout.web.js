@@ -21,8 +21,14 @@ class Logout extends Component {
   render() {
     const { isAuthenticated, error } = this.props.keycloak;
 
-    if ( !isAuthenticated )
-      return <Redirect to="auth" />;
+    if ( !isAuthenticated ) {
+      return (
+        <Redirect
+          to="login"
+          useMainNavigator
+        />
+      );
+    }
 
     if ( error )
       return (

@@ -16,6 +16,8 @@ class Splash extends Component {
       ? location.search.split( '?redirectURL=/' )[1]
       : 'home';
 
+    console.log( 'PUBLIC' );
+
     return (
       <KeycloakConsumer>
         {({ isAuthenticated }) => isAuthenticated ? (
