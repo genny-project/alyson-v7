@@ -121,10 +121,10 @@ const reducer = ( state = initialState, { type, payload }) => {
       return payload.items.reduce(( newState, item ) => {
         // console.log( newState );
         try {
-          if ( isString( item.code, { startsWith: 'FRAME_' })) {
+          if ( isString( item.code, { startsWith: 'FRM_' })) {
             injectFrameIntoState({ item, state: newState });
           }
-          else if ( isString( item.code, { startsWith: 'THEME_' })) {
+          else if ( isString( item.code, { startsWith: 'THM_' })) {
             injectThemeIntoState({ item, state: newState });
           }
           else {

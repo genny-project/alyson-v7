@@ -14,9 +14,6 @@ const initialState = {
 };
 
 const getDisplayValueField = ( item ) => {
-  if ( item.value != null )
-    return item.value;
-
   if ( item.valueDouble != null ) {
     let local = navigator.language;
 
@@ -56,23 +53,22 @@ const getDisplayValueField = ( item ) => {
   }
 
   if ( item.valueString != null ) {
-    if (
-      ( item.valueString.startsWith( '[' ) &&
-      item.valueString.endsWith( ']' )) ||
-      ( item.valueString.startsWith( '{' ) &&
-      item.valueString.endsWith( '}' ))
-    ) {
-      try {
-        const object = JSON.parse( item.valueString );
+    try {
+      if ( item.baseEntityCode.startsWith( 'THM' )) {
+        console.warn( item.valueString.toString());
+      }
 
-        return object;
-      }
-      catch ( error ) {
-        return item.valueString;
-      }
+      const object = JSON.parse( item.valueString.toString());
+
+      return object;
     }
+    catch ( error ) {
+      if ( item.baseEntityCode.startsWith( 'THM' )) {
+        console.warn({ item, error });
+      }
 
-    return item.valueString;
+      return item.valueString;
+    }
   }
 
   return null;
@@ -138,22 +134,6 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
     }
   };
 
-  const createLink = be => {
-    return {
-      created: be.created,
-      link: {
-        attributeCode: be.linkCode || 'LNK_CORE',
-        linkValue: be.linkValue || 'LINK',
-        sourceCode: be.parentCode,
-        targetCode: be.code,
-        weight: 1,
-      },
-      valueString: 'LINK',
-      weight: 1,
-      fakeLink: true,
-    };
-  };
-
   if ( isArray( current.links ))
     current.links.forEach( handleCombineLinkValues );
 
@@ -163,32 +143,6 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
   }
 
   current.links.forEach( handleCombineLinkValues );
-
-  /* If creating the links from children without a Parent entity. */
-  if ( current.parentCode ) {
-    /* if the parent doesnt exist, create key BEG to store children. */
-    if ( !resultant[current.parentCode] ) {
-      resultant[current.parentCode] = {
-        LINK: [createLink( current )],
-      };
-    }
-    else {
-      /* If parent code already exists, check to see if BEG is already there.
-      If yes, we add the new link. If no, we dont do anything, because it means
-      there is already another key which has been obtained from a parent to child
-      link, so it is more accurate. */
-      resultant[current.parentCode] = {
-        ...resultant[current.parentCode],
-        LINK: [
-          ...resultant[current.parentCode].LINK
-            ? resultant[current.parentCode].LINK
-              .filter( link => link.link.targetCode !== current.code )
-            : {},
-          createLink( current ),
-        ],
-      };
-    }
-  }
 
   return resultant;
 };
@@ -224,21 +178,6 @@ const deleteLinkedBaseEntities = ( data, resultant, depth = 1 ) => {
   });
 };
 
-const createLink = ( current ) => ({
-  created: current.created,
-  updated: current.updated,
-  code: current.code,
-  weight: Number.isInteger( current.weight ) ? current.weight : 1,
-  link: {
-    attributeCode: current.linkCode || 'LNK_CORE',
-    targetCode: current.code,
-    sourceCode: current.parentCode,
-    weight: 1,
-    linkValue: 'LINK',
-    ...current.link,
-  },
-});
-
 const handleReduceData = ( resultant, current ) => {
   if ( !current )
     return resultant;
@@ -253,69 +192,6 @@ const handleReduceData = ( resultant, current ) => {
   }
 
   resultant[current.code] = wantedData;
-
-  /* If the current has a parentCode, ensure there is an accompanying base entity. */
-  if ( current.parentCode ) {
-    /* If the parent base entity does not exist, simply create a basic one with a link
-     * back to the current base entity. */
-
-    if ( !resultant[current.parentCode] ) {
-      resultant[current.parentCode] = {
-        totalCount: current.totalCount ||
-        ( resultant[current.parentCode] ? resultant[current.parentCode].totalCount : 0 ),
-        links: [
-          createLink( current ),
-        ],
-      };
-    }
-    /* If there already is a base entity, add the current base entity to the list of links
-     * inside of it. Be sure that no duplicates occur by filtering out the current's code
-     * from the list of existing links. */
-    else {
-      const noLinksExist = !isArray( resultant[current.parentCode].links, { ofMinLength: 1 });
-
-      /* If no links exist yet, simply set the links to be array of the new link (current). */
-
-      const newLinks = noLinksExist ? [
-        createLink( current ),
-      ] : (
-        /* Loop through each existing link. */
-        resultant[current.parentCode].links.reduce(( links, link, index ) => {
-          /* If the current link is in the existing links, update the
-           * existing link with the new link data (current). */
-          if ( link.link.targetCode === current.code ) {
-            // if ( current.parentCode === 'GRP_NEW_ITEMS' ) console.log( '3a code match', links );
-            links[index] = {
-              ...link,
-              updated: current.updated,
-              link: {
-                ...link.link,
-                targetCode: current.code,
-                sourceCode: current.parentCode,
-                ...current.link,
-              },
-            };
-          }
-          /* If the new link (current) isn't already in the existing links, add it. */
-          else if ( !links.find( existingLink => existingLink.link.targetCode === current.code )) {
-            // if ( current.parentCode === 'GRP_NEW_ITEMS' ) console.log( '3b links', links );
-            links.push(
-              createLink( current )
-            );
-          }
-
-          return links;
-        }, resultant[current.parentCode].links )
-      );
-
-      resultant[current.parentCode] = {
-        ...resultant[current.parentCode],
-        totalCount: current.totalCount ||
-        ( resultant[current.parentCode] ? resultant[current.parentCode].totalCount : 0 ),
-        links: newLinks,
-      };
-    }
-  }
 
   return resultant;
 };

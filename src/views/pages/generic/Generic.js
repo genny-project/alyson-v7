@@ -63,7 +63,7 @@ class Generic extends Component {
     }
 
     return (
-      <Frame rootCode="FRAME_ROOT" />
+      <Frame rootCode="FRM_ROOT" />
     );
   }
 }
