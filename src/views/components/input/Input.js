@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { string, object } from 'prop-types';
-import { Text, EventTouchable, Dropdown, Icon, Box, Touchable } from '../index';
-import { isArray } from '../../../utils';
+import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
 import CheckBox from './checkbox';
@@ -31,6 +30,7 @@ class Input extends Component {
     type: string.isRequired,
     typeOnlyProps: object,
     question: object,
+    theme: object,
   }
 
   blur() {
@@ -52,11 +52,11 @@ class Input extends Component {
   }
 
   render() {
-    const { type, typeOnlyProps, ...restProps } = this.props;
+    const { type, theme, ...restProps } = this.props;
 
     const inputProps = {
       ...restProps,
-      ...typeOnlyProps && typeOnlyProps[type] || {},
+      ...theme,
       type,
     };
 
@@ -362,8 +362,6 @@ class Input extends Component {
         );
 
       case 'menu':
-        console.log( inputProps );
-
         return (
           <InputMenu
             {...inputProps}

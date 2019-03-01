@@ -561,8 +561,8 @@ class Form extends Component {
               <Box
                 // accessibilityRole="form"
                 flexDirection="column"
-                flex={1}
-                width="100%"
+                // flex={1}
+                // width="100%"
                 onSubmit={handleSubmit}
                 // backgroundColor="white"
               >
@@ -593,57 +593,6 @@ class Form extends Component {
                   })}
 
                   {/* TODO: remove button rendering, move code to handle form submit somewhere else, as prop passed to children? */}
-
-                  {/*
-                  {questionGroups.reduce(( buttons, { childAsks, attributeCode }) => {
-                    buttonTypes.forEach( type => {
-                      if ( attributeCode.includes( type )) {
-                        buttons.push(
-                          this.renderButton({
-                            disabled: (
-                              !(
-                                questionGroups.length === 1 &&
-                                  isArray( childAsks, { ofMinLength: 1 }) &&
-                                  childAsks[0].question.attribute.dataType.typeName === 'java.lang.Boolean'
-                              ) &&
-                                !isFormValid &&
-                                !alwaysActiveButtonTypes.includes( type )
-                            ),
-                            onPress: () => {
-                                // when clicked on cancel button on the form => close the Popup
-                              buttons && buttons.map( button => {
-                                if ( button.key === 'CANCEL' ) {
-                                  store.dispatch(
-                                    hideDialog({ layoutName: `questions/${questionGroupCode}` })
-                                  );
-                                }
-                              });
-
-                              this.setState({
-                                formStatus: lowercase( type ),
-                              }, () => {
-                                if ( type === 'CANCEL' ) {
-                                    // Skip the validation from occurring in Formik
-                                    // * and go straight to form submission.
-                                  this.handleSubmit();
-                                }
-                                else {
-                                  submitForm();
-                                }
-                              });
-                            },
-                            key: type,
-                            text: capitalize( type ),
-                            showSpinnerOnClick: true,
-                          })
-                        );
-                      }
-                    });
-
-                    return buttons;
-                  }, [] )}
-
-                  */}
                 </Fragment>
               </Box>
             </KeyboardAwareScrollView>

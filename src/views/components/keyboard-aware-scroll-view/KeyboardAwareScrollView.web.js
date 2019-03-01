@@ -1,3 +1,3 @@
-import { View } from 'react-native';
+import { Fragment } from '../index';
 
-export default View;
+export default Fragment;

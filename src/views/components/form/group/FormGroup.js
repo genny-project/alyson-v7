@@ -40,6 +40,32 @@ class FormGroup extends Component {
     this.checkThemes();
   }
 
+  getStylingInheritable = () => {
+    return this.getStylingByPanel( true );
+  }
+
+  getStylingByPanel = ( onlyInheritableThemes ) => {
+    let styling = {
+      ...isObject( this.props.inheritedThemes ) ? this.props.inheritedThemes : {},
+    };
+
+    if ( isArray( this.state.themes )) {
+      this.state.themes.forEach( theme => {
+        const themeData = dlv( this.props.themes, `${theme.code}.data` );
+        const themeIsInheritable = dlv( this.props.themes, `${theme.code}.isInheritable` );
+
+        if ( onlyInheritableThemes && !themeIsInheritable ) return;
+
+        styling = {
+          ...styling,
+          ...( isObject( themeData ) ? themeData : {}),
+        };
+      });
+    }
+
+    return styling;
+  };
+
   checkThemes = () => {
     const { questionGroup, asks } = this.props;
     const { questionCode } = questionGroup;
@@ -117,7 +143,6 @@ class FormGroup extends Component {
     questionGroupCode,
     index,
     form,
-    inheritedStyling,
   ) => {
     const {
       dataTypes,
@@ -177,7 +202,8 @@ class FormGroup extends Component {
       testID: questionCode || '',
       ...contextList,
       rootQuestionGroupCode: this.props.rootCode,
-      ...inheritedStyling,
+      inheritedThemes: this.getStylingInheritable(),
+      ask,
     };
 
     return (
@@ -235,7 +261,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, inheritedThemes, questionGroup, form, themes } = this.props;
+    const { index, inheritedThemes, questionGroup, form } = this.props;
     const {
       name,
       childAsks,
@@ -246,52 +272,29 @@ class FormGroup extends Component {
 
     const isDropdown = isObject( contextList, { withProperty: 'isDropdown' }) ? contextList.isDropdown : false;
 
-    const getStylingByPanel = ( onlyInheritableThemes ) => {
-      let styling = {
-        ...isObject( inheritedThemes ) ? inheritedThemes : {},
-      };
-
-      if ( isArray( this.state.themes )) {
-        this.state.themes.forEach( theme => {
-          const themeData = dlv( themes, `${theme.code}.data` );
-          const themeIsInheritable = dlv( themes, `${theme.code}.isInheritable` );
-
-          if ( onlyInheritableThemes && !themeIsInheritable ) return;
-
-          styling = {
-            ...styling,
-            ...( isObject( themeData ) ? themeData : {}),
-          };
-        });
-      }
-
-      return styling;
-    };
-
     const getStyling = () => {
       return {
         ...defaultStyle.group,
-        ...getStylingByPanel(),
+        ...this.getStylingByPanel(),
       };
     };
 
-    const getStylingInheritable = () => {
-      return getStylingByPanel( true );
-    };
-
-    if ( isDropdown && question ) {
+    if ( isDropdown ) {
       return (
         <Collapsible
-          renderHeader={
-            this.renderInput(
-              questionGroup,
-              questionCode,
-              index,
-              form,
-              getStylingInheritable(),
-            )
+          renderHeader={(
+            question &&
+            isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+          ) ? (
+              this.renderInput(
+                questionGroup,
+                questionCode,
+                index,
+                form,
+              )
+            ) : null
           }
-          headerIconProps={getStylingInheritable()}
+          headerIconProps={this.getStylingInheritable()}
         >
           <Box
             key={name}
@@ -314,7 +317,6 @@ class FormGroup extends Component {
                 questionCode,
                 index,
                 form,
-                getStylingInheritable(),
               );
             })}
           </Box>
@@ -330,14 +332,17 @@ class FormGroup extends Component {
         padding={10}
         {...getStyling()}
       >
-        {question
-          ? (
-            this.renderInput(
-              questionGroup,
-              questionCode,
-              index,
-              form,
-            )) : null
+        {
+          (
+            question &&
+            isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+          ) ? (
+              this.renderInput(
+                questionGroup,
+                questionCode,
+                index,
+                form,
+              )) : null
         }
         {childAsks.map(( ask, index ) => {
           if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
@@ -353,7 +358,6 @@ class FormGroup extends Component {
             questionCode,
             index,
             form,
-            getStylingInheritable(),
           );
         })}
       </Box>

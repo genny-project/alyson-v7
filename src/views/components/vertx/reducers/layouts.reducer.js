@@ -107,6 +107,16 @@ const injectAskIntoState = ({ item, state }) => {
       ),
       created: item.created,
     };
+
+    if ( isArray( item.childAsks )) {
+      /* recursively check child groups and questions */
+
+      item.childAsks.forEach( childItem => {
+        if ( isString( childItem.questionCode, { startsWith: 'QUE_' })) {
+          injectAskIntoState({ item: childItem, state });
+        }
+      })
+    }
   }
 };
 

@@ -28,7 +28,7 @@ class Recurser extends Component {
 
     return (
       <Fragment>
-        { sort( children, { paths: ["weight", "created"], direction: 'desc' }).map( child => {
+        { sort( children, { paths: ["weight", "created"], direction: 'asc' }).map( child => {
           const baseEntityCode = child.code;
           const linkType = child.type;
 
