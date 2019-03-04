@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, number } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, checkForNewInheritedThemes, filterThemes } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes } from '../../../../utils';
 import { Box, Collapsible } from '../../index';
 import FormInput from '../input';
 
@@ -38,22 +38,31 @@ class FormGroup extends Component {
     this.getThemes();
   }
 
-  shouldComponentUpdate( nextProps ) {
-    /* If rootCode is different, then a different base
-    entity needs to be rendered inside the frame */
-    const { questionGroup, asks } = nextProps;
-    const { questionCode } = questionGroup;
+  // shouldComponentUpdate( nextProps ) {
+  //   /* If rootCode is different, then a different base
+  //   entity needs to be rendered inside the frame */
+  //   const { questionGroup, asks } = nextProps;
+  //   const { questionCode } = questionGroup;
 
-    // console.log( 'shouldComponentUpdate', questionCode );
+  //   console.log( 'shouldComponentUpdate', questionCode );
+  //   // console.log( 'green prev', isObject( dlv( this.props, 'themes.THM_COLOR_GREEN' )));
+  //   // console.log( 'green NEXT', isObject( dlv( nextProps, 'themes.THM_COLOR_GREEN' )));
 
-    if ( !asks || !asks[questionCode] ) {
-      return false;
-    }
+  //   // if ( !isObject( dlv( this.props, 'themes.THM_COLOR_GREEN' )) &&
+  //   //   isObject( dlv( nextProps, 'themes.THM_COLOR_GREEN' ))) {
+  //   //   console.log( 'green theme found!!!!' );
 
-    if ( this.props.questionGroup !== nextProps.questionGroup )
-      return true;
+  //   //   return true;
+  //   // }
+  //   console.log( 'check links' );
+  //     /* Check if any of the links of the root base entity have changed */
 
-    /* Check if any of the links of the root base entity have changed */
+  //   console.log( 'no diff' );
+
+  //   return false;
+  // }
+
+  componentDidUpdate( nextProps ) {
     if (  isObject( dlv( nextProps, `asks.${nextProps.rootCode}` ))) {
       if ( checkForNewLayoutLinks(
         /* Valid links are added to the state key that matches their
@@ -63,19 +72,9 @@ class FormGroup extends Component {
         dlv( nextProps, `asks.${nextProps.rootCode}.links` ),
         nextProps,
       )) {
-        return true;
+        this.getThemes();
       }
     }
-
-    /* Check if the inherited themes have changed */
-    if ( checkForNewInheritedThemes( this.props.inheritedThemes, nextProps.inheritedThemes ))
-      return true;
-
-    return false;
-  }
-
-  componentDidUpdate() {
-    this.getThemes();
   }
 
   getThemes = () => {

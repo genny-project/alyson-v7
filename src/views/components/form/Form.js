@@ -473,6 +473,7 @@ class Form extends Component {
 
     return (
       <FormGroup
+        key={questionGroup.questionCode}
         questionGroup={questionGroup}
         form={form}
         rootCode={this.props.questionGroupCode}

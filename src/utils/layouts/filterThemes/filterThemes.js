@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray, isObject, isString  } from '../../index';
+import { isArray, isObject, isString, sort  } from '../../index';
 
 const filterThemes = ( themeCodes, allThemes, options = {}) => {
   const {
@@ -15,7 +15,7 @@ const filterThemes = ( themeCodes, allThemes, options = {}) => {
   )
     return {};
 
-  themeCodes.forEach( theme => {
+  sort( themeCodes, { paths: ['weight', 'created'], direction: 'asc' }).forEach( theme => {
     if ( isString( panel ) && theme.panel !== panel ) return;
 
     const themeData = dlv( allThemes, `${theme.code}.data` );

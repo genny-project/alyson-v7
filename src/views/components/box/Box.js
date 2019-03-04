@@ -45,12 +45,12 @@ function Box({
   marginLeft,
   marginBottom,
   backgroundColor,
-  position = 'initial',
+  position, // TODO value = 'initial', needed for fullscreen, wrong proptype
   top,
   right,
   bottom,
   left,
-  zIndex = 'auto',
+  zIndex, // TODO value = 'auto', needed for fullscreen, wrong proptype
   transform,
   transitionDuration,
   transitionProperty,
