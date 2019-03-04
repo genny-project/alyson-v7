@@ -1,4 +1,4 @@
-/* eslint-disable */
+// /* eslint-disable */
 
 import React, { Component } from 'react';
 import { object, array, string } from 'prop-types';
@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { Box, Text, Recurser } from '../index';
 import Panel from './panel';
-import { isArray, isString, isObject } from '../../../utils';
-import shallowCompare from '../../../utils/shallow-compare';
+import { isArray, isObject, checkForNewLayoutLinks, checkForNewInheritedThemes, getLayoutLinksOfType, filterThemes } from '../../../utils';
 
 const defaultStyle = {
   wrapper: {
@@ -53,7 +52,7 @@ class Frame extends Component {
     ],
     linkTypes: [
       'asks', 'frames', 'themes',
-      'sublayouts' // legacy compatibility
+      'sublayouts', // legacy compatibility
     ],
     inheritedThemes: {},
   }
@@ -76,93 +75,45 @@ class Frame extends Component {
     sublayouts: [], // legacy compatibility
   }
 
+  /* eslint-disable react/sort-comp */
+
   componentDidMount() {
     this.getChildLayouts();
   }
 
-  shouldComponentUpdate( nextProps, nextState ) {
+  shouldComponentUpdate( nextProps ) {
+    /* If rootCode is different, then a different base
+    entity needs to be rendered inside the frame */
 
-    /* If rootCode is different, then a different base entity needs to be rendered inside the frame */
-    if ( this.props.rootCode !== nextProps.rootCode ) {
+    if ( this.props.rootCode !== nextProps.rootCode )
       return true;
-    }
 
     /* Check if any of the links of the root base entity have changed */
     if (  isObject( dlv( nextProps, `frames.${nextProps.rootCode}` ))) {
-      /* Valid links are added to the state key that matches their link type, so check all the state arrays together */
-      const oldArray = this.state.frames.concat(
-        this.state.asks,
-        this.state.themes,
-        this.state.sublayouts, // legacy compatiblity
-      );
-      const newArray = dlv( nextProps, `frames.${nextProps.rootCode}.links` );
+      if ( checkForNewLayoutLinks(
+        /* Valid links are added to the state key that matches their
+        link type, so check all the state arrays together */
 
-      const prevLinks = [];
-      const newLinks = [];
-
-      /* Get just the target codes */
-      if ( isArray( oldArray )) {
-        oldArray.forEach( item => {
-          prevLinks.push( item.code );
-        });
-      }
-
-      if ( isArray( newArray )) {
-        newArray.forEach( item => {
-          /* Ask Bes are being passed to Frame via the baseEntity prop, while frames and themes have their own props
-            so we need to check where we are looking for a base entity. If no entity is found that matches the
-            target code  of the link, it is not added to the array of new links */
-          if ( isObject( dlv( nextProps,
-            item.type === 'sublayout' // legacy compatibility
-              ? `layoutsLegacy.${item.code.split('/')[0]}.${item.code.split('/').slice(1, item.code.split('/').length).join('/')}` // legacy compatibility
-              : `${item.type}s.${item.code}` )
-          )) {
-            // console.log(item.code)
-            newLinks.push( item.code );
-          }
-        });
-      }
-
-      // console.log(newLinks);
-
-      /* Find the differences between the two sets of links */
-      const toAdd = newLinks.filter( item => !prevLinks.includes( item ));
-      const toRemove = prevLinks.filter( item => !newLinks.includes( item ));
-
-      const toChangePanel = [];
-
-      /* For items that have the same target, check if the panel ( linkValue ) is the same*/
-      newLinks.filter( newLinkCode => prevLinks.includes( newLinkCode )).forEach( newLinkCode => {
-        const oldBe = oldArray.filter( link => link.code === newLinkCode )[0];
-        const newBe = newArray.filter( link => link.code === newLinkCode )[0];
-
-        const isPanelMatch = oldBe.panel ===  newBe.panel;
-
-        if ( !isPanelMatch ) toChangePanel.push( newLinkCode );
-      });
-
-      /* if any changes are found, update */
-      if (
-        toAdd.length > 0 ||
-        toRemove.length > 0 ||
-        toChangePanel.length > 0
-      ) {
+        this.state.frames.concat(
+          this.state.asks,
+          this.state.themes,
+          this.state.sublayouts, // legacy compatiblity
+        ),
+        dlv( nextProps, `frames.${nextProps.rootCode}.links` ),
+        nextProps,
+      )) {
         return true;
       }
     }
 
     /* Check if the inherited themes have changed */
-    if (
-      isObject(nextProps.inheritedThemes) &&
-     !shallowCompare( this.props.inheritedThemes , nextProps.inheritedThemes )
-    ) {
+    if ( checkForNewInheritedThemes( this.props.inheritedThemes, nextProps.inheritedThemes ))
       return true;
-    }
 
     return false;
   }
 
-  componentDidUpdate( prevProps ) {
+  componentDidUpdate() {
     this.getChildLayouts();
   }
 
@@ -174,24 +125,11 @@ class Frame extends Component {
       return null;
     }
 
-    const getLinksOfType = type => {
-      return isArray( rootFrame.links, { ofMinLength: 1 })
-        ? rootFrame.links.filter( link => (
-          link.type === type &&
-          dlv( this.props,
-            link.type === 'sublayout'
-              ? `layoutsLegacy.${link.code.split('/')[0]}.${link.code.split('/').slice(1, link.code.split('/').length).join('/')}`
-              : `${link.type}s.${link.code}`
-          ) != null
-        ))
-        : [];
-    };
-
     /* filter each of the links based on their type */
-    const linkedFrames = getLinksOfType( 'frame' );
-    const linkedAsks = getLinksOfType( 'ask' );
-    const linkedThemes = getLinksOfType( 'theme' );
-    const linkedSublayouts = getLinksOfType( 'sublayout' ); // legacy compatiblity
+    const linkedFrames = getLayoutLinksOfType( rootFrame.links, this.props, 'frame' );
+    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask' );
+    const linkedThemes = getLayoutLinksOfType( rootFrame.links, this.props, 'theme' );
+    const linkedSublayouts = getLayoutLinksOfType( rootFrame.links, this.props, 'sublayout' ); // legacy compatiblity
 
     /* update the state  */
     this.updateLinks( 'frames', linkedFrames );
@@ -202,7 +140,7 @@ class Frame extends Component {
 
   updateLinks = ( stateKey, links ) => {
     /* check if the stateKey is valid  */
-    if ( this.props.linkTypes.includes( stateKey )){
+    if ( this.props.linkTypes.includes( stateKey )) {
       this.setState({
         [stateKey]: [
           ...links,
@@ -211,8 +149,22 @@ class Frame extends Component {
     }
   }
 
+  getStyling = ( panel, onlyInheritableThemes ) => {
+    return {
+      ...this.props.inheritedThemes,
+      ...filterThemes(
+        this.state.themes,
+        this.props.themes,
+        {
+          panel: panel,
+          onlyInheritableThemes: onlyInheritableThemes,
+        }
+      ),
+    };
+  }
+
   render() {
-    const { rootCode, panels, inheritedThemes, frames, themes } = this.props;
+    const { rootCode, frames } = this.props;
 
     const rootFrame = frames[rootCode];
 
@@ -234,32 +186,6 @@ class Frame extends Component {
       return array.filter( item => item.panel === panel );
     };
 
-    const getStylingByPanel = ( panel, onlyInheritableThemes ) => {
-      let styling = {
-        ...isObject( inheritedThemes ) ? inheritedThemes : {},
-      };
-
-      if ( isArray( this.state.themes )) {
-        filterByPanel( this.state.themes, panel ).forEach( theme => {
-          const themeData = dlv( themes, `${theme.code}.data` );
-          const themeIsInheritable = dlv( themes, `${theme.code}.isInheritable` );
-
-          if ( onlyInheritableThemes && !themeIsInheritable ) return;
-
-          styling = {
-            ...styling,
-            ...( isObject( themeData ) ? themeData : {}),
-          };
-        });
-      }
-
-      return styling;
-    };
-
-    const getStylingInheritable = ( panel ) => {
-      return getStylingByPanel( panel, true );
-    };
-
     const panelContent = this.state.frames.concat(
       this.state.asks,
       this.state.sublayouts, // legacy compatibility
@@ -270,9 +196,9 @@ class Frame extends Component {
     };
 
     /* Compile  all styling for the panel*/
-    const getStyling = ( panel ) => {
+    const getStylingByPanel = ( panel ) => {
       const checkPanelFlex = ( panel ) => {
-        switch( panel ) {
+        switch ( panel ) {
           case 'north':
           case 'south':
             return (
@@ -284,10 +210,10 @@ class Frame extends Component {
           case 'west':
             return hasContent( 'CENTRE' ) ? {} : { flex: 1 };
           case 'centre':
-          default :
+          default:
             return {};
         }
-      }
+      };
 
       return {
         ...defaultStyle.panel,
@@ -295,11 +221,13 @@ class Frame extends Component {
         /* If the centre panel is rendered, then it is the only panel that expands.
           If not, then the other panels need to have flex 1 to expand. */
         ...checkPanelFlex( panel ),
-        ...getStylingByPanel( panel.toUpperCase()),
-      }
-    }
+        ...this.getStyling( panel.toUpperCase()),
+      };
+    };
 
-    const isExpandable = ( panel ) => isArray( rootFrame.expandablePanels ) ? rootFrame.expandablePanels.includes(panel) : false ;
+    const isExpandable = ( panel ) => isArray( rootFrame.expandablePanels )
+      ? rootFrame.expandablePanels.includes( panel )
+      : false;
 
     return (
       <Box
@@ -311,13 +239,13 @@ class Frame extends Component {
             ? (
               <Panel
                 rootCode={rootCode}
-                location={'NORTH'}
-                style={getStyling( 'north' )}
-                isExpandable={isExpandable('NORTH')}
+                location="NORTH"
+                style={getStylingByPanel( 'north' )}
+                isExpandable={isExpandable( 'NORTH' )}
               >
                 <Recurser
-                  children={filterByPanel( panelContent, 'NORTH' )}
-                  themes={{ ...getStylingInheritable( 'NORTH' ) }}
+                  content={filterByPanel( panelContent, 'NORTH' )}
+                  themes={{ ...this.getStyling( 'NORTH', true ) }}
                 />
               </Panel>
             )
@@ -337,13 +265,13 @@ class Frame extends Component {
                       ? (
                         <Panel
                           rootCode={rootCode}
-                          location={'WEST'}
-                          style={getStyling( 'west' )}
-                          isExpandable={isExpandable('WEST')}
+                          location="WEST"
+                          style={getStylingByPanel( 'west' )}
+                          isExpandable={isExpandable( 'WEST' )}
                         >
                           <Recurser
-                            children={filterByPanel( panelContent, 'WEST' )}
-                            themes={{ ...getStylingInheritable( 'WEST' ) }}
+                            content={filterByPanel( panelContent, 'WEST' )}
+                            themes={{ ...this.getStyling( 'WEST', true ) }}
                           />
                         </Panel>
                       )
@@ -354,13 +282,13 @@ class Frame extends Component {
                       ? (
                         <Panel
                           rootCode={rootCode}
-                          location={'CENTRE'}
-                          style={getStyling( 'centre' )}
-                          isExpandable={isExpandable('CENTRE')}
+                          location="CENTRE"
+                          style={getStylingByPanel( 'centre' )}
+                          isExpandable={isExpandable( 'CENTRE' )}
                         >
                           <Recurser
-                            children={filterByPanel( panelContent, 'CENTRE' )}
-                            themes={{ ...getStylingInheritable( 'CENTRE' ) }}
+                            content={filterByPanel( panelContent, 'CENTRE' )}
+                            themes={{ ...this.getStyling( 'CENTRE', true ) }}
                           />
                         </Panel>
                       )
@@ -371,13 +299,13 @@ class Frame extends Component {
                       ? (
                         <Panel
                           rootCode={rootCode}
-                          location={'EAST'}
-                          style={getStyling( 'east' )}
-                          isExpandable={isExpandable('EAST')}
+                          location="EAST"
+                          style={getStylingByPanel( 'east' )}
+                          isExpandable={isExpandable( 'EAST' )}
                         >
                           <Recurser
-                            children={filterByPanel( panelContent, 'EAST' )}
-                            themes={{ ...getStylingInheritable( 'EAST' ) }}
+                            content={filterByPanel( panelContent, 'EAST' )}
+                            themes={{ ...this.getStyling( 'EAST', true ) }}
                           />
                         </Panel>
                       )
@@ -392,13 +320,13 @@ class Frame extends Component {
               ? (
                 <Panel
                   rootCode={rootCode}
-                  location={'SOUTH'}
-                  style={getStyling( 'south' )}
-                  isExpandable={isExpandable('SOUTH')}
+                  location="SOUTH"
+                  style={getStylingByPanel( 'south' )}
+                  isExpandable={isExpandable( 'SOUTH' )}
                 >
                   <Recurser
-                    children={filterByPanel( panelContent, 'SOUTH' )}
-                    themes={{ ...getStylingInheritable( 'SOUTH' ) }}
+                    content={filterByPanel( panelContent, 'SOUTH' )}
+                    themes={{ ...this.getStyling( 'SOUTH', true ) }}
                   />
                 </Panel>
               )

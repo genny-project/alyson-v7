@@ -3,7 +3,7 @@ import { string, object, func } from 'prop-types';
 import debounce from 'lodash.debounce';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString } from '../../../../utils';
+import { isObject, getLayoutLinksOfType, checkForNewLayoutLinks, checkForNewInheritedThemes, filterThemes } from '../../../../utils';
 import { Input } from '../../index';
 import FormInputDropdown from './dropdown';
 import FormInputCheckbox from './checkbox';
@@ -14,6 +14,9 @@ class FormInput extends Component {
     question: object,
     onChangeValue: func.isRequired,
     ask: object,
+    asks: object,
+    inheritedThemes: object,
+    themes: object,
   }
 
   constructor( props ) {
@@ -26,15 +29,58 @@ class FormInput extends Component {
     themes: [],
   }
 
+  /* eslint-disable react/sort-comp */
+
   componentDidMount() {
-    this.checkThemes();
+    this.getThemes();
+  }
+
+  shouldComponentUpdate( nextProps ) {
+    /* If rootCode is different, then a different base
+    entity needs to be rendered inside the frame */
+    const { ask, asks } = nextProps;
+    const { questionCode } = ask;
+
+    // console.log( 'shouldComponentUpdate', questionCode );
+
+    if ( !asks || !asks[questionCode] ) {
+      return false;
+    }
+
+    if ( this.props.ask !== nextProps.ask )
+      return true;
+
+    /* Check if any of the links of the root base entity have changed */
+    if ( isObject( asks[questionCode] )) {
+      // console.log( 'check links', questionCode );
+      // console.log( 'green theme found?', dlv( nextProps, 'themes.THM_COLOR_GREEN' ));
+      if ( checkForNewLayoutLinks(
+        /* Valid links are added to the state key that matches their
+        link type, so check all the state arrays together */
+
+        this.state.themes,
+        dlv( nextProps, `asks.${questionCode}.links` ),
+        nextProps,
+      )) {
+        // console.log( 'new themes', questionCode );
+
+        return true;
+      }
+    }
+
+    /* Check if the inherited themes have changed */
+    if ( checkForNewInheritedThemes( this.props.inheritedThemes, nextProps.inheritedThemes ))
+      return true;
+
+    return false;
   }
 
   componentDidUpdate() {
-    this.checkThemes();
+    // console.log( 'update', this.props.ask.questionCode );
+    this.getThemes();
   }
 
-  checkThemes = () => {
+  getThemes = () => {
     const { ask, asks } = this.props;
     const { questionCode } = ask;
 
@@ -44,60 +90,11 @@ class FormInput extends Component {
 
     const askData = asks[questionCode];
 
-    const getLinkedThemes = () => {
-      return isArray( askData.links, { ofMinLength: 1 })
-        ? askData.links.filter( link => {
-          return dlv( this.props, `themes.${link.code}` ) != null;
-        })
-        : [];
-    };
+    /* filter each of the links based on their type */
+    const linkedThemes = getLayoutLinksOfType( askData.links, this.props, 'theme' );
 
-    // console.log( 'askData', askData );
-    if ( isObject( askData )) {
-      /* Valid links are added to the state key that matches
-      their link type, so check all the state arrays together */
-      const oldArray = this.state.themes;
-      const newArray = dlv( askData, 'links' );
-
-      const prevLinks = [];
-      const newLinks = [];
-
-      /* Get just the target codes */
-      if ( isArray( oldArray )) {
-        oldArray.forEach( item => {
-          prevLinks.push( item.code );
-        });
-      }
-
-      if ( isArray( newArray )) {
-        newArray.forEach( item => {
-          /* Ask Bes are being passed to Frame via the baseEntity prop, while
-          frames and themes have their own props so we need to check where we
-          are looking for a base entity. If no entity is found that matches
-          the target code of the link, it is not added to the array of new links */
-          if ( isObject( dlv( this.props,`themes.${item.code}` )
-          )) {
-            newLinks.push( item.code );
-          }
-        });
-      }
-      // console.log( 'links', prevLinks,  newLinks );
-      /* Find the differences between the two sets of links */
-      const toAdd = newLinks.filter( item => !prevLinks.includes( item ));
-      const toRemove = prevLinks.filter( item => !newLinks.includes( item ));
-
-      if (
-        toAdd.length > 0 ||
-        toRemove.length > 0
-        // toChangePanel.length > 0
-      ) {
-        const linkedThemes = getLinkedThemes();
-
-        // console.log( 'changes', toAdd,  toRemove );
-
-        this.updateThemes( linkedThemes );
-      }
-    }
+    /* update the state  */
+    this.updateThemes( linkedThemes );
   }
 
   updateThemes = ( links ) => {
@@ -107,6 +104,17 @@ class FormInput extends Component {
         ...links,
       ],
     }, () => {});
+  }
+
+  getStyling = ( onlyInheritableThemes ) => {
+    return {
+      ...this.props.inheritedThemes,
+      ...filterThemes(
+        this.state.themes,
+        this.props.themes,
+        { onlyInheritableThemes: onlyInheritableThemes }
+      ),
+    };
   }
 
   focus() {
@@ -131,43 +139,11 @@ class FormInput extends Component {
   }
 
   render() {
-    const { type, question, inheritedThemes, themes } = this.props;
-
-    const getStylingByPanel = ( onlyInheritableThemes ) => {
-      let styling = {
-        ...isObject( inheritedThemes ) ? inheritedThemes : {},
-      };
-
-      if ( isArray( this.state.themes )) {
-        this.state.themes.forEach( theme => {
-          const themeData = dlv( themes, `${theme.code}.data` );
-          const themeIsInheritable = dlv( themes, `${theme.code}.isInheritable` );
-
-          if ( onlyInheritableThemes && !themeIsInheritable ) return;
-
-          styling = {
-            ...styling,
-            ...( isObject( themeData ) ? themeData : {}),
-          };
-        });
-      }
-
-      return styling;
-    };
-
-    const getStyling = () => {
-      return {
-        ...getStylingByPanel(),
-      };
-    };
-
-    const getStylingInheritable = () => {
-      return getStylingByPanel( true );
-    };
+    const { type, question } = this.props;
 
     const inputProps = {
       ...this.props,
-      theme: getStyling(),
+      theme: this.getStyling(),
     };
 
     switch ( type ) {
@@ -189,7 +165,7 @@ class FormInput extends Component {
         return (
           <FormInputDropdown
             {...inputProps}
-            inhertiableStyling={getStylingInheritable()}
+            inhertiableStyling={this.getStyling( true )}
             onChangeValue={this.handleChangeValueWithSendAndDebounce}
             ref={input => this.input = input}
           />
@@ -199,7 +175,7 @@ class FormInput extends Component {
         return (
           <FormInputCheckbox
             {...inputProps}
-            inhertiableStyling={getStylingInheritable()}
+            inhertiableStyling={this.getStyling( true )}
             ref={input => this.input = input}
             onChangeValue={this.handleChangeValueWithSendAndDebounce}
           />

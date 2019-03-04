@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, func } from 'prop-types';
+import { string, object, func, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { LayoutLoaderLegacy } from '../';
@@ -11,6 +11,9 @@ class Sublayout extends Component {
     sublayouts: object,
     pages: object,
     dispatch: func,
+    layoutsLegacy: object,
+    getLayoutTypeFromName: bool,
+    identifier: string,
   };
 
   state = {
@@ -38,19 +41,10 @@ class Sublayout extends Component {
 
   getLayout() {
     const { layoutsLegacy, layoutName, getLayoutTypeFromName } = this.props;
-    // const layout = sublayouts[layoutName];
-    // const layout = layoutsLegacy[layoutName];
     const layoutPath = getLayoutTypeFromName
       ? `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}`
       : `sublayouts.${layoutName}`;
     const layout = dlv( layoutsLegacy, `${layoutPath}` );
-
-    // console.log( getLayoutTypeFromName, layoutsLegacy );
-    // console.log( `${layoutName.split( '/' )[0]}` );
-    // console.log( `${layoutName.split( '/' )[0]}.${layoutName.split( '/' )}` );
-    // console.log( `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}` );
-    // console.log( dlv( layoutsLegacy, `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}` ));
-    // console.log( layoutName, layoutsLegacy, layout );
 
     if ( layout ) {
       this.setState({ layout });
@@ -64,14 +58,9 @@ class Sublayout extends Component {
   getParams() {
     const layoutPool = dlv( this.props.layoutsLegacy, 'pages' );
 
-    // console.log( this.props.layoutsLegacy, layoutPool );
-
     if ( !isObject( layoutPool )) return;
 
-    // console.log( 'params get' );
-
     const currentUrl = location.getBasePath();
-
     const strippedCurrentUrl = removeStartingAndEndingSlashes( currentUrl );
 
     const keys = Object.keys( layoutPool ).sort( this.handleSortPages );
@@ -108,8 +97,6 @@ class Sublayout extends Component {
     // eslint-disable-next-line no-unused-vars
     const { layoutsLegacy, dispatch, layoutName, ...restProps } = this.props;
     const { layout, params } = this.state;
-
-    // console.log( params );
 
     return (
       <LayoutLoaderLegacy

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, number } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, checkForNewInheritedThemes, filterThemes } from '../../../../utils';
 import { Box, Collapsible } from '../../index';
 import FormInput from '../input';
 
@@ -32,41 +32,53 @@ class FormGroup extends Component {
     themes: [],
   }
 
+  /* eslint-disable react/sort-comp */
+
   componentDidMount() {
-    this.checkThemes();
+    this.getThemes();
+  }
+
+  shouldComponentUpdate( nextProps ) {
+    /* If rootCode is different, then a different base
+    entity needs to be rendered inside the frame */
+    const { questionGroup, asks } = nextProps;
+    const { questionCode } = questionGroup;
+
+    // console.log( 'shouldComponentUpdate', questionCode );
+
+    if ( !asks || !asks[questionCode] ) {
+      return false;
+    }
+
+    if ( this.props.questionGroup !== nextProps.questionGroup )
+      return true;
+
+    /* Check if any of the links of the root base entity have changed */
+    if (  isObject( dlv( nextProps, `asks.${nextProps.rootCode}` ))) {
+      if ( checkForNewLayoutLinks(
+        /* Valid links are added to the state key that matches their
+        link type, so check all the state arrays together */
+
+        this.state.themes,
+        dlv( nextProps, `asks.${nextProps.rootCode}.links` ),
+        nextProps,
+      )) {
+        return true;
+      }
+    }
+
+    /* Check if the inherited themes have changed */
+    if ( checkForNewInheritedThemes( this.props.inheritedThemes, nextProps.inheritedThemes ))
+      return true;
+
+    return false;
   }
 
   componentDidUpdate() {
-    this.checkThemes();
+    this.getThemes();
   }
 
-  getStylingInheritable = () => {
-    return this.getStylingByPanel( true );
-  }
-
-  getStylingByPanel = ( onlyInheritableThemes ) => {
-    let styling = {
-      ...isObject( this.props.inheritedThemes ) ? this.props.inheritedThemes : {},
-    };
-
-    if ( isArray( this.state.themes )) {
-      this.state.themes.forEach( theme => {
-        const themeData = dlv( this.props.themes, `${theme.code}.data` );
-        const themeIsInheritable = dlv( this.props.themes, `${theme.code}.isInheritable` );
-
-        if ( onlyInheritableThemes && !themeIsInheritable ) return;
-
-        styling = {
-          ...styling,
-          ...( isObject( themeData ) ? themeData : {}),
-        };
-      });
-    }
-
-    return styling;
-  };
-
-  checkThemes = () => {
+  getThemes = () => {
     const { questionGroup, asks } = this.props;
     const { questionCode } = questionGroup;
 
@@ -76,57 +88,11 @@ class FormGroup extends Component {
 
     const askData = asks[questionCode];
 
-    const getLinkedThemes = () => {
-      return isArray( askData.links, { ofMinLength: 1 })
-        ? askData.links.filter( link => {
-          return dlv( this.props, `themes.${link.code}` ) != null;
-        })
-        : [];
-    };
+    /* filter each of the links based on their type */
+    const linkedThemes = getLayoutLinksOfType( askData.links, this.props, 'theme' );
 
-    if ( isObject( askData )) {
-      /* Valid links are added to the state key that matches
-      their link type, so check all the state arrays together */
-      const oldArray = this.state.themes;
-      const newArray = dlv( askData, 'links' );
-
-      const prevLinks = [];
-      const newLinks = [];
-
-      /* Get just the target codes */
-      if ( isArray( oldArray )) {
-        oldArray.forEach( item => {
-          prevLinks.push( item.code );
-        });
-      }
-
-      if ( isArray( newArray )) {
-        newArray.forEach( item => {
-          /* Ask Bes are being passed to Frame via the baseEntity prop, while
-          frames and themes have their own props so we need to check where we
-          are looking for a base entity. If no entity is found that matches
-          the target code of the link, it is not added to the array of new links */
-          if ( isObject( dlv( this.props,`themes.${item.code}` )
-          )) {
-            newLinks.push( item.code );
-          }
-        });
-      }
-
-      /* Find the differences between the two sets of links */
-      const toAdd = newLinks.filter( item => !prevLinks.includes( item ));
-      const toRemove = prevLinks.filter( item => !newLinks.includes( item ));
-
-      if (
-        toAdd.length > 0 ||
-        toRemove.length > 0
-        // toChangePanel.length > 0
-      ) {
-        const linkedThemes = getLinkedThemes();
-
-        this.updateThemes( linkedThemes );
-      }
-    }
+    /* update the state  */
+    this.updateThemes( linkedThemes );
   }
 
   updateThemes = ( links ) => {
@@ -136,6 +102,17 @@ class FormGroup extends Component {
         ...links,
       ],
     }, () => {});
+  }
+
+  getStyling = ( onlyInheritableThemes ) => {
+    return {
+      ...this.props.inheritedThemes,
+      ...filterThemes(
+        this.state.themes,
+        this.props.themes,
+        { onlyInheritableThemes: onlyInheritableThemes }
+      ),
+    };
   }
 
   renderInput = (
@@ -202,7 +179,7 @@ class FormGroup extends Component {
       testID: questionCode || '',
       ...contextList,
       rootQuestionGroupCode: this.props.rootCode,
-      inheritedThemes: this.getStylingInheritable(),
+      inheritedThemes: this.getStyling( true ),
       ask,
     };
 
@@ -215,32 +192,6 @@ class FormGroup extends Component {
   }
 
   renderQuestionGroup = ( ask, index, form ) => {
-    const getStylingByPanel = ( onlyInheritableThemes ) => {
-      let styling = {
-        ...isObject( this.props.inheritedThemes ) ? this.props.inheritedThemes : {},
-      };
-
-      if ( isArray( this.state.themes )) {
-        this.state.themes.forEach( theme => {
-          const themeData = dlv(  this.props.themes, `${theme.code}.data` );
-          const themeIsInheritable = dlv(  this.props.themes, `${theme.code}.isInheritable` );
-
-          if ( onlyInheritableThemes && !themeIsInheritable ) return;
-
-          styling = {
-            ...styling,
-            ...( isObject( themeData ) ? themeData : {}),
-          };
-        });
-      }
-
-      return styling;
-    };
-
-    const getStylingInheritable = () => {
-      return getStylingByPanel( true );
-    };
-
     return (
       React.createElement(
         FormGroup,
@@ -248,7 +199,7 @@ class FormGroup extends Component {
           questionGroup: ask,
           form: form,
           rootCode: this.props.rootCode,
-          inheritedThemes: getStylingInheritable(),
+          inheritedThemes: this.getStyling( true ),
           index: index,
           dataTypes: this.props.dataTypes,
           functions: this.props.functions,
@@ -261,7 +212,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, inheritedThemes, questionGroup, form } = this.props;
+    const { index, questionGroup, form } = this.props;
     const {
       name,
       childAsks,
@@ -271,13 +222,6 @@ class FormGroup extends Component {
     } = questionGroup;
 
     const isDropdown = isObject( contextList, { withProperty: 'isDropdown' }) ? contextList.isDropdown : false;
-
-    const getStyling = () => {
-      return {
-        ...defaultStyle.group,
-        ...this.getStylingByPanel(),
-      };
-    };
 
     if ( isDropdown ) {
       return (
@@ -294,14 +238,14 @@ class FormGroup extends Component {
               )
             ) : null
           }
-          headerIconProps={this.getStylingInheritable()}
+          headerIconProps={this.getStyling( true )}
         >
           <Box
             key={name}
             zIndex={150 - index}
-            {...inheritedThemes}
+            {...defaultStyle.group}
             padding={10}
-            {...getStyling()}
+            {...this.getStyling()}
           >
             {childAsks.map(( childAsk, index ) => {
               if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
@@ -328,9 +272,9 @@ class FormGroup extends Component {
       <Box
         key={name}
         zIndex={150 - index}
-        {...inheritedThemes}
+        {...defaultStyle.group}
         padding={10}
-        {...getStyling()}
+        {...this.getStyling()}
       >
         {
           (

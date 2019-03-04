@@ -55,6 +55,7 @@ const getDisplayValueField = ( item ) => {
   if ( item.valueString != null ) {
     try {
       if ( item.baseEntityCode.startsWith( 'THM' )) {
+        // eslint-disable-next-line no-console
         console.warn( item.valueString.toString());
       }
 
@@ -64,6 +65,7 @@ const getDisplayValueField = ( item ) => {
     }
     catch ( error ) {
       if ( item.baseEntityCode.startsWith( 'THM' )) {
+        // eslint-disable-next-line no-console
         console.warn({ item, error });
       }
 

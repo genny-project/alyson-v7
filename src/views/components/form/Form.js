@@ -15,11 +15,6 @@ class Form extends Component {
     loadingText: 'Loading form...',
     testID: 'form',
     shouldSetInitialValues: true,
-    alwaysActiveButtonTypes: [
-      'CANCEL',
-      'NO',
-      'YES',
-    ],
     inheritedThemes: {},
   }
 
@@ -29,11 +24,9 @@ class Form extends Component {
     ),
     asks: object, // eslint-disable-line react/no-unused-prop-types
     baseEntities: object,
-    hideButtonIfDisabled: bool,
     loadingText: string,
     testID: string,
     shouldSetInitialValues: bool,
-    alwaysActiveButtonTypes: array,
     inheritedThemes: object,
   }
 
@@ -463,14 +456,19 @@ class Form extends Component {
 
   renderQuestionGroup = ( questionGroup, index, form, ) => {
     const functions = {
-      handleChange: ( questionCode, setFieldValue, setFieldTouched, ask ) => this.handleChange( questionCode, setFieldValue, setFieldTouched, ask ),
-      handleFocusNextInput: ( code, index ) => this.handleFocusNextInput( code, index ),
-      handleBlur: ( ask, values, errors ) => this.handleBlur( ask, values, errors ),
-      handleKeyPress: ( submitForm, index, questionGroupCode ) => this.handleKeyPress( submitForm, index, questionGroupCode ),
-      addRef: ( questionGroupCode, index, input ) => this.inputRefs[questionGroupCode] = {
-        ...this.inputRefs[questionGroupCode],
-        [index]: input,
-      },
+      handleChange: ( questionCode, setFieldValue, setFieldTouched, ask ) =>
+        this.handleChange( questionCode, setFieldValue, setFieldTouched, ask ),
+      handleFocusNextInput: ( code, index ) =>
+        this.handleFocusNextInput( code, index ),
+      handleBlur: ( ask, values, errors ) =>
+        this.handleBlur( ask, values, errors ),
+      handleKeyPress: ( submitForm, index, questionGroupCode ) =>
+        this.handleKeyPress( submitForm, index, questionGroupCode ),
+      addRef: ( questionGroupCode, index, input ) =>
+        this.inputRefs[questionGroupCode] = {
+          ...this.inputRefs[questionGroupCode],
+          [index]: input,
+        },
     };
 
     return (
@@ -568,13 +566,6 @@ class Form extends Component {
               >
                 <Fragment>
                   {questionGroups.map(( questionGroup, index ) => {
-                    // const isSingleBooleanForm = (
-                    //   questionGroup.childAsks.length === 1 &&
-                    //   questionGroup.childAsks[0].question.attribute.dataType.typeName === 'java.lang.Boolean'
-                    // );
-
-                    // map over the root question groups
-
                     return this.renderQuestionGroup(
                       questionGroup,
                       index,
@@ -591,8 +582,6 @@ class Form extends Component {
                       }
                     );
                   })}
-
-                  {/* TODO: remove button rendering, move code to handle form submit somewhere else, as prop passed to children? */}
                 </Fragment>
               </Box>
             </KeyboardAwareScrollView>

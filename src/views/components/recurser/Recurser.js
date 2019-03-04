@@ -1,34 +1,27 @@
-/* eslint-disable */
+// /* eslint-disable */
 
 import React, { Component } from 'react';
 import { object, array } from 'prop-types';
-import { connect } from 'react-redux';
-import dlv from 'dlv';
 import { Fragment, Frame, Text, Form } from '../index';
 import { SublayoutLegacy } from '../../components-legacy';
-
-import { isArray, isString, isObject, sort } from '../../../utils';
+import { isArray, sort } from '../../../utils';
 
 class Recurser extends Component {
   static propTypes = {
-    data: object,
-    attributes: object,
-    children: array,
-  }
-
-  state = {
+    themes: object,
+    content: array,
   }
 
   render() {
-    const { data, attributes, children, themes } = this.props;
+    const { content, themes } = this.props;
 
-    if ( !isArray( children, { ofMinLength: 1 })) {
+    if ( !isArray( content, { ofMinLength: 1 })) {
       return null;
     }
 
     return (
       <Fragment>
-        { sort( children, { paths: ["weight", "created"], direction: 'asc' }).map( child => {
+        { sort( content, { paths: ['weight', 'created'], direction: 'asc' }).map( child => {
           const baseEntityCode = child.code;
           const linkType = child.type;
 

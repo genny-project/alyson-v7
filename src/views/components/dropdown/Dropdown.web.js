@@ -133,11 +133,15 @@ class Dropdown extends Component {
                       { rotate: isOpen ? '0deg' : '270deg' },
                     ]}
                   >
-                    <Icon
-                      name="expand_more"
-                      color={this.props.color || 'black'}
-                      size="xs"
-                    />
+                    <Box
+                      paddingTop={2}
+                    >
+                      <Icon
+                        name="expand_more"
+                        color={this.props.color || 'black'}
+                        size="xs"
+                      />
+                    </Box>
                   </Box>
                 </Box>
               </MenuButton>

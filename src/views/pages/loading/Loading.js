@@ -16,8 +16,6 @@ class Loading extends Component {
       isCheckingCallback,
     } = this.props.keycloak;
 
-    console.log( 'LOADING' );
-
     if ( isAuthenticated ) {
       return (
         <Redirect

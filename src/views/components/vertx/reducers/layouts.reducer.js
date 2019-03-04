@@ -151,7 +151,7 @@ const reducer = ( state = initialState, { type, payload }) => {
     }
 
     case 'ASK_DATA':
-      console.log('ASK DATA', payload.items)
+      // console.log('ASK DATA', payload.items)
       if ( !isArray( payload.items, { ofMinLength: 1 }))
         return state;
 

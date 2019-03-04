@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { array, bool, object, any, string } from 'prop-types';
-import { isArray, isString, Bridge } from '../../../../utils';
-import { Text, Dropdown, Icon, Box } from '../../index';
+import { array, string } from 'prop-types';
+import { isArray } from '../../../../utils';
+import { Text, Dropdown } from '../../index';
 
 class InputMenu extends Component {
   static propTypes = {

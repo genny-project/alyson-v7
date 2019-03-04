@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { any, bool, func, string, object, node } from 'prop-types';
-import { TouchableOpacity } from 'react-native';
 import { Box, Icon, Touchable }  from '../../components';
 
 class Collapsible extends Component {
@@ -30,7 +29,6 @@ class Collapsible extends Component {
 
   handlePress = () => {
     this.setState( state => ({ isOpen: !state.isOpen }));
-    // if ( this.props.onToggle ) this.props.onToggle();
   }
 
   render() {

@@ -18,3 +18,4 @@ export * from './types';
 export * from './payments';
 export * from './color';
 export * from './screen';
+export * from './layouts';

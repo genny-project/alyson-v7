@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { array, bool, object, any, string } from 'prop-types';
-import { isArray, isString, Bridge } from '../../../../utils';
+import { array, string, object } from 'prop-types';
 import { Text, EventTouchable } from '../../index';
 
 class InputEvent extends Component {
   static propTypes = {
     items: array.isRequired,
     color: string,
+    question: object,
     rootQuestionGroupCode: string,
   }
 
   render() {
     const {
-      items,
       question,
       rootQuestionGroupCode,
       ...restProps
