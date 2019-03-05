@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray, isObject  } from '../../utils';
+import { isArray  } from '../../utils';
 
 const sort = ( array, options = {}) => {
   const {
@@ -14,7 +14,7 @@ const sort = ( array, options = {}) => {
 
   const compare = ( itemA, itemB, index ) => {
     /* if paths not supplied, do a simple comparison */
-    if ( !isObject( paths )) {
+    if ( !isArray( paths )) {
       return itemA < itemB ? 1 : -1 ;
     }
 
@@ -37,15 +37,17 @@ const sort = ( array, options = {}) => {
     }
 
     /* otherwise, compare the values */
-    return a < b ? 1 : -1 ;
+    return a < b ? -1 : 1 ;
   };
 
-  return array.sort(( a, b ) => {
+  const sorted = array.sort(( a, b ) => {
     /* determine sort direction, pass 0 to indicate top level compare */
     return direction === 'desc'
       ? compare( a, b, 0 )
       : compare( b, a, 0 );
   });
+
+  return sorted;
 };
 
 export default sort;
