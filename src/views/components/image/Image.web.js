@@ -1,33 +1,66 @@
 import React from 'react';
-import { string, oneOf, oneOfType, number, any } from 'prop-types';
+import { string, oneOf, oneOfType, number } from 'prop-types';
 import { Box, Icon } from '../../components';
+import { isString, isInteger } from '../../../utils';
+
+const style = {
+  contain: {
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'contain',
+  },
+  cover: {
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+  },
+};
 
 const Image = ({
-  width,
-  height,
+  width = '100%',
+  height = '100%',
   source,
-  shape,
-  children,
   testID = 'image',
+  fit = 'none',
+  color = 'white',
+  backgroundColor = 'transparent',
 }) => {
-  const borderRadius = {
-    square: 0,
-    rounded: 5,
-    circle: width / 2,
+  const shouldScaleImage = fit => fit === 'cover' || fit === 'contain';
+
+  const isScaledImage = shouldScaleImage( fit );
+
+  const cssstyle = {
+    width: width,
+    height: height,
   };
 
   if (
-    source &&
-    typeof source === 'string' &&
-    source.length > 0 &&
+    isString( source, { ofMinLength: 1 }) &&
     source !== 'undefined'
   ) {
     return (
-      <img
-        testID={testID}
-        src={source}
-        style={{ width, height, borderRadius: borderRadius[shape] }}
-      />
+      isScaledImage && (
+        isInteger( width ) ||
+        isInteger( height )
+      )
+        ? (
+          <div
+            style={{
+              ...style[fit],
+              height,
+              width,
+              backgroundColor: backgroundColor,
+              backgroundImage: `url('${source}')`,
+            }}
+            role="img"
+          />
+        )
+        : (
+          <img
+            style={cssstyle}
+            src={source}
+          />
+        )
     );
   }
 
@@ -35,19 +68,16 @@ const Image = ({
     <Box
       width={width}
       height={height}
-      backgroundColor="gray"
+      backgroundColor={backgroundColor}
       justifyContent="center"
       alignItems="center"
-      borderRadius={borderRadius[shape]}
       testID={testID}
     >
       <Icon
         name="photo"
-        color="white"
+        color={color}
         size="lg"
       />
-
-      {children}
     </Box>
   );
 };
@@ -60,10 +90,11 @@ Image.propTypes = {
     [string, number]
   ),
   source: string,
-  children: any,
-  shape: oneOf(
-    ['square', 'rounded', 'circle']
+  fit: oneOf(
+    ['none', 'cover', 'contain']
   ),
+  color: string,
+  backgroundColor: string,
   testID: string,
 };
 

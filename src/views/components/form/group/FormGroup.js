@@ -63,13 +63,13 @@ class FormGroup extends Component {
   // }
 
   componentDidUpdate( nextProps ) {
-    if (  isObject( dlv( nextProps, `asks.${nextProps.rootCode}` ))) {
+    if (  isObject( dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}` ))) {
       if ( checkForNewLayoutLinks(
         /* Valid links are added to the state key that matches their
         link type, so check all the state arrays together */
 
         this.state.themes,
-        dlv( nextProps, `asks.${nextProps.rootCode}.links` ),
+        dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}.links` ),
         nextProps,
       )) {
         this.getThemes();

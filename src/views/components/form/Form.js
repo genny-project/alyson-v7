@@ -28,6 +28,7 @@ class Form extends Component {
     testID: string,
     shouldSetInitialValues: bool,
     inheritedThemes: object,
+    fullWidth: bool,
   }
 
   inputRefs = {}
@@ -265,6 +266,14 @@ class Form extends Component {
     return result;
   }
 
+  checkIfFullWidth = ( questionGroups ) => {
+    return questionGroups.some( questionGroup => {
+      return isObject( questionGroup.contextList, { withProperty: 'fullWidth' })
+        ? questionGroup.contextList.fullWidth
+        : false;
+    });
+  }
+
   doValidate = values => {
     // console.log( 'do validate' );
     if ( !values )
@@ -490,6 +499,7 @@ class Form extends Component {
       questionGroupCode,
       loadingText,
       testID,
+      fullWidth,
     } = this.props;
     const { questionGroups } = this.state;
 
@@ -503,7 +513,7 @@ class Form extends Component {
       return (
         <Box
           flexDirection="column"
-          width="100%"
+          {...fullWidth ? { width: '100%' } : {}}
           justifyContent="center"
           alignItems="center"
           flexShrink={0}
@@ -531,6 +541,9 @@ class Form extends Component {
     }
 
     const { initialValues } = this.state;
+
+    // check the top level groups to see if any have 'fullWidth: true' in the contextList
+    const isFullWidth = fullWidth != null ? fullWidth : this.checkIfFullWidth( questionGroups );
 
     return (
       <Formik
@@ -561,7 +574,7 @@ class Form extends Component {
                 // accessibilityRole="form"
                 flexDirection="column"
                 // flex={1}
-                // width="100%"
+                {...isFullWidth ? { width: '100%' } : {}}
                 onSubmit={handleSubmit}
                 // backgroundColor="white"
               >

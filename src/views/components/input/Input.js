@@ -24,6 +24,7 @@ import InputMenu from './menu';
 import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
+import InputImage from './image';
 
 class Input extends Component {
   static propTypes = {
@@ -223,9 +224,8 @@ class Input extends Component {
       case 'image':
       case 'Image':
         return (
-          <InputFile
+          <InputImage
             {...inputProps}
-            imageOnly
             ref={input => this.input = input}
           />
         );
