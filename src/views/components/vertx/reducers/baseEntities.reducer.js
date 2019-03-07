@@ -417,21 +417,6 @@ const reducer = ( state = initialState, { type, payload }) => {
       };
 
     /**
-     * If we receive ask data, ensure all of the data and types that are used
-     * inside of the ask are stored inside this reducer.
-     */
-    case 'ASK_DATA':
-      return {
-        ...state,
-
-        definitions: {
-          ...state.definitions,
-          data: payload.items.reduce( handleReduceAskQuestionData, state.definitions.data ),
-          types: payload.items.reduce( handleReduceAskQuestionTypes, state.definitions.types ),
-        },
-      };
-
-    /**
      * If we receive a CLEAR_ALL_LAYOUTS we need to remove any attributes that start with LAY_
      * We do this so that we can load in all of our development layouts.
      */
