@@ -64,6 +64,7 @@ export { default as WebView } from './web-view';
 
 export { default as Frame } from './frame';
 export { default as Recurser } from './recurser';
+export { default as Swipeable } from './swipeable';
 
 export * from './keycloak';
 export * from './vertx';

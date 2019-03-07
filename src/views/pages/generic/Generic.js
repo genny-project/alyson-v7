@@ -48,12 +48,6 @@ class Generic extends Component {
     }
 
     if ( !isAuthenticated ) {
-      // const { redirectUri } = location.getQueryParams();
-
-      // const loginUrl = `login?${queryString.stringify({
-      //   redirectUri: redirectUri || `/${currentUrl}`,
-      // })}`;
-
       return (
         <Redirect
           to="login"
@@ -63,12 +57,13 @@ class Generic extends Component {
     }
 
     return (
-      <Frame rootCode="FRM_ROOT" />
+      <Frame
+        rootCode="FRM_ROOT"
+        isRootFrame
+      />
     );
   }
 }
-
-// export default Generic;
 
 export { Generic };
 

@@ -122,6 +122,7 @@
     "react-router-dom": "^4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
     "react-signature-pad-wrapper": "^1.2.3",
+    "react-swipeable-views": "^0.13.1",
     "react-table": "6.8.6",
     "redux": "^4.0.0",
     "redux-batched-subscribe": "^0.1.6",
@@ -139,7 +140,7 @@
     "toastr": "^2.1.4",
     "url-loader": "^1.0.1",
     "uuid": "^3.3.2",
-    "vertx3-eventbus-client": "genny-project/vertx3-eventbus-client",
+    "vertx3-eventbus-client": "github:genny-project/vertx3-eventbus-client",
     "webpack": "^4.14.0",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"

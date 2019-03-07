@@ -1,12 +1,20 @@
 // /* eslint-disable */
 
 import React, { Component } from 'react';
-import { object, array, string } from 'prop-types';
+import { object, array, string, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Box, Text, Recurser } from '../index';
+import { Box, Text, Recurser, Swipeable } from '../index';
 import Panel from './panel';
-import { isArray, isObject, checkForNewLayoutLinks, checkForNewInheritedThemes, getLayoutLinksOfType, filterThemes } from '../../../utils';
+import {
+  isArray,
+  isObject,
+  checkForNewLayoutLinks,
+  checkForNewInheritedThemes,
+  getLayoutLinksOfType,
+  filterThemes,
+  getDeviceSize,
+} from '../../../utils';
 
 const defaultStyle = {
   wrapper: {
@@ -21,6 +29,9 @@ const defaultStyle = {
     flexDirection: 'row',
     width: '100%',
     flex: 1,
+  },
+  rowMobile: {
+    height: '100%',
   },
   panel: {
     justifyContent: 'center',
@@ -64,7 +75,7 @@ class Frame extends Component {
     linkTypes: array,
     rootCode: string,
     inheritedThemes: object,
-
+    isRootFrame: bool,
     sublayouts: object, // legacy compatibility
   }
 
@@ -164,7 +175,7 @@ class Frame extends Component {
   }
 
   render() {
-    const { rootCode, frames } = this.props;
+    const { rootCode, frames, isRootFrame } = this.props;
 
     const rootFrame = frames[rootCode];
 
@@ -229,10 +240,25 @@ class Frame extends Component {
       ? rootFrame.expandablePanels.includes( panel )
       : false;
 
+    const shouldUseSwipeable = (
+      getDeviceSize() === 'sm' &&
+      !isRootFrame &&
+      hasContent( 'CENTRE' ) && (
+        hasContent( 'WEST' ) ||
+        hasContent( 'EAST' )
+      )
+    );
+
+    const RowComponent = shouldUseSwipeable
+      ? Swipeable
+      : Box;
+
     return (
       <Box
         id="wrapper"
+        text
         {...defaultStyle.wrapper}
+        backgroundColor="green"
       >
         {
           hasContent( 'NORTH' )
@@ -256,9 +282,9 @@ class Frame extends Component {
             hasContent( 'CENTRE' ) ||
             hasContent( 'EAST' )
               ? (
-                <Box
+                <RowComponent
                   id="row"
-                  {...defaultStyle.row}
+                  {...shouldUseSwipeable ? defaultStyle.rowMobile : defaultStyle.row}
                 >
                   {
                     hasContent( 'WEST' )
@@ -311,7 +337,7 @@ class Frame extends Component {
                       )
                       : null
                   }
-                </Box>
+                </RowComponent>
               )
               : null
           }
