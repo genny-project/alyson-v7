@@ -258,7 +258,6 @@ class Frame extends Component {
         id="wrapper"
         text
         {...defaultStyle.wrapper}
-        backgroundColor="green"
       >
         {
           hasContent( 'NORTH' )

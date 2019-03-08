@@ -222,6 +222,9 @@ class FormGroup extends Component {
 
     const isDropdown = isObject( contextList, { withProperty: 'isDropdown' }) ? contextList.isDropdown : false;
 
+    // get isExpandable from themes attributes
+    // get isPaginated,
+
     if ( isDropdown ) {
       return (
         <Collapsible

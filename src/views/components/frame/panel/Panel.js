@@ -76,7 +76,7 @@ class Panel extends Component {
               <Box
                 position="absolute"
                 top={0}
-                right={-2}
+                right={0}
                 zIndex={isObject(style , { withProperty: 'zIndex' }) ? style.zIndex + 1 : 'auto'}
               >
                 <Touchable

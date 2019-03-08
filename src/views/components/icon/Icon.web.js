@@ -33,7 +33,7 @@ const Icon = ({
     whiteSpace: 'nowrap',
     fontWeight: 'normal',
     fontStyle: 'normal',
-    lineHeight: '1rem',
+    lineHeight: sizes[size],
     direction: 'ltr',
     fontSize: sizes[size],
     color: colors[color] || color,
