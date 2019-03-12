@@ -217,6 +217,7 @@ class FormGroup extends Component {
       childAsks,
       question,
       questionCode,
+      contextList,
     } = questionGroup;
 
     let properties = {};
@@ -232,19 +233,15 @@ class FormGroup extends Component {
       }
     });
 
-    const paginationStyle = properties.pagination ? {
-      borderColor: 'red',
-      borderStyle: 'solid',
-      borderWidth: 1,
-    } : {};
+    // TODO - remove after question linking is added
+    const isExpandable = isArray( contextList.links, { ofMinLength: 1 })
+      ? contextList.links.some( link => dlv( link, 'properties.expandable' ))
+      : false;
 
-    const selectableStyle = properties.selectableArea ? {
-      borderColor: 'green',
-      borderStyle: 'solid',
-      borderWidth: 1,
-    } : {};
-
-    if ( properties.expandable ) {
+    if (
+      properties.expandable ||
+      isExpandable // TODO - remove after question linking is added
+    ) {
       return (
         <Collapsible
           renderHeader={(
@@ -305,8 +302,6 @@ class FormGroup extends Component {
                   {...defaultStyle.group}
                   padding={10}
                   borderColor
-                  {...paginationStyle}
-                  {...selectableStyle}
                   {...this.getStyling()}
                 >
                   {
@@ -360,8 +355,6 @@ class FormGroup extends Component {
             {...defaultStyle.group}
             padding={10}
             borderColor
-            {...paginationStyle}
-            {...selectableStyle}
             {...this.getStyling()}
           >
             {
@@ -404,8 +397,6 @@ class FormGroup extends Component {
         {...defaultStyle.group}
         padding={10}
         borderColor
-        {...paginationStyle}
-        {...selectableStyle}
         {...this.getStyling()}
       >
         {
