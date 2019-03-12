@@ -1,14 +1,15 @@
-import React, { Component, isValidElement } from 'react';
-import { array, string } from 'prop-types';
-import { isArray, Bridge } from '../../../utils';
+import { Component } from 'react';
+import dlv from 'dlv';
+import { func, string } from 'prop-types';
+import { Bridge } from '../../../utils';
 
 class Pagination extends Component {
   static defaultProps = {
   }
 
   static propTypes = {
-    children: array,
-    code: string.isRequired,
+    children: func.isRequired,
+    code: string,
   }
 
   state = {
@@ -16,16 +17,19 @@ class Pagination extends Component {
   }
 
   handleScrollForMore = ( event ) => {
-    // console.log( 'scrolling' );
-    const { target } = event;
+    // TODO - get total items
 
-    if ( !target ) return null;
+    const { target, nativeEvent } = event;
 
-    const { scrollHeight, scrollTop, clientHeight } = target;
+    if ( !target && !nativeEvent ) return null;
 
-    if ( !scrollHeight || !scrollTop || !clientHeight ) return null;
+    const contentHeight = dlv( target, 'scrollHeight' ) || dlv( nativeEvent, 'contentSize.height' );
+    const offset = dlv( target, 'scrollTop' ) || dlv( nativeEvent, 'contentOffset.y' );
+    const containerHeight = dlv( target, 'clientHeight' ) || dlv( nativeEvent, 'layoutMeasurement.height' );
 
-    const isBottom = scrollHeight - scrollTop === clientHeight;
+    if ( !contentHeight || !offset || !containerHeight ) return null;
+
+    const isBottom = contentHeight - offset <= containerHeight;
 
     if ( isBottom ) {
       const value = {
@@ -58,21 +62,10 @@ class Pagination extends Component {
   render() {
     const { children } = this.props;
 
-    if ( !isArray( children )) {
-      if ( !isValidElement )
-        return null;
+    // TODO add getNextPage event
+    // https://github.com/bvaughn/react-window pagination
 
-      return children;
-    }
-
-    // needs checking
-
-    return React.Children.map( children, child => (
-      React.cloneElement( child, {
-        ...child.props,
-        onScroll: this.handleScrollForMore,
-      })
-    ));
+    return children( this.state, this.handleScrollForMore );
   }
 }
 

@@ -6,6 +6,7 @@ import { RefreshControl } from '../index';
 class ScrollView extends Component {
   static defaultProps = {
     testID: 'scroll-view',
+    scrollEventThrottle: 16,
   }
 
   static propTypes = {

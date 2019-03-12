@@ -122,6 +122,7 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
     }
   };
 
+  // TODO check for duplicate target code?
   const handleCombineLinkValues = link => {
     if ( link.link.linkValue ) {
       resultant[current.code] = {

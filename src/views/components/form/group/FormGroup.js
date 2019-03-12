@@ -3,7 +3,7 @@ import { string, object, number } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes } from '../../../../utils';
-import { Box, Collapsible } from '../../index';
+import { Box, Collapsible, EventTouchable, Pagination, ScrollView } from '../../index';
 import FormInput from '../input';
 
 const defaultStyle = {
@@ -232,6 +232,18 @@ class FormGroup extends Component {
       }
     });
 
+    const paginationStyle = properties.pagination ? {
+      borderColor: 'red',
+      borderStyle: 'solid',
+      borderWidth: 1,
+    } : {};
+
+    const selectableStyle = properties.selectableArea ? {
+      borderColor: 'green',
+      borderStyle: 'solid',
+      borderWidth: 1,
+    } : {};
+
     if ( properties.expandable ) {
       return (
         <Collapsible
@@ -277,12 +289,123 @@ class FormGroup extends Component {
       );
     }
 
+    if ( properties.pagination ) {
+      return (
+        <Pagination
+          code={questionCode}
+        >
+          {( state, handleScrollForMore ) => {
+            return (
+              <ScrollView
+                onScroll={handleScrollForMore}
+              >
+                <Box
+                  key={name}
+                  zIndex={150 - index}
+                  {...defaultStyle.group}
+                  padding={10}
+                  borderColor
+                  {...paginationStyle}
+                  {...selectableStyle}
+                  {...this.getStyling()}
+                >
+                  {
+                (
+                  question &&
+                  isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+                ) ? (
+                    this.renderInput(
+                      questionGroup,
+                      questionCode,
+                      index,
+                      form,
+                    )) : null
+              }
+                  {childAsks.map(( ask, index ) => {
+                    if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+                      return this.renderQuestionGroup(
+                        ask,
+                        index,
+                        form
+                      );
+                    }
+
+                    return this.renderInput(
+                      ask,
+                      questionCode,
+                      index,
+                      form,
+                    );
+                  })}
+                </Box>
+              </ScrollView>
+            );
+          }}
+        </Pagination>
+      );
+    }
+
+    if ( properties.selectableArea ) {
+      return (
+        <EventTouchable
+          withFeedback
+          eventType="TV_SELECT"
+          messageType="TV_EVENT"
+          value={questionCode}
+          buttonCode={this.props.rootCode}
+        >
+          <Box
+            key={name}
+            zIndex={150 - index}
+            {...defaultStyle.group}
+            padding={10}
+            borderColor
+            {...paginationStyle}
+            {...selectableStyle}
+            {...this.getStyling()}
+          >
+            {
+              (
+                question &&
+                isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+              ) ? (
+                  this.renderInput(
+                    questionGroup,
+                    questionCode,
+                    index,
+                    form,
+                  )) : null
+            }
+            {childAsks.map(( ask, index ) => {
+              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+                return this.renderQuestionGroup(
+                  ask,
+                  index,
+                  form
+                );
+              }
+
+              return this.renderInput(
+                ask,
+                questionCode,
+                index,
+                form,
+              );
+            })}
+          </Box>
+        </EventTouchable>
+      );
+    }
+
     return (
       <Box
         key={name}
         zIndex={150 - index}
         {...defaultStyle.group}
         padding={10}
+        borderColor
+        {...paginationStyle}
+        {...selectableStyle}
         {...this.getStyling()}
       >
         {
