@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, string } from 'prop-types';
+import { array, string, object } from 'prop-types';
 import { isArray } from '../../../../utils';
 import { Text, Dropdown } from '../../index';
 
@@ -8,6 +8,7 @@ class InputMenu extends Component {
     items: array.isRequired,
     color: string,
     rootQuestionGroupCode: string,
+    question: object,
   }
 
   render() {
@@ -15,6 +16,7 @@ class InputMenu extends Component {
       items,
       ...restProps
     } = this.props;
+    const { question } = this.props;
 
     return (
       <Dropdown
@@ -33,7 +35,7 @@ class InputMenu extends Component {
       >
         <Text
           color={this.props.color}
-          text="Menu Input"
+          text={question.name}
         />
       </Dropdown>
     );
