@@ -137,12 +137,13 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
     }
   };
 
-  if ( isArray( current.links ))
-    current.links.forEach( handleCombineLinkValues );
+  // if ( isArray( current.links )) {
+  //   console.log( 'call1' );
+  //   current.links.forEach( handleCombineLinkValues );
+  // }
 
   if ( shouldReplace === true ) {
     current.links.forEach( removeMatchingExistingKeys );
-    // console.log( resultant );
   }
 
   current.links.forEach( handleCombineLinkValues );
