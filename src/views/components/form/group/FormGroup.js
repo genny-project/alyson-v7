@@ -217,15 +217,22 @@ class FormGroup extends Component {
       childAsks,
       question,
       questionCode,
-      contextList,
     } = questionGroup;
 
-    const isDropdown = isObject( contextList, { withProperty: 'isDropdown' }) ? contextList.isDropdown : false;
+    let properties = {};
 
-    // get isExpandable from themes attributes
-    // get isPaginated,
+    this.state.themes.forEach( linkedTheme => {
+      const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
 
-    if ( isDropdown ) {
+      if ( isObject( themeProperties )) {
+        properties = {
+          ...properties,
+          ...themeProperties,
+        };
+      }
+    });
+
+    if ( properties.expandable ) {
       return (
         <Collapsible
           renderHeader={(

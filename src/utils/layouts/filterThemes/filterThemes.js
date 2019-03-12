@@ -19,9 +19,14 @@ const filterThemes = ( themeCodes, allThemes, options = {}) => {
     if ( isString( panel ) && theme.panel !== panel ) return;
 
     const themeData = dlv( allThemes, `${theme.code}.data` );
-    const themeIsInheritable = dlv( allThemes, `${theme.code}.isInheritable` );
+    const properties = dlv( allThemes, `${theme.code}.properties` );
 
-    if ( onlyInheritableThemes && !themeIsInheritable ) return;
+    if (
+      onlyInheritableThemes &&
+      isObject( properties, { withProperty: 'inheritable' }) &&
+      properties.inheritable === false
+    )
+      return;
 
     if ( isObject( themeData )) {
       styling = {

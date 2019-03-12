@@ -10,6 +10,29 @@ const initialState = {
   asks: {},
 };
 
+const themeBehaviourAttributes = {
+  PRI_IS_EXPANDABLE: {
+    default: false,
+    label: "expandable"
+  },
+  PRI_IS_SELECTION_AREA: {
+    default: false,
+    label: "selectionArea"
+  },
+  PRI_IS_SELECTABLE_AREA: {
+    default: false,
+    label: "selectableArea"
+  },
+  PRI_IS_PAGINATION: {
+    default: false,
+    label: "pagination"
+  },
+  PRI_IS_INHERITABLE: {
+    default: true,
+    label: "inheritable"
+  },
+};
+
 const injectFrameIntoState = ({ item, state }) => {
   // console.log( 'injectFrameIntoState', item, state, state.frames );
   /* alter the state */
@@ -20,8 +43,6 @@ const injectFrameIntoState = ({ item, state }) => {
     // console.log( attribute );
     attributes[attribute.attributeCode] = attribute;
   });
-
-  const expandablePanels = dlv( attributes, 'PRI_EXPANDABLE_PANELS.value' );
 
   if ( state.frames ) {
     state.frames[item.code] = {
@@ -45,7 +66,6 @@ const injectFrameIntoState = ({ item, state }) => {
           created: link.created,
         };
       }),
-      expandablePanels: isArray(expandablePanels) ? expandablePanels : [],
       created: item.created,
     };
   }
@@ -54,17 +74,26 @@ const injectFrameIntoState = ({ item, state }) => {
 const injectThemeIntoState = ({ item, state }) => {
   // console.log( 'injectThemeIntoState', item, state, state.themes );
   const attributes = {};
+  const layoutProperties = {};
 
   // console.log( item.baseEntityAttributes );
   item.baseEntityAttributes.forEach( attribute => {
     // console.log( attribute );
     attributes[attribute.attributeCode] = attribute;
+
+    if ( isObject( themeBehaviourAttributes[attribute.attributeCode] )) {
+      const themeBehaviourAttribute = themeBehaviourAttributes[attribute.attributeCode];
+      const attributeValue = dlv( attributes, `${attribute.attributeCode}.value` );
+
+      if ( attributeValue !== null ) {
+        layoutProperties[themeBehaviourAttribute.label] = attributeValue;
+      }
+    }
   });
 
   // console.log( attributes );
 
   const themeData = dlv( attributes, 'PRI_CONTENT.value' );
-  const isInheritable = dlv( attributes, 'PRI_IS_INHERITABLE.value' );
 
   /* alter the state */
 
@@ -72,8 +101,8 @@ const injectThemeIntoState = ({ item, state }) => {
     state.themes[item.code] = {
       name: item.name,
       code: item.code,
-      data: themeData,
-      isInheritable: isInheritable != null ? isInheritable : true,
+      data: isObject( themeData ) ? themeData : {},
+      properties: layoutProperties,
       created: item.created,
     };
   }
