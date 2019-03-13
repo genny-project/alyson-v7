@@ -52,24 +52,29 @@ const injectFrameIntoState = ({ item, state }) => {
     state.frames[item.code] = {
       name: item.name,
       code: item.code,
-      links: item.links.map( link => {
-        const linkTypes = {
-          LNK_THEME: 'theme',
-          LNK_FRAME: 'frame',
-          LNK_ASK: 'ask',
-          LNK_LAYOUT: 'sublayout',
-        };
+      links: [
+        ...( isObject( state.frames[item.code], { withProperty: 'links' }) && isArray( state.frames[item.code].links )) ? state.frames[item.code].links.filter( existingLink => (
+          !item.links.some( newLink => newLink.link.targetCode === existingLink.code )
+        )) : [],
+        ...item.links.map( link => {
+          const linkTypes = {
+            LNK_THEME: 'theme',
+            LNK_FRAME: 'frame',
+            LNK_ASK: 'ask',
+            LNK_LAYOUT: 'sublayout',
+          };
 
-        return {
-          code: link.link.targetCode,
-          weight: link.link.weight,
-          panel: link.link.linkValue,
-          type: linkTypes[link.link.attributeCode]
-            ? linkTypes[link.link.attributeCode]
-            : 'none',
-          created: link.created,
-        };
-      }),
+          return {
+            code: link.link.targetCode,
+            weight: link.link.weight,
+            panel: link.link.linkValue,
+            type: linkTypes[link.link.attributeCode]
+              ? linkTypes[link.link.attributeCode]
+              : 'none',
+            created: link.created,
+          };
+        })
+      ],
       created: item.created,
     };
   }
@@ -122,20 +127,26 @@ const injectAskIntoState = ({ item, state }) => {
       code: item.questionCode,
       ...( item.links
         ? {
-          links: item.links.map( link => {
-            const linkTypes = {
-              LNK_THEME: 'theme',
-            };
+          links: [
+            ...( isObject( state.frames[item.code], { withProperty: 'links' }) && isArray( state.frames[item.code].links )) ? state.frames[item.code].links.filter( existingLink => (
+              !item.links.some( newLink => newLink.link.targetCode === existingLink.code )
+            )) : [],
+            ...item.links.map( link => {
+              const linkTypes = {
+                LNK_THEME: 'theme',
+              };
 
-            return {
-              code: link.link.targetCode,
-              weight: link.link.weight,
-              type: linkTypes[link.link.attributeCode]
-                ? linkTypes[link.link.attributeCode]
-                : 'none',
-              created: link.created,
-            };
-          })
+              return {
+                code: link.link.targetCode,
+                weight: link.link.weight,
+                panel: link.link.linkValue,
+                type: linkTypes[link.link.attributeCode]
+                  ? linkTypes[link.link.attributeCode]
+                  : 'none',
+                created: link.created,
+              };
+            })
+          ],
         } : {}
       ),
       created: item.created,
