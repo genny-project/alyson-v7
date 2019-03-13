@@ -31,6 +31,10 @@ const themeBehaviourAttributes = {
     default: true,
     label: "inheritable"
   },
+  PRI_HAS_QUESTION_GRP_INPUT: {
+    default: false,
+    label: "renderQuestionGroupInput"
+  },
 };
 
 const injectFrameIntoState = ({ item, state }) => {

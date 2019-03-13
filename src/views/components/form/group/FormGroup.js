@@ -238,6 +238,10 @@ class FormGroup extends Component {
       ? contextList.links.some( link => dlv( link, 'properties.expandable' ))
       : false;
 
+    const renderQuestionGroupInput = isArray( contextList.links, { ofMinLength: 1 })
+      ? contextList.links.some( link => dlv( link, 'properties.renderQuestionGroupInput' ))
+      : false;
+
     if (
       properties.expandable ||
       isExpandable // TODO - remove after question linking is added
@@ -246,7 +250,7 @@ class FormGroup extends Component {
         <Collapsible
           renderHeader={(
             question &&
-            isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+            renderQuestionGroupInput
           ) ? (
               this.renderInput(
                 questionGroup,
@@ -307,7 +311,7 @@ class FormGroup extends Component {
                   {
                 (
                   question &&
-                  isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+                  renderQuestionGroupInput
                 ) ? (
                     this.renderInput(
                       questionGroup,
