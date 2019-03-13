@@ -371,7 +371,7 @@ class FormGroup extends Component {
             {
               (
                 question &&
-                isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+                renderQuestionGroupInput
               ) ? (
                   this.renderInput(
                     questionGroup,
@@ -413,7 +413,7 @@ class FormGroup extends Component {
         {
           (
             question &&
-            isString( question.attributeCode, { startsWith: 'QQQ_QUESTION_GROUP_' })
+            renderQuestionGroupInput
           ) ? (
               this.renderInput(
                 questionGroup,
