@@ -233,13 +233,20 @@ class FormGroup extends Component {
       }
     });
 
-    // TODO - remove after question linking is added
-    const isExpandable = isArray( contextList.links, { ofMinLength: 1 })
-      ? contextList.links.some( link => dlv( link, 'properties.expandable' ))
+    const isExpandable = isObject( contextList, { withProperty: 'contextList' }) && isArray( contextList.contextList, { ofMinLength: 1 })
+      ? contextList.contextList.some( link => {
+        const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.expandable` );
+
+        return themeEntity;
+      })
       : false;
 
-    const renderQuestionGroupInput = isArray( contextList.links, { ofMinLength: 1 })
-      ? contextList.links.some( link => dlv( link, 'properties.renderQuestionGroupInput' ))
+    const renderQuestionGroupInput = isObject( contextList, { withProperty: 'contextList' }) && isArray( contextList.contextList, { ofMinLength: 1 })
+      ? contextList.contextList.some( link => {
+        const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.renderQuestionGroupInput` );
+
+        return themeEntity;
+      })
       : false;
 
     if (
