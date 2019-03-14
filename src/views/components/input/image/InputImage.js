@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array, string, oneOfType, number } from 'prop-types';
-// import { isArray } from '../../../../utils';
-import { Image, Box } from '../../index';
+import { isString, isArray, isObject, bool } from '../../../../utils';
+import { Image, Box, Touchable, Input, Icon } from '../../index';
 
 class InputImage extends Component {
   static defaultProps = {
@@ -20,6 +20,7 @@ class InputImage extends Component {
       [string, number]
     ),
     value: string,
+    editable: bool,
   }
 
   state = {
@@ -37,9 +38,25 @@ class InputImage extends Component {
       value,
       height,
       width,
+      editable,
       ...restProps
     } = this.props;
     const { isEditing } = this.state; // eslint-disable-line no-unused-vars
+
+    const getValue = () => {
+      if ( isString( value )) {
+        return value;
+      }
+      if ( isArray( value, { ofMinLength: 1 })) {
+        const uploadObject = value[0];
+
+        if ( isObject( uploadObject, { withProperty: 'uploadURL' }))
+
+          return uploadObject.uploadURL;
+      }
+
+      return '';
+    };
 
     return (
       <Box
@@ -50,24 +67,34 @@ class InputImage extends Component {
         <Box
           height={height}
           width={width}
+          position="relative"
         >
-          <Image
-            {...restProps}
-            source={value || ''}
-          />
-          {/* <Touchable
-            withFeedback
-            onPress={this.handleToggle}
-          >
-            <Text
-              text={isEditing ? 'Close' : 'Edit'}
-            />
-          </Touchable>
           {
-            isEditing
+            editable ? (
+              <Box
+                top={0}
+                right={0}
+                position="absolute"
+                zIndex={50}
+              >
+                <Touchable
+                  withFeedback
+                  onPress={this.handleToggle}
+                >
+                  <Icon
+                    name={isEditing ? 'cancel' : 'photo'}
+                    color="white"
+                    size="lg"
+                  />
+                </Touchable>
+              </Box>
+            ) : null
+          }
+          {
+            isEditing && editable
               ? (
                 <Input
-                  {...this.props}
+                  {...restProps}
                   type="file"
                   imageOnly
                   ref={input => this.input = input}
@@ -75,10 +102,10 @@ class InputImage extends Component {
               )
               : (
                 <Image
-                  source={value || ''}
+                  source={getValue()}
                 />
               )
-          } */}
+          }
         </Box>
       </Box>
     );
