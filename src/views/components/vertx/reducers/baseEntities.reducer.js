@@ -113,23 +113,25 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
   if ( !isArray( current.links ))
     return resultant;
 
+  const entityCodeKey = current.code || current.questionCode;
+
   const removeMatchingExistingKeys = link => {
     if (
       link.link.linkValue &&
-      resultant[current.code]
+      resultant[entityCodeKey]
     ) {
-      delete resultant[current.code];
+      delete resultant[entityCodeKey];
     }
   };
 
   // TODO check for duplicate target code?
   const handleCombineLinkValues = link => {
     if ( link.link.linkValue ) {
-      resultant[current.code] = {
-        ...resultant[current.code],
+      resultant[entityCodeKey] = {
+        ...resultant[entityCodeKey],
         [link.link.linkValue]: [
-          ...( resultant[current.code] && isArray( resultant[current.code][link.link.linkValue] ))
-            ? resultant[current.code][link.link.linkValue]
+          ...( resultant[entityCodeKey] && isArray( resultant[entityCodeKey][link.link.linkValue] ))
+            ? resultant[entityCodeKey][link.link.linkValue]
               .filter( existingLink => existingLink.link.targetCode !== link.link.targetCode )
             : [],
           link,
@@ -148,6 +150,12 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
   }
 
   current.links.forEach( handleCombineLinkValues );
+
+  if ( isArray( current.childAsks )) {
+    current.childAsks.forEach( childAsk => {
+      handleReduceLinks( resultant, childAsk, shouldReplace );
+    });
+  }
 
   return resultant;
 };
@@ -419,7 +427,24 @@ const reducer = ( state = initialState, { type, payload }) => {
         },
       };
 
-    /**
+    case 'ASK_DATA':
+
+      // TODO Handle recursion of childAsks with links
+
+      return {
+        ...state,
+        links: payload.items.reduce( handleReduceLinks, state.links ),
+        // ...payload.items.reduce(( resultant, current ) => {
+        //   resultant[current.questionCode] = {
+        //     ...current,
+        //     childAsks: reduceChildAsks( current.childAsks ),
+        //   };
+
+        //   return resultant;
+        // }, {}),
+      };
+
+      /**
      * If we receive a CLEAR_ALL_LAYOUTS we need to remove any attributes that start with LAY_
      * We do this so that we can load in all of our development layouts.
      */

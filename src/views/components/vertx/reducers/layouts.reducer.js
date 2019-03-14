@@ -37,7 +37,7 @@ const themeBehaviourAttributes = {
   },
 };
 
-const injectFrameIntoState = ({ item, state }) => {
+const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
   // console.log( 'injectFrameIntoState', item, state, state.frames );
   /* alter the state */
 
@@ -47,6 +47,14 @@ const injectFrameIntoState = ({ item, state }) => {
     // console.log( attribute );
     attributes[attribute.attributeCode] = attribute;
   });
+
+  if ( shouldReplaceEntity === true ) {
+    if (
+      state.frames[item.code]
+    ) {
+      delete state.frames[item.code];
+    }
+  }
 
   if ( state.frames ) {
     state.frames[item.code] = {
@@ -80,7 +88,7 @@ const injectFrameIntoState = ({ item, state }) => {
   }
 };
 
-const injectThemeIntoState = ({ item, state }) => {
+const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
   // console.log( 'injectThemeIntoState', item, state, state.themes );
   const attributes = {};
   const layoutProperties = {};
@@ -104,6 +112,14 @@ const injectThemeIntoState = ({ item, state }) => {
 
   const themeData = dlv( attributes, 'PRI_CONTENT.value' );
 
+  if ( shouldReplaceEntity === true ) {
+    if (
+      state.themes[item.code]
+    ) {
+      delete state.themes[item.code];
+    }
+  }
+
   /* alter the state */
 
   if ( state.themes ) {
@@ -117,9 +133,19 @@ const injectThemeIntoState = ({ item, state }) => {
   }
 };
 
-const injectAskIntoState = ({ item, state }) => {
+const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
   // console.log( 'injectAskIntoState', item, state, state.asks );
   /* alter the state */
+
+  // TODO - shouldDeleteLinkedBaseEntities
+
+  if ( shouldReplaceEntity === true ) {
+    if (
+      state.frames[item.questionCode]
+    ) {
+      delete state.frames[item.questionCode];
+    }
+  }
 
   if ( state.asks ) {
     state.asks[item.questionCode] = {
@@ -166,6 +192,10 @@ const injectAskIntoState = ({ item, state }) => {
 
 const reducer = ( state = initialState, { type, payload }) => {
   // console.log( type, payload );
+  // TODO - shouldDeleteLinkedBaseEntities
+
+  const shouldReplaceEntity = payload && ( payload.replace || payload.delete );
+
   switch ( type ) {
     case 'BASE_ENTITY_MESSAGE': {
       if ( !isArray( payload.items, { ofMinLength: 1 }))
@@ -176,10 +206,10 @@ const reducer = ( state = initialState, { type, payload }) => {
         // console.log( newState );
         try {
           if ( isString( item.code, { startsWith: 'FRM_' })) {
-            injectFrameIntoState({ item, state: newState });
+            injectFrameIntoState({ item, state: newState, shouldReplaceEntity });
           }
           else if ( isString( item.code, { startsWith: 'THM_' })) {
-            injectThemeIntoState({ item, state: newState });
+            injectThemeIntoState({ item, state: newState, shouldReplaceEntity });
           }
           else {
             return state;
@@ -199,12 +229,14 @@ const reducer = ( state = initialState, { type, payload }) => {
       if ( !isArray( payload.items, { ofMinLength: 1 }))
         return state;
 
+        // TODO - shouldDeleteLinkedBaseEntities
+
       /* Loop through all of the layouts and store them in their corresponding layout groups. */
       return payload.items.reduce(( newState, item ) => {
         // console.log( newState );
         try {
           if ( isString( item.questionCode, { startsWith: 'QUE_' })) {
-            injectAskIntoState({ item, state: newState });
+            injectAskIntoState({ item, state: newState, shouldReplaceEntity });
           }
           else {
             return state;
