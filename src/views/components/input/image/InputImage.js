@@ -24,13 +24,19 @@ class InputImage extends Component {
   }
 
   state = {
-    isEditing: false,
+    isHover: false,
   }
 
-  handleToggle = () => {
-    this.setState( state => ({
-      isEditing: !state.isEditing,
-    }));
+  handleMouseOver = () => {
+    this.setState({
+      isHover: true,
+    });
+  }
+
+  handleMouseOut = () => {
+    this.setState({
+      isHover: false,
+    });
   }
 
   render() {
@@ -41,19 +47,15 @@ class InputImage extends Component {
       editable,
       ...restProps
     } = this.props;
-    const { isEditing } = this.state; // eslint-disable-line no-unused-vars
+    const { isHover } = this.state; // eslint-disable-line no-unused-vars
 
-    const getValue = () => {
-      if ( isString( value )) {
-        return value;
+    const getValue = ( file ) => {
+      if ( isString( file )) {
+        return file;
       }
-      if ( isArray( value, { ofMinLength: 1 })) {
-        const uploadObject = value[0];
 
-        if ( isObject( uploadObject, { withProperty: 'uploadURL' }))
-
-          return uploadObject.uploadURL;
-      }
+      if ( isObject( file, { withProperty: 'uploadURL' }))
+        return file.uploadURL;
 
       return '';
     };
@@ -69,43 +71,62 @@ class InputImage extends Component {
           width={width}
           position="relative"
         >
-          {
-            editable ? (
-              <Box
-                top={0}
-                right={0}
-                position="absolute"
-                zIndex={50}
-              >
-                <Touchable
-                  withFeedback
-                  onPress={this.handleToggle}
-                >
-                  <Icon
-                    name={isEditing ? 'cancel' : 'photo'}
-                    color="white"
-                    size="lg"
-                  />
-                </Touchable>
-              </Box>
-            ) : null
-          }
-          {
-            isEditing && editable
-              ? (
-                <Input
-                  {...restProps}
-                  type="file"
-                  imageOnly
-                  ref={input => this.input = input}
-                />
-              )
-              : (
+          <Input
+            {...restProps}
+            type="file"
+            imageOnly
+            ref={input => this.input = input}
+            showInput={editable}
+            renderItems={({ validFiles }) => {
+              if ( isArray( validFiles, { ofMinLength: 1 })) {
+                return (
+                  validFiles.map( file => {
+                    return (
+                      <Image
+                        key={getValue( file )}
+                        source={getValue( file )}
+                      />
+                    );
+                  })
+                );
+              }
+
+              return (
                 <Image
-                  source={getValue()}
+                  source={getValue( value )}
                 />
-              )
-          }
+              );
+            }}
+            renderInput={({ openModal }) => {
+              return (
+                <Box
+                  top={0}
+                  right={0}
+                  position="absolute"
+                  zIndex={50}
+                  opacity={isHover ? 1 : 0}
+                  backgroundColor={isHover ? 'rgba( 0, 0, 0, 0.5)' : 'rgba( 0, 0, 0, 0)'}
+                  onMouseOver={this.handleMouseOver}
+                  onMouseOut={this.handleMouseOut}
+                  padding={5}
+                  borderRadius={2}
+                  transitionDuration="200ms"
+                  transitionTimingFunction="ease"
+                >
+                  <Touchable
+                    withFeedback
+                    onPress={openModal}
+                  >
+                    <Icon
+                      name="photo"
+                      color="white"
+                      size="sm"
+                    />
+                  </Touchable>
+                </Box>
+              );
+            }}
+          />
         </Box>
       </Box>
     );
