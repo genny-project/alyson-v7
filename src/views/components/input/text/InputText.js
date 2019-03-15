@@ -187,6 +187,7 @@ class Input extends PureComponent {
     context: object,
     renderCharacterCount: object,
     name: string,
+    cursor: string,
   }
 
   state = {
@@ -225,6 +226,9 @@ class Input extends PureComponent {
   }
 
   handleChangeText = value => {
+    if ( this.props.editable === false || this.props.disabled )
+      return null;
+
     this.setState({
       valueLength: value.length,
     });
@@ -237,6 +241,9 @@ class Input extends PureComponent {
   }
 
   handleFocus = event => {
+    if ( this.props.editable === false || this.props.disabled )
+      return null;
+
     this.setState({
       isFocused: true,
     });
@@ -246,6 +253,9 @@ class Input extends PureComponent {
   }
 
   handleBlur = event => {
+    if ( this.props.editable === false || this.props.disabled )
+      return null;
+
     this.setState({
       isFocused: false,
     });
@@ -431,14 +441,11 @@ class Input extends PureComponent {
       borderTopRightRadius,
       color,
       ...isFocused ? activeStyling : {},
+      ...editable === false ? { cursor: 'default' } : {},
     });
 
     const nativeProps = {
       onLayout,
-    };
-
-    const webProps = {
-
     };
 
     return (
@@ -488,7 +495,6 @@ class Input extends PureComponent {
           {...Platform.select({
             ios: nativeProps,
             android: nativeProps,
-            web: webProps,
           })}
           ref={this.handleRef}
           {...isFocused ? activeProps : {}}

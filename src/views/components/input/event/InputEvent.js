@@ -8,21 +8,25 @@ class InputEvent extends Component {
     color: string,
     question: object,
     rootQuestionGroupCode: string,
+    messageType: string,
   }
 
   render() {
     const {
       question,
+      messageType,
       rootQuestionGroupCode,
       ...restProps
     } = this.props;
+    // const { contextList } = question;
+
+    // get eventType from somewhere in the question
 
     return (
       <EventTouchable
         {...restProps}
         withFeedback
-        eventType="TV_SELECT"
-        messageType="TV_EVENT"
+        eventType={messageType}
         value={question.code}
         buttonCode={rootQuestionGroupCode}
       >

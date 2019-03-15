@@ -22,7 +22,7 @@ class Form extends Component {
     questionGroupCode: oneOfType(
       [string, array]
     ),
-    asks: object, // eslint-disable-line react/no-unused-prop-types
+    asks: object,
     baseEntities: object,
     loadingText: string,
     testID: string,
