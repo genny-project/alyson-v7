@@ -32,8 +32,8 @@ class InputFile extends Component {
     imageOnly: bool,
     multiple: bool,
     testID: string,
-    renderItem: object,
-    renderInput: object,
+    renderItems: func,
+    renderInput: func,
     margin: number,
     marginX: number,
     marginY: number,
@@ -72,6 +72,7 @@ class InputFile extends Component {
     wrapperProps: object,
     color: string,
     config: object,
+    showInput: bool,
   }
 
   state = {
@@ -269,6 +270,7 @@ class InputFile extends Component {
       multiple,
       testID,
       value, // eslint-disable-line
+      showInput,
       ...restProps
     } = this.props;
 
@@ -281,37 +283,47 @@ class InputFile extends Component {
         flexDirection="column"
         testID={testID}
       >
-        {isArray( validFiles, { ofMinLength: 1 }) && (
-          validFiles.map( file => {
-            return (
-              <InputFileItem
-                key={file.id}
-                id={file.id}
-                size={file.size}
-                name={file.name}
-                uploaded={file.uploaded}
-                type={file.type}
-                preview={file.preview}
-                uploadURL={file.uploadURL}
-                error={error}
-                onRemove={this.handleRemoveFile}
-              />
-            );
-          })
-        )}
+        {
+          this.props.renderItems
+            ? (
+              this.props.renderItems({ files: validFiles, removeFile: this.handleRemoveFile })
+            )
+            : isArray( validFiles, { ofMinLength: 1 }) && validFiles.map( file => {
+              return (
+                <InputFileItem
+                  key={file.id}
+                  id={file.id}
+                  size={file.size}
+                  name={file.name}
+                  uploaded={file.uploaded}
+                  type={file.type}
+                  preview={file.preview}
+                  uploadURL={file.uploadURL}
+                  error={error}
+                  onRemove={this.handleRemoveFile}
+                />
+              );
+            })
+        }
 
         {(
           isArray( validFiles, { ofExactLength: 0 }) ||
-          multiple
+          multiple ||
+          showInput
         ) && (
-          <InputFileTouchable
-            {...restProps}
-            onPress={this.handleOpenModal}
-            text={(
-            `Click to Upload a${isArray( validFiles, { ofMinLength: 1 }) ? 'nother' : imageOnly ? 'n' : ''} ${imageOnly ? 'image' : 'file'} `
-            )}
-            testID={testID}
-          />
+          this.props.renderInput ? (
+            this.props.renderInput({ openModal: this.handleOpenModal })
+          )
+            : (
+              <InputFileTouchable
+                {...restProps}
+                onPress={this.handleOpenModal}
+                text={(
+                  `Click to Upload a${isArray( validFiles, { ofMinLength: 1 }) ? 'nother' : imageOnly ? 'n' : ''} ${imageOnly ? 'image' : 'file'} `
+                )}
+                testID={testID}
+              />
+            )
         )}
       </Box>
     );
