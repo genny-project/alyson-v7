@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, number } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort } from '../../../../utils';
 import { Box, Collapsible, EventTouchable, Pagination, ScrollView } from '../../index';
 import FormInput from '../input';
 
@@ -276,7 +276,7 @@ class FormGroup extends Component {
             padding={10}
             {...this.getStyling()}
           >
-            {childAsks.map(( childAsk, index ) => {
+            {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
               if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
                 return this.renderQuestionGroup(
                   childAsk,
@@ -327,7 +327,7 @@ class FormGroup extends Component {
                       form,
                     )) : null
               }
-                  {childAsks.map(( ask, index ) => {
+                  {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
                     if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
                       return this.renderQuestionGroup(
                         ask,
@@ -380,7 +380,7 @@ class FormGroup extends Component {
                     form,
                   )) : null
             }
-            {childAsks.map(( ask, index ) => {
+            {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
               if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
                 return this.renderQuestionGroup(
                   ask,
@@ -422,7 +422,7 @@ class FormGroup extends Component {
                 form,
               )) : null
         }
-        {childAsks.map(( ask, index ) => {
+        {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
           if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
             return this.renderQuestionGroup(
               ask,
