@@ -27,9 +27,8 @@ class InputMenu extends Component {
             icon: 'person',
             value: item.value,
             buttonCode: this.props.rootQuestionGroupCode,
-            eventType: 'TV_SELECT',
-            messageType: 'TV_EVENT',
-            ...item.value === 'SEL_USER_OPTIONS_LOGOUT' ? { href: 'logout' } : {}, // TODO remove when backend handles logout event
+            // eventType: 'TV_SELECT',
+            // messageType: 'TV_EVENT',
           }))
           : null}
       >

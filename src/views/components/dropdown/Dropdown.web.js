@@ -10,7 +10,7 @@ const styles = {
   menuButtonStyle: {
     backgroundColor: 'transparent',
     border: 0,
-    padding: 10,
+    // padding: 10,
     fontSize: 16,
     cursor: 'pointer',
     color: 'black',
@@ -66,8 +66,6 @@ class Dropdown extends Component {
           value: valueString || null,
         },
       });
-
-      // if ( this.props.onPress ) this.props.onPress();
     }
   }
 

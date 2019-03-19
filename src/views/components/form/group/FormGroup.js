@@ -273,7 +273,7 @@ class FormGroup extends Component {
             key={name}
             zIndex={150 - index}
             {...defaultStyle.group}
-            padding={10}
+            // padding={10}
             {...this.getStyling()}
           >
             {childAsks.map(( childAsk, index ) => {
@@ -311,7 +311,7 @@ class FormGroup extends Component {
                   key={name}
                   zIndex={150 - index}
                   {...defaultStyle.group}
-                  padding={10}
+                  // padding={10}
                   borderColor
                   {...this.getStyling()}
                 >
@@ -364,7 +364,7 @@ class FormGroup extends Component {
             key={name}
             zIndex={150 - index}
             {...defaultStyle.group}
-            padding={10}
+            // padding={10}
             borderColor
             {...this.getStyling()}
           >
@@ -406,7 +406,7 @@ class FormGroup extends Component {
         key={name}
         zIndex={150 - index}
         {...defaultStyle.group}
-        padding={10}
+        // padding={10}
         borderColor
         {...this.getStyling()}
       >

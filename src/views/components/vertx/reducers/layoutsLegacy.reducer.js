@@ -1,5 +1,4 @@
 import { isArray, isString, removeStartingAndEndingSlashes } from '../../../../utils';
-import { FETCH_PUBLIC_LAYOUTS_FAILURE, FETCH_PUBLIC_LAYOUTS_SUCCESS } from '../../../../constants';
 
 const initialState = {
   pages: {},
@@ -140,14 +139,14 @@ const reducer = ( state = initialState, { type, payload }) => {
       });
     }
 
-    case FETCH_PUBLIC_LAYOUTS_FAILURE: {
+    case 'FETCH_PUBLIC_LAYOUTS_FAILURE': {
       return {
         ...state,
         error: payload,
       };
     }
 
-    case FETCH_PUBLIC_LAYOUTS_SUCCESS: {
+    case 'FETCH_PUBLIC_LAYOUTS_SUCCESS': {
       if ( !isArray( payload, { ofMinLength: 1 }))
         return state;
 

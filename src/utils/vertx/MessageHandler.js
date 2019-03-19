@@ -7,8 +7,10 @@ class MessageHandler {
     this.log = prefixedLog( 'MessageHandler' );
     this.lastBe = new Date().getTime();
     this.beBatch = [];
+    this.dispatchHistory = [];
 
     setInterval( this.checkMessageBatch, 200 );
+    // setInterval( this.checkDispatchHistory, 500 );
   }
 
   validMessageTypes = [
@@ -32,10 +34,26 @@ class MessageHandler {
     }
   }
 
+  removeMessageFromDispatcHistory = ( message ) => {
+    this.dispatchHistory = this.dispatchHistory.filter( item => item.msg_id !== message.msg_id );
+  }
+
+  addMessageToDispatchHistory = ( message ) => {
+    this.dispatchHistory.push( message );
+
+    setTimeout(() => {
+      this.removeMessageFromDispatcHistory( message );
+    }, 5000 );
+  }
+
   drainMessageBatch = () => {
     const message = this.beBatch.reduce( this.handleReduceMessageBatch, this.beBatch[0] );
 
     store.dispatch( message );
+
+    if ( message.is_cached_message ) {
+      this.addMessageToDispatchHistory( message );
+    }
 
     this.beBatch = [];
   }
@@ -48,10 +66,16 @@ class MessageHandler {
      * individual messages, increasing performance.
      */
     if ( current.payload.aliasCode && current.payload.aliasCode !== current.payload.parentCode ) {
-      store.dispatch({
+      const message = {
         ...current,
         links: ( current.questions ? current.links.concat( current.questions ) : current.links ),
-      });
+      };
+
+      store.dispatch( message );
+
+      if ( message.is_cached_message ) {
+        this.addMessageToDispatchHistory( message );
+      }
 
       return output;
     }
@@ -143,6 +167,10 @@ class MessageHandler {
       store.dispatch(
         action( payload )
       );
+
+      if ( payload.is_cached_message ) {
+        this.addMessageToDispatchHistory( payload );
+      }
     }
   }
 }

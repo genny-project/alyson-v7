@@ -10,3 +10,5 @@ export * from './notification.events.incoming';
 export * from './redirect.events.incoming';
 export * from './routeChange.events.incoming';
 export * from './routeBack.events.incoming';
+export * from './actionCache.events.incoming';
+export * from './controls.events.incoming';

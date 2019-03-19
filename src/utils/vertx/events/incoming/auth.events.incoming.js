@@ -7,3 +7,7 @@ export const CMD_LOGOUT = () => ({
 export const CMD_ACCOUNTS = () => ({
   type: 'ACCOUNTS',
 });
+
+// export const USER_LOGOUT = () => ({
+//   type: 'USER_LOGOUT',
+// });

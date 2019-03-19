@@ -86,15 +86,18 @@ class Vertx {
       this.log( error, 'error' );
   }
 
-  handleIncomingMessage = message => {
+  handleIncomingMessage = ( message, isCachedMessage ) => {
     const { incomingMessageHandler } = this.state;
+
+    if ( isCachedMessage ) {
+      message['is_cached_message'] = true;
+    }
 
     if ( message.cmd_type && message.cmd_type === 'ROUTE_CHANGE' ) {
       NProgress.done();
     }
 
     // this.log( 'Receiving a message' );
-
     if ( incomingMessageHandler )
       incomingMessageHandler( message );
   }

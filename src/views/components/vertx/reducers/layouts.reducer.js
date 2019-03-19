@@ -2,7 +2,6 @@
 
 import dlv from 'dlv';
 import { isArray, isString, isObject } from '../../../../utils';
-import { FETCH_PUBLIC_LAYOUTS_FAILURE, FETCH_PUBLIC_LAYOUTS_SUCCESS } from '../../../../constants';
 
 const initialState = {
   frames: {},
@@ -250,8 +249,6 @@ const reducer = ( state = initialState, { type, payload }) => {
         return newState;
       }, { ...state });
 
-    case FETCH_PUBLIC_LAYOUTS_FAILURE:
-    case FETCH_PUBLIC_LAYOUTS_SUCCESS:
     case 'CLEAR_ALL_LAYOUTS':
     case 'USER_LOGOUT':
       return { ...initialState };

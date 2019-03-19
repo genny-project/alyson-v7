@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray, isObject  } from '../../index';
+import { isArray, isObject, shallowCompare  } from '../../index';
 
 const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {}) => {
   const {
@@ -57,7 +57,7 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
     const oldBe = currentArray.filter( link => link.code === newLinkCode )[0];
     const newBe = newArray.filter( link => link.code === newLinkCode )[0];
 
-    const isPanelMatch = oldBe.panel ===  newBe.panel;
+    const isPanelMatch = shallowCompare( oldBe, newBe );
 
     if ( !isPanelMatch ) toChangePanel.push( newLinkCode );
   });

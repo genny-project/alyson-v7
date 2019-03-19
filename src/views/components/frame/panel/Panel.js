@@ -20,9 +20,41 @@ class Panel extends Component {
     aliases: object,
   }
 
-  // state = {
-  //   maximised: false,
-  // }
+  static getDerivedStateFromProps( nextProps, nextState ) {
+    const panelId = `${nextProps.rootCode}:${nextProps.location}`
+
+    if (
+      isObject( nextProps.controls, { withProperty: panelId }) &&
+      nextProps.controls[panelId] !== nextState.status
+    ) {
+      return { status: nextProps.controls[panelId] };
+    }
+
+    return null;
+  }
+
+  state = {
+    // maximised: false,
+    status: null
+  }
+
+  reset = () => {
+    this.setState({
+      status: 'open',
+    })
+  }
+
+  close = () => {
+    this.setState({
+      status: 'closed',
+    })
+  }
+
+  expand = () => {
+    this.setState({
+      status: 'maximised',
+    })
+  }
 
   handleToggleMaximised = () => {
     // this.setState( state => ({
@@ -54,8 +86,6 @@ class Panel extends Component {
     */
   }
 
-
-
   render() {
     const { rootCode, children, location, style, aliases, isExpandable } = this.props;
     const currentFullscreenCode = aliases['FULLSCREEN_PANEL'];
@@ -64,11 +94,14 @@ class Panel extends Component {
 
     const Wrapper = isExpandable ? 'div' : Fragment;
 
+    const specialStyle = this.state.status === 'closed' ? { width: '0%' } : this.state.status === 'open' ? { width: '100%' } : {};
+
     return (
       <Box
         test-id={`rootCode-${location}-panel`}
         {...isExpandable ? { position: 'relative' } : {}}
         {...style}
+        {...specialStyle}
       >
         {
           isExpandable
@@ -121,6 +154,7 @@ export { Panel };
 
 const mapStateToProps = state => ({
   aliases: state.vertx.aliases,
+  controls: state.vertx.controls,
 });
 
 export default connect( mapStateToProps )( Panel );

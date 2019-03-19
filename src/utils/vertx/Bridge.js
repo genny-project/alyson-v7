@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 import axios from 'axios';
 import config from '../../config';
-import { prefixedLog } from '../../utils';
+import { prefixedLog, isObject } from '../../utils';
 import { store } from '../../redux';
 import Vertx from './Vertx';
 import MessageHandler from './MessageHandler';
@@ -61,10 +61,25 @@ class Bridge {
       ? events[event]( eventType, data, token )
       : events[event]( eventType, data );
 
-    // eslint-disable-next-line no-console
-    console.warn( 'sending event', eventObject );
+    const foundCachedAction = this.checkStoreForCachedAction({
+      event,
+      eventType,
+      data,
+    });
 
-    Vertx.sendMessage( eventObject );
+    // eslint-disable-next-line no-console
+    console.warn( 'foundCachedAction', foundCachedAction );
+
+    if ( foundCachedAction ) {
+      Vertx.handleIncomingMessage( foundCachedAction, true );
+    }
+
+    if ( !foundCachedAction.cache_only ) {
+      // eslint-disable-next-line no-console
+      console.warn( 'sending event', eventObject );
+
+      Vertx.sendMessage( eventObject );
+    }
   }
 
   sendAnswer( answer ) {
@@ -104,6 +119,35 @@ class Bridge {
       eventType,
       data,
     });
+  }
+
+  checkStoreForCachedAction({
+    event,
+    data,
+  }) {
+    const { actionCache } = store.getState().vertx;
+
+    if ( isObject( data, { withProperties: ['code', 'value'] })) {
+      const actionId = `${data.code}:${data.value}`;
+
+      if ( actionCache[actionId] ) {
+        if ( isObject( actionCache[actionId] )) {
+          return actionCache[actionId];
+        }
+        // eslint-disable-next-line no-console
+        console.warn( 'send cached message', actionCache[actionId] );
+
+        return false;
+      }
+      // eslint-disable-next-line no-console
+      console.warn( 'no match found for actionId', actionId );
+
+      return false;
+    }
+    // eslint-disable-next-line no-console
+    console.warn( 'event has no code or value keys', event );
+
+    return false;
   }
 }
 

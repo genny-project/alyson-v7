@@ -5,7 +5,9 @@ import connection from './connection.reducer';
 import aliases from './aliases.reducer';
 import user from './user.reducer';
 import layouts from './layouts.reducer';
-import layoutsLegacy from './layoutsLegacy.reducer';
+import actionCache from './actionCache.reducer';
+import controls from './controls.reducer';
+import layoutsLegacy from './layoutsLegacy.reducer'; // legacy compatibility
 
 const reducer = combineReducers({
   baseEntities,
@@ -14,7 +16,9 @@ const reducer = combineReducers({
   aliases,
   user,
   layouts,
-  layoutsLegacy,
+  actionCache,
+  controls,
+  layoutsLegacy, // legacy compatibility
 });
 
 export default reducer;
