@@ -6,6 +6,8 @@ const isString = ( string, options = {}) => {
     startsWith,
     endsWith,
     includes,
+    isSameAs,
+    isNotSameAs,
   } = options;
 
   /* Ensure a valid string is given. */
@@ -44,6 +46,12 @@ const isString = ( string, options = {}) => {
 
   if ( includes != null )
     return string.includes( includes );
+
+  if ( isSameAs != null )
+    return string === isSameAs;
+
+  if ( isNotSameAs != null )
+    return string !== isSameAs;
 
   /* If the array is valid and no options were passed, return as valid. */
   return true;

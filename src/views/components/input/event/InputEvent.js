@@ -42,7 +42,7 @@ class InputEvent extends Component {
             ) : null
         }
         {
-          isString( question.name, { ofMinLength: 1 })
+          isString( question.name, { isNotSameAs: ' ' })
             ? (
               <Text
                 {...restProps}

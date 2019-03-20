@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array, string, object } from 'prop-types';
-import { isArray } from '../../../../utils';
-import { Text, Dropdown } from '../../index';
+import { isArray, isString } from '../../../../utils';
+import { Text, Dropdown, Icon } from '../../index';
 
 class InputMenu extends Component {
   static propTypes = {
@@ -9,11 +9,13 @@ class InputMenu extends Component {
     color: string,
     rootQuestionGroupCode: string,
     question: object,
+    icon: string,
   }
 
   render() {
     const {
       items,
+      icon,
       ...restProps
     } = this.props;
     const { question } = this.props;
@@ -33,10 +35,23 @@ class InputMenu extends Component {
           }))
           : null}
       >
-        <Text
-          color={this.props.color}
-          text={question.name}
-        />
+        {
+          isString( icon, { ofMinLength: 1 })
+            ? (
+              <Icon
+                name={icon}
+              />
+            ) : null
+        }
+        {
+          isString( question.name, { isNotSameAs: ' ' })
+            ? (
+              <Text
+                color={this.props.color}
+                text={question.name}
+              />
+            ) : null
+        }
       </Dropdown>
     );
   }
