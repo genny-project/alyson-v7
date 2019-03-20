@@ -37,13 +37,13 @@ const updateControl = ({ payload, state }) => {
     if ( state[panelId] !== 'open') {
       return {
         ...state,
-        panelId: 'open',
+        [panelId]: 'open',
       };
     }
     else if ( state[panelId] !== 'closed') {
       return {
         ...state,
-        panelId: 'closed',
+        [panelId]: 'closed',
       };
     }
   }
