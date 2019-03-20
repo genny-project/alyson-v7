@@ -173,6 +173,7 @@ class Dropdown extends Component {
                           ...styles['menuItemStyle'],
                           ...styles['menuLinkStyle'],
                           color,
+                          ...item.style,
                         }}
                         onClick={this.handleNavigate( item )}
                       >
@@ -187,6 +188,7 @@ class Dropdown extends Component {
                       style={{
                         ...styles['menuItemStyle'],
                         color,
+                        ...item.style,
                       }}
                       data-testID={`dropdown-item ${testID}`}
                       onSelect={this.handleSelect( item )}

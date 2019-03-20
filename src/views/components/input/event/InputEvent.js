@@ -46,6 +46,7 @@ class InputEvent extends Component {
             ? (
               <Text
                 {...restProps}
+                whiteSpace="nowrap"
                 text={question.name}
               />
             ) : null

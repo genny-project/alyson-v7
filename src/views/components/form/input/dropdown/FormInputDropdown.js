@@ -3,12 +3,13 @@ import { object } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { Input } from '../../../index';
-import { isArray, isObject } from '../../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, filterThemes } from '../../../../../utils';
 
 class FormInputDropdown extends Component {
   static propTypes = {
     question: object,
     baseEntities: object,
+    themes: object,
   }
 
   state = {
@@ -56,11 +57,20 @@ class FormInputDropdown extends Component {
                 linkGroup[linkValue].forEach( link => {
                   const baseEntity = dlv( data, link.link.targetCode );
 
+                  // get all links, check for themes for this base entity
+
+                  const linkedThemes = getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' );
+                  const style = filterThemes( linkedThemes, this.props.themes );
+
+                  // console.log( 'links', baseEntity.links, linkedThemes );
+                  // console.log( 'themes', style );
+
                   if ( isObject( baseEntity )) {
                     items.push({
                       label: baseEntity.name,
                       value: baseEntity.code,
                       weight: link.weight || 1,
+                      style: style,
                     });
                   }
                 });
@@ -140,6 +150,7 @@ class FormInputDropdown extends Component {
 export { FormInputDropdown };
 
 const mapStateToProps = state => ({
+  themes: state.vertx.layouts.themes,
   baseEntities: state.vertx.baseEntities,
 });
 

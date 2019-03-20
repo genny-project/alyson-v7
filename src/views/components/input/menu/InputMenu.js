@@ -27,6 +27,7 @@ class InputMenu extends Component {
             icon: 'person',
             value: item.value,
             buttonCode: this.props.rootQuestionGroupCode,
+            style: item.style,
             // eventType: 'TV_SELECT',
             // messageType: 'TV_EVENT',
           }))

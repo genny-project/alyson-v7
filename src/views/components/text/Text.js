@@ -43,6 +43,7 @@ const Text = ({
   fontFamily,
   text,
   transform,
+  whiteSpace = 'normal',
   ...restProps
 }) => {
   const style = {
@@ -57,6 +58,7 @@ const Text = ({
       web: 'system-ui, sans-serif',
       native: 'System',
     }),
+    whiteSpace,
   };
 
   let child = text || children;
@@ -104,6 +106,9 @@ Text.propTypes = {
   fontFamily: string,
   transform: oneOf(
     ['upperCase', 'lowerCase', 'capitalize']
+  ),
+  whiteSpace: oneOf(
+    ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap', 'initial', 'inherit']
   ),
 };
 
