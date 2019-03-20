@@ -1,4 +1,3 @@
-/* eslint-disable */
 
 import dlv from 'dlv';
 import { isArray, isString, isObject } from '../../../../utils';
@@ -12,27 +11,27 @@ const initialState = {
 const themeBehaviourAttributes = {
   PRI_IS_EXPANDABLE: {
     default: false,
-    label: "expandable"
+    label: 'expandable',
   },
   PRI_IS_SELECTION_AREA: {
     default: false,
-    label: "selectionArea"
+    label: 'selectionArea',
   },
   PRI_IS_SELECTABLE_AREA: {
     default: false,
-    label: "selectableArea"
+    label: 'selectableArea',
   },
   PRI_IS_PAGINATION: {
     default: false,
-    label: "pagination"
+    label: 'pagination',
   },
   PRI_IS_INHERITABLE: {
     default: true,
-    label: "inheritable"
+    label: 'inheritable',
   },
   PRI_HAS_QUESTION_GRP_INPUT: {
     default: false,
-    label: "renderQuestionGroupInput"
+    label: 'renderQuestionGroupInput',
   },
 };
 
@@ -80,7 +79,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
               : 'none',
             created: link.created,
           };
-        })
+        }),
       ],
       created: item.created,
     };
@@ -170,7 +169,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                   : 'none',
                 created: link.created,
               };
-            })
+            }),
           ],
         } : {}
       ),
@@ -184,9 +183,39 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
         if ( isString( childItem.questionCode, { startsWith: 'QUE_' })) {
           injectAskIntoState({ item: childItem, state });
         }
-      })
+      });
     }
   }
+};
+
+const injectFakeLayoutLinkIntoState = ({ payload, state }) => {
+  if ( state.frames ) {
+    if ( isObject( state.frames['FRM_CONTENT'] )) {
+      return {
+        ...state,
+        frames: {
+          ...state.frames,
+          FRM_CONTENT: {
+            ...state.frames.FRM_CONTENT,
+            links: [
+              ...( isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) && isArray( state.frames['FRM_CONTENT'].links ))
+                ? state.frames['FRM_CONTENT'].links.filter( link => link.type !== 'sublayout' )
+                : [],
+              {
+                code: `pages${payload.code}`,
+                weight: 1,
+                panel: 'CENTRE',
+                type: 'sublayout',
+                created: new Date().toString(),
+              },
+            ],
+          },
+        },
+      };
+    }
+  }
+
+  return state;
 };
 
 const reducer = ( state = initialState, { type, payload }) => {
@@ -248,6 +277,15 @@ const reducer = ( state = initialState, { type, payload }) => {
 
         return newState;
       }, { ...state });
+
+    case 'ROUTE_CHANGE':
+      if ( !isObject( payload, { withProperty: 'code' }))
+        return state;
+
+      return {
+        ...state,
+        ...injectFakeLayoutLinkIntoState({ payload, state }),
+      };
 
     case 'CLEAR_ALL_LAYOUTS':
     case 'USER_LOGOUT':

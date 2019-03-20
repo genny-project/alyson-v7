@@ -35,14 +35,18 @@ const updateControl = ({ payload, state }) => {
 
   if ( state[panelId] ) {
     if ( state[panelId] !== 'open') {
-      state[panelId] = 'open';
+      return {
+        ...state,
+        panelId: 'open',
+      };
     }
     else if ( state[panelId] !== 'closed') {
-      state[panelId] = 'closed';
+      return {
+        ...state,
+        panelId: 'closed',
+      };
     }
   }
-
-  return state;
 };
 
 const reducer = ( state = {}, { type, payload }) => {

@@ -95,7 +95,6 @@ class Frame extends Component {
   shouldComponentUpdate( nextProps ) {
     /* If rootCode is different, then a different base
     entity needs to be rendered inside the frame */
-
     if ( this.props.rootCode !== nextProps.rootCode )
       return true;
 
