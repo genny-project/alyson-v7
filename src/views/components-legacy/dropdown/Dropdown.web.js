@@ -3,8 +3,8 @@ import { array, bool, object, any, string } from 'prop-types';
 import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
 import { isArray, isString, Bridge } from '../../../utils';
-import { Text, TestIdTooltip } from '../../components';
-import { RecursiveLegacy } from '../../components-legacy';
+import { TextLegacy as Text, TestIdTooltip } from '../../components-legacy';
+import RecursiveLegacy from '../../components-legacy/layout-loader';
 import './Dropdown.css';
 
 class Dropdown extends Component {

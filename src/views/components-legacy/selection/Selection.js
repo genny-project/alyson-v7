@@ -2,7 +2,7 @@ import React, { Component, isValidElement } from 'react';
 import { object, array, oneOf, bool, func, string, any, shape } from 'prop-types';
 import { isArray, injectDataIntoProps } from '../../../utils';
 import { store } from '../../../redux';
-import RecursiveLegacy from '../../components-legacy/layout-loader';
+import RecursiveLegacy from '../../components-legacy/layout-loader/RecursiveLegacy';
 
 class Selection extends Component {
   static defaultProps = {
@@ -123,28 +123,30 @@ class Selection extends Component {
       );
     }
 
-    return children.map(( child, index ) => (
-      <RecursiveLegacy
-        {...child.props}
-        key={index} // eslint-disable-line react/no-array-index-key
-        context={{
-          ...child.props.context,
-          ...useSelectableComponents
-            ? {
-              selection: {
-                onSelect: this.handleSelectableSelect,
-                selectedItem: selectedIndex,
+    return children.map(( child, index ) => {
+      return (
+        <RecursiveLegacy
+          {...child.props}
+          key={index} // eslint-disable-line react/no-array-index-key
+          context={{
+            ...child.props.context,
+            ...useSelectableComponents
+              ? {
+                selection: {
+                  onSelect: this.handleSelectableSelect,
+                  selectedItem: selectedIndex,
+                },
+              }
+              : {
+                selection: {
+                  onSelect: this.handleChildSelect( index, child ),
+                  isSelected: selectedIndex === index,
+                },
               },
-            }
-            : {
-              selection: {
-                onSelect: this.handleChildSelect( index, child ),
-                isSelected: selectedIndex === index,
-              },
-            },
-        }}
-      />
-    ));
+          }}
+        />
+      );
+    });
   }
 }
 

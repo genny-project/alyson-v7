@@ -8,7 +8,7 @@ import { openSidebar } from '../../../redux/actions';
 import { isArray, getDeviceSize } from '../../../utils';
 import { curlyBracketParse } from '../../../utils-legacy';
 import DataQuery from '../../../utils-legacy/data-query';
-import { Box, Text, Timeout, Button, ActivityIndicator, Fragment } from '../../components';
+import { BoxLegacy as Box, ActivityIndicatorLegacy as ActivityIndicator, FragmentLegacy as Fragment } from '../../components-legacy';
 import RecursiveLegacy from './RecursiveLegacy';
 
 const currentHourOfDay = new Date().getHours();
@@ -185,85 +185,14 @@ class LayoutLoader extends PureComponent {
     } = this.props;
 
     if ( !layout ) {
-      if (
-        sublayout ||
-        isDialog
-      ) {
-        return (
-          <Box
-            width="100%"
-            flex={1}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <ActivityIndicator size="large" />
-          </Box>
-        );
-      }
-
       return (
         <Box
-          height="100%"
           width="100%"
+          flex={1}
+          justifyContent="center"
+          alignItems="center"
         >
-          <Timeout
-            duration={60000}
-            ref={timeout => ( this.timeout = timeout )}
-          >
-            {({ isTimeUp, secondsElapsed }) => (
-              <Box
-                justifyContent="center"
-                alignItems="center"
-                height="100%"
-                flex={1}
-                flexDirection="column"
-              >
-                {isTimeUp ? (
-                  <Fragment>
-                    <Text align="center">
-                      Sorry! We were unable to load this page.
-                    </Text>
-
-                    <Box height={10} />
-
-                    <Text align="center">
-                      Please check your internet connection and try again.
-                    </Text>
-
-                    <Box height={20} />
-
-                    <Button
-                      color="blue"
-                      onPress={this.handleRetry}
-                    >
-                      Retry
-                    </Button>
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    <Box padding={10}>
-                      <ActivityIndicator size="large" />
-                    </Box>
-
-                    <Box marginBottom={10}>
-                      <Text align="center">
-                        Loading...
-                      </Text>
-                    </Box>
-
-                    {secondsElapsed > 5 ? (
-                      <Text align="center">
-                        {secondsElapsed < 10 ? 'This is taking longer than usual...'
-                        : secondsElapsed < 20 ? 'Still loading - please wait...'
-                        : secondsElapsed < 30 ? 'Still loading...'
-                        : 'Still loading - please wait a little longer...'}
-                      </Text>
-                    ) : null}
-                  </Fragment>
-                )}
-              </Box>
-            )}
-          </Timeout>
+          <ActivityIndicator size="large" />
         </Box>
       );
     }

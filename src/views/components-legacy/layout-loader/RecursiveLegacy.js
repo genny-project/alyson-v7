@@ -318,7 +318,7 @@ class RecursiveLegacy extends PureComponent {
       };
     }
 
-    // console.log()
+    // console.log( component, LegacyComponents, Components );
 
     if ( !component || ( !LegacyComponents[`${component}Legacy`] && !Components[component] )) {
       return (
@@ -374,7 +374,7 @@ class RecursiveLegacy extends PureComponent {
     );
 
     // console.log( '----------------' );
-    // console.log( 'LIST' );
+    // console.log( 'components' );
     // console.log( LegacyComponents );
     // console.log( Components );
 
@@ -388,8 +388,8 @@ class RecursiveLegacy extends PureComponent {
       isArray( repeatedChildren ) ? (
         repeatedChildren
           .sort( this.handleSortRepeatedChildren )
-          .map(( child, index ) => (
-            isValidElement( child )
+          .map(( child, index ) => {
+            return isValidElement( child )
               ? cloneElement( child, { key: index, context, theme })
               : (
                 <RecursiveLegacy
@@ -397,10 +397,11 @@ class RecursiveLegacy extends PureComponent {
                 // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   theme={theme}
+                  {...( component === 'Selection' ) ? { flag: 'HELP' } : {}}
                   {...child}
                 />
-              )
-          ))
+              );
+          })
       ) : isObject( repeatedChildren ) ? (
         isValidElement( repeatedChildren )
           ? cloneElement( repeatedChildren, { context, theme })

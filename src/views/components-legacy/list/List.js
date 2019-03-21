@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { string, bool, array, number, any, object } from 'prop-types';
 import { isArray } from '../../../utils';
-import { Box, Text, Icon } from '../../components';
+import { BoxLegacy as Box, TextLegacy as Text, IconLegacy as Icon } from '../../components-legacy';
 
 const statusColors = {
   error: '#cc0000',

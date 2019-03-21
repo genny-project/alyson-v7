@@ -15,3 +15,13 @@ export { default as TableLegacy } from './table';
 export { default as PropInjectionLegacy } from './prop-injection';
 
 export { default as ListLegacy } from './list';
+
+export { default as EventTouchableLegacy } from './event-touchable';
+
+export { default as TextLegacy } from './text';
+export { default as BoxLegacy } from './box';
+export { default as IconLegacy } from './icon';
+export { default as ActivityIndicatorLegacy } from './activity-indicator';
+export { default as FragmentLegacy } from './fragment';
+
+export * from './tooltip';
