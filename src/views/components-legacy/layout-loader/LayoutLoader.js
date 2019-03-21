@@ -4,7 +4,6 @@ import { shape, object, any, bool , func } from 'prop-types';
 import { connect } from 'react-redux';
 import { Dimensions } from 'react-native-web';
 
-import Layout from '../../layout-legacy';
 import { openSidebar } from '../../../redux/actions';
 import { isArray, getDeviceSize } from '../../../utils';
 import { curlyBracketParse } from '../../../utils-legacy';
@@ -203,11 +202,9 @@ class LayoutLoader extends PureComponent {
       }
 
       return (
-        <Layout
-          title="Loading..."
-          appColor="dark"
-          header={{ variant: 'default' }}
-          sidebar={{ variant: 'default' }}
+        <Box
+          height="100%"
+          width="100%"
         >
           <Timeout
             duration={60000}
@@ -267,7 +264,7 @@ class LayoutLoader extends PureComponent {
               </Box>
             )}
           </Timeout>
-        </Layout>
+        </Box>
       );
     }
 
@@ -288,7 +285,7 @@ class LayoutLoader extends PureComponent {
       isDialog
     )
       ? Fragment
-      : Layout;
+      : Box;
 
     return (
       <Holder

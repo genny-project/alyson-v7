@@ -14,3 +14,4 @@ export { default as SelectionLegacy } from './selection';
 export { default as TableLegacy } from './table';
 export { default as PropInjectionLegacy } from './prop-injection';
 
+export { default as ListLegacy } from './list';

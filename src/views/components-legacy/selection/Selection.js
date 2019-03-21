@@ -2,7 +2,7 @@ import React, { Component, isValidElement } from 'react';
 import { object, array, oneOf, bool, func, string, any, shape } from 'prop-types';
 import { isArray, injectDataIntoProps } from '../../../utils';
 import { store } from '../../../redux';
-import { Recursive } from '../../components';
+import RecursiveLegacy from '../../components-legacy/layout-loader';
 
 class Selection extends Component {
   static defaultProps = {
@@ -119,12 +119,12 @@ class Selection extends Component {
         return children;
 
       return (
-        <Recursive {...children} />
+        <RecursiveLegacy {...children} />
       );
     }
 
     return children.map(( child, index ) => (
-      <Recursive
+      <RecursiveLegacy
         {...child.props}
         key={index} // eslint-disable-line react/no-array-index-key
         context={{

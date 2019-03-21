@@ -318,6 +318,8 @@ class RecursiveLegacy extends PureComponent {
       };
     }
 
+    // console.log()
+
     if ( !component || ( !LegacyComponents[`${component}Legacy`] && !Components[component] )) {
       return (
         <Text>
@@ -370,6 +372,13 @@ class RecursiveLegacy extends PureComponent {
     ) : (
       this.injectContextIntoChildren( context, children )
     );
+
+    // console.log( '----------------' );
+    // console.log( 'LIST' );
+    // console.log( LegacyComponents );
+    // console.log( Components );
+
+    // console.log( 'component', component );
 
     return createElement(
       LegacyComponents[`${component}Legacy`]
