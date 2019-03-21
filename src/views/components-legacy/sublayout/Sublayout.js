@@ -44,7 +44,13 @@ class Sublayout extends Component {
     const layoutPath = getLayoutTypeFromName
       ? `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}`
       : `sublayouts.${layoutName}`;
-    const layout = dlv( layoutsLegacy, `${layoutPath}` );
+    let layout = dlv( layoutsLegacy, `${layoutPath}` );
+
+    if ( !layout ) {
+      const pageWithId = this.parseLocation( `${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}` );
+      
+      layout = dlv( layoutsLegacy, `pages.${pageWithId}` );
+    }
 
     if ( layout ) {
       this.setState({ layout });
@@ -91,6 +97,79 @@ class Sublayout extends Component {
         return true;
       }
     });
+  }
+
+  parseLocation = ( path ) => {
+    const split = path.split( '/' );
+    const items = [];
+    const paths = [];
+    let pathMatch = null;
+
+    split.forEach( section => {
+      if ( isString( section, { ofMinLength: 1 })) {
+        items.push( section );
+      }
+    });
+
+    items.forEach(( item, index ) => {
+      const path = items.slice( 0, index + 1 );
+
+      paths.push( path.join( '/' ));
+    });
+
+    paths.forEach( path => {
+      const page = this.checkPagesForMatch( path );
+
+      if (
+        isString( page )
+      ) {
+        pathMatch = page;
+      }
+    });
+
+    return pathMatch;
+  }
+
+  checkPagesForMatch = ( path ) => {
+    const { layoutsLegacy } = this.props;
+    const { pages } = layoutsLegacy;
+    let page = null;
+
+    page = pages[path];
+
+    if ( page ) return page;
+
+    // get path for each page with a variable
+    const pagesWithVariables = Object.keys( pages ).filter( page => page.includes( ':' ));
+
+    // find the index of the variable after splitting
+    pagesWithVariables.forEach( pageWithVariablePath => {
+      const pageWithVariablePathSplit = pageWithVariablePath.split( '/' );
+      const variableIndex = pageWithVariablePathSplit.findIndex( x => x.includes( ':' ));
+
+      if ( variableIndex > 0 ) {
+        // get the corresponding code from the same split index from the current path
+        const pathSplit = path.split( '/' );
+
+        if ( pathSplit.length === pageWithVariablePathSplit.length ) {
+          const pathWithVariableRemoved = pathSplit
+            .filter(( string, index ) => index !== variableIndex );
+          const pageWithVariablePathWithVariableRemoved = pageWithVariablePathSplit
+            .filter(( string, index ) => index !== variableIndex );
+
+          // check all other splits and see if they match
+          const isMatch = pathWithVariableRemoved
+            .every(( stringA, index ) =>
+              stringA === pageWithVariablePathWithVariableRemoved[index] );
+
+          if ( isMatch ) {
+            page = pageWithVariablePath;
+          }
+        }
+      }
+    });
+
+    if ( page ) return page;
   }
 
   render() {

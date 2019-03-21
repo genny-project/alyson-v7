@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { object } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Input } from '../../../index';
+import { InputLegacy as Input } from '../../../../components-legacy';
 import { isArray, isObject } from '../../../../../utils';
 
 class FormInputDropdown extends Component {

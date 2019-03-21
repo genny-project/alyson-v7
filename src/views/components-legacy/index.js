@@ -24,5 +24,9 @@ export { default as IconLegacy } from './icon';
 export { default as ActivityIndicatorLegacy } from './activity-indicator';
 export { default as FragmentLegacy } from './fragment';
 export { default as TouchableLegacy } from './touchable';
+export { default as ScrollViewLegacy } from './scroll-view';
+export { default as KeyboardAwareScrollViewLegacy } from './keyboard-aware-scroll-view';
+export { default as ButtonLegacy } from './button';
+export { default as alertLegacy } from './alert';
 
 export * from './tooltip';

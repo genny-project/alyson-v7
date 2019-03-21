@@ -9,7 +9,13 @@ import dlv from 'dlv';
 import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
 import shallowCompare from '../../../utils/shallow-compare';
-import { Box, Text, Button, KeyboardAwareScrollView, ScrollView } from '../index';
+import {
+  BoxLegacy as Box,
+  TextLegacy as Text,
+  ButtonLegacy as Button,
+  KeyboardAwareScrollViewLegacy as KeyboardAwareScrollView,
+  ScrollViewLegacy as ScrollView,
+} from '../../components-legacy';
 import RecursiveLegacy from '../layout-loader/RecursiveLegacy';
 import FormInput from './input';
 import { store } from '../../../redux';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { string, object, func } from 'prop-types';
 import debounce from 'lodash.debounce';
-import { Input } from '../../index';
+import { InputLegacy as Input } from '../../../components-legacy';
 import FormInputDropdown from './dropdown';
 import FormInputCheckbox from './checkbox';
 
