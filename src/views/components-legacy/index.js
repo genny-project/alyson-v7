@@ -23,5 +23,6 @@ export { default as BoxLegacy } from './box';
 export { default as IconLegacy } from './icon';
 export { default as ActivityIndicatorLegacy } from './activity-indicator';
 export { default as FragmentLegacy } from './fragment';
+export { default as TouchableLegacy } from './touchable';
 
 export * from './tooltip';

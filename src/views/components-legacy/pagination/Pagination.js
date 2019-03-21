@@ -1,7 +1,7 @@
 import React, { Component, isValidElement } from 'react';
 import { object, array, string } from 'prop-types';
 import { isArray, Bridge } from '../../../utils';
-import { Recursive } from '..';
+import RecursiveLegacy from '../../components-legacy/layout-loader/RecursiveLegacy';
 
 class Pagination extends Component {
   static defaultProps = {
@@ -65,12 +65,12 @@ class Pagination extends Component {
         return children;
 
       return (
-        <Recursive {...children} />
+        <RecursiveLegacy {...children} />
       );
     }
 
     return children.map(( child, index ) => (
-      <Recursive
+      <RecursiveLegacy
         {...child.props}
         key={index} // eslint-disable-line react/no-array-index-key
         context={{

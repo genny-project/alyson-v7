@@ -9,7 +9,8 @@ import dlv from 'dlv';
 import 'react-table/react-table.css';
 import { Bridge, isArray, isObject, injectDataIntoProps, isInteger } from '../../../utils';
 import { store } from '../../../redux';
-import { Box, Recursive, Touchable, Text, TestIdTooltip } from '../../components';
+import { BoxLegacy as Box, TouchableLegacy as Touchable, TextLegacy as Text, TestIdTooltip } from '../../components-legacy';
+import RecursiveLegacy from '../../components-legacy/layout-loader/RecursiveLegacy';
 
 /* testing table for rendering the number of items */
 import './table.css';
@@ -232,14 +233,14 @@ class TableView extends Component {
               : isArray( renderButton )
                 ? renderButton.map(( element, i ) => (
                   isValidElement( element ) ? element : (
-                    <Recursive
+                    <RecursiveLegacy
                       key={i} // eslint-disable-line
                       {...element}
                       context={context}
                     />
                   )))
                 : (
-                  <Recursive
+                  <RecursiveLegacy
                     {...renderButton}
                     context={context}
                   />
@@ -253,7 +254,7 @@ class TableView extends Component {
 
       if ( renderWrapper ) {
         return (
-          <Recursive
+          <RecursiveLegacy
             {...renderWrapper}
             context={{
               ...cellContext,
@@ -281,7 +282,7 @@ class TableView extends Component {
                 </Box>
               )
               : cellData}
-          </Recursive>
+          </RecursiveLegacy>
         );
       }
 
