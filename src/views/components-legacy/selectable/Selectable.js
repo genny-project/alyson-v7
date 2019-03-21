@@ -1,7 +1,8 @@
 import React, { Component, isValidElement } from 'react';
 import { object, array, string, any } from 'prop-types';
 import { isArray } from '../../../utils';
-import { Recursive, EventButton } from '..';
+import { EventButtonLegacy as EventButton } from '../../components-legacy';
+import RecursiveLegacy from '../../components-legacy/layout-loader/RecursiveLegacy';
 
 class Selectable extends Component {
   static defaultProps = {
@@ -30,7 +31,7 @@ class Selectable extends Component {
         return children;
 
       return (
-        <Recursive {...children} />
+        <RecursiveLegacy {...children} />
       );
     }
 
@@ -40,7 +41,7 @@ class Selectable extends Component {
         key={index} // eslint-disable-line react/no-array-index-key
         onPress={this.handlePress}
       >
-        <Recursive
+        <RecursiveLegacy
           {...child.props}
           context={{
             ...child.props.context,
