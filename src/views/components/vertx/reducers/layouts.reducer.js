@@ -190,29 +190,31 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
 
 const injectFakeLayoutLinkIntoState = ({ payload, state }) => {
   if ( state.frames ) {
-    if ( isObject( state.frames['FRM_CONTENT'] )) {
-      return {
-        ...state,
-        frames: {
-          ...state.frames,
-          FRM_CONTENT: {
-            ...state.frames.FRM_CONTENT,
-            links: [
-              ...( isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) && isArray( state.frames['FRM_CONTENT'].links ))
-                ? state.frames['FRM_CONTENT'].links.filter( link => link.type !== 'sublayout' )
-                : [],
-              {
-                code: `pages${payload.code}`,
-                weight: 1,
-                panel: 'CENTRE',
-                type: 'sublayout',
-                created: new Date().toString(),
-              },
-            ],
+    return {
+      ...state,
+      frames: {
+        ...state.frames,
+        FRM_CONTENT: {
+          ...state.frames.FRM_CONTENT ? state.frames.FRM_CONTENT : {
+            name: 'Content Frame',
+            code: 'FRM_CONTENT',
+            created: new Date().toString(),
           },
+          links: [
+            ...( isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) && isArray( state.frames['FRM_CONTENT'].links ))
+              ? state.frames['FRM_CONTENT'].links.filter( link => link.type !== 'sublayout' )
+              : [],
+            {
+              code: `pages${payload.code}`,
+              weight: 1,
+              panel: 'CENTRE',
+              type: 'sublayout',
+              created: new Date().toString(),
+            },
+          ],
         },
-      };
-    }
+      },
+    };
   }
 
   return state;
