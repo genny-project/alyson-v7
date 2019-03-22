@@ -286,8 +286,8 @@ class RecursiveLegacy extends PureComponent {
   render() {
     const {
       props,
-      // variant,
-      // useThemeFrom,
+      variant,
+      useThemeFrom,
       children,
       context,
       repeat,
@@ -297,7 +297,7 @@ class RecursiveLegacy extends PureComponent {
       theme,
     } = this.props;
 
-    const componentProps = this.injectContextIntoProps({
+    let componentProps = this.injectContextIntoProps({
       ...props,
       ...this.calculateConditionalProps( conditional, context ),
       ref: node => this.ref = node,
@@ -305,18 +305,18 @@ class RecursiveLegacy extends PureComponent {
 
     const component = componentProps.component || this.props.component;
 
-    // if ( variant ) {
-    //   componentProps = {
-    //     ...this.injectContextIntoProps({
-    //       ...(
-    //         theme.components[useThemeFrom || component] &&
-    //         theme.components[useThemeFrom || component][variant] &&
-    //         theme.components[useThemeFrom || component][variant].props
-    //       ),
-    //     }),
-    //     ...componentProps,
-    //   };
-    // }
+    if ( variant ) {
+      componentProps = {
+        ...this.injectContextIntoProps({
+          ...(
+            theme.components[useThemeFrom || component] &&
+            theme.components[useThemeFrom || component][variant] &&
+            theme.components[useThemeFrom || component][variant].props
+          ),
+        }),
+        ...componentProps,
+      };
+    }
 
     // console.log( component, LegacyComponents, Components );
 

@@ -33,3 +33,4 @@ export { default as ButtonLegacy } from './button';
 export { default as alertLegacy } from './alert';
 
 export * from './tooltip';
+export * from './theme';
