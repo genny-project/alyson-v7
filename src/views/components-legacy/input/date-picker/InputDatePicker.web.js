@@ -9,7 +9,13 @@ import Kalendaryo from 'kalendaryo';
 import range from 'lodash.range';
 import { format, isSameMonth, isToday, setMonth, setYear, getMonth, getYear } from 'date-fns';
 import { getDeviceSize } from '../../../../utils';
-import { Input, Box, Text, Touchable, Icon } from '../../index';
+import {
+  InputLegacy as Input,
+  BoxLegacy as Box,
+  TextLegacy as Text,
+  TouchableLegacy as Touchable,
+  IconLegacy as Icon,
+} from '../../../components-legacy';
 
 const NUMBER_OF_DOB_YEARS = 125;
 

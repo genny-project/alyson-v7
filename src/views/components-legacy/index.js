@@ -16,6 +16,8 @@ export { default as PropInjectionLegacy } from './prop-injection';
 
 export { default as ListLegacy } from './list';
 
+export { default as MultiDownshiftLegacy } from './multi-downshift';
+
 export { default as EventTouchableLegacy } from './event-touchable';
 export { default as EventButtonLegacy } from './event-button';
 

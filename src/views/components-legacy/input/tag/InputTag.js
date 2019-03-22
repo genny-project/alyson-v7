@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { string, func, array, bool, object } from 'prop-types';
 import { isString, isArray, isObject } from '../../../../utils';
-import { Box, MultiDownshift, Text } from '../../index';
+import {
+  BoxLegacy as Box,
+  MultiDownshiftLegacy as MultiDownshift,
+  TextLegacy as Text,
+} from '../../../components-legacy';
 import InputTagBody from './tag-body';
 import InputTagInputField from './tag-input-field';
 import InputTagItem from './tag-item';

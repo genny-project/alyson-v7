@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { func, string, number, oneOfType, array, bool } from 'prop-types';
 import Downshift from 'downshift';
-import { Text, Box, Input, Touchable } from '../../index';
+import { TextLegacy as Text, BoxLegacy as Box, InputLegacy as Input, TouchableLegacy as Touchable } from '../../../components-legacy';
 import { isString } from '../../../../utils';
 
 class InputAutocomplete extends Component {

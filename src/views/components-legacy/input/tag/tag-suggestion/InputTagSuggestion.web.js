@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { bool, object, string } from 'prop-types';
 import { LayoutConsumer } from '../../../../layout-legacy';
-import { Box, Touchable, Text } from '../../../../components';
-import { Recursive } from '../../../../components-legacy';
+import { BoxLegacy as Box, TouchableLegacy as Touchable, TextLegacy as Text } from '../../../../components-legacy';
+import RecursiveLegacy from '../../../../components-legacy/layout-loader/RecursiveLegacy';
 
 class InputTagSuggestion extends Component {
   static propTypes = {
@@ -58,7 +58,7 @@ class InputTagSuggestion extends Component {
                   };
 
                   return (
-                    <Recursive
+                    <RecursiveLegacy
                       {...renderProp}
                       context={context}
                     />

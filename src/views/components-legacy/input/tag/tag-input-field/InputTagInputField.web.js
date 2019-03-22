@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { object, func, bool, string } from 'prop-types';
-import { Box, Input, Icon } from '../../../index';
+import { BoxLegacy as Box, InputLegacy as Input, IconLegacy as Icon } from '../../../../components-legacy';
 
 class InputTagInputField extends Component {
   static propTypes = {
