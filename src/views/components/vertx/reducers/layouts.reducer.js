@@ -59,6 +59,20 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
       name: item.name,
       code: item.code,
       links: [
+        // legacy compatibiity start
+        ...(
+          item.code === 'FRM_CONTENT' &&
+          isArray( item.links, { ofMaxLength: 0 })
+        ) ? [
+            {
+              code: 'pages/home',
+              weight: 1,
+              panel: 'CENTRE',
+              type: 'sublayout',
+              created: new Date().toString(),
+            },
+          ] : [],
+        // legacy compatibiity end
         ...( isObject( state.frames[item.code], { withProperty: 'links' }) && isArray( state.frames[item.code].links )) ? state.frames[item.code].links.filter( existingLink => (
           !item.links.some( newLink => newLink.link.targetCode === existingLink.code )
         )) : [],
@@ -281,6 +295,8 @@ const reducer = ( state = initialState, { type, payload }) => {
       }, { ...state });
 
     case 'ROUTE_CHANGE':
+      // legacy compatibiity
+      // automatically creates a link to FRM_CONTENT
       if ( !isObject( payload, { withProperty: 'code' }))
         return state;
 
