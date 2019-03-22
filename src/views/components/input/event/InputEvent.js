@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, string, object } from 'prop-types';
+import { array, string, object, func } from 'prop-types';
 import { Text, EventTouchable, Icon } from '../../index';
 import { isString } from '../../../../utils';
 
@@ -11,6 +11,7 @@ class InputEvent extends Component {
     rootQuestionGroupCode: string,
     messageType: string,
     icon: string,
+    onPress: func,
   }
 
   render() {
@@ -19,6 +20,7 @@ class InputEvent extends Component {
       messageType,
       rootQuestionGroupCode,
       icon,
+      onPress, // eslint-disable-line no-unused-vars
       ...restProps
     } = this.props;
     // const { contextList } = question;
