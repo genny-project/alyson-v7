@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { func, number, object, array, string } from 'prop-types';
 import debounce from 'lodash.debounce';
 import dlv from 'dlv';
-import { Input, GoogleConsumer } from '../../index';
+import { GoogleConsumer } from '../../../components';
+import { InputLegacy as Input } from '../../../components-legacy';
 
 class InputAddress extends Component {
   static defaultProps = {

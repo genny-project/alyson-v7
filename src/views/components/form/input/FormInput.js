@@ -96,6 +96,11 @@ class FormInput extends Component {
 
   getThemes = () => {
     const { ask, asks } = this.props;
+
+    if ( !ask ) {
+      return null;
+    }
+
     const { questionCode } = ask;
 
     if ( !asks || !asks[questionCode] ) {

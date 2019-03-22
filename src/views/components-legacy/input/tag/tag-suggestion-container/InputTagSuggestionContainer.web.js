@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { node, bool } from 'prop-types';
-import { Box } from '../../../index';
+import { BoxLegacy as Box } from '../../../../components-legacy';
 
 class InputTagBody extends Component {
   static propTypes = {
