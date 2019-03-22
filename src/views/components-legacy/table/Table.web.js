@@ -7,7 +7,8 @@ import debounce from 'lodash.debounce';
 import dlv from 'dlv';
 
 import 'react-table/react-table.css';
-import { Bridge, isArray, isObject, injectDataIntoProps, isInteger } from '../../../utils';
+import { Bridge, isArray, isObject, isInteger } from '../../../utils';
+import { injectDataIntoProps } from '../../../utils-legacy';
 import { store } from '../../../redux';
 import { BoxLegacy as Box, TouchableLegacy as Touchable, TextLegacy as Text, TestIdTooltip } from '../../components-legacy';
 import RecursiveLegacy from '../../components-legacy/layout-loader/RecursiveLegacy';

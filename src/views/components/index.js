@@ -55,7 +55,7 @@ export { default as Selectable } from './selectable';
 export { default as Status } from './status';
 export { default as StatusBar } from './status-bar';
 export { default as Table } from './table';
-export { default as Tabs } from './tabs';
+// export { default as Tabs } from './tabs';
 export { default as Text } from './text';
 export { default as Timeout } from './timeout';
 export { default as Toggle } from './toggle';

@@ -12,6 +12,7 @@ export { default as PaginationLegacy } from './pagination';
 export { default as SelectableLegacy } from './selectable';
 export { default as SelectionLegacy } from './selection';
 export { default as TableLegacy } from './table';
+export { default as TabsLegacy } from './tabs';
 export { default as PropInjectionLegacy } from './prop-injection';
 
 export { default as ListLegacy } from './list';

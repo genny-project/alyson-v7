@@ -3,7 +3,7 @@ import { string, oneOfType, array, number, any, func, oneOf, object } from 'prop
 import { withRouter } from 'react-router-dom';
 import dlv from 'dlv';
 import { isArray, Bridge, getDeviceSize } from '../../../utils';
-import { Icon, Box, Text, Touchable } from '../../components';
+import { IconLegacy as Icon, BoxLegacy as Box, TextLegacy as Text, TouchableLegacy as Touchable } from '../../components-legacy';
 
 const tabBarLocation = {
   top: 'column',
@@ -32,6 +32,8 @@ class Tabs extends PureComponent {
     tabBarSide: 'top',
     testID: 'tabs',
     initialIndex: 0,
+    height: '100%',
+    width: '100%',
   }
 
   static propTypes = {

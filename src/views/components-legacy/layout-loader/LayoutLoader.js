@@ -219,6 +219,11 @@ class LayoutLoader extends PureComponent {
     return (
       <Holder
         {...layout.layout}
+        // {...( sublayout ||
+        //   isDialog ) ? {} : {
+        //   height: '100%',
+        //   width: '100%',
+        // }}
         context={this.state}
       >
         {isArray( layout.children ) ? (
