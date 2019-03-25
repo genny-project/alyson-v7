@@ -3,7 +3,8 @@ import { string, integer, node } from 'prop-types';
 import { store } from '../../../redux';
 import * as actions from '../../../redux/actions';
 
-var timeoutID;
+var timeoutMouseOverID;
+var timeoutMouseOutID;
 
 class TestIdHandler extends Component {
   static defaultProps = {
@@ -18,7 +19,9 @@ class TestIdHandler extends Component {
   }
 
   handleMouseOverDebounced = () => {
-    timeoutID = window.setTimeout(
+    window.clearTimeout( timeoutMouseOutID );
+
+    timeoutMouseOverID = window.setTimeout(
       () => {
         this.handleMouseOver();
       },
@@ -27,10 +30,10 @@ class TestIdHandler extends Component {
   }
 
   handleMouseOutDebounced = () => {
-    timeoutID = window.setTimeout(
-      () => {
-        window.clearTimeout( timeoutID );
+    window.clearTimeout( timeoutMouseOverID );
 
+    timeoutMouseOutID = window.setTimeout(
+      () => {
         this.handleMouseOut();
       },
       this.props.debounce,
