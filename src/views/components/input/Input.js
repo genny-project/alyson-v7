@@ -61,6 +61,8 @@ class Input extends Component {
       type,
     };
 
+    // console.log( 'isClosed', this.props.isClosed );
+
     switch ( type ) {
       case 'text':
       case 'abn number':

@@ -65,7 +65,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
           isArray( item.links, { ofMaxLength: 0 })
         ) ? [
             {
-              code: 'pages/home',
+              code: '/home',
               weight: 1,
               panel: 'CENTRE',
               type: 'sublayout',
@@ -163,23 +163,22 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
     state.asks[item.questionCode] = {
       name: item.name,
       code: item.questionCode,
-      ...( item.links
+      ...( isObject( item.contextList ) && isArray( item.contextList.context )
         ? {
           links: [
-            ...( isObject( state.frames[item.code], { withProperty: 'links' }) && isArray( state.frames[item.code].links )) ? state.frames[item.code].links.filter( existingLink => (
-              !item.links.some( newLink => newLink.link.targetCode === existingLink.code )
+            ...( isObject( state.asks[item.code], { withProperty: 'links' }) && isArray( state.asks[item.code].links )) ? state.asks[item.code].links.filter( existingLink => (
+              !item.contextList.context.some( newLink => newLink.contextCode === existingLink.code )
             )) : [],
-            ...item.links.map( link => {
-              const linkTypes = {
-                LNK_THEME: 'theme',
+            ...item.contextList.context.map( link => {
+              const nameTypes = {
+                THEME: 'theme',
               };
 
               return {
-                code: link.link.targetCode,
-                weight: link.link.weight,
-                panel: link.link.linkValue,
-                type: linkTypes[link.link.attributeCode]
-                  ? linkTypes[link.link.attributeCode]
+                code: link.contextCode,
+                weight: link.weight,
+                type: nameTypes[link.name]
+                  ? nameTypes[link.name]
                   : 'none',
                 created: link.created,
               };
@@ -219,7 +218,7 @@ const injectFakeLayoutLinkIntoState = ({ payload, state }) => {
               ? state.frames['FRM_CONTENT'].links.filter( link => link.type !== 'sublayout' )
               : [],
             {
-              code: `pages${payload.code}`,
+              code: payload.code,
               weight: 1,
               panel: 'CENTRE',
               type: 'sublayout',

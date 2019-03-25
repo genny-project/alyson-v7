@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { TouchableWithoutFeedback, TouchableOpacity, Platform } from 'react-native';
 import { node, bool, object, func, oneOf, oneOfType, string, number, array, shape, any } from 'prop-types';
 import { store } from '../../../redux';
+import { TestIdHandler } from '../../components';
 
 class Touchable extends Component {
   static defaultProps = {
@@ -110,6 +111,7 @@ class Touchable extends Component {
       type: string.isRequired,
       payload: any,
     }),
+    testID: string,
   }
 
   state = {
@@ -290,20 +292,24 @@ class Touchable extends Component {
     );
 
     return (
-      <Element
-        {...restProps}
-        {...isHovering ? hoverProps : {}}
-        style={[
-          touchableStyle,
-          webStyle,
-          isHovering ? hoverProps.style : {},
-        ]}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-        onPress={this.handlePress}
+      <TestIdHandler
+        testID={this.props.testID}
       >
-        {children}
-      </Element>
+        <Element
+          {...restProps}
+          {...isHovering ? hoverProps : {}}
+          style={[
+            touchableStyle,
+            webStyle,
+            isHovering ? hoverProps.style : {},
+          ]}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+          onPress={this.handlePress}
+        >
+          {children}
+        </Element>
+      </TestIdHandler>
     );
   }
 }

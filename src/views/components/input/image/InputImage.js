@@ -21,6 +21,7 @@ class InputImage extends Component {
     ),
     value: string,
     editable: bool,
+    isClosed: bool,
   }
 
   state = {
@@ -60,6 +61,13 @@ class InputImage extends Component {
       return '';
     };
 
+    const closedStyle = {
+      maxWidth: width,
+      maxHeight: height,
+      width: '100%',
+      height: '100%',
+    };
+
     return (
       <Box
         width="100%"
@@ -69,6 +77,7 @@ class InputImage extends Component {
         <Box
           height={height}
           width={width}
+          {...this.props.isClosed ? closedStyle : {}}
           position="relative"
         >
           <Input

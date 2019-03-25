@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
-import { string, object, func, bool } from 'prop-types';
+import { string, object, func, oneOf } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { LayoutLoaderLegacy } from '../';
 import { isString, location, removeStartingAndEndingSlashes, isObject } from '../../../utils';
 
 class Sublayout extends Component {
+  static defaultProps = {
+    layoutType: 'sublayouts',
+  }
+
   static propTypes = {
     layoutName: string,
     sublayouts: object,
     pages: object,
     dispatch: func,
     layoutsLegacy: object,
-    getLayoutTypeFromName: bool,
     identifier: string,
+    layoutType: oneOf(
+      'sublayouts', 'pages'
+    ),
   };
 
   state = {
@@ -40,15 +46,24 @@ class Sublayout extends Component {
   }
 
   getLayout() {
-    const { layoutsLegacy, layoutName, getLayoutTypeFromName } = this.props;
-    const layoutPath = getLayoutTypeFromName
-      ? `${layoutName.split( '/' )[0]}.${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}`
-      : `sublayouts.${layoutName}`;
-    let layout = dlv( layoutsLegacy, `${layoutPath}` );
+    const { layoutsLegacy, layoutName, layoutType } = this.props;
+
+    // console.log( layoutName );
+
+    const layoutPath = layoutName.startsWith( '/' ) ? layoutName.replace( '/', '' ) : layoutName;
+
+    let layout = (
+      isObject( layoutsLegacy, { withProperty: layoutType }) &&
+      isObject( layoutsLegacy[layoutType], { withProperty: layoutPath })
+    )
+      ? layoutsLegacy[layoutType][layoutPath] : null;
+
+    // console.log( layoutPath, layout );
 
     if ( !layout ) {
-      const pageWithId = this.parseLocation( `${layoutName.split( '/' ).slice( 1, layoutName.split( '/' ).length ).join( '/' )}` );
-      
+      const layoutPathWithType = `pages/${layoutPath}`;
+      const pageWithId = this.parseLocation( `${layoutPathWithType.split( '/' ).slice( 1, layoutPathWithType.split( '/' ).length ).join( '/' )}` );
+
       layout = dlv( layoutsLegacy, `pages.${pageWithId}` );
     }
 
@@ -67,6 +82,7 @@ class Sublayout extends Component {
     if ( !isObject( layoutPool )) return;
 
     const currentUrl = location.getBasePath();
+
     const strippedCurrentUrl = removeStartingAndEndingSlashes( currentUrl );
 
     const keys = Object.keys( layoutPool ).sort( this.handleSortPages );
@@ -174,7 +190,7 @@ class Sublayout extends Component {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { layoutsLegacy, dispatch, layoutName, ...restProps } = this.props;
+    const { layoutsLegacy, dispatch, layoutName, layoutType, ...restProps } = this.props;
     const { layout, params } = this.state;
 
     return (
@@ -183,7 +199,7 @@ class Sublayout extends Component {
         sublayoutProps={restProps}
         sublayout
         params={params}
-        identifier={this.props.getLayoutTypeFromName ? this.props.identifier : null}
+        identifier={layoutType === 'pages' ? this.props.identifier : null}
       />
     );
   }

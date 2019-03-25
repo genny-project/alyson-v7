@@ -77,6 +77,7 @@ class Frame extends Component {
     inheritedThemes: object,
     isRootFrame: bool,
     sublayouts: object, // legacy compatibility
+    isClosed: bool,
   }
 
   state = {
@@ -119,6 +120,10 @@ class Frame extends Component {
     /* Check if the inherited themes have changed */
     if ( checkForNewInheritedThemes( this.props.inheritedThemes, nextProps.inheritedThemes ))
       return true;
+
+    if ( this.props.isClosed !== nextProps.isClosed ) {
+      return true;
+    }
 
     return false;
   }
@@ -174,7 +179,7 @@ class Frame extends Component {
   }
 
   render() {
-    const { rootCode, frames, isRootFrame } = this.props;
+    const { rootCode, frames, isRootFrame, isClosed } = this.props;
 
     const rootFrame = frames[rootCode];
 
@@ -270,6 +275,7 @@ class Frame extends Component {
                 <Recurser
                   content={filterByPanel( panelContent, 'NORTH' )}
                   themes={{ ...this.getStyling( 'NORTH', true ) }}
+                  isClosed={isClosed}
                 />
               </Panel>
             )
@@ -296,6 +302,7 @@ class Frame extends Component {
                           <Recurser
                             content={filterByPanel( panelContent, 'WEST' )}
                             themes={{ ...this.getStyling( 'WEST', true ) }}
+                            isClosed={isClosed}
                           />
                         </Panel>
                       )
@@ -313,6 +320,7 @@ class Frame extends Component {
                           <Recurser
                             content={filterByPanel( panelContent, 'CENTRE' )}
                             themes={{ ...this.getStyling( 'CENTRE', true ) }}
+                            isClosed={isClosed}
                           />
                         </Panel>
                       )
@@ -330,6 +338,7 @@ class Frame extends Component {
                           <Recurser
                             content={filterByPanel( panelContent, 'EAST' )}
                             themes={{ ...this.getStyling( 'EAST', true ) }}
+                            isClosed={isClosed}
                           />
                         </Panel>
                       )
@@ -351,6 +360,7 @@ class Frame extends Component {
                   <Recurser
                     content={filterByPanel( panelContent, 'SOUTH' )}
                     themes={{ ...this.getStyling( 'SOUTH', true ) }}
+                    isClosed={isClosed}
                   />
                 </Panel>
               )

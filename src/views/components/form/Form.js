@@ -29,6 +29,7 @@ class Form extends Component {
     shouldSetInitialValues: bool,
     inheritedThemes: object,
     fullWidth: bool,
+    isClosed: bool,
   }
 
   inputRefs = {}
@@ -480,6 +481,8 @@ class Form extends Component {
         },
     };
 
+    // console.log( this.props.isClosed );
+
     return (
       <FormGroup
         key={questionGroup.questionCode}
@@ -490,6 +493,7 @@ class Form extends Component {
         index={index}
         functions={functions}
         inputRefs={this.inputRefs}
+        isClosed={this.props.isClosed}
       />
     );
   }
@@ -544,6 +548,8 @@ class Form extends Component {
 
     // check the top level groups to see if any have 'fullWidth: true' in the contextList
     const isFullWidth = fullWidth != null ? fullWidth : this.checkIfFullWidth( questionGroups );
+
+    // console.log( this.props.isClosed );
 
     return (
       <Formik

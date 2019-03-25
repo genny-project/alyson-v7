@@ -1,7 +1,7 @@
 // /* eslint-disable */
 
 import React, { Component } from 'react';
-import { object, array } from 'prop-types';
+import { object, array, bool } from 'prop-types';
 import { Fragment, Frame, Text, Form } from '../index';
 import { SublayoutLegacy } from '../../components-legacy';
 import { isArray, sort } from '../../../utils';
@@ -10,14 +10,17 @@ class Recurser extends Component {
   static propTypes = {
     themes: object,
     content: array,
+    isClosed: bool,
   }
 
   render() {
-    const { content, themes } = this.props;
+    const { content, themes, isClosed } = this.props;
 
     if ( !isArray( content, { ofMinLength: 1 })) {
       return null;
     }
+
+    // console.log( isClosed );
 
     return (
       <Fragment>
@@ -31,6 +34,7 @@ class Recurser extends Component {
                 inheritedThemes={themes}
                 key={baseEntityCode}
                 questionGroupCode={baseEntityCode}
+                isClosed={isClosed}
               />
             );
           }
@@ -41,6 +45,7 @@ class Recurser extends Component {
                 key={baseEntityCode}
                 rootCode={baseEntityCode}
                 inheritedThemes={themes}
+                isClosed={isClosed}
               />
             );
           }
@@ -50,7 +55,7 @@ class Recurser extends Component {
               <SublayoutLegacy
                 key={baseEntityCode}
                 layoutName={baseEntityCode}
-                getLayoutTypeFromName
+                layoutType="pages"
                 identifier="INITIAL"
               />
             );

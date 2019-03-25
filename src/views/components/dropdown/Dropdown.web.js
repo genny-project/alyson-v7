@@ -3,7 +3,7 @@ import { array, bool, object, any, string } from 'prop-types';
 import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
 import { isArray, isString, Bridge } from '../../../utils';
-import { Fragment, Icon, Box } from '../index';
+import { Fragment, Icon, Box, TestIdHandler } from '../index';
 import './Dropdown.css';
 
 const styles = {
@@ -95,123 +95,128 @@ class Dropdown extends Component {
     } = this.props;
 
     return (
-      <Menu>
-        {({ isOpen }) => {
-          return (
-            <Fragment>
-              <MenuButton
-                onClick={( e ) => {
-                  e.stopPropagation();
-                // TODO stop propagation wont work with onPress, as they are different event types.
-                }}
-                disabled={disabled || !isArray( items, { ofMinLength: 1 })}
-                style={{
-                  ...styles['menuButtonStyle'],
-                  color,
-                }}
-                data-testID={`dropdown ${testID}`}
-              >
-                <Box
-                  flex={1}
-                  justifyContent="space-between"
+      <TestIdHandler
+        testID={testID}
+      >
+        <Menu>
+          {({ isOpen }) => {
+            return (
+              <Fragment>
+                <MenuButton
+                  onClick={( e ) => {
+                    e.stopPropagation();
+                  // TODO stop propagation wont work with onPress,
+                  // as they are different event types.
+                  }}
+                  disabled={disabled || !isArray( items, { ofMinLength: 1 })}
+                  style={{
+                    ...styles['menuButtonStyle'],
+                    color,
+                  }}
+                  data-testID={`dropdown ${testID}`}
                 >
-                  {isValidElement( children ) ? children
-                  : isString( text ) ? text
-                  : isArray( children )
-                    ? children.map(( child ) => (
-                      isValidElement( child )
-                        ? child
-                        : null
-                    ))
-                    : null
-                }
                   <Box
-                    justifyContent="center"
-                    transform={[
-                      { rotate: isOpen ? '0deg' : '270deg' },
-                    ]}
+                    flex={1}
+                    justifyContent="space-between"
                   >
+                    {isValidElement( children ) ? children
+                    : isString( text ) ? text
+                    : isArray( children )
+                      ? children.map(( child ) => (
+                        isValidElement( child )
+                          ? child
+                          : null
+                      ))
+                      : null
+                  }
                     <Box
-                      paddingTop={2}
+                      justifyContent="center"
+                      transform={[
+                        { rotate: isOpen ? '0deg' : '270deg' },
+                      ]}
                     >
-                      <Icon
-                        name="expand_more"
-                        color={this.props.color || 'black'}
-                        size="xs"
-                      />
+                      <Box
+                        paddingTop={2}
+                      >
+                        <Icon
+                          name="expand_more"
+                          color={this.props.color || 'black'}
+                          size="xs"
+                        />
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              </MenuButton>
+                </MenuButton>
 
-              {isArray( items, { ofMinLength: 1 }) && (
-              <MenuList
-                style={{
-                  position: 'absolute',
-                  top: '100%',
-                  ...facingRight
-                    ? { right: 0 }
-                    : { left: 0 },
-                  ...{
-                    ...styles['menuListStyle'],
-                    color,
-                  },
-                }}
-              >
-                {items.map( item => {
-                  if ( item.href ) {
+                {isArray( items, { ofMinLength: 1 }) && (
+                <MenuList
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    ...facingRight
+                      ? { right: 0 }
+                      : { left: 0 },
+                    ...{
+                      ...styles['menuListStyle'],
+                      color,
+                    },
+                  }}
+                >
+                  {items.map( item => {
+                    if ( item.href ) {
+                      return (
+                        <MenuLink
+                          key={item.text}
+                          data-testID={`dropdown-item ${testID}`}
+                          to={(
+                            item.href === 'home' ? '/'
+                            : item.href.startsWith( '/' ) ? item.href
+                            : `/${item.href}`
+                          )}
+                          style={{
+                            ...styles['menuItemStyle'],
+                            ...styles['menuLinkStyle'],
+                            color,
+                            ...item.style,
+                          }}
+                          onClick={this.handleNavigate( item )}
+                        >
+                          {item.text}
+                        </MenuLink>
+                      );
+                    }
+
                     return (
-                      <MenuLink
+                      <MenuItem
                         key={item.text}
-                        data-testID={`dropdown-item ${testID}`}
-                        to={(
-                          item.href === 'home' ? '/'
-                          : item.href.startsWith( '/' ) ? item.href
-                          : `/${item.href}`
-                        )}
                         style={{
                           ...styles['menuItemStyle'],
-                          ...styles['menuLinkStyle'],
                           color,
                           ...item.style,
                         }}
-                        onClick={this.handleNavigate( item )}
+                        data-testID={`dropdown-item ${testID}`}
+                        onSelect={this.handleSelect( item )}
                       >
-                        {item.text}
-                      </MenuLink>
+                        {isValidElement( item.children ) ? item.children
+                        : isString( item.text ) ? item.text
+                        : isArray( item.children )
+                          ? item.children.map(( child ) => (
+                            isValidElement( child )
+                              ? child
+                              : null
+                          ))
+                          : null
+                        }
+                      </MenuItem>
                     );
-                  }
-
-                  return (
-                    <MenuItem
-                      key={item.text}
-                      style={{
-                        ...styles['menuItemStyle'],
-                        color,
-                        ...item.style,
-                      }}
-                      data-testID={`dropdown-item ${testID}`}
-                      onSelect={this.handleSelect( item )}
-                    >
-                      {isValidElement( item.children ) ? item.children
-                      : isString( item.text ) ? item.text
-                      : isArray( item.children )
-                        ? item.children.map(( child ) => (
-                          isValidElement( child )
-                            ? child
-                            : null
-                        ))
-                        : null
-                      }
-                    </MenuItem>
-                  );
-                })}
-              </MenuList>
-              )}
-            </Fragment>
-          );
-        }}
-      </Menu>
+                  })}
+                </MenuList>
+                )}
+              </Fragment>
+            );
+          }}
+        </Menu>
+      </TestIdHandler>
     );
   }
 }

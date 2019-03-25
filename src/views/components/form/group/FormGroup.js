@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, number } from 'prop-types';
+import { string, object, number, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort } from '../../../../utils';
@@ -26,6 +26,7 @@ class FormGroup extends Component {
     inputRefs: object,
     themes: object,
     asks: object,
+    isClosed: bool,
   }
 
   state = {
@@ -175,12 +176,15 @@ class FormGroup extends Component {
         : 'default',
       onKeyPress: handleKeyPress( submitForm, index, questionGroupCode ), // functions
       onPress: () => submitForm(),
-      testID: questionCode || '',
+      testID: `${this.props.rootCode}:${questionCode}` || '',
       ...contextList,
       rootQuestionGroupCode: this.props.rootCode,
       inheritedThemes: this.getStyling( true ),
       ask,
+      isClosed: this.props.isClosed,
     };
+
+    // console.log( this.props.isClosed );
 
     return (
       <FormInput
@@ -205,6 +209,7 @@ class FormGroup extends Component {
           inputRefs: this.props.inputRefs,
           asks: this.props.asks,
           themes: this.props.themes,
+          isClosed: this.props.isClosed,
         },
       )
     );

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { BackHandler } from 'react-native';
+import dlv from 'dlv';
 import Routing from '../routing';
 import AuthenticatedApp from './authenticated';
 import LayoutEditor from './layout-editor';
+import TestDisplay from './test-display';
 import { location } from '../../utils';
 
 class App extends Component {
@@ -16,6 +18,7 @@ class App extends Component {
 
   state = {
     layoutEditorOpen: false,
+    debug: false,
   };
 
   componentDidMount() {
@@ -32,6 +35,10 @@ class App extends Component {
         ...queryParams,
       };
     }
+
+    if ( !this.state.debug && dlv( window, 'originalQueryParams.showcodes' )) {
+      this.showDebugView();
+    }
   }
 
   componentWillUnmount() {
@@ -41,6 +48,10 @@ class App extends Component {
 
   openLayoutEditor() {
     this.setState({ layoutEditorOpen: true });
+  }
+
+  showDebugView() {
+    this.setState({ debug: true });
   }
 
   handleBackPress = () => {
@@ -65,10 +76,11 @@ class App extends Component {
   };
 
   render() {
-    const { layoutEditorOpen } = this.state;
+    const { layoutEditorOpen, debug } = this.state;
 
     return (
       <AuthenticatedApp>
+        { debug && <TestDisplay /> }
         { !layoutEditorOpen && <Routing /> }
         { layoutEditorOpen && <LayoutEditor /> }
       </AuthenticatedApp>

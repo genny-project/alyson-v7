@@ -1,7 +1,7 @@
 import React from 'react';
 import { string, bool, any, func, oneOfType, object } from 'prop-types';
 import { Bridge } from '../../../utils';
-import { Touchable } from '../../components';
+import { TouchableLegacy as Touchable } from '../../components-legacy';
 
 const EventTouchable = ({
   buttonCode = '',

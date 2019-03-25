@@ -34,7 +34,7 @@ class TestIdTooltip extends Component {
         position="fixed"
         top={10}
         left={dimensions.width / 2}
-        zIndex={1000}
+        zIndex={10000}
         text={id}
         onMouseOver={this.handleMouseOver}
       >

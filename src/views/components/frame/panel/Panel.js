@@ -25,9 +25,9 @@ class Panel extends Component {
 
     if (
       isObject( nextProps.controls, { withProperty: panelId }) &&
-      nextProps.controls[panelId] !== nextState.status
+      nextProps.controls[panelId] !== nextState.display
     ) {
-      return { status: nextProps.controls[panelId] };
+      return { display: nextProps.controls[panelId] };
     }
 
     return null;
@@ -35,24 +35,24 @@ class Panel extends Component {
 
   state = {
     // maximised: false,
-    status: null
+    display: null
   }
 
   reset = () => {
     this.setState({
-      status: 'open',
+      display: 'open',
     })
   }
 
   close = () => {
     this.setState({
-      status: 'closed',
+      display: 'closed',
     })
   }
 
   expand = () => {
     this.setState({
-      status: 'maximised',
+      display: 'maximised',
     })
   }
 
@@ -94,7 +94,7 @@ class Panel extends Component {
 
     const Wrapper = isExpandable ? 'div' : Fragment;
 
-    const specialStyle = this.state.status === 'closed' ? { width: '0%' } : this.state.status === 'open' ? { width: '100%' } : {};
+    const specialStyle = this.state.display === 'closed' ? { width: '0%' } : this.state.display === 'open' ? { width: '100%' } : {};
 
     return (
       <Box
@@ -147,7 +147,13 @@ class Panel extends Component {
               </Box>
             ) : null
         }
-        {children}
+        {/* {children} */}
+        {React.Children.map( children, child => (
+            React.cloneElement( child, {
+              ...child.props,
+              ...(this.state.display === 'closed') ? { isClosed: true } : {},
+            })
+          ))}
       </Box>
     );
   }

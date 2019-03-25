@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, string, object, func } from 'prop-types';
+import { array, string, object, func, bool } from 'prop-types';
 import { Text, EventTouchable, Icon } from '../../index';
 import { isString } from '../../../../utils';
 
@@ -12,6 +12,7 @@ class InputEvent extends Component {
     messageType: string,
     icon: string,
     onPress: func,
+    isClosed: bool,
   }
 
   render() {
@@ -44,7 +45,10 @@ class InputEvent extends Component {
             ) : null
         }
         {
-          isString( question.name, { isNotSameAs: ' ' })
+          isString( question.name, { isNotSameAs: ' ' }) && !(
+            this.props.isClosed &&
+            isString( icon, { ofMinLength: 1 })
+          )
             ? (
               <Text
                 {...restProps}
