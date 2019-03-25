@@ -26,6 +26,17 @@ class TestIdHandler extends Component {
     );
   }
 
+  handleMouseOutDebounced = () => {
+    timeoutID = window.setTimeout(
+      () => {
+        window.clearTimeout( timeoutID );
+
+        this.handleMouseOut();
+      },
+      this.props.debounce,
+    );
+  }
+
   handleMouseOver = () => {
     if ( window.originalQueryParams.showcodes ) {
       store.dispatch( actions.setTestId({ id: this.props.testID }));
@@ -33,7 +44,6 @@ class TestIdHandler extends Component {
   }
 
   handleMouseOut = () => {
-    window.clearTimeout( timeoutID );
     if ( window.originalQueryParams.showcodes ) {
       store.dispatch( actions.removeTestId());
     }
@@ -49,7 +59,7 @@ class TestIdHandler extends Component {
         React.cloneElement( child, {
           ...child.props,
           onMouseOver: this.handleMouseOverDebounced,
-          onMouseOut: this.handleMouseOut,
+          onMouseOut: this.handleMouseOutDebounced,
         })
       ))
     );
