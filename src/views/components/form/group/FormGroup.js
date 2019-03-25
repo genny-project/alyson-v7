@@ -238,16 +238,16 @@ class FormGroup extends Component {
       }
     });
 
-    const isExpandable = isObject( contextList, { withProperty: 'context' }) && isArray( contextList.context, { ofMinLength: 1 })
-      ? contextList.context.some( link => {
+    const isExpandable = isObject( contextList, { withProperty: 'contexts' }) && isArray( contextList.contexts, { ofMinLength: 1 })
+      ? contextList.contexts.some( link => {
         const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.expandable` );
 
         return themeEntity;
       })
       : false;
 
-    const renderQuestionGroupInput = isObject( contextList, { withProperty: 'context' }) && isArray( contextList.context, { ofMinLength: 1 })
-      ? contextList.context.some( link => {
+    const renderQuestionGroupInput = isObject( contextList, { withProperty: 'contexts' }) && isArray( contextList.contexts, { ofMinLength: 1 })
+      ? contextList.contexts.some( link => {
         const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.renderQuestionGroupInput` );
 
         return themeEntity;
