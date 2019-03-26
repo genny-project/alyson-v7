@@ -10,7 +10,8 @@ import 'react-table/react-table.css';
 import { Bridge, isArray, isObject, isInteger } from '../../../utils';
 import { injectDataIntoProps } from '../../../utils-legacy';
 import { store } from '../../../redux';
-import { BoxLegacy as Box, TouchableLegacy as Touchable, TextLegacy as Text, TestIdTooltip } from '../../components-legacy';
+import { BoxLegacy as Box, TouchableLegacy as Touchable, TextLegacy as Text } from '../../components-legacy';
+import { TestIdHandler } from '../../components';
 import RecursiveLegacy from '../../components-legacy/layout-loader/RecursiveLegacy';
 
 /* testing table for rendering the number of items */
@@ -512,14 +513,14 @@ class TableView extends Component {
                   backgroundColor="#5173c6"
                   padding={10}
                 >
-                  <TestIdTooltip
-                    id="table-nav SEL_TABLE_COUNT"
+                  <TestIdHandler
+                    testID="table-nav SEL_TABLE_COUNT"
                   >
                     <Text
                       color="white"
                       text={`${currentPage + 1} of ${this.state.totalPages}`}
                     />
-                  </TestIdTooltip>
+                  </TestIdHandler>
                 </Box>
                 <Touchable
                   withFeedback

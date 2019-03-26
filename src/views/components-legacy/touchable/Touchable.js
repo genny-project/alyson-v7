@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TouchableWithoutFeedback, TouchableOpacity, Platform } from 'react-native';
 import { node, bool, object, func, oneOf, oneOfType, string, number, array, shape, any } from 'prop-types';
 import { store } from '../../../redux';
-import { TestIdTooltip } from '../../components-legacy';
+import { TestIdHandler } from '../../components';
 
 class Touchable extends Component {
   static defaultProps = {
@@ -292,8 +292,8 @@ class Touchable extends Component {
     );
 
     return (
-      <TestIdTooltip
-        id={this.props.testID}
+      <TestIdHandler
+        testID={this.props.testID}
       >
         <Element
           {...restProps}
@@ -309,7 +309,7 @@ class Touchable extends Component {
         >
           {children}
         </Element>
-      </TestIdTooltip>
+      </TestIdHandler>
     );
   }
 }

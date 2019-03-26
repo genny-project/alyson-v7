@@ -152,7 +152,7 @@ class Dropdown extends Component {
                       return (
                         <MenuLink
                           key={item.text}
-                          data-testID={`${testID}:${item.value}`}
+                          data-testID={`${item.parentCode}:${item.code}`}
                           to={(
                             item.href === 'home' ? '/'
                             : item.href.startsWith( '/' ) ? item.href
@@ -167,7 +167,7 @@ class Dropdown extends Component {
                           onClick={this.handleNavigate( item )}
                         >
                           <TestIdHandler
-                            testID={`${testID}:${item.value}`}
+                            testID={`${item.parentCode}:${item.code}`}
                           >
                             <Text
                               text={item.text}
@@ -191,11 +191,11 @@ class Dropdown extends Component {
                           color,
                           ...item.style,
                         }}
-                        data-testID={`${testID}:${item.value}`}
+                        data-testID={`${item.parentCode}:${item.code}`}
                         onSelect={this.handleSelect( item )}
                       >
                         <TestIdHandler
-                          testID={`${testID}:${item.value}`}
+                          testID={`${item.parentCode}:${item.code}`}
                         >
                           {isValidElement( item.children ) ? item.children
                           : isString( item.text ) ? (

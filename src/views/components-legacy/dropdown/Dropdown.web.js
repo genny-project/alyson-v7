@@ -3,7 +3,8 @@ import { array, bool, object, any, string } from 'prop-types';
 import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
 import { isArray, isString, Bridge } from '../../../utils';
-import { TextLegacy as Text, TestIdTooltip } from '../../components-legacy';
+import { TextLegacy as Text } from '../../components-legacy';
+import { TestIdHandler } from '../../components';
 import RecursiveLegacy from '../../components-legacy/layout-loader';
 import './Dropdown.css';
 
@@ -84,8 +85,8 @@ class Dropdown extends Component {
 
     return (
       <Menu>
-        <TestIdTooltip
-          id={buttonTestId}
+        <TestIdHandler
+          testID={buttonTestId}
         >
           <MenuButton
             disabled={disabled || !isArray( items, { ofMinLength: 1 })}
@@ -103,7 +104,7 @@ class Dropdown extends Component {
               : <RecursiveLegacy {...children} />
             }
           </MenuButton>
-        </TestIdTooltip>
+        </TestIdHandler>
 
         {isArray( items, { ofMinLength: 1 }) && (
           <MenuList
@@ -149,11 +150,11 @@ class Dropdown extends Component {
                       )}
                       onClick={this.handleNavigate( item )}
                     >
-                      <TestIdTooltip
-                        id={itemTestId}
+                      <TestIdHandler
+                        testID={itemTestId}
                       >
                         {child}
-                      </TestIdTooltip>
+                      </TestIdHandler>
                     </MenuLink>
                   );
                 }
@@ -164,11 +165,11 @@ class Dropdown extends Component {
                     data-testID={itemTestId}
                     onSelect={this.handleSelect( item )}
                   >
-                    <TestIdTooltip
-                      id={itemTestId}
+                    <TestIdHandler
+                      testID={itemTestId}
                     >
                       {child}
-                    </TestIdTooltip>
+                    </TestIdHandler>
                   </MenuItem>
                 );
               }
@@ -189,8 +190,8 @@ class Dropdown extends Component {
                     }}
                     onClick={this.handleNavigate( item )}
                   >
-                    <TestIdTooltip
-                      id={itemTestId}
+                    <TestIdHandler
+                      testID={itemTestId}
                     >
                       <Text
                         text={item.text}
@@ -199,7 +200,7 @@ class Dropdown extends Component {
                           ...menuLinkStyle,
                         }}
                       />
-                    </TestIdTooltip>
+                    </TestIdHandler>
                   </MenuLink>
                 );
               }
@@ -211,8 +212,8 @@ class Dropdown extends Component {
                   data-testID={itemTestId}
                   onSelect={this.handleSelect( item )}
                 >
-                  <TestIdTooltip
-                    id={itemTestId}
+                  <TestIdHandler
+                    testID={itemTestId}
                   >
                     {
                       isValidElement( item.children )
@@ -231,7 +232,7 @@ class Dropdown extends Component {
                             ))
                             : <RecursiveLegacy {...item.children} />
                     }
-                  </TestIdTooltip>
+                  </TestIdHandler>
                 </MenuItem>
               );
             })}
