@@ -4,8 +4,9 @@ import { Bridge } from '../../../utils';
 import { Button } from '../../components';
 
 const EventButton = ({
-  buttonCode = '',
-  value = '',
+  code = '',
+  parentCode = '',
+  rootCode = '',
   disabled = false,
   onPress,
   children,
@@ -23,22 +24,20 @@ const EventButton = ({
       return false;
     }
 
-    const valueString = (
-      value &&
-      typeof value === 'string'
-    )
-      ? value
-      : JSON.stringify( value );
-
-    Bridge.sendEvent({
-      event: messageType,
-      eventType,
-      sendWithToken: true,
-      data: {
-        code: buttonCode,
-        value: valueString || null,
-      },
-    });
+    if (
+      code &&
+      parentCode
+    ) {
+      Bridge.sendFormattedEvent(
+        {
+          code,
+          parentCode,
+          rootCode,
+          eventType,
+          messageType,
+        }
+      );
+    }
 
     if ( onPress )
       onPress( event );
@@ -68,8 +67,9 @@ const EventButton = ({
 
 EventButton.propTypes = {
   children: any,
-  buttonCode: string.isRequired,
-  value: string.isRequired,
+  code: string.isRequired,
+  parentCode: string.isRequired,
+  rootCode: string.isRequired,
   onPress: func,
   disabled: bool,
   eventType: string,

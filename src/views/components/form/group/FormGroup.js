@@ -178,6 +178,7 @@ class FormGroup extends Component {
       onPress: () => submitForm(),
       testID: `${this.props.rootCode}:${questionCode}` || '',
       ...contextList,
+      parentGroupCode: questionGroupCode,
       rootQuestionGroupCode: this.props.rootCode,
       inheritedThemes: this.getStyling( true ),
       ask,

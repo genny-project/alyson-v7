@@ -8,6 +8,7 @@ class InputEvent extends Component {
     items: array.isRequired,
     color: string,
     question: object,
+    parentGroupCode: string,
     rootQuestionGroupCode: string,
     messageType: string,
     icon: string,
@@ -19,6 +20,7 @@ class InputEvent extends Component {
     const {
       question,
       messageType,
+      parentGroupCode,
       rootQuestionGroupCode,
       icon,
       onPress, // eslint-disable-line no-unused-vars
@@ -33,8 +35,9 @@ class InputEvent extends Component {
         {...restProps}
         withFeedback
         eventType={messageType}
-        value={question.code}
-        buttonCode={rootQuestionGroupCode}
+        code={question.code}
+        parentCode={parentGroupCode}
+        rootCode={rootQuestionGroupCode}
       >
         {
           isString( icon, { ofMinLength: 1 })

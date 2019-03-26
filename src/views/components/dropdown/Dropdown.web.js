@@ -3,7 +3,7 @@ import { array, bool, object, any, string } from 'prop-types';
 import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
 import { isArray, isString, Bridge } from '../../../utils';
-import { Fragment, Icon, Box, TestIdHandler } from '../index';
+import { Fragment, Icon, Box, TestIdHandler, Text } from '../index';
 import './Dropdown.css';
 
 const styles = {
@@ -42,30 +42,13 @@ class Dropdown extends Component {
   }
 
   handleSelect = item => () => {
-    if ( item.buttonCode ) {
-      const {
-        value ,
-        buttonCode,
-        messageType = 'BTN',
-        eventType = 'BTN_CLICK',
-      } = item;
-
-      const valueString = (
-        value &&
-        typeof value === 'string'
-      )
-        ? value
-        : JSON.stringify( value );
-
-      Bridge.sendEvent({
-        event: messageType,
-        eventType,
-        sendWithToken: true,
-        data: {
-          code: buttonCode,
-          value: valueString || null,
-        },
-      });
+    if (
+      item.code &&
+      item.parentCode
+    ) {
+      Bridge.sendFormattedEvent(
+        item
+      );
     }
   }
 
@@ -95,25 +78,26 @@ class Dropdown extends Component {
     } = this.props;
 
     return (
-      <TestIdHandler
-        testID={testID}
-      >
-        <Menu>
-          {({ isOpen }) => {
-            return (
-              <Fragment>
+
+      <Menu>
+        {({ isOpen }) => {
+          return (
+            <Fragment>
+              <TestIdHandler
+                testID={testID}
+              >
                 <MenuButton
                   onClick={( e ) => {
                     e.stopPropagation();
-                  // TODO stop propagation wont work with onPress,
-                  // as they are different event types.
+                    // TODO stop propagation wont work with onPress,
+                    // as they are different event types.
                   }}
                   disabled={disabled || !isArray( items, { ofMinLength: 1 })}
                   style={{
                     ...styles['menuButtonStyle'],
                     color,
                   }}
-                  data-testID={`dropdown ${testID}`}
+                  data-testID={testID}
                 >
                   <Box
                     flex={1}
@@ -128,7 +112,7 @@ class Dropdown extends Component {
                           : null
                       ))
                       : null
-                  }
+                    }
                     <Box
                       justifyContent="center"
                       transform={[
@@ -147,8 +131,9 @@ class Dropdown extends Component {
                     </Box>
                   </Box>
                 </MenuButton>
+              </TestIdHandler>
 
-                {isArray( items, { ofMinLength: 1 }) && (
+              {isArray( items, { ofMinLength: 1 }) && (
                 <MenuList
                   style={{
                     position: 'absolute',
@@ -167,7 +152,7 @@ class Dropdown extends Component {
                       return (
                         <MenuLink
                           key={item.text}
-                          data-testID={`dropdown-item ${testID}`}
+                          data-testID={`${testID}:${item.value}`}
                           to={(
                             item.href === 'home' ? '/'
                             : item.href.startsWith( '/' ) ? item.href
@@ -181,7 +166,19 @@ class Dropdown extends Component {
                           }}
                           onClick={this.handleNavigate( item )}
                         >
-                          {item.text}
+                          <TestIdHandler
+                            testID={`${testID}:${item.value}`}
+                          >
+                            <Text
+                              text={item.text}
+                              {...{
+                                ...styles['menuItemStyle'],
+                                ...styles['menuLinkStyle'],
+                                color,
+                                ...item.style,
+                              }}
+                            />
+                          </TestIdHandler>
                         </MenuLink>
                       );
                     }
@@ -194,29 +191,42 @@ class Dropdown extends Component {
                           color,
                           ...item.style,
                         }}
-                        data-testID={`dropdown-item ${testID}`}
+                        data-testID={`${testID}:${item.value}`}
                         onSelect={this.handleSelect( item )}
                       >
-                        {isValidElement( item.children ) ? item.children
-                        : isString( item.text ) ? item.text
-                        : isArray( item.children )
-                          ? item.children.map(( child ) => (
-                            isValidElement( child )
-                              ? child
+                        <TestIdHandler
+                          testID={`${testID}:${item.value}`}
+                        >
+                          {isValidElement( item.children ) ? item.children
+                          : isString( item.text ) ? (
+                            <Text
+                              text={item.text}
+                              {...{
+                                ...styles['menuItemStyle'],
+                                color,
+                                ...item.style,
+                              }}
+                            />
+                          )
+                            : isArray( item.children )
+                              ? item.children.map(( child ) => (
+                                isValidElement( child )
+                                  ? child
+                                  : null
+                              ))
                               : null
-                          ))
-                          : null
                         }
+                        </TestIdHandler>
+
                       </MenuItem>
                     );
                   })}
                 </MenuList>
-                )}
-              </Fragment>
-            );
-          }}
-        </Menu>
-      </TestIdHandler>
+              )}
+            </Fragment>
+          );
+        }}
+      </Menu>
     );
   }
 }

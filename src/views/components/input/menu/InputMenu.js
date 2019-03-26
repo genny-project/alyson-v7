@@ -7,6 +7,7 @@ class InputMenu extends Component {
   static propTypes = {
     items: array.isRequired,
     color: string,
+    parentGroupCode: string,
     rootQuestionGroupCode: string,
     question: object,
     icon: string,
@@ -16,6 +17,8 @@ class InputMenu extends Component {
     const {
       items,
       icon,
+      parentGroupCode,
+      rootQuestionGroupCode,
       ...restProps
     } = this.props;
     const { question } = this.props;
@@ -27,8 +30,9 @@ class InputMenu extends Component {
           ? items.map( item => ({
             text: item.label,
             icon: 'person',
-            value: item.value,
-            buttonCode: this.props.rootQuestionGroupCode,
+            code: item.value,
+            parentCode: parentGroupCode,
+            rootCode: rootQuestionGroupCode,
             style: item.style,
             // eventType: 'TV_SELECT',
             // messageType: 'TV_EVENT',

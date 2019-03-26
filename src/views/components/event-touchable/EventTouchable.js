@@ -1,11 +1,12 @@
 import React from 'react';
-import { string, bool, any, func, oneOfType, object } from 'prop-types';
+import { string, bool, any, func } from 'prop-types';
 import { Bridge } from '../../../utils';
 import { Touchable } from '../../components';
 
 const EventTouchable = ({
-  buttonCode = '',
-  value = '',
+  code = '',
+  parentCode = '',
+  rootCode = '',
   onPress,
   disabled,
   children,
@@ -22,22 +23,20 @@ const EventTouchable = ({
       return false;
     }
 
-    const valueString = (
-      value &&
-      typeof value === 'string'
-    )
-      ? value
-      : JSON.stringify( value );
-
-    Bridge.sendEvent({
-      event: messageType,
-      eventType,
-      sendWithToken: true,
-      data: {
-        code: buttonCode,
-        value: valueString || null,
-      },
-    });
+    if (
+      code &&
+      parentCode
+    ) {
+      Bridge.sendFormattedEvent(
+        {
+          code,
+          parentCode,
+          rootCode,
+          eventType,
+          messageType,
+        }
+      );
+    }
 
     if ( onPress )
       onPress( event );
@@ -64,8 +63,9 @@ const EventTouchable = ({
 
 EventTouchable.propTypes = {
   children: any,
-  buttonCode: string.isRequired,
-  value: oneOfType( [string, object] ).isRequired,
+  code: string.isRequired,
+  parentCode: string.isRequired,
+  rootCode: string.isRequired,
   onPress: func,
   disabled: bool,
   eventType: string,

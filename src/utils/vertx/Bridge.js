@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 import axios from 'axios';
 import config from '../../config';
-import { prefixedLog, isObject } from '../../utils';
+import { prefixedLog, isObject, isString } from '../../utils';
 import { store } from '../../redux';
 import Vertx from './Vertx';
 import MessageHandler from './MessageHandler';
@@ -82,6 +82,34 @@ class Bridge {
     }
   }
 
+  sendFormattedEvent({
+    code,
+    parentCode,
+    rootCode,
+    eventType = 'BTN_CLICK',
+    messageType = 'BTN',
+  }) {
+    if (
+      isString( code ) &&
+      isString( parentCode )
+    ) {
+      this.sendEvent({
+        event: messageType,
+        sendWithToken: true,
+        eventType,
+        data: {
+          code,
+          parentCode,
+          rootCode,
+        },
+      });
+    }
+  }
+
+  /* ----------------------------
+    legacy compatibility events
+  ------------------------------*/
+
   sendAnswer( answer ) {
     this.sendAnswers( [...answer] );
   }
@@ -120,6 +148,8 @@ class Bridge {
       data,
     });
   }
+
+  /* ------------------------ */
 
   checkStoreForCachedAction({
     event,
