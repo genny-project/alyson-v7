@@ -9,13 +9,13 @@ var timeoutMouseOutID;
 class TestIdHandler extends Component {
   static defaultProps = {
     testID: 'test-id',
-    debounce: 300,
+    timer: 300,
   }
 
   static propTypes = {
     children: node,
     testID: string,
-    debounce: integer,
+    timer: integer,
   }
 
   handleMouseOverDebounced = () => {
@@ -25,7 +25,7 @@ class TestIdHandler extends Component {
       () => {
         this.handleMouseOver();
       },
-      this.props.debounce,
+      this.props.timer,
     );
   }
 
@@ -36,7 +36,7 @@ class TestIdHandler extends Component {
       () => {
         this.handleMouseOut();
       },
-      this.props.debounce,
+      this.props.timer,
     );
   }
 

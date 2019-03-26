@@ -101,9 +101,9 @@ class Panel extends Component {
         test-id={`rootCode-${location}-panel`}
         {...isExpandable ? { position: 'relative' } : {}}
         {...style}
-        transitionDuration='200ms'
-        transitionProperty='width'
-        transitionTimingFunction='ease'
+        // transitionDuration='200ms'
+        // transitionProperty='width'
+        // transitionTimingFunction='ease'
         {...specialStyle}
       >
         {

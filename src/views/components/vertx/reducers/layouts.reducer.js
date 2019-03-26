@@ -163,13 +163,15 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
     state.asks[item.questionCode] = {
       name: item.name,
       code: item.questionCode,
-      ...( isObject( item.contextList ) && isArray( item.contextList.context )
+      ...( isObject( item.contextList ) && isArray( item.contextList.contexts )
         ? {
           links: [
-            ...( isObject( state.asks[item.code], { withProperty: 'links' }) && isArray( state.asks[item.code].links )) ? state.asks[item.code].links.filter( existingLink => (
-              !item.contextList.context.some( newLink => newLink.contextCode === existingLink.code )
-            )) : [],
-            ...item.contextList.context.map( link => {
+            ...( isObject( state.asks[item.code], { withProperty: 'links' }) && isArray( state.asks[item.code].links ))
+              ? state.asks[item.code].links.filter( existingLink => (
+                !item.contextList.contexts
+                  .some( newLink => newLink.contextCode === existingLink.code )
+              )) : [],
+            ...item.contextList.contexts.map( link => {
               const nameTypes = {
                 THEME: 'theme',
               };

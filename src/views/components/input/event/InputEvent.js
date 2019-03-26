@@ -24,6 +24,7 @@ class InputEvent extends Component {
       rootQuestionGroupCode,
       icon,
       onPress, // eslint-disable-line no-unused-vars
+      color,
       ...restProps
     } = this.props;
     // const { contextList } = question;
@@ -40,11 +41,13 @@ class InputEvent extends Component {
         rootCode={rootQuestionGroupCode}
         flexDirection="row"
         alignItems="center"
+        justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
       >
         {
           isString( icon, { ofMinLength: 1 })
             ? (
               <Icon
+                color={color}
                 name={icon}
               />
             ) : null
@@ -59,7 +62,7 @@ class InputEvent extends Component {
           )
             ? (
               <Text
-                {...restProps}
+                color={color}
                 whiteSpace="nowrap"
                 text={question.name}
               />

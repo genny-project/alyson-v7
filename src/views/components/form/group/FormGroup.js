@@ -225,7 +225,7 @@ class FormGroup extends Component {
       childAsks,
       question,
       questionCode,
-      contextList,
+      // contextList,
     } = questionGroup;
 
     let properties = {};
@@ -241,31 +241,40 @@ class FormGroup extends Component {
       }
     });
 
-    const isExpandable = isObject( contextList, { withProperty: 'contexts' }) && isArray( contextList.contexts, { ofMinLength: 1 })
-      ? contextList.contexts.some( link => {
-        const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.expandable` );
+    /*
+    const isExpandable = (
+      isObject( contextList, { withProperty: 'contexts' }) &&
+      isArray( contextList.contexts, { ofMinLength: 1 })
+    ) ? contextList.contexts.some( link => {
+      const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.expandable` );
 
         return themeEntity;
       })
       : false;
 
-    const renderQuestionGroupInput = isObject( contextList, { withProperty: 'contexts' }) && isArray( contextList.contexts, { ofMinLength: 1 })
-      ? contextList.contexts.some( link => {
-        const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.renderQuestionGroupInput` );
+    const renderQuestionGroupInput = (
+      isObject( contextList, { withProperty: 'contexts' }) &&
+      isArray( contextList.contexts, { ofMinLength: 1 })
+    ) ? contextList.contexts.some( link => {
+      const themeEntity = dlv(
+        this.props.themes,
+        `${link.contextCode}.properties.renderQuestionGroupInput`
+      );
 
         return themeEntity;
       })
       : false;
+    */
 
     if (
-      properties.expandable ||
-      isExpandable // TODO - remove after question linking is added
+      properties.expandable
     ) {
       return (
         <Collapsible
+          isClosed={this.props.isClosed}
           renderHeader={(
             question &&
-            renderQuestionGroupInput
+            properties.renderQuestionGroupInput
           ) ? (
               this.renderInput(
                 questionGroup,
@@ -326,7 +335,7 @@ class FormGroup extends Component {
                   {
                 (
                   question &&
-                  renderQuestionGroupInput
+                  properties.renderQuestionGroupInput
                 ) ? (
                     this.renderInput(
                       questionGroup,
@@ -379,7 +388,7 @@ class FormGroup extends Component {
             {
               (
                 question &&
-                renderQuestionGroupInput
+                properties.renderQuestionGroupInput
               ) ? (
                   this.renderInput(
                     questionGroup,
@@ -421,7 +430,7 @@ class FormGroup extends Component {
         {
           (
             question &&
-            renderQuestionGroupInput
+            properties.renderQuestionGroupInput
           ) ? (
               this.renderInput(
                 questionGroup,

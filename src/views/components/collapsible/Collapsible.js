@@ -21,6 +21,7 @@ class Collapsible extends Component {
     headerWrapperProps: object,
     headerIconProps: object,
     renderHeader: node,
+    isClosed: bool,
   }
 
   state = {
@@ -40,6 +41,7 @@ class Collapsible extends Component {
       headerWrapperProps,
       headerIconProps,
       renderHeader,
+      isClosed,
     } = this.props;
 
     const { isOpen } = this.state;
@@ -63,24 +65,29 @@ class Collapsible extends Component {
               >
                 {/* header alt goes here */}
                 {renderHeader}
-                <Box
-                  justifyContent="center"
-                  transform={[
-                    { rotate: isOpen ? '0deg' : '270deg' },
-                  ]}
-                  {...headerWrapperProps}
-                >
-                  <Icon
-                    name="keyboard_arrow_down"
-                    color="black"
-                    {...headerIconProps}
-                  />
-                </Box>
+                {
+                  !isClosed
+                    ? (
+                      <Box
+                        justifyContent="center"
+                        transform={[
+                          { rotate: isOpen ? '0deg' : '270deg' },
+                        ]}
+                        {...headerWrapperProps}
+                      >
+                        <Icon
+                          name="keyboard_arrow_down"
+                          color="black"
+                          {...headerIconProps}
+                        />
+                      </Box>
+                    ) : null
+                }
               </Box>
             </Touchable>
           ) : null
         }
-        {isOpen ? (
+        {isOpen && !isClosed ? (
           React.Children.map( children, child => (
             React.cloneElement( child, {
               ...child.props,

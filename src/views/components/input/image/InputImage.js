@@ -119,8 +119,8 @@ class InputImage extends Component {
                   onMouseOut={this.handleMouseOut}
                   padding={5}
                   borderRadius={2}
-                  transitionDuration="200ms"
-                  transitionTimingFunction="ease"
+                  // transitionDuration="200ms"
+                  // transitionTimingFunction="ease"
                 >
                   <Touchable
                     withFeedback

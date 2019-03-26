@@ -97,7 +97,7 @@ class Dropdown extends Component {
                     ...styles['menuButtonStyle'],
                     color,
                   }}
-                  data-testID={testID}
+                  data-testid={testID}
                 >
                   <Box
                     flex={1}
@@ -152,7 +152,7 @@ class Dropdown extends Component {
                       return (
                         <MenuLink
                           key={item.text}
-                          data-testID={`${item.parentCode}:${item.code}`}
+                          data-testid={`${item.parentCode}:${item.code}`}
                           to={(
                             item.href === 'home' ? '/'
                             : item.href.startsWith( '/' ) ? item.href
@@ -191,7 +191,7 @@ class Dropdown extends Component {
                           color,
                           ...item.style,
                         }}
-                        data-testID={`${item.parentCode}:${item.code}`}
+                        data-testid={`${item.parentCode}:${item.code}`}
                         onSelect={this.handleSelect( item )}
                       >
                         <TestIdHandler
