@@ -27,15 +27,9 @@ A layout is constructed of from the following objects:
 The **Frame** base entity is the basic building block of the layout. Any **Frames**, **Asks**, or **Legacy Layouts** that are **linked** to a **Frame** will be positioned based on the value of the **Link** between them.
 
 ### Panels
-Each **Frame** contains up to five **Panels**. The names of the **Panels** are derived by their corresponding compass directions (north being the top of the screen): **North**, **South**, **East**, **West**, and **Centre**.
+The **Frame** base entity is the basic building block of the layout. Each **Frame** has up to five (5) **Panels**; **North**, **South**, **East**, **West**, and **Centre**. The names of the **Panels** are derived by their corresponding compass directions, with north being an the top of the screen:
 
-The panel layout is as follows:
-
-## Frames ( prefix: FRM_ )
-
-The **Frame** base entity is the basic building block of the layout. Each **Frame** has five (5) **Panels**; **North**, **South**, **East**, **West**, and **Centre**. The panel layout is as follows:
-
-![Panel Layout](https://i.imgur.com/7hj8n7r.png)
+![Panel Layout](https://i.imgur.com/t4FxSph.png)
 
 Each **Panel** has predefined default behaviour that allows content within it to be display in a way that is easily predictable and controllable by the backend. This behaviour can be overridden if desired.
 
