@@ -90,8 +90,8 @@ class Bridge {
     messageType = 'BTN',
   }) {
     if (
-      isString( code ) &&
-      isString( parentCode )
+      isString( code, { ofMinLength: 1 }) &&
+      isString( parentCode, { ofMinLength: 1 })
     ) {
       this.sendEvent({
         event: messageType,
@@ -149,7 +149,8 @@ class Bridge {
     });
   }
 
-  /* ------------------------ */
+  /* --------------------------
+  --------------------------- */
 
   checkStoreForCachedAction({
     event,
@@ -157,8 +158,8 @@ class Bridge {
   }) {
     const { actionCache } = store.getState().vertx;
 
-    if ( isObject( data, { withProperties: ['code', 'value'] })) {
-      const actionId = `${data.code}:${data.value}`;
+    if ( isObject( data, { withProperties: ['code', 'parentCode'] })) {
+      const actionId = `${data.parentCode}:${data.code}`;
 
       if ( actionCache[actionId] ) {
         if ( isObject( actionCache[actionId] )) {
