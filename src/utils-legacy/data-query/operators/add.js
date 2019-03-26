@@ -1,5 +1,5 @@
 import { injectContext } from './helpers';
-import { isArray, isInteger } from '../..';
+import { isArray, isInteger } from '../../../utils';
 
 /* Returns the length of the data provided */
 export default ( data, options, allData, context ) => {
