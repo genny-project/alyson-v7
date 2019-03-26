@@ -176,7 +176,7 @@ class FormGroup extends Component {
         : 'default',
       onKeyPress: handleKeyPress( submitForm, index, questionGroupCode ), // functions
       onPress: () => submitForm(),
-      testID: `${this.props.rootCode}:${questionCode}` || '',
+      testID: `${questionGroupCode}:${questionCode}` || '',
       ...contextList,
       parentGroupCode: questionGroupCode,
       rootQuestionGroupCode: this.props.rootCode,

@@ -23,6 +23,11 @@ class TestDisplay extends Component {
       >
         <Text
           size="xxs"
+          text="Current Element ID:"
+        />
+
+        <Text
+          size="xxs"
           text={testDisplay.testId}
         />
       </Box>
