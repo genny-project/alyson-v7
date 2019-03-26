@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { array, string, object, func, bool } from 'prop-types';
-import { Text, EventTouchable, Icon } from '../../index';
+import { Text, EventTouchable, Icon, Box } from '../../index';
 import { isString } from '../../../../utils';
 
 class InputEvent extends Component {
@@ -38,6 +38,8 @@ class InputEvent extends Component {
         code={question.code}
         parentCode={parentGroupCode}
         rootCode={rootQuestionGroupCode}
+        flexDirection="row"
+        alignItems="center"
       >
         {
           isString( icon, { ofMinLength: 1 })
@@ -47,6 +49,9 @@ class InputEvent extends Component {
               />
             ) : null
         }
+        <Box
+          paddingRight={5}
+        />
         {
           isString( question.name, { isNotSameAs: ' ' }) && !(
             this.props.isClosed &&

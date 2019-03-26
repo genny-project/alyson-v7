@@ -17,6 +17,7 @@ const defaultStyle = {
 class FormGroup extends Component {
   static propTypes = {
     rootCode: string,
+    parentGroupCode: string,
     questionGroup: object,
     form: object,
     inheritedThemes: object,
@@ -202,6 +203,7 @@ class FormGroup extends Component {
         {
           questionGroup: ask,
           form: form,
+          parentGroupCode: this.props.questionGroup.questionCode,
           rootCode: this.props.rootCode,
           inheritedThemes: this.getStyling( true ),
           index: index,
@@ -217,7 +219,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form } = this.props;
+    const { index, questionGroup, form, parentGroupCode } = this.props;
     const {
       name,
       childAsks,
@@ -267,7 +269,7 @@ class FormGroup extends Component {
           ) ? (
               this.renderInput(
                 questionGroup,
-                questionCode,
+                parentGroupCode,
                 index,
                 form,
               )
@@ -328,7 +330,7 @@ class FormGroup extends Component {
                 ) ? (
                     this.renderInput(
                       questionGroup,
-                      questionCode,
+                      parentGroupCode,
                       index,
                       form,
                     )) : null
@@ -381,7 +383,7 @@ class FormGroup extends Component {
               ) ? (
                   this.renderInput(
                     questionGroup,
-                    questionCode,
+                    parentGroupCode,
                     index,
                     form,
                   )) : null
@@ -423,7 +425,7 @@ class FormGroup extends Component {
           ) ? (
               this.renderInput(
                 questionGroup,
-                questionCode,
+                parentGroupCode,
                 index,
                 form,
               )) : null
