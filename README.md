@@ -1,11 +1,35 @@
 # Alyson v7
 
-
 ## Overview
 
-New display for the Genny system. Instead of using json files which describe react element trees, this system uses only base entities and links to form the basis of each page. Changing the layout, content, or styling of a page is achieved by changing the base entities or links between them.
+Alyson v7 is the updated Frontend for the Genny system.
 
-A layout is made of two types of base entities -  **Frames** (positional elements) and **Themes** (styling) - and the content is displayed is derived from **Asks** (Question Groups and Questions). The relationships between each of these entities is controlled by **Links** (relation description).
+### What Has Changed
+The previous version used json files called 'layouts' to describe component structures, which were then converted to React Element trees. 
+
+This version aims to removes the dependance on a predefined layout. The Backend sends **Base Entities**, **Asks**, and **Links** to the Frontend, then, starting from one root Base Entity, it recursively renders the entire component tree.
+
+### What Does This Affect
+Instead of defining each page, and navigating between them to change the display, the Backend only needs to add, remove, or change **Base Entities** or the **Links** between **Base Entities**.
+
+The styling for all Components is defined by the Backend, meaning that the Backend can control the styling and apply changes to as many instances of the system as desired.
+
+## Layout Basics
+A layout is constructed of from the following objects:
+
+- **Frames.** **Base Entities** that positions child elements according to certain criteria.
+- **Themes.** **Base Entities** that contain styling or behavioural data for other elements.
+- **Asks.** **Question Groups** and **Questions** that renders content or input elements.
+- **Links.** Describes the nature of the relationship between entities.
+- **Legacy Layout.** Renders elements from the previous versions json file.
+
+## Frames ( prefix: FRM_ )
+The **Frame** base entity is the basic building block of the layout. Any **Frames**, **Asks**, or **Legacy Layouts** that are **linked** to a **Frame** will be positioned based on the value of the **Link** between them.
+
+### Panels
+Each **Frame** contains up to five **Panels**. The names of the **Panels** are derived by their corresponding compass directions (north being the top of the screen): **North**, **South**, **East**, **West**, and **Centre**.
+
+The panel layout is as follows:
 
 ## Frames ( prefix: FRM_ )
 
