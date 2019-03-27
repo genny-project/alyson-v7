@@ -4,15 +4,15 @@
 - [Overview](#Overview)
 - [React Element Tree Legend](#React-Element-Tree-Legend)
 - [Walkthrough](#Walkthrough)
-  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
-  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
-  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
-  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
-  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
-  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
-  - [Step 1: Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
-  - [Step 1: Add the Root Frame](#Step-9--Add-a-Question-Set-to-Header-Frame)
-  - [Step 1: Add the Root Frame](#Step-9-Add-a-Question-Set-to-Header-Frame)
+  - [Step 1: Add the Root Frame](#Step-1-add-the-root-frame)
+  - [Step 2: Add the Root Frame](#Step-1-add-the-root-frame)
+  - [Step 3: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 4: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 5: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 6: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 7: Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
+  - [Step 8: Add the Root Frame](#Step-9--Add-a-Question-Set-to-Header-Frame)
+  - [Step 9: Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
   
 
 ## Overview
@@ -30,7 +30,7 @@ Before going through these steps, [click here to view the documentation for Layo
 
 ## Walkthrough
 
-### 1 Add the Root Frame
+### Step 1: Add the Root Frame
 First, we need to add the first Frame, `FRM_ROOT`. This is the default **Frame** the Frontend is looking for to begin constructing the element tree.
 
 #### Base Entity Message
