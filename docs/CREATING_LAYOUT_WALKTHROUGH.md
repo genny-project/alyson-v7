@@ -2,7 +2,7 @@
 
 ## Contents
 - [Overview](#Overview)
-- [React Element Tree Legend](#React Element Tree Legend)
+- [React Element Tree Legend](#React-Element-Tree-Legend)
 - [Walkthrough](#Walkthrough)
   - [Step 1: Add the Root Frame](#1-add-the-root-frame)
 
