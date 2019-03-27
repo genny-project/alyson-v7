@@ -53,28 +53,6 @@ Each **Panel** has predefined default behaviour that allows content within it to
   - Will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available.
   - Content will be positioned against the **left side** of the panel. Override with `justifyContent`.     
 
-#### Frame Base Entity Structure
-```
-{
-  "baseEntityAttributes": [],
-  "code": "FRM_XXX",
-  "created": "2019-02-06T04:24:10",
-  "delete": false,
-  "id": 1001,
-  "index": 0,
-  "links": [],
-  "name": "Frame Name",
-  "realm": "genny",
-  "replace": true,
-  "shouldDeleteLinkedBaseEntities": false,
-  "totalCount": 1,
-  "updated": "2019-02-06T04:24:10"
-}
-```
-
-#### Frame Fields
-TBD
-
 #### Frame Attributes
 | Option | Value Type | Example | Required | Description |
 | ------ | ---------- | ------- | -------- | ----------- |
@@ -82,43 +60,7 @@ TBD
 
 ### Themes ( prefix: THM_ )
 
-The **Theme** base entity contains all the styling information for other rendered elements (**Frames** and **Asks**). The value of the attribute `PRI_CONTENT` is an object that contains key-value pairings made up of CSS attributes and their values, which will be passed to the linked Base Entity when it is rendered in the app.
-
-#### Theme Base Entity Structure
-```
-{
-  "baseEntityAttributes": [
-    {
-      "attributeCode": "PRI_CONTENT",
-      "attributeName": "Content",
-      "baseEntityCode": "THM_XXX",
-      "created": "2018-08-29T03:00:39",
-      "inferred": false,
-      "privacyFlag": false,
-      "readonly": false,
-      "value": {
-        "backgroundColor": "#ddd"
-      },
-      "valueString": {
-        "backgroundColor": "#ddd"
-      }
-    }
-  ],
-  "code": "THM_XXX",
-  "created": "2019-02-06T04:24:10",
-  "delete": false,
-  "id": 1001,
-  "index": 0,
-  "links": [],
-  "name": "Theme Name",
-  "realm": "genny",
-  "replace": true,
-  "shouldDeleteLinkedBaseEntities": false,
-  "totalCount": 1,
-  "updated": "2019-02-06T04:24:10"
-}
-
-```
+The **Theme** base entity contains all the styling information for other rendered elements (**Frames** and **Asks**). The value of the attribute `PRI_CONTENT` is an object that contains key-value pairings made up of **Component Props** and their values, which will be passed to the linked Base Entity when it is rendered and passed to children as required.
 
 #### Theme Fields
 TBD
@@ -141,7 +83,6 @@ A **Question** defines an element that will display information to the user. The
 #### Question Group
 
 A **Question Group** defines a group of collection of **Questions**. **Question Groups** can have a **Theme** linked to it, and define behaviour such as Pagination, Dropdowns, and Selectable element. A **Question** can be rendered as part of the **Question Group** itself, not as a child, using the `question` field.
-
 
 #### Ask Structure
 ```
@@ -495,7 +436,7 @@ A **Question Group** defines a group of collection of **Questions**. **Question 
 
 ## Legacy Layouts ( prefix: LAY_ )
 
-The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries. They are rendered using the Sublayout component.
+The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries.
 
 ## Links ( prefix: LNK_ )
 
@@ -535,7 +476,7 @@ The **Panel** the child will be linked to is deinfed by the `linkValue` field. T
 | linkValue | string | "CENTRE" | true | Defines which **Panel** of the parent **Frame** the child is linked to. |
 | weight | number | 1 | true | The priority of the link. Lower numbers are more important, a value of `0` means the child will be hidden. |
 
-## Creating a Layout
+## Creating a Layout: Step by Step
 
 Tree of Frames and Asks
 
@@ -556,7 +497,3 @@ First Recursion with Panels
 Second Recursion with Panels
 
 ![Second Level](https://i.imgur.com/SjdjV0a.png)
-
-## Sending Messages
-
-TBD
