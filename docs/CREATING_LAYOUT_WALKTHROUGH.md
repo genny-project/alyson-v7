@@ -372,3 +372,93 @@ We need to send the Content Frame again with a Link to the User Details Question
 Now we can see that the Content Frame has a Centre Panel, and it has a Form as it's child. We can also see the actual page has updated, and is displaying the User's first name in the centre of the screen.
 
 ![Link the User Details Question Set to the Content Frame](https://i.imgur.com/RhGCxW3.png)
+
+***
+
+### 7. Add a Background Color to the Main App.
+Let's create a Theme to add a red background to the app, and link it to the Root Frame so it's passed to all elements in the tree.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_ROOT",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_THEME",
+        "linkValue": "CENTRE",
+        "sourceCode": "FRM_ROOT",
+        "targetCode": "THM_BACKGROUND_RED",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Root Frame"
+},
+{
+  "code": "THM_BACKGROUND_RED",
+  "name": "Theme Background Red",
+  "baseEntityAttributes": [
+    {
+      "attributeCode": "PRI_CONTENT",
+      "attributeName": "Content",
+      "baseEntityCode": "THM_BACKGROUND_RED",
+      "value": {
+        "backgroundColor": "#b70e0e"
+      }
+    }
+  ]
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    asks: {...},
+    baseEntities: {
+      FRM_CONTENT: {...},
+      FRM_MAIN: {...},
+      FRM_ROOT: {...},
+      THM_BACKGROUND_RED: {...}
+    }
+  },
+  layouts: {
+    frames: {
+      FRM_CONTENT: {...},
+      FRM_MAIN: {...},
+      FRM_ROOT: {
+        code: "FRM_ROOT",
+        links: [
+          {
+            code: "FRM_MAIN",
+            panel: "CENTRE",
+            type: "frame",
+            weight: 1
+          },
+          {
+            code: "THM_BACKGROUND_RED",
+            panel: "CENTRE",
+            type: "theme",
+            weight: 1
+          }
+        ],
+        name: "Root Frame"
+      }
+    },
+    themes: {
+      THM_BACKGROUND_RED: {
+        code: "THM_BACKGROUND_RED",
+        data: {
+          backgroundColor: "#b70e0e"
+        },
+        name: "Theme Background Red"
+      }
+    }
+  }
+}
+```
+
+#### Updated Displays
+Since there are no new Frames or Question Sets, there is no change to the elements rendered in the React tree. The page of the app has been updated with the new background color.
+
+![Add a Background Color to the Main App](https://i.imgur.com/NMWwJ8a.png)
