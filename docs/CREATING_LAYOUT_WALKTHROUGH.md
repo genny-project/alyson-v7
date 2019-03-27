@@ -13,7 +13,8 @@
   - [Step 7 - Add a Background Color to the Page](#Step-7---Add-a-Background-Color-to-the-Page)
   - [Step 8 - Add a Header Frame](#Step-8---Add-a-Header-Frame)
   - [Step 9 - Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
-  
+  - [Step 10 - Change Link Value Between Header Frame and Question Set](#Step-10---Change Link Value Between Header Frame and Question Set)
+ 
 
 ## Overview
 To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing at each step the following:
@@ -719,6 +720,66 @@ Now we want to display something in the Header Frame. Let's send a simple Questi
 ```
 
 #### Updated Displays
-No change to the React tree or the page this time. We need to add a Link between the Content Frame and the Question Set.
+Both the React tree and page have updated. The Header Frame now has a Centre Panel, which contains a Form. The page has rendered the Project Name at the centre of the top of the page.
 
-![Add a Question Set to Header Frame](https://i.imgur.com/IHKv6iD.png)
+![Add a Question Set to Header Frame](https://i.imgur.com/qcMooYL.png)
+
+***
+
+### Step 10 - Change Link Value Between Header Frame and Question Set
+[back to top](#)
+
+This is looking better, but we want to move the Project Name so it is positioned in the *top left* corner. So we need to send the Header Frame again with the value of the link to the Question Set changed to `WEST`.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_HEADER",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_ASK",
+        "linkValue": "WEST",
+        "sourceCode": "FRM_HEADER",
+        "targetCode": "QUE_PROJECT_HEADER_GRP",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Header Frame"
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    ask: {...},
+    baseEntities: {...}
+  },
+  layouts: {
+    asks: {...},
+    frames: {
+      FRM_CONTENT: {...},
+      FRM_HEADER: {
+        code: "FRM_HEADER",
+        links: [
+          {
+            code: "QUE_PROJECT_HEADER_GRP",
+            panel: "WEST",
+            type: "ask",
+            weight: 1
+          }
+        ],
+        name: "Header Frame"
+      },
+      FRM_MAIN: {...},
+      FRM_ROOT: {...}
+    }
+  }
+}
+```
+
+#### Updated Displays
+We can see what affect changing the Link value has had on the display. In the React tree, the Header Frame is now rendering a West Panel instead of a Centre Panel. For the page, the Project Name has been pushed over to the left side of the screen.
+
+![Change Link Value Between Header Frame and Question Set](https://i.imgur.com/Wu3Ryay.png)
