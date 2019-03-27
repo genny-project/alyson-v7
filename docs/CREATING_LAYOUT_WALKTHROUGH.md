@@ -1239,4 +1239,4 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
 #### Updated Displays
 -
 
-![Add Footer With Powered By Question Set](https://i.imgur.com/undefined.png)
+![Add Sidebar With Project Logo Question Set](https://i.imgur.com/wAYbmuk.png)
