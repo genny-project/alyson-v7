@@ -8,7 +8,7 @@ Alyson v7 is the updated Frontend for the Genny system.
 - [Layout Basics](#Layout Basics)
 - [Frames](#Frames)
 - [Themes](#Themes)
-- [Question Sets](#Question Sets)
+- [Question Sets](#Question-Sets)
 - [Legacy Layouts](#Legacy Layouts)
 - [Links](#Links)
 - [Creating a Layout](#Creating a Layout)
