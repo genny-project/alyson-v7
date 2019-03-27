@@ -14,8 +14,8 @@
   - [Step 8 - Add a Header Frame](#step-8---add-a-header-frame)
   - [Step 9 - Add a Question Set to Header Frame](#step-9---add-a-question-set-to-header-frame)
   - [Step 10 - Change Link Value Between Header Frame and Question Set](#step-10---change-link-value-between-header-frame-and-question-set)
- 
-
+  - [Step 11 - Add Footer With Powered By Question Set ](#step-11---add-footer-with-powered-by-question-set)
+  
 ## Overview
 To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing at each step the following:
 - The important fields of the message sent to the Frontend.
@@ -342,7 +342,7 @@ No change to the React tree or the page this time. We need to add a Link between
 ***
 
 ### Step 6 - Link the User Details Question Set to the Content Frame
-[back to top](#)
+[back to top](#creating-a-layout-step-by-step)
 
 We need to send the Content Frame again with a Link to the User Details Question Set.
 
@@ -681,14 +681,8 @@ Now we want to display something in the Header Frame. Let's send a simple Questi
   },
   layouts: {
     asks: {
-      QUE_USER_DETAILS_GRP: {
-        code: "QUE_USER_DETAILS_GRP",
-        name: "User Details"
-      },
-      QUE_FIRSTNAME: {
-        code: "QUE_FIRSTNAME",
-        name: "User First Name"
-      },
+      QUE_USER_DETAILS_GRP: {...},
+      QUE_FIRSTNAME: {...},
       QUE_PROJECT_HEADER_GRP: {
         code: "QUE_PROJECT_HEADER_GRP",
         name: "Project Header"
@@ -783,3 +777,149 @@ This is looking better, but we want to move the Project Name so it is positioned
 We can see what affect changing the Link value has had on the display. In the React tree, the Header Frame is now rendering a West Panel instead of a Centre Panel. For the page, the Project Name has been pushed over to the left side of the screen.
 
 ![Change Link Value Between Header Frame and Question Set](https://i.imgur.com/Kicm4mY.png)
+
+***
+
+### Step 11 - Add Footer With Powered By Question Set 
+[back to top](#creating-a-layout-step-by-step)
+
+Now we want to do that same thing again, and show the Project's `Powered By` tagline. It should be displayed in the bottom right corner. So we need to do a few things. First, send the Main Frame with a Link to Footer Frame with value `SOUTH`. Next, send the Footer Frame with a Link to the Question Set with value `EAST`. Finally, send the Question Set.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_MAIN",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_FRAME",
+        "linkValue": "SOUTH",
+        "sourceCode": "FRM_MAIN",
+        "targetCode": "FRM_FOOTER",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Main Frame"
+},
+{
+  "code": "FRM_FOOTER",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_ASK",
+        "linkValue": "EAST",
+        "sourceCode": "FRM_FOOTER",
+        "targetCode": "QUE_PROJECT_FOOTER_GRP",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Footer Frame"
+}
+```
+
+#### Ask Message
+```
+{
+  "sourceCode": "PER_USER1",
+  "targetCode": "PRJ_PROJECT1",
+  "questionCode": "QUE_PROJECT_FOOTER_GRP",
+  "name": "Project Footer",
+  "childAsks": [
+    {
+      "question": {
+        "attribute": {
+          "dataType": {
+            "className": "Text",
+            "typeName": "Text",
+            {...}
+          },
+          "code": "PRI_POWERED_BY",
+          "name": "Powered By"
+        },
+        "attributeCode": "PRI_POWERED_BY",
+        "code": "QUE_POWERED_BY",
+        "name": "Project Powered By"
+      },
+      "sourceCode": "PER_USER1",
+      "targetCode": "PRJ_PROJECT1",
+      "questionCode": "QUE_POWERED_BY",
+      "attributeCode": "PRI_POWERED_BY",
+      "readonly": true,
+      "name": "Project Powered By"
+    }
+  ]
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    asks: {
+      QUE_USER_DETAILS_GRP: {...},
+      QUE_FIRSTNAME: {...},
+      QUE_PROJECT_HEADER_GRP: {...},
+      QUE_NAME: {...},
+      QUE_PROJECT_FOOTER_GRP: {
+        code: "QUE_PROJECT_FOOTER_GRP",
+        name: "Project Footer"
+      },
+      QUE_POWERED_BY: {
+        code: "QUE_POWERED_BY",
+        name: "Project Powered By"
+      }
+    },
+    baseEntities: {...}
+  },
+  layouts: {
+    asks: {...},
+    frames: {
+      FRM_CONTENT: {...},
+      FRM_FOOTER: {
+        code: "FRM_FOOTER",
+        links: [
+          {
+            code: "QUE_PROJECT_FOOTER_GRP",
+            panel: "EAST",
+            type: "ask",
+            weight: 1
+          }
+        ],
+        name: "Footer Frame"
+      },
+      FRM_HEADER: {...},
+      FRM_MAIN: {
+        code: "FRM_MAIN",
+        links: [
+          {
+            code: "FRM_CONTENT",
+            panel: "CENTRE",
+            type: "frame",
+            weight: 1
+          },
+          {
+            code: "FRM_FOOTER",
+            panel: "SOUTH",
+            type: "frame",
+            weight: 1
+          },
+          {
+            code: "FRM_HEADER",
+            panel: "NORTH",
+            type: "frame",
+            weight: 1
+          }
+        ],
+        name: "Main Frame"
+      },
+      FRM_ROOT: {...}
+    }
+  }
+}
+```
+
+#### Updated Displays
+So we can see a change in both the React tree and the page this time. The Footer Frame has ben added to a new South Panel, and it has the Form inside its own East Panel. For the page, the new text is now being displayed in the bottom right corner of the page.
+
+![Add Footer With Powered By Question Set](https://i.imgur.com/b3CJgAb.png)
