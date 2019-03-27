@@ -150,6 +150,8 @@ The type of link is defined by the `attributeCode` field. The valid types of lin
 - LNK_ASK: Indicates that the child is an **Question Sets**.
 - **LNK_LAYOUT**: Indicates the child is a **Legacy Layout**. This allows backwards compatibility with the previous layouts.
 
+***Important:*** *While Themes are linked to Frames, they aren't actually applied to Frames directy, but instead are applied to a specific Panel based on the value of the Link.*
+
 The **Panel** the child will be linked to is defined by the `linkValue` field. The valid values are **NORTH**, **SOUTH**, **EAST**, **WEST**, and **CENTRE**.
 
 #### Link Structure
