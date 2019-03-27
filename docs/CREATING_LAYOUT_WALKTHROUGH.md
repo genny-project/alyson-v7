@@ -200,7 +200,7 @@ Now we want to add the Frame where the main Content of each page of the app will
           }
         ],
         name: "Main Frame"
-      }
+      },
       FRM_ROOT: {...}
     }
   }
@@ -214,8 +214,8 @@ Again the React tree has updated, the Main Frame has a Centre Panel, and that Pa
 
 ***
 
-### 4. Add a Question Set.
-Now we want to display something in the Content Frame. Let's send a simple Question Set that can show the User's name.
+### 5. Add a User Details Question Set.
+Now we want to display something in the Content Frame. Let's send a simple Question Set that can show the User's First Name.
 
 #### Ask Message
 ```
@@ -308,3 +308,63 @@ Now we want to display something in the Content Frame. Let's send a simple Quest
 No change to the React tree or the page this time. We need to add a Link between the Content Frame and the Question Set.
 
 ![Add a Question Set](https://i.imgur.com/u2jHB1Q.png)
+
+***
+
+### 6. Link the User Details Question Set to the Content Frame.
+We need to send the Content Frame again with a Link to the User Details Question Set.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_CONTENT",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_ASK",
+        "linkValue": "CENTRE",
+        "sourceCode": "FRM_CONTENT",
+        "targetCode": "QUE_USER_DETAILS_GRP",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Content Frame"
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    asks: {...},
+    baseEntities: {
+      FRM_CONTENT: {...},
+      FRM_MAIN: {...},
+      FRM_ROOT: {...}
+    }
+  },
+  layouts: {
+    frames: {
+      FRM_CONTENT: {
+        code: "FRM_CONTENT",
+        links: [
+          {
+            code: "QUE_USER_DETAILS_GRP",
+            panel: "CENTRE",
+            type: "ask",
+            weight: 1
+          }
+        ],
+        name: "Content Frame"
+      },
+      FRM_MAIN: {...},
+      FRM_ROOT: {...}
+    }
+  }
+}
+```
+
+#### Updated Displays
+Now we can see that the Content Frame has a Centre Panel, and it has a Form as it's child. We can also see the actual page has updated, and is displaying the User's first name in the centre of the screen.
+
+![Link the User Details Question Set to the Content Frame](https://i.imgur.com/RhGCxW3.png)
