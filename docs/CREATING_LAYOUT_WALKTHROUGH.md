@@ -727,7 +727,7 @@ Both the React tree and page have updated. The Header Frame now has a Centre Pan
 ***
 
 ### Step 10 - Change Link Value Between Header Frame and Question Set
-[back to top](#)
+[back to top](#Overview)
 
 This is looking better, but we want to move the Project Name so it is positioned in the *top left* corner. So we need to send the Header Frame again with the value of the link to the Question Set changed to `WEST`.
 
