@@ -13,7 +13,7 @@ Alyson v7 is the updated Frontend for the Genny system.
 - [Links](#Links)
 - [Creating a Layout](#Creating-a-Layout)
 
-# Overview
+## Overview
 ### What Has Changed
 The previous version used json files called 'layouts' to describe component structures, which were then converted to React Element trees. 
 
@@ -24,12 +24,12 @@ Instead of defining each page, and navigating between them to change the display
 
 The styling for all Components is defined by the Backend, meaning that the Backend can control the styling and apply changes to as many instances of the system as desired.
 
-# Store
+## Store
 *coming soon*
 *explain what the store is and how to view it*
 *detail the different fields in the store*
 
-# Layout Basics
+## Layout Basics
 A layout is constructed of from the following objects:
 
 - **Frames.** **Base Entities** that positions child elements according to certain criteria.
@@ -38,7 +38,7 @@ A layout is constructed of from the following objects:
 - **Links.** Describes the nature of the relationship between entities.
 - **Legacy Layout.** Renders elements from the previous versions json file.
 
-# Frames
+## Frames
 ( prefix: FRM_ )
 The **Frame** base entity is the basic building block of the layout. Any **Frames**, **Question Sets**, or **Legacy Layouts** that are **linked** to a **Frame** will be positioned based on the value of the **Link** between them.
 
@@ -127,7 +127,7 @@ The answer is that if the object has `childAsks`, then it is rendered as a Quest
 *explain with images why question group inputs are neccessary*
 *Collapsible*
 
-# Legacy Layouts
+## Legacy Layouts
 ( prefix: LAY_ )
 
 The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries. They are rendered using the Sublayout component. 
@@ -139,7 +139,7 @@ Each **Legacy Layouts** is a page that has a URI that corresponds to a **Route**
 
 The Frontend listens for **Route Change** events, and when it receives one, gets the URI from the URL, and creates a fake **Link** to the **FRAME** `FRM_CONTENT`. If there URI is empty, then the **Link** defaults to `home`.
 
-# Links
+## Links
 ( prefix: LNK_ )
 
 A **Link** is used to define the relationship between two **Entities**. When used for **Layouts**, the **Link** is principally used to tell the front end which entities are being linked, what type of entity the child is, and the location of the child within the **Frame**, if the parent is a **Frame** base entity.
@@ -178,7 +178,7 @@ The **Panel** the child will be linked to is defined by the `linkValue` field. T
 | linkValue | string | "CENTRE" | true | Defines which **Panel** of the parent **Frame** the child is linked to. |
 | weight | number | 1 | true | The priority of the link. Lower numbers are more important, a value of `0` means the child will be hidden. |
 
-# Creating a Layout
+## Creating a Layout
 The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** that need to be applied through the whole app such as text color or background color should be linked to `FRM_ROOT`.
 
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
