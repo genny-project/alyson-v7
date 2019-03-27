@@ -211,3 +211,100 @@ Now we want to add the Frame where the main Content of each page of the app will
 Again the React tree has updated, the Main Frame has a Centre Panel, and that Panel has another Frame.
 
 ![Add the Content Frame](https://i.imgur.com/u2jHB1Q.png)
+
+***
+
+### 4. Add a Question Set.
+Now we want to display something in the Content Frame. Let's send a simple Question Set that can show the User's name.
+
+#### Ask Message
+```
+{
+  "sourceCode": "PER_USER1",
+  "targetCode": "PER_USER1",
+  "questionCode": "QUE_USER_DETAILS_GRP",
+  "name": "User Details",
+  "childAsks": [
+    {
+      "question": {
+        "attribute": {
+          "dataType": {
+            "className": "Text",
+            "typeName": "Text",
+            {...}
+          },
+          "code": "PRI_FIRSTNAME",
+          "name": "FirstName"
+        },
+        "attributeCode": "PRI_FIRSTNAME",
+        "code": "QUE_FIRSTNAME",
+        "name": "User First Name"
+      },
+      "sourceCode": "PER_USER1",
+      "targetCode": "PER_USER1",
+      "questionCode": "QUE_FIRSTNAME",
+      "attributeCode": "PRI_FIRSTNAME",
+      "readonly": true,
+      "name": "User First Name"
+    }
+  ]
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    ask: {
+      QUE_USER_DETAILS_GRP: {
+        sourceCode: "PER_USER1",
+        targetCode: "PER_USER1",
+        questionCode: "QUE_USER_DETAILS_GRP",
+        name: "User Details",
+        childAsks: [
+          {
+            question: {
+              attribute: {
+                dataType: {
+                  "className": "Text",
+                  "typeName": "Text",
+                  {...}
+                },
+                code: "PRI_FIRSTNAME",
+                name: "FirstName"
+              },
+              attributeCode: "PRI_FIRSTNAME",
+              code: "QUE_FIRSTNAME",
+              name: "User First Name"
+            },
+            sourceCode: "PER_USER1",
+            targetCode: "PER_USER1",
+            questionCode: "QUE_FIRSTNAME",
+            attributeCode: "PRI_FIRSTNAME",
+            readonly: true,
+            name: "User First Name"
+          }
+        ]
+      }
+    }
+    baseEntities: {...}
+  },
+  layouts: {
+    asks: {
+      QUE_USER_DETAILS_GRP: {
+        code: "QUE_USER_DETAILS_GRP",
+        name: "User Details"
+      },
+      QUE_FIRSTNAME: {
+        code: "QUE_FIRSTNAME",
+        name: "User First Name"
+      }
+    },
+    frames: {...}
+  }
+}
+```
+
+#### Updated Displays
+No change to the React tree or the page this time. We need to add a Link between the Content Frame and the Question Set.
+
+![Add a Question Set](https://i.imgur.com/u2jHB1Q.png)
