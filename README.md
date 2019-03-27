@@ -53,27 +53,30 @@ Each **Panel** has predefined default behaviour that allows content within it to
   - Will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available.
   - Content will be positioned against the **left side** of the panel. Override with `justifyContent`.     
 
-#### Frame Attributes
-| Option | Value Type | Example | Required | Description |
-| ------ | ---------- | ------- | -------- | ----------- |
-| PRI_EXPANDABLE_PANELS | Array | [ 'CENTRE', 'WEST' ] | false | Allows the defined Panels to be expanded to fullscreen by pressing a small button in the top right corner. |
+## Themes ( prefix: THM_ )
+The **Theme** base entity describes styling information and behavioural changes for other rendered elements (**Frames**, **Question Groups**, and **Questions**).
 
-### Themes ( prefix: THM_ )
+### Styling Attribute
+Styling information is determined by the value of the attribute `PRI_CONTENT`. The value is an object that will be passed to the rendered components as props.
 
-The **Theme** base entity contains all the styling information for other rendered elements (**Frames** and **Asks**). The value of the attribute `PRI_CONTENT` is an object that contains key-value pairings made up of **Component Props** and their values, which will be passed to the linked Base Entity when it is rendered and passed to children as required.
+Most CSS fields are acceptable as parameters, but given that the information is passed as props to React Components, each component has it's own list of props that it accepts. All others are ignored. All keys must be denoted in camelCase
 
-#### Theme Fields
-TBD
+*Click here to see a list of components and accepted props.*
 
-#### Theme Attributes
+### Behavioural Attributes
+Where most styling changes can simply be passed to components as props, some desired behaviour from components requires more complex changes to how the element tree is constructed. They might require a component to keep track of a state and then pass that to child elements, or change the order components are rendered, or use different components to the default ones.
+
+### Herirachy, Inheritance, and Weight
+
+### Theme Attributes
 | Option | Value Type | Example | Required | Description |
 | ------ | ---------- | ------- | -------- | ----------- |
 | PRI_CONTENT | Object | { "backgroundColor": "#ddd" } | true | An object composed of key-value pairings defining CSS values that will be passed to the rendered element in the frontend. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
+| PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
 
 ## Asks ( prefix: QUE_ )
-
 The **Asks** are composed of **Question Groups** ( QUE_XXX_GRP ) and **Questions** ( QUE_XXX ). An **Ask** is rendered as a Form component with Inputs, and cover almost all of the display elements and interactable elements shown on the page.
 
 #### Questions
@@ -83,6 +86,7 @@ A **Question** defines an element that will display information to the user. The
 #### Question Group
 
 A **Question Group** defines a group of collection of **Questions**. **Question Groups** can have a **Theme** linked to it, and define behaviour such as Pagination, Dropdowns, and Selectable element. A **Question** can be rendered as part of the **Question Group** itself, not as a child, using the `question` field.
+
 
 #### Ask Structure
 ```
@@ -436,7 +440,7 @@ A **Question Group** defines a group of collection of **Questions**. **Question 
 
 ## Legacy Layouts ( prefix: LAY_ )
 
-The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries.
+The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries. They are rendered using the Sublayout component.
 
 ## Links ( prefix: LNK_ )
 
@@ -476,7 +480,7 @@ The **Panel** the child will be linked to is deinfed by the `linkValue` field. T
 | linkValue | string | "CENTRE" | true | Defines which **Panel** of the parent **Frame** the child is linked to. |
 | weight | number | 1 | true | The priority of the link. Lower numbers are more important, a value of `0` means the child will be hidden. |
 
-## Creating a Layout: Step by Step
+## Creating a Layout
 
 Tree of Frames and Asks
 
@@ -497,3 +501,7 @@ First Recursion with Panels
 Second Recursion with Panels
 
 ![Second Level](https://i.imgur.com/SjdjV0a.png)
+
+## Sending Messages
+
+TBD
