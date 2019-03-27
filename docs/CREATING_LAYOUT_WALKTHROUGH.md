@@ -1,5 +1,11 @@
 # Creating a Layout: Step by Step
 
+## Contents
+- [Overview](#Overview)
+- [React Element Tree Legend](#React Element Tree Legend)
+- [Walkthrough](#Walkthrough)
+  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
+
 ## Overview
 To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing at each step the following:
 - The important fields of the message sent to the Frontend.
@@ -13,11 +19,9 @@ Before going through these steps, [click here to view the documentation for Layo
 
 ![React Element Tree Legend](https://i.imgur.com/JKNa2ab.png)
 
-# Walkthrough
-## Contents
-- [1. Add the Root Frame](#1-add-the-root-frame)
+## Walkthrough
 
-## 1 Add the Root Frame
+### 1 Add the Root Frame
 First, we need to add the first Frame, `FRM_ROOT`. This is the default **Frame** the Frontend is looking for to begin constructing the element tree.
 
 #### Base Entity Message
