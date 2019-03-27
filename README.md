@@ -99,33 +99,28 @@ It is possible, probably even, that a given component will end up with multiple 
 ## Question Sets
 ( prefix: QUE_ )
 
-The **Question Sets** are composed of **Question Groups** ( QUE_XXX_GRP ) and **Questions** ( QUE_XXX ). A **Question Sets** is rendered as a Form component with Inputs, and cover almost all of the display elements and interactable elements shown on the page.
+The **Question Sets** are composed of **Question Groups** and **Questions**. A **Question Sets** is rendered as a Form component with each **Question Group** being rendered as a **FormGroup** Component, and each **Question** as an **Input** component. They cover almost all of the display elements and interactable elements shown on the page.
 
-### Question Groups
-a
+### Applying Themes.
+Unlike Base Entities, **Themes** are connected to Question Sets by the **ContextList**.
 
 ### Questions
-a
+A Question is connected to an Ask, which has an Attribute. It is displayed as an Input component. The data for the Input is used from the `question` field.
 
-### ContextList.contexts
-a
+### Question Groups
+The Question Group is a container form a group of Questions and/or Question Groups. It can be used to pass inheritable Theme data to all of the children, and also can told to render in a different way if there are any Behavioural Attributes attached to the Theme.
 
-### question.attribute
-Both Questions and Question Groups have this field, but 
+A Question Group can also have a `question` field, but by default it is not rendered.
 
 ### Difference Between a Question Group and a Question?
 A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two? 
 
 The answer is that if the object has `childAsks`, then it is rendered as a Question Group.  If not, then it is rendered as a Question.
 
-### Question Group Input
-a
-
-### Question Groups
-A **Question Group** defines a group of collection of **Questions**. **Question Groups** can have a **Theme** linked to it, and define behaviour such as Pagination, Dropdowns, and Selectable element.
-
-### Questions
-A **Question** defines an element that will display information to the user. The element might be editable, or read only. The `dataType` field defines the type of data, which is used by the front end to render a display component.
+### Complex Rendering and Question Group Inputs
+*explain attributes*
+*explain with images why question group inputs are neccessary*
+*Collapsible*
 
 ### Question Set Structure
 ```
@@ -500,7 +495,7 @@ The type of link is defined by the `attributeCode` field. The valid types of lin
 - LNK_ASK: Indicates that the child is an **Question Sets**.
 - **LNK_LAYOUT**: Indicates the child is a **Legacy Layout**. This allows backwards compatibility with the previous layouts.
 
-The **Panel** the child will be linked to is deinfed by the `linkValue` field. The valid values are **NORTH**, **SOUTH**, **EAST**, **WEST**, and **CENTRE**
+The **Panel** the child will be linked to is defined by the `linkValue` field. The valid values are **NORTH**, **SOUTH**, **EAST**, **WEST**, and **CENTRE**.
 
 #### Link Structure
 ```
