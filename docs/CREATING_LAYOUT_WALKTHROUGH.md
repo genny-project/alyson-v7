@@ -15,6 +15,7 @@
   - [Step 9 - Add a Question Set to Header Frame](#step-9---add-a-question-set-to-header-frame)
   - [Step 10 - Change Link Value Between Header Frame and Question Set](#step-10---change-link-value-between-header-frame-and-question-set)
   - [Step 11 - Add Footer With Powered By Question Set ](#step-11---add-footer-with-powered-by-question-set)
+  - [Step 12 - Add a Background Color to the Content Area ](#step-12---add-a-background-color-to-the-content-area)
   
 ## Overview
 To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing at each step the following:
@@ -956,3 +957,106 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
 So we can see a change in both the React tree and the page this time. The Footer Frame has ben added to a new South Panel, and it has the Form inside its own East Panel. For the page, the new text is now being displayed in the bottom right corner of the page.
 
 ![Add Footer With Powered By Question Set](https://i.imgur.com/b3CJgAb.png)
+
+***
+
+### Step 12 - Add a Background Color to the Content Area
+[back to top](#creating-a-layout-step-by-step)
+
+Now that we have some other elements, we need to break the visual elements of the page up so that the Header and Footer are more easily distinguiable from the main content of the page. To do this, we want to add a another Theme with a background color that can apply to just the content area.
+
+We need to determine which Frame the Theme needs to be linked to. Remember, while Themes are linked to Frames, they aren't actually applied to Frames directy, but instead are applied to a specific Panel based on the value of the Link.
+
+So since we want it to apply to the Content Frame, we need to look at which Panel the Content Frame itself is linked to. The Content Frame is rendered inside the Centre Panel of Frame Main, which means that Frame Main is where the Link needs to originate from.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_MAIN",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_THEME",
+        "linkValue": "CENTRE",
+        "sourceCode": "FRM_MAIN",
+        "targetCode": "THM_BACKGROUND_WHITE",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Main Frame"
+},
+{
+  "code": "THM_BACKGROUND_WHITE",
+  "name": "Theme Background White",
+  "baseEntityAttributes": [
+    {
+      "attributeCode": "PRI_CONTENT",
+      "attributeName": "Content",
+      "baseEntityCode": "THM_BACKGROUND_WHITE",
+      "value": {
+        "backgroundColor": "#fff"
+      }
+    }
+  ]
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    asks: {...},
+    baseEntities: {
+      FRM_CONTENT: {...},
+      FRM_FOOTER: {...},
+      FRM_HEADER: {...},
+      FRM_MAIN: {...},
+      FRM_ROOT: {...},
+      THM_BACKGROUND_RED: {...},
+      THM_BACKGROUND_WHITE: {...}
+    }
+  },
+  layouts: {
+    asks: {...},
+    frames: {
+      FRM_CONTENT: {...},
+      FRM_FOOTER: {...},
+      FRM_HEADER: {...},
+      FRM_MAIN: {
+        code: "FRM_MAIN",
+        links: [
+          {
+            code: "FRM_CONTENT",
+            panel: "CENTRE",
+            type: "frame",
+            weight: 1
+          },
+          {
+            code: "THM_BACKGROUND_WHITE",
+            panel: "CENTRE",
+            type: "theme",
+            weight: 1
+          }
+        ],
+        name: "Main Frame"
+      }
+      FRM_ROOT: {...}
+    },
+    themes: {
+      THM_BACKGROUND_RED: {...},
+      THM_BACKGROUND_WHITE: {
+        code: "THM_BACKGROUND_WHITE",
+        data: {
+          backgroundColor: "#fff"
+        },
+        name: "Theme Background White"
+      }
+    }
+  }
+}
+```
+
+#### Updated Displays
+Since there are no new Frames or Question Sets, there is no change to the elements rendered in the React tree. The page of the app has been updated, with the new background color being applied only to the Content area, not the Header or Footer.
+
+![Add a Background Color to the Content Area](https://i.imgur.com/vYsPN5n.png)
