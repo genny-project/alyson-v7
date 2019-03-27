@@ -66,7 +66,12 @@ Most CSS fields are acceptable as parameters, but given that the information is 
 ### Behavioural Attributes
 Where most styling changes can simply be passed to components as props, some desired behaviour from components requires more complex changes to how the element tree is constructed. They might require a component to keep track of a state and then pass that to child elements, or change the order components are rendered, or use different components to the default ones.
 
-### Herirachy, Inheritance, and Weight
+### Heirachy, Inheritance, and Weight
+By default, all **Theme** styling information is recursively passed to every child element in the component tree. This behaviour can be disabled by setting the value of `PRI_IS_INHERITABLE` to `false`.
+
+It is possible, probably even, that a given component will end up with multiple instances of the same prop passed to it. This might happen because the same prop is being set from two different linked **Themes**, or because of a **Theme** linked to a parent component. Whenever this happens, the following rules are used to determine which prop is used:
+1. Themes linked to children will override Themes linked to parents.
+2. Themes linked with a `weight` value that have the highest priority, where `1` is the highest priority, will override Themes with a weight of a lower priority.
 
 ### Theme Attributes
 | Option | Value Type | Example | Required | Description |
@@ -79,16 +84,17 @@ Where most styling changes can simply be passed to components as props, some des
 ## Asks ( prefix: QUE_ )
 The **Asks** are composed of **Question Groups** ( QUE_XXX_GRP ) and **Questions** ( QUE_XXX ). An **Ask** is rendered as a Form component with Inputs, and cover almost all of the display elements and interactable elements shown on the page.
 
-#### Questions
+### Questions
 
 A **Question** defines an element that will display information to the user. The element might be editable, or read only. The `dataType` field defines the type of data, which is used by the front end to render a display component.
 
-#### Question Group
+### Question Group
 
 A **Question Group** defines a group of collection of **Questions**. **Question Groups** can have a **Theme** linked to it, and define behaviour such as Pagination, Dropdowns, and Selectable element. A **Question** can be rendered as part of the **Question Group** itself, not as a child, using the `question` field.
 
+### Question Group Inputs
 
-#### Ask Structure
+### Ask Structure
 ```
 {
   "items": [
@@ -440,7 +446,14 @@ A **Question Group** defines a group of collection of **Questions**. **Question 
 
 ## Legacy Layouts ( prefix: LAY_ )
 
-The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries. They are rendered using the Sublayout component.
+The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries. They are rendered using the Sublayout component. 
+
+Unlike other aspects of layouts, the Backend is not handling the linking of **Legacy Layouts**. Layout Base Entities are given a randomised Code as an identifier, which means that for backend to fetch the layout they would have to search all Legacy Layouts using the URI, get the Base Entity, add the link, then send it to front end. Because **Legacy Layouts** are only a temporary feature to bridge the development gap, it was decided that Frontend would handle the linking instead.
+
+### Route Changes
+Each **Legacy Layouts** is a page that has a URI that corresponds to a **Route**. Because only one page needs to be displayed per route, all we need to do is determine which layout we need, and which **Frame** it needs to be linked to. The default **Frame** for this purpose is `FRM_CONTENT`.
+
+The Frontend listens for **Route Change** events, and when it receives one, gets the URI from the URL, and creates a fake **Link** to the **FRAME** `FRM_CONTENT`. If there URI is empty, then the **Link** defaults to `home`.
 
 ## Links ( prefix: LNK_ )
 
