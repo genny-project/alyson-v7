@@ -5,6 +5,15 @@
 - [React Element Tree Legend](#React-Element-Tree-Legend)
 - [Walkthrough](#Walkthrough)
   - [Step 1: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 1: Add the Root Frame](#1-add-the-root-frame)
+  - [Step 1: Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
+  - [Step 1: Add the Root Frame](#Step-9--Add-a-Question-Set-to-Header-Frame)
+  - [Step 1: Add the Root Frame](#Step-9-Add-a-Question-Set-to-Header-Frame)
+  
 
 ## Overview
 To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing at each step the following:
@@ -558,7 +567,7 @@ There is no change to the page, but we can see the Main Frame now has both a Cen
 
 ***
 
-### 9. Add a Question Set to Header Frame
+### Step 9 - Add a Question Set to Header Frame
 Now we want to display something in the Header Frame. Let's send a simple Question Set that can show the Project Name. We will also send the Header Frame again with a Link to the Question Set.
 
 #### Ask Message
