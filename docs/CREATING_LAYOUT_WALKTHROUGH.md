@@ -13,7 +13,7 @@
   - [Step 7 - Add a Background Color to the Page](#Step-7---Add-a-Background-Color-to-the-Page)
   - [Step 8 - Add a Header Frame](#Step-8---Add-a-Header-Frame)
   - [Step 9 - Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
-  - [Step 10 - Change Link Value Between Header Frame and Question Set](#Step-10---Change Link Value Between Header Frame and Question Set)
+  - [Step 10 - Change Link Value Between Header Frame and Question Set](#Step-10---Change-Link-Value-Between-Header-Frame-and-Question-Set)
  
 
 ## Overview
