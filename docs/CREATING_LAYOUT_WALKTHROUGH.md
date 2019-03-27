@@ -858,6 +858,43 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
   vertx: {
     asks: {
       QUE_USER_DETAILS_GRP: {...},
+      QUE_PROJECT_HEADER_GRP: {...},
+      QUE_PROJECT_FOOTER_GRP: {
+        "sourceCode": "PER_USER1",
+        "targetCode": "PRJ_PROJECT1",
+        "questionCode": "QUE_PROJECT_FOOTER_GRP",
+        "name": "Project Footer",
+        "childAsks": [
+          {
+            "question": {
+              "attribute": {
+                "dataType": {
+                  "className": "Text",
+                  "typeName": "Text",
+                  {...}
+                },
+                "code": "PRI_POWERED_BY",
+                "name": "Powered By"
+              },
+              "attributeCode": "PRI_POWERED_BY",
+              "code": "QUE_POWERED_BY",
+              "name": "Project Powered By"
+            },
+            "sourceCode": "PER_USER1",
+            "targetCode": "PRJ_PROJECT1",
+            "questionCode": "QUE_POWERED_BY",
+            "attributeCode": "PRI_POWERED_BY",
+            "readonly": true,
+            "name": "Project Powered By"
+          }
+        ]
+      }
+    },
+    baseEntities: {...}
+  },
+  layouts: {
+    asks: {
+      QUE_USER_DETAILS_GRP: {...},
       QUE_FIRSTNAME: {...},
       QUE_PROJECT_HEADER_GRP: {...},
       QUE_NAME: {...},
@@ -870,10 +907,6 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
         name: "Project Powered By"
       }
     },
-    baseEntities: {...}
-  },
-  layouts: {
-    asks: {...},
     frames: {
       FRM_CONTENT: {...},
       FRM_FOOTER: {
