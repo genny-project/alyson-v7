@@ -9,6 +9,10 @@ To help illustrate all of these concepts, we will go through the process of crea
 
 Before going through these steps, [click here to view the documentation for Layouts](../README.md)
 
+## React Element Tree Legend
+
+![React Element Tree Legend](https://i.imgur.com/JKNa2ab.png)
+
 ## Walkthrough
 
 ### 1. Add the Root Frame.
