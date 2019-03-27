@@ -14,6 +14,8 @@ Instead of defining each page, and navigating between them to change the display
 
 The styling for all Components is defined by the Backend, meaning that the Backend can control the styling and apply changes to as many instances of the system as desired.
 
+## Store
+
 ## Layout Basics
 A layout is constructed of from the following objects:
 
@@ -85,13 +87,30 @@ It is possible, probably even, that a given component will end up with multiple 
 The **Question Sets** are composed of **Question Groups** ( QUE_XXX_GRP ) and **Questions** ( QUE_XXX ). A **Question Sets** is rendered as a Form component with Inputs, and cover almost all of the display elements and interactable elements shown on the page.
 
 ### Question Groups
+a
 
-A **Question Group** defines a group of collection of **Questions**. **Question Groups** can have a **Theme** linked to it, and define behaviour such as Pagination, Dropdowns, and Selectable element. A **Question** can be rendered as part of the **Question Group** itself, not as a child, using the `question` field.
+### Questions
+a
+
+### ContextList.contexts
+a
+
+### question.attribute
+Both Questions and Question Groups have this field, but 
+
+### Difference Between a Question Group and a Question?
+A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two? 
+
+The answer is that if the object has `childAsks`, then it is rendered as a Question Group.  If not, then it is rendered as a Question.
+
+### Question Group Input
+a
+
+### Question Groups
+A **Question Group** defines a group of collection of **Questions**. **Question Groups** can have a **Theme** linked to it, and define behaviour such as Pagination, Dropdowns, and Selectable element.
 
 ### Questions
 A **Question** defines an element that will display information to the user. The element might be editable, or read only. The `dataType` field defines the type of data, which is used by the front end to render a display component.
-
-### Question Group Inputs
 
 ### Question Set Structure
 ```
@@ -493,23 +512,9 @@ The **Panel** the child will be linked to is deinfed by the `linkValue` field. T
 | weight | number | 1 | true | The priority of the link. Lower numbers are more important, a value of `0` means the child will be hidden. |
 
 ## Creating a Layout: Step by Step
+To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing the 
+
 
 Tree of Frames and Asks
 
 ![Entity Tree](https://i.imgur.com/1gwHZZC.png)
-
-With Themes added
-
-![Adding Themes](https://i.imgur.com/6PM9heG.png)
-
-Root Frame with Centre Panel
-
-![Root Level](https://i.imgur.com/t2l2jas.png)
-
-First Recursion with Panels
-
-![First Level](https://i.imgur.com/shVknrP.png)
-
-Second Recursion with Panels
-
-![Second Level](https://i.imgur.com/SjdjV0a.png)
