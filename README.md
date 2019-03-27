@@ -6,7 +6,7 @@ Alyson v7 is the updated Frontend for the Genny system.
 - Overview
 - Store
 - Layout Basics
-- [Frames](#frames)
+- [Frames](#Frames)
 - Themes
 - Question Sets
 - Legacy Layouts
@@ -35,7 +35,7 @@ A layout is constructed of from the following objects:
 - **Links.** Describes the nature of the relationship between entities.
 - **Legacy Layout.** Renders elements from the previous versions json file.
 
-## [Frames](#frames) ( prefix: FRM_ )
+# Frames ( prefix: FRM_ )
 The **Frame** base entity is the basic building block of the layout. Any **Frames**, **Question Sets**, or **Legacy Layouts** that are **linked** to a **Frame** will be positioned based on the value of the **Link** between them.
 
 **Panels** aren't created directly from **Base Entities**, instead they are rendered inside **Frames** based on the Frame's **Links**.
