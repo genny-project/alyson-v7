@@ -19,8 +19,7 @@ First, we need to add the first Frame, `FRM_ROOT`. This is the default **Frame**
 {
   "code": "FRM_ROOT",
   "links": [],
-  "name": "Root Frame",
-  ...
+  "name": "Root Frame"
 }
 ```
 #### Redux Store
@@ -58,8 +57,7 @@ Now that we have the Root Frame, we need to begin adding the basic structure of 
 {
   "code": "FRM_MAIN",
   "links": [],
-  "name": "Main Frame",
-  ...
+  "name": "Main Frame"
 }
 ```
 #### Redux Store
@@ -109,8 +107,7 @@ To add Main Frame into the React tree, we need to resend the Root Frame Base Ent
       }
     }
   ],
-  "name": "ROOT Frame",
-  ...
+  "name": "ROOT Frame"
 }
 ```
 #### Redux Store
@@ -126,7 +123,7 @@ To add Main Frame into the React tree, we need to resend the Root Frame Base Ent
     frames: {
       FRM_MAIN: {...}
       FRM_ROOT: {
-        code: "FRM_MAIN",
+        code: "FRM_ROOT",
         links: [
           {
             code: "FRM_MAIN",
@@ -135,7 +132,7 @@ To add Main Frame into the React tree, we need to resend the Root Frame Base Ent
             weight: 1
           }
         ],
-        name: "Main Frame"
+        name: "Root Frame"
       }
     }
   }
@@ -146,3 +143,71 @@ To add Main Frame into the React tree, we need to resend the Root Frame Base Ent
 Now we can see that even though the page hasn't changed, the React tree has. The top level Frame now has a **Centre Panel**, which has another Frame inside it.
 
 ![Add a Link between the Root Frame and the Main Frame](https://i.imgur.com/uD3vXb7.png)
+
+***
+
+### 4. Add the Content Frame.
+Now we want to add the Frame where the main Content of each page of the app will be displayed. `FRM_CONTENT` is the default name that should be used for this Frame. We will also send `FRM_MAIN` with a Link to the Content Frame.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_MAIN",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_FRAME",
+        "linkValue": "CENTRE",
+        "sourceCode": "FRM_MAIN",
+        "targetCode": "FRM_CONTENT",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Main Frame"
+},
+{
+  "code": "FRM_CONTENT",
+  "links": [],
+  "name": "Content Frame"
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    baseEntities: {
+      FRM_CONTENT: {...},
+      FRM_MAIN: {...},
+      FRM_ROOT: {...}
+    }
+  },
+  layouts: {
+    frames: {
+      FRM_CONTENT: {
+        code: "FRM_CONTENT",
+        links: [],
+        name: "Content Frame"
+      },
+      FRM_MAIN: {
+        code: "FRM_MAIN",
+        links: [
+          {
+            code: "FRM_CONTENT",
+            panel: "CENTRE",
+            type: "frame",
+            weight: 1
+          }
+        ],
+        name: "Main Frame"
+      }
+      FRM_ROOT: {...}
+    }
+  }
+}
+```
+
+#### Updated Displays
+Again the React tree has updated, the Main Frame has a Centre Panel, and that Panel has another Frame.
+
+![Add the Content Frame](https://i.imgur.com/u2jHB1Q.png)
