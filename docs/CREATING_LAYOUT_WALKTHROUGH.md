@@ -4,15 +4,15 @@
 - [Overview](#Overview)
 - [React Element Tree Legend](#React-Element-Tree-Legend)
 - [Walkthrough](#Walkthrough)
-  - [Step 1: Add the Root Frame](#Step-1-add-the-root-frame)
-  - [Step 2: ](#Step-2-)
-  - [Step 3: ](#Step-3-)
-  - [Step 4: ](#Step-4-)
-  - [Step 5: ](#Step-5-)
-  - [Step 6: ](#Step-6-)
-  - [Step 7: ](#Step-7-)
-  - [Step 8: ](#Step-8-)
-  - [Step 9: Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
+  - [Step 1 - Add the Root Frame](#Step-1---add-the-root-frame)
+  - [Step 2 - Add the Main Frame](#Step-2---Add-the-Main-Frame)
+  - [Step 3 - Add a Link between the Root Frame and the Main Frame](#Step-3---Add-a-Link-between-the-Root-Frame-and-the-Main-Frame)
+  - [Step 4 - Add the Content Frame](#Step-4---Add-the-Content-Frame)
+  - [Step 5 - Add a User Details Question Set](#Step-5---Add-a-User-Details-Question-Set)
+  - [Step 6 - Link the User Details Question Set to the Content Frame](#Step-6---Link-the-User-Details-Question-Set-to-the-Content-Frame)
+  - [Step 7 - Add a Background Color to the Page](#Step-7---Add-a-Background-Color-to-the-Page)
+  - [Step 8 - Add a Header Frame](#Step-8---Add-a-Header-Frame)
+  - [Step 9 - Add the Root Frame](#Step-9---Add-a-Question-Set-to-Header-Frame)
   
 
 ## Overview
@@ -68,7 +68,7 @@ We can see the React Tree has added a **Frame** component, but the page hasn't c
 
 ***
 
-### 2. Add the Main Frame
+### Step 2 - Add the Main Frame
 Now that we have the Root Frame, we need to begin adding the basic structure of the layout. We will add another Frame, Main Frame, which will be used to divide the layout into the Header, Footer, Sidebar, and Content sections.
 
 #### Base Entity Message
@@ -108,7 +108,7 @@ There is no change to either the React tree or the page. Even though we have a n
 
 ***
 
-### 3. Add a Link between the Root Frame and the Main Frame
+### Step 3 - Add a Link between the Root Frame and the Main Frame
 To add Main Frame into the React tree, we need to resend the Root Frame Base Entity with a **Link**.
 
 #### Base Entity Message
@@ -165,7 +165,7 @@ Now we can see that even though the page hasn't changed, the React tree has. The
 
 ***
 
-### 4. Add the Content Frame
+### Step 4 - Add the Content Frame
 Now we want to add the Frame where the main Content of each page of the app will be displayed. `FRM_CONTENT` is the default name that should be used for this Frame. We will also send `FRM_MAIN` with a Link to the Content Frame.
 
 #### Base Entity Message
@@ -233,7 +233,7 @@ Again the React tree has updated, the Main Frame has a Centre Panel, and that Pa
 
 ***
 
-### 5. Add a User Details Question Set
+### Step 5 - Add a User Details Question Set
 Now we want to display something in the Content Frame. Let's send a simple Question Set that can show the User's First Name.
 
 #### Ask Message
@@ -330,7 +330,7 @@ No change to the React tree or the page this time. We need to add a Link between
 
 ***
 
-### 6. Link the User Details Question Set to the Content Frame
+### Step 6 - Link the User Details Question Set to the Content Frame
 We need to send the Content Frame again with a Link to the User Details Question Set.
 
 #### Base Entity Message
@@ -390,7 +390,7 @@ Now we can see that the Content Frame has a Centre Panel, and it has a Form as i
 
 ***
 
-### 7. Add a Background Color to the Page
+### Step 7 - Add a Background Color to the Page
 Let's create a Theme to add a red background to the page, and link it to the Root Frame so it's passed to all elements in the tree.
 
 #### Base Entity Message
@@ -480,7 +480,7 @@ Since there are no new Frames or Question Sets, there is no change to the elemen
 
 ***
 
-### 8. Add a Header Frame
+### Step 8 - Add a Header Frame
 Now we want to add a Header to the page. Let's send the Header Frame, and the Main Frame with a Link to the Header Frame. Since we want the Header to be at the top of the page, make sure the Link value is `North`.
 
 #### Base Entity Message
