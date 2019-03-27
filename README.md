@@ -35,6 +35,10 @@ The **Frame** base entity is the basic building block of the layout. Each **Fram
 
 Each **Panel** has predefined default behaviour that allows content within it to be display in a way that is easily predictable and controllable by the backend. This behaviour can be overridden if desired.
 
+- All Panels
+  - Will only be rendered if it has content, ie: if there is a **Link** to an existing **Base Entity** in the Redux Store.
+
+
 - A **Panel** will only be rendered if it has content.
 - The **Centre Panel** will always expand to fill the space available. Content will be positioned in the **middle** of the panel.
 - The **East Panel** will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available. Content will be positioned against the **right side** of the panel.
