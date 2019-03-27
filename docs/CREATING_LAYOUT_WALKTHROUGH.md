@@ -289,7 +289,7 @@ Now we want to display something in the Content Frame. Let's send a simple Quest
           }
         ]
       }
-    }
+    },
     baseEntities: {...}
   },
   layouts: {
@@ -549,3 +549,143 @@ Now we want to add a Header to the page. Let's send the Header Frame, and the Ma
 There is no change to the page, but we can see the Main Frame now has both a Centre Panel and a North Panel. The North Panel also has the Header Frame.
 
 ![Add a Header Frame](https://i.imgur.com/yt7urqp.png)
+
+***
+
+### 9. Add a Question Set to Header Frame
+Now we want to display something in the Header Frame. Let's send a simple Question Set that can show the Project Name. We will also send the Header Frame again with a Link to the Question Set.
+
+#### Ask Message
+```
+{
+  "sourceCode": "PER_USER1",
+  "targetCode": "PRJ_PROJECT1",
+  "questionCode": "QUE_PROJECT_HEADER_GRP",
+  "name": "Project Header",
+  "childAsks": [
+    {
+      "question": {
+        "attribute": {
+          "dataType": {
+            "className": "Text",
+            "typeName": "Text",
+            {...}
+          },
+          "code": "PRI_NAME",
+          "name": "Name"
+        },
+        "attributeCode": "PRI_NAME",
+        "code": "QUE_NAME",
+        "name": "Project Name"
+      },
+      "sourceCode": "PER_USER1",
+      "targetCode": "PRJ_PROJECT1",
+      "questionCode": "QUE_NAME",
+      "attributeCode": "PRI_NAME",
+      "readonly": true,
+      "name": "Project Name"
+    }
+  ]
+}
+```
+#### Base Entity Message
+```
+{
+  "code": "FRM_HEADER",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_ASK",
+        "linkValue": "CENTRE",
+        "sourceCode": "FRM_HEADER",
+        "targetCode": "QUE_PROJECT_HEADER_GRP",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Header Frame"
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    ask: {
+      QUE_USER_DETAILS_GRP: {...},
+      QUE_PROJECT_HEADER_GRP: {
+        "sourceCode": "PER_USER1",
+        "targetCode": "PRJ_PROJECT1",
+        "questionCode": "QUE_PROJECT_HEADER_GRP",
+        "name": "Project Header",
+        "childAsks": [
+          {
+            "question": {
+              "attribute": {
+                "dataType": {
+                  "className": "Text",
+                  "typeName": "Text",
+                  {...}
+                },
+                "code": "PRI_NAME",
+                "name": "Name"
+              },
+              "attributeCode": "PRI_NAME",
+              "code": "QUE_NAME",
+              "name": "Project Name"
+            },
+            "sourceCode": "PER_USER1",
+            "targetCode": "PRJ_PROJECT1",
+            "questionCode": "QUE_NAME",
+            "attributeCode": "PRI_NAME",
+            "readonly": true,
+            "name": "Project Name"
+          }
+        ]
+      }
+    },
+    baseEntities: {...}
+  },
+  layouts: {
+    asks: {
+      QUE_USER_DETAILS_GRP: {
+        code: "QUE_USER_DETAILS_GRP",
+        name: "User Details"
+      },
+      QUE_FIRSTNAME: {
+        code: "QUE_FIRSTNAME",
+        name: "User First Name"
+      },
+      QUE_PROJECT_HEADER_GRP: {
+        code: "QUE_PROJECT_HEADER_GRP",
+        name: "Project Header"
+      },
+      QUE_NAME: {
+        code: "QUE_NAME",
+        name: "Project Name"
+      }
+    },
+    frames: {
+      FRM_CONTENT: {...},
+      FRM_HEADER: {
+        code: "FRM_HEADER",
+        links: [
+          {
+            code: "QUE_PROJECT_HEADER_GRP",
+            panel: "CENTRE",
+            type: "ask",
+            weight: 1
+          }
+        ],
+        name: "Header Frame"
+      },
+      FRM_MAIN: {...},
+      FRM_ROOT: {...}
+    }
+  }
+}
+```
+
+#### Updated Displays
+No change to the React tree or the page this time. We need to add a Link between the Content Frame and the Question Set.
+
+![Add a Question Set to Header Frame](https://i.imgur.com/IHKv6iD.png)
