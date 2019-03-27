@@ -511,10 +511,8 @@ The **Panel** the child will be linked to is deinfed by the `linkValue` field. T
 | linkValue | string | "CENTRE" | true | Defines which **Panel** of the parent **Frame** the child is linked to. |
 | weight | number | 1 | true | The priority of the link. Lower numbers are more important, a value of `0` means the child will be hidden. |
 
-## Creating a Layout: Step by Step
-To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing the 
+## Creating a Layout
+
+[Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 
-Tree of Frames and Asks
-
-![Entity Tree](https://i.imgur.com/1gwHZZC.png)
