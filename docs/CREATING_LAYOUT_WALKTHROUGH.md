@@ -17,7 +17,7 @@ Before going through these steps, [click here to view the documentation for Layo
 ## Contents
 - [1. Add the Root Frame](#1-add-the-root-frame)
 
-# 1 Add the Root Frame
+## 1 Add the Root Frame
 First, we need to add the first Frame, `FRM_ROOT`. This is the default **Frame** the Frontend is looking for to begin constructing the element tree.
 
 #### Base Entity Message
