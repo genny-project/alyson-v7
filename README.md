@@ -37,15 +37,21 @@ Each **Panel** has predefined default behaviour that allows content within it to
 
 - All Panels
   - Will only be rendered if it has content, ie: if there is a **Link** to an existing **Base Entity** in the Redux Store.
-
-
-- A **Panel** will only be rendered if it has content.
-- The **Centre Panel** will always expand to fill the space available. Content will be positioned in the **middle** of the panel.
-- The **East Panel** will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available. Content will be positioned against the **right side** of the panel.
-- The **West Panel** will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available.
-space available. Content will be positioned against the **left side** of the panel.
-- The **North Panel** will fit its content, *unless* there are no **East**, **West**, or **Centre Panels**, in which case it will expand to fill the space available.  Content will be positioned against the **top** of the panel.
-- The **South Panel** will fit its content, *unless* there are no **East**, **West**, or **Centre Panels**, in which case it will expand to fill the space available. Content will be positioned against the **bottom** of the panel.
+- North Panel
+  - Will fit its content, *unless* there are no **East**, **West**, or **Centre Panels**, in which case it will expand to fill the space available.
+  - Content will be positioned against the **top** of the panel. Override with `alignItems`.  
+- South Panel
+  - Will fit its content, *unless* there are no **East**, **West**, or **Centre Panels**, in which case it will expand to fill the space available.
+  - Content will be positioned against the **bottom** of the panel. Override with `alignItems`.  
+- Centre Panel
+  - Will always expand to fill the space available.
+  - Content positioned in the **middle** of the panel by default. Override with `alignItems` and `justifyContent`.     
+- East Panel
+  - Will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available.
+  - Content will be positioned against the **right side** of the panel. Override with `justifyContent`.     
+- West Panel
+  - Will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available.
+  - Content will be positioned against the **left side** of the panel. Override with `justifyContent`.     
 
 #### Frame Base Entity Structure
 ```
