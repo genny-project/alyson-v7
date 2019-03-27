@@ -43,5 +43,46 @@ First, we need to add the first Frame, `FRM_ROOT`. This is the default **Frame**
 }
 ```
 
-#### Result
+#### Updated Displays
+We can see the React Tree has added a **Frame** component, but the page hasn't changed. This is because the `FRM_ROOT` doesn't have any links, so there is no visual change to the page.
+
 ![Add the Root Frame](https://i.imgur.com/4BoOiQU.png)
+
+### Add the Main Frame.
+Now that we have the Root Frame, we need to begin adding the basic structure of the layout. We will add another Frame, Main Frame, which will be used to divide the layout into the Header, Footer, Sidebar, and Content sections.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_MAIN",
+  "links": [],
+  "name": "Main Frame",
+  ...
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    baseEntities: {
+      FRM_MAIN: {...},
+      FRM_ROOT: {...}
+    }
+  },
+  layouts: {
+    frames: {
+      FRM_MAIN: {
+        code: "FRM_MAIN",
+        links: [],
+        name: "Main Frame"
+      },
+      FRM_ROOT: {...}
+    }
+  }
+}
+```
+
+#### Updated Displays
+There is no change to either the React tree or the page. Even though we have a new Frame in the store, there is no Link between `FRM_ROOT` and `FRM_MAIN`, so there is no visual change to the page.
+
+![Add the Main Frame](https://i.imgur.com/4BoOiQU.png)
