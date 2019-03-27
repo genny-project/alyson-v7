@@ -525,4 +525,6 @@ The **Panel** the child will be linked to is deinfed by the `linkValue` field. T
 
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
+[Content](#Content)
+[Frames](#Frames)
 
