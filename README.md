@@ -7,7 +7,7 @@ Alyson v7 is the updated Frontend for the Genny system.
 ### What Has Changed
 The previous version used json files called 'layouts' to describe component structures, which were then converted to React Element trees. 
 
-This version aims to removes the dependance on a predefined layout. The Backend sends **Base Entities**, **Asks**, and **Links** to the Frontend, then, starting from one root Base Entity, it recursively renders the entire component tree.
+This version aims to removes the dependance on a predefined layout. The Backend sends **Base Entities**, **Question Sets**, and **Links** to the Frontend, then, starting from one root Base Entity, it recursively renders the entire component tree.
 
 ### What Does This Affect
 Instead of defining each page, and navigating between them to change the display, the Backend only needs to add, remove, or change **Base Entities** or the **Links** between **Base Entities**.
@@ -19,12 +19,12 @@ A layout is constructed of from the following objects:
 
 - **Frames.** **Base Entities** that positions child elements according to certain criteria.
 - **Themes.** **Base Entities** that contain styling or behavioural data for other elements.
-- **Asks.** **Question Groups** and **Questions** that renders content or input elements.
+- **Question Sets.** **Question Groups** and **Questions** that renders content or input elements.
 - **Links.** Describes the nature of the relationship between entities.
 - **Legacy Layout.** Renders elements from the previous versions json file.
 
 ## Frames ( prefix: FRM_ )
-The **Frame** base entity is the basic building block of the layout. Any **Frames**, **Asks**, or **Legacy Layouts** that are **linked** to a **Frame** will be positioned based on the value of the **Link** between them.
+The **Frame** base entity is the basic building block of the layout. Any **Frames**, **Question Sets**, or **Legacy Layouts** that are **linked** to a **Frame** will be positioned based on the value of the **Link** between them.
 
 **Panels** aren't created directly from **Base Entities**, instead they are rendered inside **Frames** based on the Frame's **Links**.
 
@@ -81,20 +81,19 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
 
-## Asks ( prefix: QUE_ )
-The **Asks** are composed of **Question Groups** ( QUE_XXX_GRP ) and **Questions** ( QUE_XXX ). An **Ask** is rendered as a Form component with Inputs, and cover almost all of the display elements and interactable elements shown on the page.
+## Question Sets  ( prefix: QUE_ )
+The **Question Sets** are composed of **Question Groups** ( QUE_XXX_GRP ) and **Questions** ( QUE_XXX ). A **Question Sets** is rendered as a Form component with Inputs, and cover almost all of the display elements and interactable elements shown on the page.
 
-### Questions
-
-A **Question** defines an element that will display information to the user. The element might be editable, or read only. The `dataType` field defines the type of data, which is used by the front end to render a display component.
-
-### Question Group
+### Question Groups
 
 A **Question Group** defines a group of collection of **Questions**. **Question Groups** can have a **Theme** linked to it, and define behaviour such as Pagination, Dropdowns, and Selectable element. A **Question** can be rendered as part of the **Question Group** itself, not as a child, using the `question` field.
 
+### Questions
+A **Question** defines an element that will display information to the user. The element might be editable, or read only. The `dataType` field defines the type of data, which is used by the front end to render a display component.
+
 ### Question Group Inputs
 
-### Ask Structure
+### Question Set Structure
 ```
 {
   "items": [
@@ -462,7 +461,7 @@ A **Link** is used to define the relationship between two **Entities**. When use
 The type of link is defined by the `attributeCode` field. The valid types of links are as follows:
 - LNK_FRAME: Indicates that the child is a **Frame** base entity.
 - LNK_THEME: Indicates that the child is a **Theme** base entity.
-- LNK_ASK: Indicates that the child is an **Ask**.
+- LNK_ASK: Indicates that the child is an **Question Sets**.
 - **LNK_LAYOUT**: Indicates the child is a **Legacy Layout**. This allows backwards compatibility with the previous layouts.
 
 The **Panel** the child will be linked to is deinfed by the `linkValue` field. The valid values are **NORTH**, **SOUTH**, **EAST**, **WEST**, and **CENTRE**
@@ -493,7 +492,7 @@ The **Panel** the child will be linked to is deinfed by the `linkValue` field. T
 | linkValue | string | "CENTRE" | true | Defines which **Panel** of the parent **Frame** the child is linked to. |
 | weight | number | 1 | true | The priority of the link. Lower numbers are more important, a value of `0` means the child will be hidden. |
 
-## Creating a Layout
+## Creating a Layout: Step by Step
 
 Tree of Frames and Asks
 
@@ -514,7 +513,3 @@ First Recursion with Panels
 Second Recursion with Panels
 
 ![Second Level](https://i.imgur.com/SjdjV0a.png)
-
-## Sending Messages
-
-TBD
