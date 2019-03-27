@@ -782,4 +782,4 @@ This is looking better, but we want to move the Project Name so it is positioned
 #### Updated Displays
 We can see what affect changing the Link value has had on the display. In the React tree, the Header Frame is now rendering a West Panel instead of a Centre Panel. For the page, the Project Name has been pushed over to the left side of the screen.
 
-![Change Link Value Between Header Frame and Question Set](https://i.imgur.com/Wu3Ryay.png)
+![Change Link Value Between Header Frame and Question Set](https://i.imgur.com/Kicm4mY.png)
