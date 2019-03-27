@@ -375,8 +375,8 @@ Now we can see that the Content Frame has a Centre Panel, and it has a Form as i
 
 ***
 
-### 7. Add a Background Color to the Main App
-Let's create a Theme to add a red background to the app, and link it to the Root Frame so it's passed to all elements in the tree.
+### 7. Add a Background Color to the Page
+Let's create a Theme to add a red background to the page, and link it to the Root Frame so it's passed to all elements in the tree.
 
 #### Base Entity Message
 ```
@@ -461,4 +461,91 @@ Let's create a Theme to add a red background to the app, and link it to the Root
 #### Updated Displays
 Since there are no new Frames or Question Sets, there is no change to the elements rendered in the React tree. The page of the app has been updated with the new background color.
 
-![Add a Background Color to the Main App](https://i.imgur.com/NMWwJ8a.png)
+![Add a Background Color to the Page](https://i.imgur.com/NMWwJ8a.png)
+
+***
+
+### 8. Add a Header Frame
+Now we want to add a Header to the page. Let's send the Header Frame, and the Main Frame with a Link to the Header Frame. Since we want the Header to be at the top of the page, make sure the Link value is `North`.
+
+#### Base Entity Message
+```
+{
+  "code": "FRM_MAIN",
+  "links": [
+    {
+      "link": {
+        "attributeCode": "LNK_FRAME",
+        "linkValue": "NORTH",
+        "sourceCode": "FRM_MAIN",
+        "targetCode": "FRM_HEADER",
+        "weight": 1
+      }
+    }
+  ],
+  "name": "Main Frame"
+},
+{
+  "code": "FRM_HEADER",
+  "links": [],
+  "name": "Header Frame"
+}
+```
+#### Redux Store
+```
+{
+  vertx: {
+    asks: {...},
+    baseEntities: {
+      FRM_CONTENT: {...},
+      FRM_HEADER: {...},
+      FRM_MAIN: {...},
+      FRM_ROOT: {...},
+      THM_BACKGROUND_RED: {...}
+    }
+  },
+  layouts: {
+    frames: {
+      FRM_CONTENT: {...},
+      FRM_HEADER: {
+        code: "FRM_HEADER",
+        links: [],
+        name: "Header Frame"
+      },
+      FRM_MAIN: {
+        code: "FRM_MAIN",
+        links: [
+          {
+            code: "FRM_CONTENT",
+            panel: "CENTRE",
+            type: "frame",
+            weight: 1
+          },
+          {
+            code: "FRM_HEADER",
+            panel: "NORTH",
+            type: "frame",
+            weight: 1
+          }
+        ],
+        name: "Main Frame"
+      },
+      FRM_ROOT: {...}
+    },
+    themes: {
+      THM_BACKGROUND_RED: {
+        code: "THM_BACKGROUND_RED",
+        data: {
+          backgroundColor: "#b70e0e"
+        },
+        name: "Theme Background Red"
+      }
+    }
+  }
+}
+```
+
+#### Updated Displays
+There is no change to the page, but we can see the Main Frame now has both a Centre Panel and a North Panel. The North Panel also has the Header Frame.
+
+![Add a Header Frame](https://i.imgur.com/yt7urqp.png)
