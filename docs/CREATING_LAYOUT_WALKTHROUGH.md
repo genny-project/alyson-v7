@@ -15,7 +15,7 @@ Before going through these steps, [click here to view the documentation for Layo
 
 ## Walkthrough
 
-### 1. Add the Root Frame.
+### 1. Add the Root Frame
 First, we need to add the first Frame, `FRM_ROOT`. This is the default **Frame** the Frontend is looking for to begin constructing the element tree.
 
 #### Base Entity Message
@@ -53,7 +53,7 @@ We can see the React Tree has added a **Frame** component, but the page hasn't c
 
 ***
 
-### 2. Add the Main Frame.
+### 2. Add the Main Frame
 Now that we have the Root Frame, we need to begin adding the basic structure of the layout. We will add another Frame, Main Frame, which will be used to divide the layout into the Header, Footer, Sidebar, and Content sections.
 
 #### Base Entity Message
@@ -93,7 +93,7 @@ There is no change to either the React tree or the page. Even though we have a n
 
 ***
 
-### 3. Add a Link between the Root Frame and the Main Frame.
+### 3. Add a Link between the Root Frame and the Main Frame
 To add Main Frame into the React tree, we need to resend the Root Frame Base Entity with a **Link**.
 
 #### Base Entity Message
@@ -150,7 +150,7 @@ Now we can see that even though the page hasn't changed, the React tree has. The
 
 ***
 
-### 4. Add the Content Frame.
+### 4. Add the Content Frame
 Now we want to add the Frame where the main Content of each page of the app will be displayed. `FRM_CONTENT` is the default name that should be used for this Frame. We will also send `FRM_MAIN` with a Link to the Content Frame.
 
 #### Base Entity Message
@@ -218,7 +218,7 @@ Again the React tree has updated, the Main Frame has a Centre Panel, and that Pa
 
 ***
 
-### 5. Add a User Details Question Set.
+### 5. Add a User Details Question Set
 Now we want to display something in the Content Frame. Let's send a simple Question Set that can show the User's First Name.
 
 #### Ask Message
@@ -315,7 +315,7 @@ No change to the React tree or the page this time. We need to add a Link between
 
 ***
 
-### 6. Link the User Details Question Set to the Content Frame.
+### 6. Link the User Details Question Set to the Content Frame
 We need to send the Content Frame again with a Link to the User Details Question Set.
 
 #### Base Entity Message
@@ -375,7 +375,7 @@ Now we can see that the Content Frame has a Centre Panel, and it has a Form as i
 
 ***
 
-### 7. Add a Background Color to the Main App.
+### 7. Add a Background Color to the Main App
 Let's create a Theme to add a red background to the app, and link it to the Root Frame so it's passed to all elements in the tree.
 
 #### Base Entity Message
