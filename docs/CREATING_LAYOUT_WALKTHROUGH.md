@@ -47,7 +47,7 @@ First, we need to add the first Frame, `FRM_ROOT`. This is the default **Frame**
 We can see the React Tree has added a **Frame** component, but the page hasn't changed. This is because the `FRM_ROOT` doesn't have any links, so there is no visual change to the page.
 
 ![Add the Root Frame](https://i.imgur.com/4BoOiQU.png)
-
+***
 ### Add the Main Frame.
 Now that we have the Root Frame, we need to begin adding the basic structure of the layout. We will add another Frame, Main Frame, which will be used to divide the layout into the Header, Footer, Sidebar, and Content sections.
 
