@@ -171,15 +171,6 @@ The **Panel** the child will be linked to is defined by the `linkValue` field. T
 }
 ```
 
-#### Link Fields
-| Field | Value Type | Example | Required | Description |
-| ------ | ---------- | ------- | -------- | ----------- |
-| sourceCode | string | "FRM_PARENT" | true | Base Entity code of the link parent. |
-| targetCode | string | "FRM_CHILD" | true | Base Entity code of the link child. **IMPORTANT: If using LNK_LAYOUT, the target code must be the URI of the legacy layout. Must begin with `pages/` or `sublayouts'`, eg `pages/applications/:id`** |
-| attributeCode | string | "LNK_FRAME" | true | Defines the type of link. |
-| linkValue | string | "CENTRE" | true | Defines which **Panel** of the parent **Frame** the child is linked to. |
-| weight | number | 1 | true | The priority of the link. Lower numbers are more important, a value of `0` means the child will be hidden. |
-
 ## Creating a Layout
 The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** that need to be applied through the whole app such as text color or background color should be linked to `FRM_ROOT`.
 
