@@ -139,6 +139,7 @@ class InputAutocomplete extends Component {
             <Box
               {...getRootProps( undefined, { suppressRefError: true })}
               position="relative"
+              flex={1}
               testID={`input-autocomplete ${testID}`}
             >
               <Input

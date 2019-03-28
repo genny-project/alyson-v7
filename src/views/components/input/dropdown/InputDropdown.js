@@ -244,7 +244,7 @@ class InputDropdown extends Component {
       fontSize: textSizes[textSize],
       textAlign: textAlign,
       height,
-      width: '100%', // Always be 100% of the parent width
+      // width: '100%', // Always be 100% of the parent width
       backgroundColor,
       borderWidth,
       borderTopWidth,
@@ -258,6 +258,7 @@ class InputDropdown extends Component {
       borderTopLeftRadius,
       borderTopRightRadius,
       color,
+      flex: 1,
     });
 
     const validItems = isArray( items, { ofMinLength: 1 });

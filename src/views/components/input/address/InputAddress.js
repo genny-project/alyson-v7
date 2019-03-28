@@ -239,6 +239,7 @@ class InputAddress extends Component {
           placeholder,
           prefixIcon,
           icon,
+          flex: 1,
         }}
         onType={this.handleType}
         itemStringKey="description"

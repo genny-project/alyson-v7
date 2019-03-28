@@ -108,6 +108,7 @@ class InputDatePicker extends PureComponent {
         }) => {
           return (
             <Box
+              flex={1}
               {...getRootProps( undefined, { suppressRefError: true })}
             >
               <Box>

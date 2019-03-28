@@ -41,6 +41,7 @@ class InputEvent extends Component {
         rootCode={rootQuestionGroupCode}
         flexDirection="row"
         alignItems="center"
+        flex={1}
         justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
       >
         {

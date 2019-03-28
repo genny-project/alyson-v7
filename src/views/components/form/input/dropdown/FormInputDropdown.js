@@ -59,7 +59,9 @@ class FormInputDropdown extends Component {
 
                   // get all links, check for themes for this base entity
 
-                  const linkedThemes = getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' );
+                  const linkedThemes = isArray( baseEntity.links )
+                    ? getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' )
+                    : [];
                   const style = filterThemes( linkedThemes, this.props.themes );
 
                   // console.log( 'links', baseEntity.links, linkedThemes );
