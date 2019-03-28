@@ -1268,3 +1268,7 @@ Now for the last step, we want to add a Sidebar which shows the Project's Logo. 
 Like with the Footer, we can see the changes in both the React tree and the page. The new Sidebar Frame has been added inside a the West Panel of the Main Frame, sitting next to the Content Frame, while the Form is contained inside the North Panel of the Sidebar Frame. This change is reflected in the page view, with the logo appearing in a new Sidebar, pushed to the top of the element where it meets the Header.
 
 ![Add Sidebar With Project Logo Question Set](https://i.imgur.com/wAYbmuk.png)
+
+***
+
+Done! This is what it takes to create the default wrapper for the application content view with the new Alyson frontend. I hope this has successful illustrated the basic concepts of the layouts system.
