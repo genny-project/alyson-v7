@@ -17,6 +17,7 @@
   - [Step 11 - Add Footer With Powered By Question Set ](#step-11---add-footer-with-powered-by-question-set)
   - [Step 12 - Add a Background Color to the Content Area ](#step-12---add-a-background-color-to-the-content-area)
   - [Step 13 - Add Sidebar With Project Logo Question Set  ](#step-13---add-sidebar-with-project-logo-question-set)
+- [Summary](#Summary)
   
 ## Overview
 To help illustrate all of these concepts, we will go through the process of creating a Layout one step at a time, detailing at each step the following:
@@ -1271,4 +1272,5 @@ Like with the Footer, we can see the changes in both the React tree and the page
 
 ***
 
-Done! This is what it takes to create the default wrapper for the application content view with the new Alyson frontend. I hope this has successful illustrated the basic concepts of the layouts system.
+## Summary
+This is what it takes to create the default wrapper for the application content view with the new Alyson frontend. I hope this has successful illustrated the basic concepts of the layouts system; how the different types of Base Entites are used and how they link together, how the Front End handles the rendering of different elements, and how to apply Themes to elements.
