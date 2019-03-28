@@ -955,7 +955,7 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
 ```
 
 #### Updated Displays
-So we can see a change in both the React tree and the page this time. The Footer Frame has ben added to a new South Panel, and it has the Form inside its own East Panel. For the page, the new text is now being displayed in the bottom right corner of the page.
+So we can see a change in both the React tree and the page this time. The Footer Frame has been added to a new South Panel, and it has the Form inside its own East Panel. For the page, the new text is now being displayed in the bottom right corner of the page.
 
 ![Add Footer With Powered By Question Set](https://i.imgur.com/b3CJgAb.png)
 
@@ -1033,6 +1033,18 @@ So since we want it to apply to the Content Frame, we need to look at which Pane
             weight: 1
           },
           {
+            code: "FRM_FOOTER",
+            panel: "SOUTH",
+            type: "frame",
+            weight: 1
+          },
+          {
+            code: "FRM_HEADER",
+            panel: "NORTH",
+            type: "frame",
+            weight: 1
+          },
+          {
             code: "THM_BACKGROUND_WHITE",
             panel: "CENTRE",
             type: "theme",
@@ -1067,7 +1079,7 @@ Since there are no new Frames or Question Sets, there is no change to the elemen
 ### Step 13 - Add Sidebar With Project Logo Question Set 
 [back to top](#creating-a-layout-step-by-step)
 
-Now we want to do that same thing again, and show the Project's `Powered By` tagline. It should be displayed in the bottom right corner. So we need to do a few things. First, send the Main Frame with a Link to Footer Frame with value `SOUTH`. Next, send the Footer Frame with a Link to the Question Set with value `EAST`. Finally, send the Question Set.
+Now for the last step, we want to add a Sidebar which shows the Project's Logo. It should be displayed in the top left corner. Following the same steps as we did with the Footer: send the Main Frame with a Link to Sidebar Frame with value `WEST`, then send the Sidebar Frame with a Link to the Question Set with value `NORTH`, and lastly send the Question Set.
 
 #### Base Entity Message
 ```
@@ -1077,9 +1089,9 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
     {
       "link": {
         "attributeCode": "LNK_FRAME",
-        "linkValue": "SOUTH",
+        "linkValue": "WEST",
         "sourceCode": "FRM_MAIN",
-        "targetCode": "FRM_FOOTER",
+        "targetCode": "FRM_SIDEBAR",
         "weight": 1
       }
     }
@@ -1087,19 +1099,19 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
   "name": "Main Frame"
 },
 {
-  "code": "FRM_FOOTER",
+  "code": "FRM_SIDEBAR",
   "links": [
     {
       "link": {
         "attributeCode": "LNK_ASK",
-        "linkValue": "EAST",
+        "linkValue": "NORTH",
         "sourceCode": "FRM_FOOTER",
-        "targetCode": "QUE_PROJECT_FOOTER_GRP",
+        "targetCode": "QUE_PROJECT_SIDEBAR_GRP",
         "weight": 1
       }
     }
   ],
-  "name": "Footer Frame"
+  "name": "Sidebar Frame"
 }
 ```
 
@@ -1108,30 +1120,30 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
 {
   "sourceCode": "PER_USER1",
   "targetCode": "PRJ_PROJECT1",
-  "questionCode": "QUE_PROJECT_FOOTER_GRP",
-  "name": "Project Footer",
+  "questionCode": "QUE_PROJECT_SIDEBAR_GRP",
+  "name": "Project Sidebar",
   "childAsks": [
     {
       "question": {
         "attribute": {
           "dataType": {
-            "className": "Text",
-            "typeName": "Text",
+            "className": "Image",
+            "typeName": "Image",
             {...}
           },
-          "code": "PRI_POWERED_BY",
-          "name": "Powered By"
+          "code": "PRI_LOGO",
+          "name": "Logo"
         },
-        "attributeCode": "PRI_POWERED_BY",
-        "code": "QUE_POWERED_BY",
-        "name": "Project Powered By"
+        "attributeCode": "PRI_LOGO",
+        "code": "QUE_LOGO",
+        "name": "Project Logo"
       },
       "sourceCode": "PER_USER1",
       "targetCode": "PRJ_PROJECT1",
-      "questionCode": "QUE_POWERED_BY",
-      "attributeCode": "PRI_POWERED_BY",
+      "questionCode": "QUE_LOGO",
+      "attributeCode": "PRI_LOGO",
       "readonly": true,
-      "name": "Project Powered By"
+      "name": "Project Logo"
     }
   ]
 }
@@ -1143,33 +1155,34 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
     asks: {
       QUE_USER_DETAILS_GRP: {...},
       QUE_PROJECT_HEADER_GRP: {...},
-      QUE_PROJECT_FOOTER_GRP: {
+      QUE_PROJECT_FOOTER_GRP: {...},
+      QUE_PROJECT_SIDEBAR_GRP: {
         "sourceCode": "PER_USER1",
         "targetCode": "PRJ_PROJECT1",
-        "questionCode": "QUE_PROJECT_FOOTER_GRP",
-        "name": "Project Footer",
+        "questionCode": "QUE_PROJECT_SIDEBAR_GRP",
+        "name": "Project Sidebar",
         "childAsks": [
           {
             "question": {
               "attribute": {
                 "dataType": {
-                  "className": "Text",
-                  "typeName": "Text",
+                  "className": "Image",
+                  "typeName": "Image",
                   {...}
                 },
-                "code": "PRI_POWERED_BY",
-                "name": "Powered By"
+                "code": "PRI_LOGO",
+                "name": "Logo"
               },
-              "attributeCode": "PRI_POWERED_BY",
-              "code": "QUE_POWERED_BY",
-              "name": "Project Powered By"
+              "attributeCode": "PRI_LOGO",
+              "code": "QUE_LOGO",
+              "name": "Project Logo"
             },
             "sourceCode": "PER_USER1",
             "targetCode": "PRJ_PROJECT1",
-            "questionCode": "QUE_POWERED_BY",
-            "attributeCode": "PRI_POWERED_BY",
+            "questionCode": "QUE_LOGO",
+            "attributeCode": "PRI_LOGO",
             "readonly": true,
-            "name": "Project Powered By"
+            "name": "Project Logo"
           }
         ]
       }
@@ -1182,29 +1195,20 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
       QUE_FIRSTNAME: {...},
       QUE_PROJECT_HEADER_GRP: {...},
       QUE_NAME: {...},
-      QUE_PROJECT_FOOTER_GRP: {
-        code: "QUE_PROJECT_FOOTER_GRP",
-        name: "Project Footer"
+      QUE_PROJECT_FOOTER_GRP: {...},
+      QUE_POWERED_BY: {...},
+      QUE_PROJECT_SIDEBAR_GRP: {
+        code: "QUE_PROJECT_SIDEBAR_GRP",
+        name: "Project Sidebar"
       },
-      QUE_POWERED_BY: {
-        code: "QUE_POWERED_BY",
-        name: "Project Powered By"
+      QUE_LOGO: {
+        code: "QUE_LOGO",
+        name: "Project Logo"
       }
     },
     frames: {
       FRM_CONTENT: {...},
-      FRM_FOOTER: {
-        code: "FRM_FOOTER",
-        links: [
-          {
-            code: "QUE_PROJECT_FOOTER_GRP",
-            panel: "EAST",
-            type: "ask",
-            weight: 1
-          }
-        ],
-        name: "Footer Frame"
-      },
+      FRM_FOOTER: {...},
       FRM_HEADER: {...},
       FRM_MAIN: {
         code: "FRM_MAIN",
@@ -1226,17 +1230,41 @@ Now we want to do that same thing again, and show the Project's `Powered By` tag
             panel: "NORTH",
             type: "frame",
             weight: 1
+          },
+          {
+            code: "FRM_SIDEBAR",
+            panel: "WEST",
+            type: "frame",
+            weight: 1
+          },
+          {
+            code: "THM_BACKGROUND_WHITE",
+            panel: "CENTRE",
+            type: "theme",
+            weight: 1
           }
         ],
         name: "Main Frame"
       },
-      FRM_ROOT: {...}
+      FRM_ROOT: {...},
+      FRM_SIDEBAR: {
+        code: "FRM_SIDEBAR",
+        links: [
+          {
+            code: "QUE_PROJECT_SIDEBAR_GRP",
+            panel: "NORTH",
+            type: "ask",
+            weight: 1
+          }
+        ],
+        name: "Sidebar Frame"
+      },
     }
   }
 }
 ```
 
 #### Updated Displays
--
+Like with the Footer, we can see the changes in both the React tree and the page. The new Sidebar Frame has been added inside a the West Panel of the Main Frame, sitting next to the Content Frame, while the Form is contained inside the North Panel of the Sidebar Frame. This change is reflected in the page view, with the logo appearing in a new Sidebar, pushed to the top of the element where it meets the Header.
 
 ![Add Sidebar With Project Logo Question Set](https://i.imgur.com/wAYbmuk.png)
