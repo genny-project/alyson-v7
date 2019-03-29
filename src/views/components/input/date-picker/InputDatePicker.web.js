@@ -133,7 +133,8 @@ class InputDatePicker extends PureComponent {
                 width="100%"
               >
                 <Box
-                  onPress={this.props.editable ? this.handleCalendarToggle : null}
+                  // onPress={this.props.editable ? this.handleCalendarToggle : null}
+                  onPress={this.handleCalendarToggle}
                   width="100%"
                 >
                   <Input

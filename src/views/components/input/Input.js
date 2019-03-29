@@ -25,6 +25,7 @@ import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
 import InputImage from './image';
+import InputSort from './sort';
 
 class Input extends Component {
   static propTypes = {
@@ -366,6 +367,13 @@ class Input extends Component {
       case 'menu':
         return (
           <InputMenu
+            {...inputProps}
+          />
+        );
+
+      case 'sort':
+        return (
+          <InputSort
             {...inputProps}
           />
         );
