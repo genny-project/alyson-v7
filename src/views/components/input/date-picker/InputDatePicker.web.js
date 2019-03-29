@@ -109,7 +109,8 @@ class InputDatePicker extends PureComponent {
         }) => {
           return (
             <Box
-              flex={1}
+              // flex={1}
+              width="100%"
               {...getRootProps( undefined, { suppressRefError: true })}
             >
               <Box>
@@ -132,9 +133,9 @@ class InputDatePicker extends PureComponent {
                 position="relative"
                 width="100%"
               >
-                <Box
-                  // onPress={this.props.editable ? this.handleCalendarToggle : null}
-                  onPress={this.handleCalendarToggle}
+                <div
+                  // onClick={this.props.editable ? this.handleCalendarToggle : null}
+                  onClick={this.handleCalendarToggle}
                   width="100%"
                 >
                   <Input
@@ -146,7 +147,7 @@ class InputDatePicker extends PureComponent {
                     })}
                     testID={`input-date-picker ${testID}`}
                   />
-                </Box>
+                </div>
 
                 {isOpen ? (
                   <Kalendaryo
