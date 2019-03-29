@@ -3,7 +3,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { string, func, oneOfType, object } from 'prop-types';
+import { string, func, oneOfType, object, bool } from 'prop-types';
 import Downshift from 'downshift';
 import Kalendaryo from 'kalendaryo';
 import range from 'lodash.range';
@@ -33,6 +33,7 @@ class InputDatePicker extends PureComponent {
     onChangeValue: func,
     value: oneOfType( [string, object] ),
     testID: string,
+    editable: bool,
   }
 
   state = {
@@ -131,11 +132,9 @@ class InputDatePicker extends PureComponent {
                 position="relative"
                 width="100%"
               >
-                <div
-                  onClick={this.handleCalendarToggle}
-                  style={{
-                    width: '100%',
-                  }}
+                <Box
+                  onPress={this.props.editable ? this.handleCalendarToggle : null}
+                  width="100%"
                 >
                   <Input
                     {...getInputProps({
@@ -146,7 +145,7 @@ class InputDatePicker extends PureComponent {
                     })}
                     testID={`input-date-picker ${testID}`}
                   />
-                </div>
+                </Box>
 
                 {isOpen ? (
                   <Kalendaryo

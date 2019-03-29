@@ -151,6 +151,9 @@ class FormGroup extends Component {
 
     const isFormSubmit = isObject( contextList, { withProperty: 'isFormSubmit' }) ? contextList.isFormSubmit : false;
 
+    const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
+    const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
+
     const inputProps = {
       onChangeValue: handleChange( questionCode, setFieldValue, setFieldTouched, ask ), // functions
       value: values && values[questionCode],
@@ -184,6 +187,8 @@ class FormGroup extends Component {
       inheritedThemes: this.getStyling( true ),
       ask,
       isClosed: this.props.isClosed,
+      useAttributeNameAsValue: useAttributeNameAsValue,
+      useQuestionNameAsValue: useQuestionNameAsValue,
     };
 
     // console.log( this.props.isClosed );

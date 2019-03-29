@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { TextInput, Platform } from 'react-native';
 import { string, oneOf, number, shape, bool, func, oneOfType, node, object } from 'prop-types';
+import dlv from 'dlv';
 // import memoize from 'memoize-one';
 import { Box, Icon, Text } from '../../../components';
 
@@ -188,6 +189,9 @@ class Input extends PureComponent {
     renderCharacterCount: object,
     name: string,
     cursor: string,
+    useAttributeNameAsValue: bool,
+    useQuestionNameAsValue: bool,
+    question: object,
   }
 
   state = {
@@ -396,6 +400,8 @@ class Input extends PureComponent {
       showCharacterCount,
       characterCountWrapperProps,
       characterCountTextProps,
+      useAttributeNameAsValue,
+      useQuestionNameAsValue,
     } = this.props;
 
     const { isFocused, valueLength } = this.state;
@@ -448,6 +454,9 @@ class Input extends PureComponent {
       onLayout,
     };
 
+    const attributeName = dlv( this.props.question, 'attribute.name' );
+    const questionName = dlv( this.props.question, 'name' );
+
     return (
       <Box
         {...wrapperProps}
@@ -490,7 +499,11 @@ class Input extends PureComponent {
             inputStyle,
             statusStyle,
           ]}
-          value={value}
+          value={useAttributeNameAsValue
+            ? attributeName
+            : useQuestionNameAsValue
+              ? questionName
+              : value}
           underlineColorAndroid="transparent"
           {...Platform.select({
             ios: nativeProps,
