@@ -88,6 +88,7 @@ class Bridge {
     rootCode,
     eventType = 'BTN_CLICK',
     messageType = 'BTN',
+    value,
   }) {
     if (
       isString( code, { ofMinLength: 1 }) &&
@@ -101,6 +102,7 @@ class Bridge {
           code,
           parentCode,
           rootCode,
+          ...value,
         },
       });
     }
@@ -159,7 +161,15 @@ class Bridge {
     const { actionCache } = store.getState().vertx;
 
     if ( isObject( data, { withProperties: ['code', 'parentCode'] })) {
-      const actionId = `${data.parentCode}:${data.code}`;
+      const dataKeys = Object.keys( data ).filter(
+        key => key !== 'code' && key !== 'parentCode' && key !== 'rootCode'
+      );
+
+      const dataString = dataKeys.map( key => {
+        return `:${key}=${data[key]}`;
+      }).join( '' );
+
+      const actionId = `${data.rootCode}:${data.parentCode}:${data.code}${dataString}`;
 
       if ( actionCache[actionId] ) {
         if ( isObject( actionCache[actionId] )) {

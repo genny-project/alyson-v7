@@ -46,7 +46,7 @@ function Box({
   marginBottom,
   backgroundColor,
   // position, // TODO value = 'initial', needed for fullscreen, wrong proptype
-  position,
+  position = 'initial',
   top,
   right,
   bottom,

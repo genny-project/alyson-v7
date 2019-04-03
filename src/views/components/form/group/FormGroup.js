@@ -3,7 +3,7 @@ import { string, object, number, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort } from '../../../../utils';
-import { Box, Collapsible, EventTouchable, Pagination, ScrollView } from '../../index';
+import { Box, Collapsible, EventTouchable } from '../../index';
 import FormInput from '../input';
 
 const defaultStyle = {
@@ -39,30 +39,6 @@ class FormGroup extends Component {
   componentDidMount() {
     this.getThemes();
   }
-
-  // shouldComponentUpdate( nextProps ) {
-  //   /* If rootCode is different, then a different base
-  //   entity needs to be rendered inside the frame */
-  //   const { questionGroup, asks } = nextProps;
-  //   const { questionCode } = questionGroup;
-
-  //   console.log( 'shouldComponentUpdate', questionCode );
-  //   // console.log( 'green prev', isObject( dlv( this.props, 'themes.THM_COLOR_GREEN' )));
-  //   // console.log( 'green NEXT', isObject( dlv( nextProps, 'themes.THM_COLOR_GREEN' )));
-
-  //   // if ( !isObject( dlv( this.props, 'themes.THM_COLOR_GREEN' )) &&
-  //   //   isObject( dlv( nextProps, 'themes.THM_COLOR_GREEN' ))) {
-  //   //   console.log( 'green theme found!!!!' );
-
-  //   //   return true;
-  //   // }
-  //   console.log( 'check links' );
-  //     /* Check if any of the links of the root base entity have changed */
-
-  //   console.log( 'no diff' );
-
-  //   return false;
-  // }
 
   componentDidUpdate( nextProps ) {
     if (  isObject( dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}` ))) {
@@ -224,7 +200,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode } = this.props;
+    const { index, questionGroup, form, parentGroupCode, rootCode } = this.props;
     const {
       name,
       childAsks,
@@ -245,31 +221,6 @@ class FormGroup extends Component {
         };
       }
     });
-
-    /*
-    const isExpandable = (
-      isObject( contextList, { withProperty: 'contexts' }) &&
-      isArray( contextList.contexts, { ofMinLength: 1 })
-    ) ? contextList.contexts.some( link => {
-      const themeEntity = dlv( this.props.themes, `${link.contextCode}.properties.expandable` );
-
-        return themeEntity;
-      })
-      : false;
-
-    const renderQuestionGroupInput = (
-      isObject( contextList, { withProperty: 'contexts' }) &&
-      isArray( contextList.contexts, { ofMinLength: 1 })
-    ) ? contextList.contexts.some( link => {
-      const themeEntity = dlv(
-        this.props.themes,
-        `${link.contextCode}.properties.renderQuestionGroupInput`
-      );
-
-        return themeEntity;
-      })
-      : false;
-    */
 
     if (
       properties.expandable
@@ -319,89 +270,23 @@ class FormGroup extends Component {
       );
     }
 
-    if ( properties.pagination ) {
-      return (
-        <Pagination
-          code={questionCode}
-        >
-          {( state, handleScrollForMore ) => {
-            return (
-              <ScrollView
-                onScroll={handleScrollForMore}
-              >
-                <Box
-                  key={name}
-                  zIndex={150 - index}
-                  {...defaultStyle.group}
-                  // padding={10}
-                  borderColor
-                  {...this.getStyling()}
-                >
-                  {
-                (
-                  question &&
-                  properties.renderQuestionGroupInput
-                ) ? (
-                    this.renderInput(
-                      questionGroup,
-                      parentGroupCode,
-                      index,
-                      form,
-                    )) : null
-              }
-                  {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-                    if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                      return this.renderQuestionGroup(
-                        ask,
-                        index,
-                        form
-                      );
-                    }
-
-                    return this.renderInput(
-                      ask,
-                      questionCode,
-                      index,
-                      form,
-                    );
-                  })}
-                </Box>
-              </ScrollView>
-            );
-          }}
-        </Pagination>
-      );
-    }
-
-    if ( properties.selectableArea ) {
+    if (
+      properties.renderQuestionGroupInput
+    ) {
       return (
         <EventTouchable
           withFeedback
-          eventType="TV_SELECT"
-          messageType="TV_EVENT"
-          value={questionCode}
-          buttonCode={this.props.rootCode}
+          code={question.code}
+          parentCode={parentGroupCode || questionCode}
+          rootCode={rootCode}
         >
           <Box
             key={name}
             zIndex={150 - index}
             {...defaultStyle.group}
-            // padding={10}
             borderColor
             {...this.getStyling()}
           >
-            {
-              (
-                question &&
-                properties.renderQuestionGroupInput
-              ) ? (
-                  this.renderInput(
-                    questionGroup,
-                    parentGroupCode,
-                    index,
-                    form,
-                  )) : null
-            }
             {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
               if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
                 return this.renderQuestionGroup(

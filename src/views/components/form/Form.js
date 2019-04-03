@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ActivityIndicator } from 'react-native';
-import { string, object, oneOfType, array, bool } from 'prop-types';
+import { string, object, bool } from 'prop-types';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
@@ -19,9 +19,7 @@ class Form extends Component {
   }
 
   static propTypes = {
-    questionGroupCode: oneOfType(
-      [string, array]
-    ),
+    questionGroupCode: string,
     asks: object,
     baseEntities: object,
     loadingText: string,
@@ -59,47 +57,12 @@ class Form extends Component {
     };
 
     if (
-      isString( questionGroupCode ) &&
-      questionGroupCode !== prevProps.questionGroupCode
-    ) {
-      const newGroups = this.getQuestionGroups();
-
-      if ( newGroups.length > 0 ) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
-          if ( checkIfSetNeeded ) {
-            this.setInitialValues();
-            this.setValidationList();
-          }
-        });
-      }
-    }
-
-    else if (
-      isString( questionGroupCode ) &&
+      questionGroupCode !== prevProps.questionGroupCode ||
       isArray( questionGroups, { ofExactLength: 0 })
     ) {
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
-          if ( checkIfSetNeeded ) {
-            this.setInitialValues();
-            this.setValidationList();
-          }
-        });
-      }
-    }
-
-    else if (
-      isArray( questionGroupCode ) &&
-      questionGroupCode.length !== questionGroups.length
-    ) {
-      const newGroups = this.getQuestionGroups();
-      const prevGroups = this.getQuestionGroups( prevProps );
-
-      if ( newGroups.length !== prevGroups.length ) {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
           if ( checkIfSetNeeded ) {
@@ -119,6 +82,29 @@ class Form extends Component {
         this.setInitialValues();
         this.setValidationList();
       }
+    }
+
+    else if (
+      this.checkForUpdatedQuestionTargets( this.props )
+    ) {
+      const newGroups = this.getQuestionGroups();
+
+      if ( newGroups.length > 0 ) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
+          if ( checkIfSetNeeded ) {
+            this.setInitialValues();
+            this.setValidationList();
+          }
+        });
+      }
+    }
+
+    else if (
+      this.checkForUpdatedAttributeValues( this.props )
+    ) {
+      this.setInitialValues();
+      this.setValidationList();
     }
   }
 
@@ -155,38 +141,25 @@ class Form extends Component {
 
     const initialValues = {};
 
+    const setQuestionValue = ( ask ) => {
+      // handle targetCode
+      if ( isObject( ask, { withProperty: 'targetCode' })) {
+        checkForBE( ask.targetCode );
+        const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
+
+        if ( value || ask.mandatory )
+          initialValues[ask.questionCode] = value || null;
+      }
+
+      if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+        ask.childAsks.forEach( childAsk => {
+          setQuestionValue( childAsk );
+        });
+      }
+    };
+
     questionGroups.forEach( questionGroup => {
-      if ( !isArray( questionGroup.childAsks, { ofMinLength: 1 }))
-        return;
-
-      questionGroup.childAsks.forEach( ask => {
-        if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-          ask.childAsks.forEach( childAsk => {
-            checkForBE( childAsk.targetCode );
-
-            const value = dlv( attributes, `${childAsk.targetCode}.${childAsk.attributeCode}.value` );
-
-            /* TODO: better handle `false` value */
-            if ( value || childAsk.mandatory ) {
-              initialValues[childAsk.questionCode] = value || null;
-            }
-          });
-        }
-
-        else {
-          checkForBE( ask.targetCode );
-
-          const value = (
-            attributes[ask.targetCode] &&
-            attributes[ask.targetCode][ask.attributeCode] &&
-            attributes[ask.targetCode][ask.attributeCode].value
-          );
-
-          /* TODO: better handle `false` value */
-          if ( value || ask.mandatory )
-            initialValues[ask.questionCode] = value || null;
-        }
-      });
+      setQuestionValue( questionGroup );
     });
 
     if ( Object.keys( initialValues ).length > 0 && this.props.shouldSetInitialValues )
@@ -205,22 +178,26 @@ class Form extends Component {
 
     const validationList = {};
 
-    questionGroups.forEach( questionGroup => {
-      if ( !isArray( questionGroup.childAsks, { ofMinLength: 1 })) {
-        return;
-      }
-
-      questionGroup.childAsks.forEach( ask => {
-        const dataType = (
-          data[ask.attributeCode] &&
-          data[ask.attributeCode].dataType
-        );
+    const setValidation = ( ask ) => {
+      // handle targetCode
+      if ( isObject( ask, { withProperty: 'targetCode' })) {
+        const dataType = dlv( data, `${ask.attributeCode}.${dataType}` );
 
         validationList[ask.questionCode] = {
           dataType,
           required: ask.mandatory,
         };
-      });
+      }
+
+      if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+        ask.childAsks.forEach( childAsk => {
+          setValidation( childAsk );
+        });
+      }
+    };
+
+    questionGroups.forEach( questionGroup => {
+      setValidation( questionGroup );
     });
 
     this.setState({ validationList });
@@ -230,17 +207,6 @@ class Form extends Component {
    * passed to this fn inside of `componentDidUpdate`. */
   getQuestionGroups( props = this.props ) {
     const { questionGroupCode, asks } = props;
-
-    /* questionGroupCode here is an array, so loop through the keys and
-     * push the ask to the array if it exists. */
-    if ( questionGroupCode instanceof Array ) {
-      return questionGroupCode.reduce(( questionGroups, code ) => {
-        if ( asks[code] )
-          questionGroups.push( asks[code] );
-
-        return questionGroups;
-      }, [] );
-    }
 
     /* questionGroupCode from here is a string, so check if the ask exists
      * for this questionGroupCode key. If exists, return it inside of an array. */
@@ -267,6 +233,78 @@ class Form extends Component {
     return result;
   }
 
+  checkForUpdatedQuestionTargets = ( newProps ) => {
+    const { questionGroups } = this.state;
+    const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
+
+    if ( questionGroups.length < 1 ) return false;
+
+    const compareTargetCode = ( newAsk, existingAsk ) => {
+      if ( !newAsk.question ) return true;
+
+      const newQuestionCode = newAsk.questionCode;
+      const newTargetCode = newAsk.targetCode;
+
+      const existingQuestionCode = existingAsk.questionCode;
+      const existingTargetCode = existingAsk.targetCode;
+
+      const isMatch = (
+        newQuestionCode === existingQuestionCode &&
+        newTargetCode === existingTargetCode
+      );
+
+      if ( isMatch ) return false;
+
+      const isChildMatch = newAsk.childAsks.some(( childAsk, index ) => {
+        return compareTargetCode( childAsk, existingAsk.childAsks[index], index );
+      });
+
+      return !isChildMatch;
+    };
+
+    const isDifference = newQuestionGroup.childAsks.some(( childAsk, index ) => {
+      return compareTargetCode( childAsk, questionGroups[0].childAsks[index], index );
+    });
+
+    return isDifference;
+  };
+
+  checkForUpdatedAttributeValues = ( newProps ) => {
+    /* identify the attributes for each question */
+
+    const { initialValues } = this.state;
+    const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
+
+    const compareAttributeValues = ( ask ) => {
+      if ( !ask.question ) return true;
+
+      const questionCode = ask.questionCode;
+      const target = ask.targetCode;
+      const attributeCode = ask.question.attributeCode;
+      const baseEntityAttributeValue = dlv( newProps, `baseEntities.attributes.${target}.${attributeCode}.value` );
+
+      const isMatch = (
+        initialValues[questionCode] == null &&
+        baseEntityAttributeValue == null
+      ) ||
+      initialValues[questionCode] === baseEntityAttributeValue;
+
+      if ( isMatch ) return false;
+
+      const isChildMatch = ask.childAsks.some(
+        childAsk => compareAttributeValues( childAsk )
+      );
+
+      return !isChildMatch;
+    };
+
+    const isDifference = newQuestionGroup.childAsks.some(
+      childAsk => compareAttributeValues( childAsk )
+    );
+
+    return isDifference;
+  }
+
   checkIfFullWidth = ( questionGroups ) => {
     return questionGroups.some( questionGroup => {
       return isObject( questionGroup.contextList, { withProperty: 'fullWidth' })
@@ -276,7 +314,6 @@ class Form extends Component {
   }
 
   doValidate = values => {
-    // console.log( 'do validate' );
     if ( !values )
       return {};
 
@@ -342,7 +379,6 @@ class Form extends Component {
     ) {
       finalValue = JSON.stringify( finalValue );
     }
-
     // eslint-disable-next-line no-console
     console.warn( 'sending answer...', {
       askId: ask.id,
@@ -350,7 +386,7 @@ class Form extends Component {
       sourceCode: ask.sourceCode,
       targetCode: ask.targetCode,
       code: ask.questionCode,
-      questionGroup: this.getQuestionGroups().name,
+      questionGroup: this.getQuestionGroups().name, // doesnt work, returns an array
       identifier: ask.questionCode,
       weight: ask.weight,
       value: finalValue,
@@ -362,7 +398,7 @@ class Form extends Component {
       sourceCode: ask.sourceCode,
       targetCode: ask.targetCode,
       code: ask.questionCode,
-      questionGroup: this.getQuestionGroups().name,
+      questionGroup: this.getQuestionGroups().name, // doesnt work, returns an array
       identifier: ask.questionCode,
       weight: ask.weight,
       value: finalValue,
@@ -500,20 +536,13 @@ class Form extends Component {
 
   render() {
     const {
-      questionGroupCode,
       loadingText,
       testID,
       fullWidth,
     } = this.props;
     const { questionGroups } = this.state;
 
-    if (
-      !isArray( questionGroups, { ofMinLength: 1 }) ||
-      (
-        isArray( questionGroupCode ) &&
-        questionGroupCode.length !== questionGroups.length
-      )
-    ) {
+    if ( !isArray( questionGroups, { ofMinLength: 1 })) {
       return (
         <Box
           flexDirection="column"
@@ -548,8 +577,6 @@ class Form extends Component {
 
     // check the top level groups to see if any have 'fullWidth: true' in the contextList
     const isFullWidth = fullWidth != null ? fullWidth : this.checkIfFullWidth( questionGroups );
-
-    // console.log( this.props.isClosed );
 
     return (
       <Formik

@@ -109,13 +109,13 @@ class InputDatePicker extends PureComponent {
         }) => {
           return (
             <Box
-              // flex={1}
-              width="100%"
+              flex={1}
               {...getRootProps( undefined, { suppressRefError: true })}
             >
               <Box>
                 {isOpen ? (
                   <Touchable
+                    withFeedback
                     onPress={this.handleCalendarToggle}
                   >
                     <Box
@@ -133,21 +133,25 @@ class InputDatePicker extends PureComponent {
                 position="relative"
                 width="100%"
               >
-                <div
-                  // onClick={this.props.editable ? this.handleCalendarToggle : null}
-                  onClick={this.handleCalendarToggle}
-                  width="100%"
+                <Touchable
+                  withFeedback
+                  disabled={!this.props.editable}
+                  onPress={this.props.editable ? this.handleCalendarToggle : null}
                 >
-                  <Input
-                    {...getInputProps({
-                      ...restProps,
-                      type: 'text',
-                      editable: false,
-                      value: inputValue,
-                    })}
-                    testID={`input-date-picker ${testID}`}
-                  />
-                </div>
+                  <Box
+                    width="100%"
+                  >
+                    <Input
+                      {...getInputProps({
+                        ...restProps,
+                        type: 'text',
+                        editable: false,
+                        value: inputValue,
+                      })}
+                      testID={`input-date-picker ${testID}`}
+                    />
+                  </Box>
+                </Touchable>
 
                 {isOpen ? (
                   <Kalendaryo

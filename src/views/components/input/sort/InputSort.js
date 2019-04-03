@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, string, oneOfType, number, bool, object } from 'prop-types';
+import { string, oneOfType, number, bool, object } from 'prop-types';
 import { Bridge } from '../../../../utils';
 import { Box, Touchable, Icon, Text } from '../../index';
 
@@ -28,7 +28,6 @@ class InputSort extends Component {
   }
 
   static propTypes = {
-    items: array.isRequired,
     color: string,
     rootQuestionGroupCode: string,
     height: oneOfType(

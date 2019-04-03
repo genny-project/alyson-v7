@@ -1,5 +1,5 @@
 import React from 'react';
-import { string, bool, any, func } from 'prop-types';
+import { string, bool, any, func, object } from 'prop-types';
 import { Bridge } from '../../../utils';
 import { Touchable } from '../../components';
 
@@ -13,6 +13,7 @@ const EventTouchable = ({
   eventType = 'BTN_CLICK',
   messageType = 'BTN',
   showSpinnerOnClick = true,
+  value,
   ...restProps
 }) => {
   const handlePress = event => {
@@ -34,6 +35,7 @@ const EventTouchable = ({
           rootCode,
           eventType,
           messageType,
+          value,
         }
       );
     }
@@ -52,6 +54,7 @@ const EventTouchable = ({
     ...restProps,
     onPress: handlePress,
     showSpinnerOnClick,
+    value,
   };
 
   return React.createElement(
@@ -71,6 +74,7 @@ EventTouchable.propTypes = {
   eventType: string,
   messageType: string,
   showSpinnerOnClick: bool,
+  value: object,
 };
 
 export default EventTouchable;

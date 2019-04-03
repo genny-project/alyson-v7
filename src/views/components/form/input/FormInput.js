@@ -35,51 +35,6 @@ class FormInput extends Component {
     this.getThemes();
   }
 
-  // shouldComponentUpdate( nextProps ) {
-  //   /* If rootCode is different, then a different base
-  //   entity needs to be rendered inside the frame */
-  //   const { ask, asks } = nextProps;
-  //   const { questionCode } = ask;
-
-  //   console.log( 'shouldComponentUpdate', questionCode );
-
-  //   console.log( 'check roots' );
-  //   if ( !asks || !asks[questionCode] ) {
-  //     return false;
-  //   }
-  //   console.log( 'check ask' );
-  //   if ( this.props.ask !== nextProps.ask )
-  //     return true;
-
-  //   console.log( 'check links' );
-  //   /* Check if any of the links of the root base entity have changed */
-  //   if ( isObject( asks[questionCode] )) {
-  //     console.log( 'check links', questionCode );
-  //     console.log( 'green theme found?', dlv( nextProps, 'themes.THM_COLOR_GREEN' ));
-  //     if ( checkForNewLayoutLinks(
-  //       /* Valid links are added to the state key that matches their
-  //       link type, so check all the state arrays together */
-
-  //       this.state.themes,
-  //       dlv( nextProps, `asks.${questionCode}.links` ),
-  //       nextProps,
-  //     )) {
-  //       console.log( 'new themes', questionCode );
-
-  //       return true;
-  //     }
-  //   }
-
-  //   console.log( 'check inherited' );
-  //   /* Check if the inherited themes have changed */
-  //   if ( checkForNewInheritedThemes( this.props.inheritedThemes, nextProps.inheritedThemes ))
-  //     return true;
-
-  //   console.log( 'no diff' );
-
-  //   return false;
-  // }
-
   componentDidUpdate( nextProps ) {
     if ( isObject( dlv( nextProps, `asks.${nextProps.question.code}` ))) {
       const hasNewLinks = checkForNewLayoutLinks(

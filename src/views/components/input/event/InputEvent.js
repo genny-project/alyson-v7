@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { array, string, object, func, bool } from 'prop-types';
+import { string, object, func, bool } from 'prop-types';
 import { Text, EventTouchable, Icon, Box } from '../../index';
 import { isString } from '../../../../utils';
 
 class InputEvent extends Component {
   static propTypes = {
-    items: array.isRequired,
     color: string,
     question: object,
     parentGroupCode: string,
