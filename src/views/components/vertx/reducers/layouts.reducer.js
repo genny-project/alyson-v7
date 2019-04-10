@@ -13,6 +13,18 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'expandable',
   },
+  PRI_IS_SELECTION_AREA: {
+    default: false,
+    label: 'selectionArea',
+  },
+  PRI_IS_SELECTABLE_AREA: {
+    default: false,
+    label: 'selectableArea',
+  },
+  PRI_IS_PAGINATION: {
+    default: false,
+    label: 'pagination',
+  },
   PRI_IS_INHERITABLE: {
     default: true,
     label: 'inheritable',
@@ -50,7 +62,11 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
         // legacy compatibiity start
         ...(
           item.code === 'FRM_CONTENT' &&
-          isArray( item.links, { ofMaxLength: 0 })
+          isArray( item.links, { ofMaxLength: 0 }) && (
+            !state.frames['FRM_CONTENT'] || 
+            isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) && 
+            isArray( state.frames[item.code].links.filter( x => x.type !== 'sublayout' ), { ofMaxLength: 0 })
+          )
         ) ? [
             {
               code: '/home',
@@ -61,9 +77,21 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
             },
           ] : [],
         // legacy compatibiity end
-        ...( isObject( state.frames[item.code], { withProperty: 'links' }) && isArray( state.frames[item.code].links )) ? state.frames[item.code].links.filter( existingLink => (
-          !item.links.some( newLink => newLink.link.targetCode === existingLink.code )
-        )) : [],
+        ...(
+          isObject( state.frames[item.code], { withProperty: 'links' }) &&
+          isArray( state.frames[item.code].links )
+        ) ? state.frames[item.code].links.filter( existingLink => {
+            if ( item.code === 'FRM_CONTENT' ) {
+              const hasNewNonLegacyLink = item.links.filter( x => x.type !== 'sublayout' && x.type !== 'theme' );
+
+              if (
+                existingLink.type === 'sublayout' &&
+                hasNewNonLegacyLink
+              ) return false;
+            }
+          
+            return !item.links.some( newLink => newLink.link.targetCode === existingLink.code );
+          }) : [],
         ...item.links.map( link => {
           const linkTypes = {
             LNK_THEME: 'theme',
