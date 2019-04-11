@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { node, string } from 'prop-types';
-import { Touchable, Area } from '../../index';
+import { Touchable, Area  } from '../../index';
 import MenuConsumer from '../consumer';
 
 class MenuButton extends Component {
@@ -30,7 +30,9 @@ class MenuButton extends Component {
                   >
                     <span
                       ref={props.setObserve}
-                      style={{ display: 'flex' }}
+                      style={{
+                        display: 'flex',
+                      }}
                     >
                       {children}
                     </span>

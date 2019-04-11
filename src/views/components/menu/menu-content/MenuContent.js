@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { node, string } from 'prop-types';
+import { node, string, object } from 'prop-types';
 import { isObject } from '../../../../utils';
 import { Box, Portal, Boundary, Area } from '../../index';
 import MenuConsumer from '../consumer';
@@ -8,6 +8,7 @@ class MenuContent extends Component {
   static propTypes = {
     children: node.isRequired,
     testID: string,
+    style: object,
   }
 
   focus() {
@@ -26,7 +27,7 @@ class MenuContent extends Component {
   }
 
   render() {
-    const { children, testID } = this.props;
+    const { children, testID, style } = this.props;
 
     // console.log( this.input );
 
@@ -54,29 +55,31 @@ class MenuContent extends Component {
                           const left = isObject( boundaryAdjustedArea, { withProperty: 'left' }) ? boundaryAdjustedArea.left : isObject( buttonArea ) ? buttonArea.left : '50vw';
 
                           return (
-                            <Box
-                              position="absolute"
-                              top={top}
-                              left={left}
-                              flexDirection="column"
-                              onLayout={this.handleLayout}
-                              identifier="MENU"
+                            <div
+                              ref={ref => {
+                                this.input = ref;
+                                areaProps.setObserve( ref );
+                                setRef( ref, 'menu' );
+                              }}
+                              tabIndex="-1"
+                              style={{
+                                top: top,
+                                left: left,
+                                position: 'absolute',
+
+                              }}
+                              onBlur={handleContentBlur}
+                              onFocus={handleContentFocus}
                             >
-                              <div
-                                ref={ref => {
-                                  this.input = ref;
-                                  areaProps.setObserve( ref );
-                                  setRef( ref, 'menu' );
-                                }}
-                                tabIndex="-1"
-                                style={{}}
-                                // onBlur={handleClose}
-                                onBlur={handleContentBlur}
-                                onFocus={handleContentFocus}
+                              <Box
+                                flexDirection="column"
+                                onLayout={this.handleLayout}
+                                identifier="MENU"
+                                {...style}
                               >
                                 {children}
-                              </div>
-                            </Box>
+                              </Box>
+                            </div>
                           );
                         }}
                       </Area>

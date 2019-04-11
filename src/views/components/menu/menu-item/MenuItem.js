@@ -10,16 +10,8 @@ class MenuItem extends Component {
     id: integer,
   }
 
-  // handleFocus = () => {
-  //   console.log( 'handle focus' );
-  // }
-
-  // handleBlur = () => {
-  //   console.log( 'handle blur' );
-  // }
-
-  handlePress = () => {
-    if ( this.props.onPress ) this.props.onPress();
+  handlePress = ( event ) => {
+    if ( this.props.onPress ) this.props.onPress( event );
   }
 
   render() {
@@ -31,7 +23,10 @@ class MenuItem extends Component {
           return (
             <Touchable
               withFeedback
-              onPress={handlePressItem}
+              onPress={event => {
+                handlePressItem();
+                this.handlePress( event );
+              }}
               onRef={ref => setRef( ref, id )}
             >
               {children}

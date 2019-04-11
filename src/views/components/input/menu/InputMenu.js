@@ -45,6 +45,7 @@ class InputMenu extends Component {
           isString( icon, { ofMinLength: 1 })
             ? (
               <Icon
+                color={this.props.color}
                 name={icon}
               />
             ) : null
