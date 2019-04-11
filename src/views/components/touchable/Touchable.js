@@ -24,6 +24,7 @@ class Touchable extends Component {
     alignItems: oneOf(
       ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
     ),
+    alignSelf: string,
     height: oneOfType(
       [string, number]
     ),
@@ -112,6 +113,7 @@ class Touchable extends Component {
       payload: any,
     }),
     testID: string,
+    onRef: func,
   }
 
   state = {
@@ -161,6 +163,7 @@ class Touchable extends Component {
       hoverProps,
       justifyContent,
       alignItems,
+      alignSelf,
       height,
       minHeight,
       maxHeight,
@@ -213,6 +216,7 @@ class Touchable extends Component {
       overflowX,
       overflowY,
       display,
+      onRef,
       ...restProps
     } = this.props;
 
@@ -235,6 +239,7 @@ class Touchable extends Component {
       marginBottom,
       justifyContent,
       alignItems,
+      alignSelf,
       height,
       minHeight,
       maxHeight,
@@ -306,6 +311,7 @@ class Touchable extends Component {
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
           onPress={this.handlePress}
+          ref={onRef}
         >
           {children}
         </Element>

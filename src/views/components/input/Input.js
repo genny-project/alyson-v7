@@ -368,6 +368,7 @@ class Input extends Component {
         return (
           <InputMenu
             {...inputProps}
+            ref={input => this.input = input}
           />
         );
 

@@ -86,6 +86,12 @@ class Panel extends Component {
     */
   }
 
+  handleOnLayout = ( event ) => {
+    // console.log( `PANEL ${this.props.location}`, event.nativeEvent.layout.height );
+
+    if ( this.props.onLayout ) this.props.onLayout( event, this.props.location );
+  }
+
   render() {
     const { rootCode, children, location, style, aliases, isExpandable } = this.props;
     const currentFullscreenCode = aliases['FULLSCREEN_PANEL'];
@@ -105,6 +111,7 @@ class Panel extends Component {
         // transitionProperty='width'
         // transitionTimingFunction='ease'
         {...specialStyle}
+        onLayout={this.handleOnLayout}
       >
         {
           isExpandable

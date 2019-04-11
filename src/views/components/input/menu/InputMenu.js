@@ -26,6 +26,7 @@ class InputMenu extends Component {
     return (
       <Dropdown
         {...restProps}
+        ref={input => this.input = input}
         items={isArray( items )
           ? items.map( item => ({
             text: item.label,

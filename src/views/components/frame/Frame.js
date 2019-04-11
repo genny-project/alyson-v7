@@ -14,6 +14,7 @@ import {
   getLayoutLinksOfType,
   filterThemes,
   getDeviceSize,
+  shallowCompare,
 } from '../../../utils';
 
 const defaultStyle = {
@@ -85,6 +86,7 @@ class Frame extends Component {
     asks: [],
     themes: [],
     sublayouts: [], // legacy compatibility
+    panels: {},
   }
 
   /* eslint-disable react/sort-comp */
@@ -93,7 +95,7 @@ class Frame extends Component {
     this.getChildLayouts();
   }
 
-  shouldComponentUpdate( nextProps ) {
+  shouldComponentUpdate( nextProps, nextState ) {
     /* If rootCode is different, then a different base
     entity needs to be rendered inside the frame */
     if ( this.props.rootCode !== nextProps.rootCode )
@@ -124,6 +126,9 @@ class Frame extends Component {
     if ( this.props.isClosed !== nextProps.isClosed ) {
       return true;
     }
+
+    if ( !shallowCompare( this.state.panels, nextState.panels ))
+      return true;
 
     return false;
   }
@@ -178,10 +183,39 @@ class Frame extends Component {
     };
   }
 
+  // handleOnLayout = ( event ) => {
+  //   // console.log( `FRAME ${this.props.rootCode}`, event.nativeEvent.layout.height );
+  //   this.setState( state => ({
+  //     panels: {
+  //       ...state.panels,
+  //       FRAME: {
+  //         width: event.nativeEvent.layout.width,
+  //         height: event.nativeEvent.layout.height,
+  //       },
+  //     },
+  //   }));
+  // }
+
+  // handlePanelOnLayout = ( event, panel ) => {
+  //   // console.log( `PANEL ${this.props.rootCode}`, event.nativeEvent.layout.height );
+
+  //   this.setState( state => ({
+  //     panels: {
+  //       ...state.panels,
+  //       [panel]: {
+  //         width: event.nativeEvent.layout.width,
+  //         height: event.nativeEvent.layout.height,
+  //       },
+  //     },
+  //   }));
+  // }
+
   render() {
     const { rootCode, frames, isRootFrame, isClosed } = this.props;
 
     const rootFrame = frames[rootCode];
+
+    // console.log( this.state.panels );
 
     if ( !rootFrame ) {
       return (
@@ -210,6 +244,17 @@ class Frame extends Component {
       return isArray( filterByPanel( panelContent, panel ), { ofMinLength: 1 });
     };
 
+    // const fixedHeightStyling = (
+    //   this.props.rootCode === 'FRM_PROCESS_ONEa' ||
+    //   this.props.rootCode === 'FRM_PROCESS_TWOa' ||
+    //   this.props.rootCode === 'FRM_PROCESS_THREEa' ||
+    //   this.props.rootCode === 'FRM_PROCESS_FOURa'
+    // ) && this.state.panels['NORTH']
+    //   ? {
+    //     maxHeight: `calc(100% - ${this.state.panels['NORTH'].height}px)`,
+    //     overflowY: 'scroll',
+    //   } : {};
+
     /* Compile  all styling for the panel*/
     const getStylingByPanel = ( panel ) => {
       const checkPanelFlex = ( panel ) => {
@@ -237,6 +282,7 @@ class Frame extends Component {
           If not, then the other panels need to have flex 1 to expand. */
         ...checkPanelFlex( panel ),
         ...this.getStyling( panel.toUpperCase()),
+        // ...fixedHeightStyling,
       };
     };
 
@@ -261,6 +307,7 @@ class Frame extends Component {
       <Box
         id="wrapper"
         text
+        // onLayout={this.handleOnLayout}
         {...defaultStyle.wrapper}
       >
         {
@@ -271,6 +318,7 @@ class Frame extends Component {
                 location="NORTH"
                 style={getStylingByPanel( 'north' )}
                 isExpandable={isExpandable( 'NORTH' )}
+                // onLayout={this.handlePanelOnLayout}
               >
                 <Recurser
                   content={filterByPanel( panelContent, 'NORTH' )}
@@ -298,6 +346,7 @@ class Frame extends Component {
                           location="WEST"
                           style={getStylingByPanel( 'west' )}
                           isExpandable={isExpandable( 'WEST' )}
+                          // onLayout={this.handlePanelOnLayout}
                         >
                           <Recurser
                             content={filterByPanel( panelContent, 'WEST' )}
@@ -316,6 +365,7 @@ class Frame extends Component {
                           location="CENTRE"
                           style={getStylingByPanel( 'centre' )}
                           isExpandable={isExpandable( 'CENTRE' )}
+                          // onLayout={this.handlePanelOnLayout}
                         >
                           <Recurser
                             content={filterByPanel( panelContent, 'CENTRE' )}
@@ -334,6 +384,7 @@ class Frame extends Component {
                           location="EAST"
                           style={getStylingByPanel( 'east' )}
                           isExpandable={isExpandable( 'EAST' )}
+                          // onLayout={this.handlePanelOnLayout}
                         >
                           <Recurser
                             content={filterByPanel( panelContent, 'EAST' )}
@@ -356,6 +407,7 @@ class Frame extends Component {
                   location="SOUTH"
                   style={getStylingByPanel( 'south' )}
                   isExpandable={isExpandable( 'SOUTH' )}
+                  // onLayout={this.handlePanelOnLayout}
                 >
                   <Recurser
                     content={filterByPanel( panelContent, 'SOUTH' )}

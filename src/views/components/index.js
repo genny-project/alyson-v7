@@ -67,6 +67,9 @@ export { default as TestIdHandler } from './test-id-handler';
 export { default as Frame } from './frame';
 export { default as Recurser } from './recurser';
 export { default as Swipeable } from './swipeable';
+export { default as Portal } from './portal';
+export { default as Area } from './area';
+export { default as Boundary } from './boundary';
 
 export * from './keycloak';
 export * from './vertx';
@@ -75,3 +78,4 @@ export * from './input';
 export * from './toggle';
 export * from './login';
 export * from './form';
+export * from './menu';

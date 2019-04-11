@@ -18,6 +18,7 @@ function Box({
   children,
   justifyContent,
   alignItems,
+  alignSelf,
   height,
   minHeight,
   maxHeight,
@@ -46,7 +47,7 @@ function Box({
   marginBottom,
   backgroundColor,
   // position, // TODO value = 'initial', needed for fullscreen, wrong proptype
-  position = 'initial',
+  position,
   top,
   right,
   bottom,
@@ -87,6 +88,7 @@ function Box({
   overscrollBehaviorX,
   overscrollBehaviorY,
   onLayout,
+  onBlur,
   ...restProps
 }) {
   const boxStyle = filterOutUnspecifiedProps({
@@ -116,6 +118,7 @@ function Box({
     shadowOffset,
     justifyContent,
     alignItems,
+    alignSelf,
     height: Platform.OS === 'web' && fullHeightOnWeb ? '100vh' : height,
     minHeight,
     maxHeight,
@@ -171,6 +174,8 @@ function Box({
     transitionDelay,
   });
 
+  // if ( restProps && restProps.identifier === 'MENU' ) console.log( 'RENDER', onRef );
+
   return (
     <View
       {...restProps}
@@ -182,6 +187,7 @@ function Box({
         webStyle,
       ]}
       onLayout={onLayout}
+      onBlur={onBlur}
     >
       {children}
     </View>
@@ -196,6 +202,7 @@ Box.propTypes = {
   alignItems: oneOf(
     ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
   ),
+  alignSelf: string,
   height: oneOfType(
     [string, number]
   ),
@@ -263,6 +270,7 @@ Box.propTypes = {
   opacity: number,
   onLayout: func,
   onPress: func,
+  onBlur: func,
   accessible: bool,
   accessibilityRole: string,
   accessibilityLabel: string,

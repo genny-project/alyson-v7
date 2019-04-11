@@ -162,8 +162,9 @@ class Form extends Component {
       setQuestionValue( questionGroup );
     });
 
-    if ( Object.keys( initialValues ).length > 0 && this.props.shouldSetInitialValues )
+    if ( Object.keys( initialValues ).length > 0 && this.props.shouldSetInitialValues ) {
       this.setState({ initialValues });
+    }
   }
 
   setValidationList() {
@@ -240,7 +241,9 @@ class Form extends Component {
     if ( questionGroups.length < 1 ) return false;
 
     const compareTargetCode = ( newAsk, existingAsk ) => {
-      if ( !newAsk.question ) return true;
+      if ( !newAsk.question && !existingAsk.question ) return false;
+
+      if ( !newAsk.question || !existingAsk.question ) return true;
 
       const newQuestionCode = newAsk.questionCode;
       const newTargetCode = newAsk.targetCode;
@@ -276,7 +279,7 @@ class Form extends Component {
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
 
     const compareAttributeValues = ( ask ) => {
-      if ( !ask.question ) return true;
+      if ( !ask.question ) return false;
 
       const questionCode = ask.questionCode;
       const target = ask.targetCode;
