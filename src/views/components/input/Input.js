@@ -379,6 +379,14 @@ class Input extends Component {
           />
         );
 
+      case 'questionname':
+        return (
+          <Text
+            {...inputProps}
+            text={this.props.question.name}
+          />
+        );
+
       default:
         return (
           <Text>
