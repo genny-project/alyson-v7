@@ -206,8 +206,6 @@ class FormInput extends Component {
   }
 }
 
-// export default FormInput;
-
 export { FormInput };
 
 const mapStateToProps = state => ({

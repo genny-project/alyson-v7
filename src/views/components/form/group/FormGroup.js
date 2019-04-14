@@ -5,6 +5,7 @@ import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort } from '../../../../utils';
 import { Box, Collapsible, EventTouchable } from '../../index';
 import FormInput from '../input';
+import VisualControl from '../visual-control';
 
 const defaultStyle = {
   group: {
@@ -169,8 +170,15 @@ class FormGroup extends Component {
 
     // console.log( this.props.isClosed );
 
+    // return (
+    //   <FormInput
+    //     key={questionCode}
+    //     {...inputProps}
+    //   />
+    // );
+
     return (
-      <FormInput
+      <VisualControl
         key={questionCode}
         {...inputProps}
       />
