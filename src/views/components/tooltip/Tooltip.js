@@ -70,6 +70,8 @@ class Tooltip extends Component {
     });
   }
 
+  // TODO update Tooltip to use Portal and Area components
+
   render() {
     const {
       children,
@@ -83,7 +85,7 @@ class Tooltip extends Component {
     } = this.props;
     const { isOpen  } = this.state;
 
-    // console.log( this.props );
+    console.log( this.props );
 
     return (
       <Fragment>

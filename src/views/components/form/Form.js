@@ -182,7 +182,7 @@ class Form extends Component {
     const setValidation = ( ask ) => {
       // handle targetCode
       if ( isObject( ask, { withProperty: 'targetCode' })) {
-        const dataType = dlv( data, `${ask.attributeCode}.${dataType}` );
+        const dataType = dlv( data, `${ask.attributeCode}.dataType` );
 
         validationList[ask.questionCode] = {
           dataType,
@@ -200,6 +200,8 @@ class Form extends Component {
     questionGroups.forEach( questionGroup => {
       setValidation( questionGroup );
     });
+
+    console.log( 'validationList', validationList );
 
     this.setState({ validationList });
   }

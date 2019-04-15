@@ -3,7 +3,7 @@ import { string, object, func } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes } from '../../../../utils';
-import { Box, Text, Icon, Fragment } from '../../index';
+import { Box, Text, Icon, Fragment, Tooltip } from '../../../components';
 import FormInput from '../input';
 
 class VisualControl extends Component {
@@ -11,7 +11,7 @@ class VisualControl extends Component {
     // type: string.isRequired,
     // question: object,
     // onChangeValue: func.isRequired,
-    // ask: object,
+    ask: object,
     // asks: object,
     // inheritedThemes: object,
     // themes: object,
@@ -25,12 +25,22 @@ class VisualControl extends Component {
       ...restProps
     } = this.props;
 
-    const hasLabel = false;
-    const hasRequired = false;
-    const hasHint = false;
-    const hasDescription = false;
-    const hasIcon = false;
-    const hasError = false;
+    const { contextList } = this.props.ask;
+
+    console.log( this.props );
+
+    const checkContext = ( field ) => {
+      return isObject( contextList, { withProperty: 'visualControl' }) ? dlv( contextList, `visualControl.${field}` ) : false;
+    };
+
+    const hasLabel = checkContext( 'hasLabel' );
+    const hasRequired = checkContext( 'hasRequired' );
+    const hasHint = checkContext( 'hasHint' );
+    const hasDescription = checkContext( 'hasDescription' );
+    const hasIcon = checkContext( 'hasIcon' );
+    const hasError = checkContext( 'hasError' );
+
+    // console.log( hasLabel, hasRequired );
 
     const InputWrapper = hasIcon ? Box : Fragment;
 
@@ -40,36 +50,38 @@ class VisualControl extends Component {
         flexDirection="column"
         width="100%"
         justifyContent="centre"
+        padding={5}
       >
 
         {(
-          hasLabel ||
-          hasRequired ||
-          hasHint
+          hasLabel
         ) && (
           <Box
             flexDirection="row"
             width="100%"
+            paddingBottom={5}
           >
 
             {/* LABEL */}
-            {(
-              hasLabel
-            ) && (
-              <Box>
-                <Text
-                  text="Label"
-                />
-              </Box>
-            )}
+            <Box>
+              <Text
+                size="xs"
+                text={this.props.question.name}
+                decoration="underline"
+              />
+            </Box>
 
             {/* REQUIRED */}
             {(
               hasRequired
             ) && (
-              <Box>
+              <Box
+                paddingLeft={5}
+                marginRight="auto"
+              >
                 <Text
                   text="*"
+                  color="red"
                 />
               </Box>
             )}
@@ -78,13 +90,15 @@ class VisualControl extends Component {
             {(
               hasHint
             ) && (
-              <Box>
+              <Box
+                paddingLeft={5}
+                paddingRight={5}
+              >
                 <Text
                   text="?"
                 />
               </Box>
             )}
-
           </Box>
         )}
 
@@ -92,8 +106,11 @@ class VisualControl extends Component {
         {(
           hasDescription
         ) && (
-          <Box>
+          <Box
+            paddingBottom={5}
+          >
             <Text
+              size="xxs"
               text="Description text goes here"
             />
           </Box>
@@ -108,9 +125,12 @@ class VisualControl extends Component {
           {(
             hasIcon
           ) && (
-            <Box>
+            <Box
+              paddingRight={5}
+            >
               <Icon
                 name="home"
+                color="black"
               />
             </Box>
           )}
@@ -118,17 +138,21 @@ class VisualControl extends Component {
           {/* INPUT COMPONENT */}
           <FormInput
             {...restProps}
+            padding={3}
+            backgroundColor="white"
           />
 
         </InputWrapper>
 
         {/* ERROR MESSAGE */}
         {(
-          hasError
+          this.props.error != null
         ) && (
           <Box>
             <Text
-              text="Error message goes here"
+              size="xxs"
+              color="red"
+              text={this.props.error}
             />
           </Box>
         )}
