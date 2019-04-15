@@ -13,6 +13,8 @@ class InputEvent extends Component {
     icon: string,
     onPress: func,
     isClosed: bool,
+    ask: object,
+    value: object,
   }
 
   render() {
@@ -24,6 +26,7 @@ class InputEvent extends Component {
       icon,
       onPress, // eslint-disable-line no-unused-vars
       color,
+      ask,
       ...restProps
     } = this.props;
     // const { contextList } = question;
@@ -42,6 +45,10 @@ class InputEvent extends Component {
         alignItems="center"
         flex={1}
         justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
+        value={{
+          targetCode: ask.targetCode,
+          ...this.props.value,
+        }}
       >
         {
           isString( icon, { ofMinLength: 1 })
