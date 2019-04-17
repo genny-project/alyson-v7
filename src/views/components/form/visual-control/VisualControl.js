@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { string, object, func } from 'prop-types';
+import { string, object, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes } from '../../../../utils';
-import { Box, Text, Icon, Fragment, Tooltip } from '../../../components';
+import { Box, Text, Icon, Fragment /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
 
+/*
 const linkValues = [
   'wrapper',
   'input',
@@ -23,17 +24,20 @@ const inputStates = [
   'active',
   'disabled',
 ];
+*/
 
 class VisualControl extends Component {
   static propTypes = {
     // type: string.isRequired,
-    // question: object,
+    question: object,
     // onChangeValue: func.isRequired,
     ask: object,
     asks: object,
     inheritedProps: object,
     inheritedThemes: object,
     themes: object,
+    error: string,
+    required: bool,
   }
 
   state = {
@@ -91,14 +95,13 @@ class VisualControl extends Component {
     }, () => {});
   }
 
-  getInhertiableThemes = ( panel ) => {
+  getInhertiableThemes = () => {
     return [
       ...this.props.inheritedThemes,
       ...filterThemes(
         this.state.themes,
         this.props.themes,
         {
-          panel: panel,
           onlyInheritableThemes: true,
         }
       ),
@@ -140,16 +143,18 @@ class VisualControl extends Component {
 
   render() {
     const {
+      inheritedThemes,
+      themes,
       ...restProps
     } = this.props;
 
     let properties = {};
 
-    const checkThemeForProperties = ( themes ) => {
-      if ( !isArray( themes )) return;
+    const checkThemeForProperties = ( linkedThemes ) => {
+      if ( !isArray( linkedThemes )) return;
 
-      themes.forEach( linkedTheme => {
-        const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
+      linkedThemes.forEach( linkedTheme => {
+        const themeProperties = dlv( themes, `${linkedTheme.code}.properties` );
 
         if ( isObject( themeProperties )) {
           properties = {
@@ -160,13 +165,13 @@ class VisualControl extends Component {
       });
     };
 
-    checkThemeForProperties( this.props.inheritedThemes );
+    checkThemeForProperties( inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
     const InputWrapper = properties.renderVisualControlIcon ? Box : Fragment;
 
     const inputProps = {
-      ...this.props,
+      ...restProps,
       theme: this.getStyling( 'input' ),
     };
 
@@ -203,7 +208,8 @@ class VisualControl extends Component {
 
             {/* REQUIRED */}
             {(
-              properties.renderVisualControlRequired
+              properties.renderVisualControlRequired &&
+              this.props.required
             ) && (
               <Box
                 paddingLeft={5}

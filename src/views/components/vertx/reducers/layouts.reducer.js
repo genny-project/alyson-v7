@@ -29,6 +29,18 @@ const themeBehaviourAttributes = {
     default: true,
     label: 'renderVisualControlRequired',
   },
+  PRI_HAS_HINT: {
+    default: false,
+    label: 'renderVisualControlHint',
+  },
+  PRI_HAS_DESCRIPTION: {
+    default: false,
+    label: 'renderVisualControlDescription',
+  },
+  PRI_HAS_ICON: {
+    default: false,
+    label: 'renderVisualControlIcon',
+  },
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
