@@ -278,7 +278,7 @@ class VisualControl extends Component {
           {/* INPUT COMPONENT */}
           <FormInput
             {...inputProps}
-            inhertiableStyling={this.getInhertiableThemes()}
+            inheritedProps={this.getInhertiableThemes()}
             padding={3}
             // backgroundColor="white"
           />

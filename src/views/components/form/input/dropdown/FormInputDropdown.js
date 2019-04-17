@@ -59,55 +59,11 @@ class FormInputDropdown extends Component {
                 linkGroup[linkValue].forEach( link => {
                   const baseEntity = dlv( data, link.link.targetCode );
 
-                  // get all links, check for themes for this base entity
-
-                  const linkedThemes = isArray( baseEntity.links )
-                    ? getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' )
-                    : [];
-
-                  const getStyling = () => {
-                    // filter links for panel
-                    const inheritedLinks = [
-                      ...filterThemes(
-                        this.props.inheritedThemes,
-                        this.props.themes,
-                      ),
-                    ];
-
-                    const panelLinks = [
-                      ...filterThemes(
-                        linkedThemes,
-                        this.props.themes,
-                      ),
-                    ];
-
-                    // get props from theme links
-                    const inheritedThemeProps = getPropsFromThemes(
-                      inheritedLinks,
-                      this.props.themes,
-                    );
-                    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
-
-                    const props = {
-                      ...this.props.inheritedProps,
-                      ...inheritedThemeProps,
-                      ...themeProps,
-                    };
-
-                    // console.log( 'props', baseEntity.code, props );
-
-                    return props;
-                  };
-
-                  // console.log( 'links', baseEntity.links, linkedThemes );
-                  // console.log( 'themes', style );
-
                   if ( isObject( baseEntity )) {
                     items.push({
                       label: baseEntity.name,
                       value: baseEntity.code,
                       weight: link.weight || 1,
-                      style: getStyling(),
                     });
                   }
                 });
@@ -117,6 +73,64 @@ class FormInputDropdown extends Component {
         });
       }
     });
+
+    return items;
+  }
+
+  getThemesForItems = ( items ) => {
+    const { data } = this.props.baseEntities;
+
+    if ( isArray( items )) {
+      const itemsWithStyling = items.map( item => {
+        const baseEntity = dlv( data, item.value );
+        // get all links, check for themes for this base entity
+
+        const linkedThemes = isArray( baseEntity.links )
+          ? getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' )
+          : [];
+
+        const getStyling = () => {
+          // filter links for panel
+          const inheritedLinks = [
+            ...filterThemes(
+              this.props.inheritedProps,
+              this.props.themes,
+            ),
+          ];
+
+          const panelLinks = [
+            ...filterThemes(
+              linkedThemes,
+              this.props.themes,
+            ),
+          ];
+
+          // get props from theme links
+          const inheritedThemeProps = getPropsFromThemes(
+            inheritedLinks,
+            this.props.themes,
+          );
+          const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+          const props = {
+            ...this.props.inheritedProps,
+            ...inheritedThemeProps,
+            ...themeProps,
+          };
+
+          return props;
+        };
+
+        const newItem = {
+          ...item,
+          style: getStyling(),
+        };
+
+        return newItem;
+      });
+
+      return itemsWithStyling;
+    }
 
     return items;
   }
@@ -176,12 +190,12 @@ class FormInputDropdown extends Component {
     const { ...restProps } = this.props;
     const { items } = this.state;
 
-    // console.log( 'render', items );
+    const itemsWithThemes = this.getThemesForItems( items );
 
     return (
       <Input
         {...restProps}
-        items={items}
+        items={itemsWithThemes}
         ref={input => this.input = input}
       />
     );
