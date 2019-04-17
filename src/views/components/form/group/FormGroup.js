@@ -243,16 +243,23 @@ class FormGroup extends Component {
 
     let properties = {};
 
-    this.state.themes.forEach( linkedTheme => {
-      const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
+    const checkThemeForProperties = ( themes ) => {
+      if ( !isArray( themes )) return;
 
-      if ( isObject( themeProperties )) {
-        properties = {
-          ...properties,
-          ...themeProperties,
-        };
-      }
-    });
+      themes.forEach( linkedTheme => {
+        const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
+
+        if ( isObject( themeProperties )) {
+          properties = {
+            ...properties,
+            ...themeProperties,
+          };
+        }
+      });
+    };
+
+    checkThemeForProperties( this.props.inheritedThemes );
+    checkThemeForProperties( this.state.themes );
 
     if (
       properties.expandable

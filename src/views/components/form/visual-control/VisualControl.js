@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, func } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes } from '../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes } from '../../../../utils';
 import { Box, Text, Icon, Fragment, Tooltip } from '../../../components';
 import FormInput from '../input';
 
@@ -143,22 +143,27 @@ class VisualControl extends Component {
       ...restProps
     } = this.props;
 
-    const { contextList } = this.props.ask;
+    let properties = {};
 
-    // console.log( this.props );
+    const checkThemeForProperties = ( themes ) => {
+      if ( !isArray( themes )) return;
 
-    const checkContext = ( field ) => {
-      return isObject( contextList, { withProperty: 'visualControl' }) ? dlv( contextList, `visualControl.${field}` ) : false;
+      themes.forEach( linkedTheme => {
+        const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
+
+        if ( isObject( themeProperties )) {
+          properties = {
+            ...properties,
+            ...themeProperties,
+          };
+        }
+      });
     };
 
-    const hasLabel = checkContext( 'hasLabel' );
-    const hasRequired = checkContext( 'hasRequired' );
-    const hasHint = checkContext( 'hasHint' );
-    const hasDescription = checkContext( 'hasDescription' );
-    const hasIcon = checkContext( 'hasIcon' );
-    const hasError = checkContext( 'hasError' );
+    checkThemeForProperties( this.props.inheritedThemes );
+    checkThemeForProperties( this.state.themes );
 
-    const InputWrapper = hasIcon ? Box : Fragment;
+    const InputWrapper = properties.renderVisualControlIcon ? Box : Fragment;
 
     const inputProps = {
       ...this.props,
@@ -176,7 +181,7 @@ class VisualControl extends Component {
       >
 
         {(
-          hasLabel
+          properties.renderVisualControlLabel
         ) && (
           <Box
             flexDirection="row"
@@ -198,7 +203,7 @@ class VisualControl extends Component {
 
             {/* REQUIRED */}
             {(
-              hasRequired
+              properties.renderVisualControlRequired
             ) && (
               <Box
                 paddingLeft={5}
@@ -213,7 +218,7 @@ class VisualControl extends Component {
 
             {/* HINT */}
             {(
-              hasHint
+              properties.renderVisualControlHint
             ) && (
               <Box
                 paddingLeft={5}
@@ -235,7 +240,7 @@ class VisualControl extends Component {
 
         {/* DESCRIPTION */}
         {(
-          hasDescription
+          properties.renderVisualControlDescription
         ) && (
           <Box
             paddingBottom={5}
@@ -255,7 +260,7 @@ class VisualControl extends Component {
         >
           {/* ICON */}
           {(
-            hasIcon
+            properties.renderVisualControlIcon
           ) && (
             <Box
               paddingRight={5}

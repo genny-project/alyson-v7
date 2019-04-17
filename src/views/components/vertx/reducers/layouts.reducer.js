@@ -13,18 +13,6 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'expandable',
   },
-  PRI_IS_SELECTION_AREA: {
-    default: false,
-    label: 'selectionArea',
-  },
-  PRI_IS_SELECTABLE_AREA: {
-    default: false,
-    label: 'selectableArea',
-  },
-  PRI_IS_PAGINATION: {
-    default: false,
-    label: 'pagination',
-  },
   PRI_IS_INHERITABLE: {
     default: true,
     label: 'inheritable',
@@ -32,6 +20,14 @@ const themeBehaviourAttributes = {
   PRI_HAS_QUESTION_GRP_INPUT: {
     default: false,
     label: 'renderQuestionGroupInput',
+  },
+  PRI_HAS_LABEL: {
+    default: true,
+    label: 'renderVisualControlLabel',
+  },
+  PRI_HAS_REQUIRED: {
+    default: true,
+    label: 'renderVisualControlRequired',
   },
 };
 
