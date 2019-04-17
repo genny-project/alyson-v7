@@ -15,7 +15,7 @@ class Form extends Component {
     loadingText: 'Loading form...',
     testID: 'form',
     shouldSetInitialValues: true,
-    inheritedThemes: {},
+    inheritedProps: {},
   }
 
   static propTypes = {
@@ -25,7 +25,7 @@ class Form extends Component {
     loadingText: string,
     testID: string,
     shouldSetInitialValues: bool,
-    inheritedThemes: object,
+    inheritedProps: object,
     fullWidth: bool,
     isClosed: bool,
   }
@@ -200,8 +200,6 @@ class Form extends Component {
     questionGroups.forEach( questionGroup => {
       setValidation( questionGroup );
     });
-
-    console.log( 'validationList', validationList );
 
     this.setState({ validationList });
   }
@@ -522,15 +520,13 @@ class Form extends Component {
         },
     };
 
-    // console.log( this.props.isClosed );
-
     return (
       <FormGroup
         key={questionGroup.questionCode}
         questionGroup={questionGroup}
         form={form}
         rootCode={this.props.questionGroupCode}
-        inheritedThemes={this.props.inheritedThemes}
+        inheritedProps={this.props.inheritedProps}
         index={index}
         functions={functions}
         inputRefs={this.inputRefs}

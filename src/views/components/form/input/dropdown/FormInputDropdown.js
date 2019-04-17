@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { object, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { Input } from '../../../index';
-import { isArray, isObject, getLayoutLinksOfType, filterThemes } from '../../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes } from '../../../../../utils';
 
 class FormInputDropdown extends Component {
   static propTypes = {
     question: object,
     baseEntities: object,
     themes: object,
+    inheritedThemes: array,
+    inheritedProps: object,
   }
 
   state = {
@@ -62,7 +64,40 @@ class FormInputDropdown extends Component {
                   const linkedThemes = isArray( baseEntity.links )
                     ? getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' )
                     : [];
-                  const style = filterThemes( linkedThemes, this.props.themes );
+
+                  const getStyling = () => {
+                    // filter links for panel
+                    const inheritedLinks = [
+                      ...filterThemes(
+                        this.props.inheritedThemes,
+                        this.props.themes,
+                      ),
+                    ];
+
+                    const panelLinks = [
+                      ...filterThemes(
+                        linkedThemes,
+                        this.props.themes,
+                      ),
+                    ];
+
+                    // get props from theme links
+                    const inheritedThemeProps = getPropsFromThemes(
+                      inheritedLinks,
+                      this.props.themes,
+                    );
+                    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+                    const props = {
+                      ...this.props.inheritedProps,
+                      ...inheritedThemeProps,
+                      ...themeProps,
+                    };
+
+                    // console.log( 'props', baseEntity.code, props );
+
+                    return props;
+                  };
 
                   // console.log( 'links', baseEntity.links, linkedThemes );
                   // console.log( 'themes', style );
@@ -72,7 +107,7 @@ class FormInputDropdown extends Component {
                       label: baseEntity.name,
                       value: baseEntity.code,
                       weight: link.weight || 1,
-                      style: style,
+                      style: getStyling(),
                     });
                   }
                 });
@@ -89,6 +124,8 @@ class FormInputDropdown extends Component {
   checkForUpdatedItems() {
     const { items } = this.state;
     const newItems = this.getItems();
+
+    // TODO check for new theme information
 
     if (
       items.length === 0 &&
@@ -138,6 +175,8 @@ class FormInputDropdown extends Component {
   render() {
     const { ...restProps } = this.props;
     const { items } = this.state;
+
+    // console.log( 'render', items );
 
     return (
       <Input

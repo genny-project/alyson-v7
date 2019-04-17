@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { string, object, number, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes } from '../../../../utils';
 import { Box, Collapsible, EventTouchable } from '../../index';
-import FormInput from '../input';
 import VisualControl from '../visual-control';
 
 const defaultStyle = {
@@ -22,6 +21,7 @@ class FormGroup extends Component {
     questionGroup: object,
     form: object,
     inheritedThemes: object,
+    inheritedProps: object,
     index: number,
     dataTypes: object,
     functions: object,
@@ -82,14 +82,45 @@ class FormGroup extends Component {
     }, () => {});
   }
 
-  getStyling = ( onlyInheritableThemes ) => {
-    return {
-      ...this.props.inheritedThemes,
+  getInhertiableThemes = () => {
+    return [
+      ...isArray( this.props.inheritedThemes ) ? this.props.inheritedThemes : [],
       ...filterThemes(
         this.state.themes,
         this.props.themes,
-        { onlyInheritableThemes: onlyInheritableThemes }
+        {
+          onlyInheritableThemes: true,
+        }
       ),
+    ];
+  }
+
+  getStyling = () => {
+    // filter links for panel
+    const inheritedLinks = [
+      ...filterThemes(
+        this.props.inheritedThemes,
+        this.props.themes,
+        { formGroup: true },
+      ),
+    ];
+
+    const panelLinks = [
+      ...filterThemes(
+        this.state.themes,
+        this.props.themes,
+        { formGroup: true },
+      ),
+    ];
+
+    // get props from theme links
+    const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
+    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+    return {
+      ...isObject( this.props.inheritedProps ) ? this.props.inheritedProps : {},
+      ...inheritedThemeProps,
+      ...themeProps,
     };
   }
 
@@ -161,21 +192,13 @@ class FormGroup extends Component {
       ...contextList,
       parentGroupCode: questionGroupCode,
       rootQuestionGroupCode: this.props.rootCode,
-      inheritedThemes: this.getStyling( true ),
+      inheritedProps: isObject( this.props.inheritedProps ) ? this.props.inheritedProps : null,
+      inheritedThemes: this.getInhertiableThemes(),
       ask,
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
     };
-
-    // console.log( this.props.isClosed );
-
-    // return (
-    //   <FormInput
-    //     key={questionCode}
-    //     {...inputProps}
-    //   />
-    // );
 
     return (
       <VisualControl
@@ -194,7 +217,8 @@ class FormGroup extends Component {
           form: form,
           parentGroupCode: this.props.questionGroup.questionCode,
           rootCode: this.props.rootCode,
-          inheritedThemes: this.getStyling( true ),
+          inheritedProps: this.props.inheritedProps,
+          inheritedThemes: this.getInhertiableThemes(),
           index: index,
           dataTypes: this.props.dataTypes,
           functions: this.props.functions,
@@ -248,7 +272,7 @@ class FormGroup extends Component {
               )
             ) : null
           }
-          headerIconProps={this.getStyling( true )}
+          headerIconProps={this.getStyling()}
         >
           <Box
             key={name}
@@ -322,7 +346,6 @@ class FormGroup extends Component {
         zIndex={150 - index}
         {...defaultStyle.group}
         // padding={10}
-        borderColor
         {...this.getStyling()}
       >
         {

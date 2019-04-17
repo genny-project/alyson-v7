@@ -85,8 +85,6 @@ class Tooltip extends Component {
     } = this.props;
     const { isOpen  } = this.state;
 
-    console.log( this.props );
-
     return (
       <Fragment>
         {

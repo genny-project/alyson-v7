@@ -63,8 +63,8 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
         ...(
           item.code === 'FRM_CONTENT' &&
           isArray( item.links, { ofMaxLength: 0 }) && (
-            !state.frames['FRM_CONTENT'] || 
-            isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) && 
+            !state.frames['FRM_CONTENT'] ||
+            isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) &&
             isArray( state.frames[item.code].links.filter( x => x.type !== 'sublayout' ), { ofMaxLength: 0 })
           )
         ) ? [
@@ -89,7 +89,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
                 hasNewNonLegacyLink
               ) return false;
             }
-          
+
             return !item.links.some( newLink => newLink.link.targetCode === existingLink.code );
           }) : [],
         ...item.links.map( link => {
@@ -192,12 +192,26 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                 THEME: 'theme',
               };
 
+              const valueTypes = {
+                WRAPPER: 'wrapper',
+                INPUT: 'input',
+                ICON: 'icon',
+                LABEL: 'label',
+                DESCRIPTION: 'description',
+                HINT: 'hint',
+                ERROR: 'error',
+                REQUIRED: 'required',
+              };
+
               return {
                 code: link.contextCode,
                 weight: link.weight,
                 type: nameTypes[link.name]
                   ? nameTypes[link.name]
                   : 'none',
+                component: valueTypes[link.value]
+                  ? valueTypes[link.value]
+                  : 'all',
                 created: link.created,
               };
             }),

@@ -13,6 +13,7 @@ import {
   checkForNewInheritedThemes,
   getLayoutLinksOfType,
   filterThemes,
+  getPropsFromThemes,
   getDeviceSize,
   shallowCompare,
 } from '../../../utils';
@@ -66,7 +67,7 @@ class Frame extends Component {
       'asks', 'frames', 'themes',
       'sublayouts', // legacy compatibility
     ],
-    inheritedThemes: {},
+    inheritedProps: {},
   }
 
   static propTypes = {
@@ -75,7 +76,7 @@ class Frame extends Component {
     panels: array,
     linkTypes: array,
     rootCode: string,
-    inheritedThemes: object,
+    inheritedProps: object,
     isRootFrame: bool,
     sublayouts: object, // legacy compatibility
     isClosed: bool,
@@ -120,7 +121,7 @@ class Frame extends Component {
     }
 
     /* Check if the inherited themes have changed */
-    if ( checkForNewInheritedThemes( this.props.inheritedThemes, nextProps.inheritedThemes ))
+    if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps ))
       return true;
 
     if ( this.props.isClosed !== nextProps.isClosed ) {
@@ -169,46 +170,38 @@ class Frame extends Component {
     }
   }
 
-  getStyling = ( panel, onlyInheritableThemes ) => {
-    return {
-      ...this.props.inheritedThemes,
+  getInhertiableThemes = ( panel ) => {
+    // return [
+    //   ...this.props.inheritedThemes,
+    //   ...filterThemes(
+    //     this.state.themes,
+    //     this.props.themes,
+    //     {
+    //       panel: panel,
+    //       onlyInheritableThemes: true,
+    //     }
+    //   ),
+    // ];
+
+    const panelLinks = [
       ...filterThemes(
         this.state.themes,
         this.props.themes,
         {
           panel: panel,
-          onlyInheritableThemes: onlyInheritableThemes,
+          onlyInheritableThemes: true,
         }
       ),
+    ];
+
+    // get props from theme links
+    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+    return {
+      ...this.props.inheritedProps,
+      ...themeProps,
     };
   }
-
-  // handleOnLayout = ( event ) => {
-  //   // console.log( `FRAME ${this.props.rootCode}`, event.nativeEvent.layout.height );
-  //   this.setState( state => ({
-  //     panels: {
-  //       ...state.panels,
-  //       FRAME: {
-  //         width: event.nativeEvent.layout.width,
-  //         height: event.nativeEvent.layout.height,
-  //       },
-  //     },
-  //   }));
-  // }
-
-  // handlePanelOnLayout = ( event, panel ) => {
-  //   // console.log( `PANEL ${this.props.rootCode}`, event.nativeEvent.layout.height );
-
-  //   this.setState( state => ({
-  //     panels: {
-  //       ...state.panels,
-  //       [panel]: {
-  //         width: event.nativeEvent.layout.width,
-  //         height: event.nativeEvent.layout.height,
-  //       },
-  //     },
-  //   }));
-  // }
 
   render() {
     const { rootCode, frames, isRootFrame, isClosed } = this.props;
@@ -244,17 +237,6 @@ class Frame extends Component {
       return isArray( filterByPanel( panelContent, panel ), { ofMinLength: 1 });
     };
 
-    // const fixedHeightStyling = (
-    //   this.props.rootCode === 'FRM_PROCESS_ONEa' ||
-    //   this.props.rootCode === 'FRM_PROCESS_TWOa' ||
-    //   this.props.rootCode === 'FRM_PROCESS_THREEa' ||
-    //   this.props.rootCode === 'FRM_PROCESS_FOURa'
-    // ) && this.state.panels['NORTH']
-    //   ? {
-    //     maxHeight: `calc(100% - ${this.state.panels['NORTH'].height}px)`,
-    //     overflowY: 'scroll',
-    //   } : {};
-
     /* Compile  all styling for the panel*/
     const getStylingByPanel = ( panel ) => {
       const checkPanelFlex = ( panel ) => {
@@ -275,14 +257,37 @@ class Frame extends Component {
         }
       };
 
+      // filter links for panel
+      const inheritedLinks = [
+        ...filterThemes(
+          this.props.inheritedProps,
+          this.props.themes,
+          { formGroup: true },
+        ),
+      ];
+
+      const panelLinks = [
+        ...filterThemes(
+          this.state.themes,
+          this.props.themes,
+          {
+            panel: panel.toUpperCase(),
+          }
+        ),
+      ];
+
+      // get props from theme links
+      const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
+      const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
       return {
         ...defaultStyle.panel,
         ...defaultStyle[panel],
         /* If the centre panel is rendered, then it is the only panel that expands.
           If not, then the other panels need to have flex 1 to expand. */
         ...checkPanelFlex( panel ),
-        ...this.getStyling( panel.toUpperCase()),
-        // ...fixedHeightStyling,
+        ...inheritedThemeProps,
+        ...themeProps,
       };
     };
 
@@ -316,13 +321,13 @@ class Frame extends Component {
               <Panel
                 rootCode={rootCode}
                 location="NORTH"
-                style={getStylingByPanel( 'north' )}
+                style={getStylingByPanel( 'north' )} // theme props for this element filterThemes() -> getPropsFromThemes()
                 isExpandable={isExpandable( 'NORTH' )}
                 // onLayout={this.handlePanelOnLayout}
               >
                 <Recurser
                   content={filterByPanel( panelContent, 'NORTH' )}
-                  themes={{ ...this.getStyling( 'NORTH', true ) }}
+                  themes={this.getInhertiableThemes( 'NORTH' )}
                   isClosed={isClosed}
                 />
               </Panel>
@@ -350,7 +355,8 @@ class Frame extends Component {
                         >
                           <Recurser
                             content={filterByPanel( panelContent, 'WEST' )}
-                            themes={{ ...this.getStyling( 'WEST', true ) }}
+                            // themes={{ ...this.getStyling( 'WEST', true ) }}
+                            themes={this.getInhertiableThemes( 'WEST' )}
                             isClosed={isClosed}
                           />
                         </Panel>
@@ -369,7 +375,8 @@ class Frame extends Component {
                         >
                           <Recurser
                             content={filterByPanel( panelContent, 'CENTRE' )}
-                            themes={{ ...this.getStyling( 'CENTRE', true ) }}
+                            // themes={{ ...this.getStyling( 'CENTRE', true ) }}
+                            themes={this.getInhertiableThemes( 'CENTRE' )}
                             isClosed={isClosed}
                           />
                         </Panel>
@@ -388,7 +395,8 @@ class Frame extends Component {
                         >
                           <Recurser
                             content={filterByPanel( panelContent, 'EAST' )}
-                            themes={{ ...this.getStyling( 'EAST', true ) }}
+                            // themes={{ ...this.getStyling( 'EAST', true ) }}
+                            themes={this.getInhertiableThemes( 'EAST' )}
                             isClosed={isClosed}
                           />
                         </Panel>
@@ -411,7 +419,8 @@ class Frame extends Component {
                 >
                   <Recurser
                     content={filterByPanel( panelContent, 'SOUTH' )}
-                    themes={{ ...this.getStyling( 'SOUTH', true ) }}
+                    // themes={{ ...this.getStyling( 'SOUTH', true ) }}
+                    themes={this.getInhertiableThemes( 'SOUTH' )}
                     isClosed={isClosed}
                   />
                 </Panel>

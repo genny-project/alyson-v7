@@ -31,7 +31,7 @@ class Recurser extends Component {
           if ( linkType === 'ask' ) {
             return (
               <Form
-                inheritedThemes={themes}
+                inheritedProps={themes}
                 key={baseEntityCode}
                 questionGroupCode={baseEntityCode}
                 isClosed={isClosed}
@@ -44,7 +44,7 @@ class Recurser extends Component {
               <Frame
                 key={baseEntityCode}
                 rootCode={baseEntityCode}
-                inheritedThemes={themes}
+                inheritedProps={themes}
                 isClosed={isClosed}
               />
             );
