@@ -201,7 +201,7 @@ class VisualControl extends Component {
               <Text
                 size="xs"
                 text={this.props.question.name}
-                decoration="underline"
+                // decoration="underline"
                 {...this.getStyling( 'label' )}
               />
             </Box>

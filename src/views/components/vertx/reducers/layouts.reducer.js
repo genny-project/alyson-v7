@@ -217,8 +217,8 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                 type: nameTypes[link.name]
                   ? nameTypes[link.name]
                   : 'none',
-                component: valueTypes[link.value]
-                  ? valueTypes[link.value]
+                component: valueTypes[link.visualControlType]
+                  ? valueTypes[link.visualControlType]
                   : 'all',
                 created: link.created,
               };
