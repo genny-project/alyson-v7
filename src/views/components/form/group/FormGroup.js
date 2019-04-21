@@ -153,7 +153,7 @@ class FormGroup extends Component {
       handleKeyPress,
       addRef,
     } = functions;
-    const { questionCode, attributeCode, mandatory, question, contextList, readonly } = ask;
+    const { questionCode, attributeCode, mandatory, question, contextList, readonly, placeholder } = ask;
     const baseEntityDefinition = dataTypes[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
@@ -198,6 +198,7 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
+      placeholder: question.placeholder || question.name,
     };
 
     return (

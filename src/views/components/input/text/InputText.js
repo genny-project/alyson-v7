@@ -252,6 +252,8 @@ class Input extends PureComponent {
       isFocused: true,
     });
 
+    console.log( 'focus' );
+
     if ( this.props.onFocus )
       this.props.onFocus( event );
   }

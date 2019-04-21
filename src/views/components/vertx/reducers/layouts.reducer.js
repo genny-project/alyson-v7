@@ -148,6 +148,14 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
 
   const themeData = dlv( attributes, 'PRI_CONTENT.value' );
 
+  // const themeObject = {
+  //   ...( dlv( attributes, 'PRI_CONTENT.value' ) ? { default: dlv( attributes, 'PRI_CONTENT.value' ) } : null ),
+  //   ...( dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) ? { active: dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) } : null ),
+  //   ...( dlv( attributes, 'PRI_CONTENT_HOVER.value' ) ? { hover: dlv( attributes, 'PRI_CONTENT_HOVER.value' ) } : null ),
+  //   ...( dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) ? { disabled: dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) } : null ),
+  //   ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) } : null ),
+  // };
+
   if ( shouldReplaceEntity === true ) {
     if (
       state.themes[item.code]
@@ -163,6 +171,7 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
       name: item.name,
       code: item.code,
       data: isObject( themeData ) ? themeData : {},
+      // dataState: isObject( themeObject ) ? themeObject : {},
       properties: layoutProperties,
       created: item.created,
     };
@@ -182,6 +191,8 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
       delete state.frames[item.questionCode];
     }
   }
+
+  // console.log( item.questionCode, isObject( item.contextList ) && isArray( item.contextList.contexts ));
 
   if ( state.asks ) {
     state.asks[item.questionCode] = {
