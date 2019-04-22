@@ -125,7 +125,7 @@ class FormInputDropdown extends Component {
 
         const newItem = {
           ...item,
-          style: getStyling(),
+          style: getStyling()['default'],
         };
 
         return newItem;

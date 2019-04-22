@@ -17,6 +17,7 @@ class Panel extends Component {
     children: node,
     location: string,
     style: object,
+    inheritedProps: object,
     aliases: object,
   }
 
@@ -93,7 +94,7 @@ class Panel extends Component {
   }
 
   render() {
-    const { rootCode, children, location, style, aliases, isExpandable } = this.props;
+    const { rootCode, children, location, style, inheritedProps, aliases, isExpandable } = this.props;
     const currentFullscreenCode = aliases['FULLSCREEN_PANEL'];
 
     const isFullscreen = `${rootCode}-${location}` === currentFullscreenCode && rootCode != null;
@@ -107,6 +108,8 @@ class Panel extends Component {
         test-id={`rootCode-${location}-panel`}
         {...isExpandable ? { position: 'relative' } : {}}
         {...style}
+        {...inheritedProps['default']}
+        {...this.state.display === 'closed' ? inheritedProps['closed'] : null}
         // transitionDuration='200ms'
         // transitionProperty='width'
         // transitionTimingFunction='ease'

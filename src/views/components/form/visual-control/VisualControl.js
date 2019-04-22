@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes } from '../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
 import { Box, Text, Icon, Fragment /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
 
@@ -134,10 +134,13 @@ class VisualControl extends Component {
     const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
     const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
 
+    const combinedThemeProps = objectMerge(
+      isObject( this.props.inheritedProps ) ? this.props.inheritedProps : {},
+      objectMerge( inheritedThemeProps, themeProps ),
+    );
+
     return {
-      ...this.props.inheritedProps,
-      ...inheritedThemeProps,
-      ...themeProps,
+      ...combinedThemeProps,
     };
   }
 
@@ -172,7 +175,7 @@ class VisualControl extends Component {
 
     const inputProps = {
       ...restProps,
-      theme: this.getStyling( 'input' ),
+      theme: this.getStyling( 'input' )['default'],
     };
 
     return (
@@ -182,7 +185,7 @@ class VisualControl extends Component {
         flex={1}
         justifyContent="centre"
         // padding={5}
-        {...this.getStyling( 'wrapper' )}
+        {...this.getStyling( 'wrapper' )['default']}
       >
 
         {(
@@ -196,13 +199,13 @@ class VisualControl extends Component {
 
             {/* LABEL */}
             <Box
-              {...this.getStyling( 'label' )}
+              {...this.getStyling( 'label' )['default']}
             >
               <Text
                 size="xs"
                 text={this.props.question.name}
                 // decoration="underline"
-                {...this.getStyling( 'label' )}
+                {...this.getStyling( 'label' )['default']}
               />
             </Box>
 
@@ -230,14 +233,14 @@ class VisualControl extends Component {
                 paddingLeft={5}
                 paddingRight={5}
                 cursor="pointer"
-                {...this.getStyling( 'hint' )}
+                {...this.getStyling( 'hint' )['default']}
               >
                 <Icon
                   name="help"
                   size="xs"
                   color="grey"
                   cursor="help"
-                  {...this.getStyling( 'hint' )}
+                  {...this.getStyling( 'hint' )['default']}
                 />
               </Box>
             )}
@@ -250,12 +253,12 @@ class VisualControl extends Component {
         ) && (
           <Box
             paddingBottom={5}
-            {...this.getStyling( 'description' )}
+            {...this.getStyling( 'description' )['default']}
           >
             <Text
               size="xxs"
               text="Description text goes here"
-              {...this.getStyling( 'description' )}
+              {...this.getStyling( 'description' )['default']}
             />
           </Box>
         )}
@@ -270,13 +273,13 @@ class VisualControl extends Component {
           ) && (
             <Box
               paddingRight={5}
-              {...this.getStyling( 'icon' )}
+              {...this.getStyling( 'icon' )['default']}
             >
               <Icon
                 name="home"
                 color="black"
                 cursor="default"
-                {...this.getStyling( 'icon' )}
+                {...this.getStyling( 'icon' )['default']}
               />
             </Box>
           )}
@@ -296,13 +299,13 @@ class VisualControl extends Component {
           this.props.error != null
         ) && (
           <Box
-            {...this.getStyling( 'error' )}
+            {...this.getStyling( 'error' )['default']}
           >
             <Text
               size="xxs"
               color="red"
               text={this.props.error}
-              {...this.getStyling( 'error' )}
+              {...this.getStyling( 'error' )['default']}
             />
           </Box>
         )}

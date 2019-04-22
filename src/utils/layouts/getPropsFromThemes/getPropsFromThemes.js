@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray, isObject, sort  } from '../../index';
+import { isArray, isObject, sort, objectMerge  } from '../../index';
 
 const getPropsFromThemes = ( links, themes ) => {
   let props = {};
@@ -14,10 +14,7 @@ const getPropsFromThemes = ( links, themes ) => {
     const themeData = dlv( themes, `${theme.code}.data` );
 
     if ( isObject( themeData )) {
-      props = {
-        ...props,
-        ...themeData,
-      };
+      props = objectMerge( props, themeData );
     }
   });
 

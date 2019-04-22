@@ -80,6 +80,7 @@ class Input extends PureComponent {
     textAlign: 'left',
     prefixColor: 'grey',
     editable: true,
+    outline: 'none',
   }
 
   static propTypes = {
@@ -192,6 +193,7 @@ class Input extends PureComponent {
     useAttributeNameAsValue: bool,
     useQuestionNameAsValue: bool,
     question: object,
+    outline: string,
   }
 
   state = {
@@ -252,7 +254,7 @@ class Input extends PureComponent {
       isFocused: true,
     });
 
-    console.log( 'focus' );
+    // console.log( 'focus' );
 
     if ( this.props.onFocus )
       this.props.onFocus( event );
@@ -404,6 +406,7 @@ class Input extends PureComponent {
       characterCountTextProps,
       useAttributeNameAsValue,
       useQuestionNameAsValue,
+      outline,
     } = this.props;
 
     const { isFocused, valueLength } = this.state;
@@ -448,6 +451,7 @@ class Input extends PureComponent {
       borderTopLeftRadius,
       borderTopRightRadius,
       color,
+      outline,
       ...isFocused ? activeStyling : {},
       ...editable === false ? { cursor: 'default' } : {},
     });

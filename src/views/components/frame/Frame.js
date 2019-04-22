@@ -16,6 +16,7 @@ import {
   getPropsFromThemes,
   getDeviceSize,
   shallowCompare,
+  objectMerge,
 } from '../../../utils';
 
 const defaultStyle = {
@@ -171,18 +172,6 @@ class Frame extends Component {
   }
 
   getInhertiableThemes = ( panel ) => {
-    // return [
-    //   ...this.props.inheritedThemes,
-    //   ...filterThemes(
-    //     this.state.themes,
-    //     this.props.themes,
-    //     {
-    //       panel: panel,
-    //       onlyInheritableThemes: true,
-    //     }
-    //   ),
-    // ];
-
     const panelLinks = [
       ...filterThemes(
         this.state.themes,
@@ -198,8 +187,7 @@ class Frame extends Component {
     const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
 
     return {
-      ...this.props.inheritedProps,
-      ...themeProps,
+      ...objectMerge( this.props.inheritedProps, themeProps ),
     };
   }
 
@@ -257,6 +245,16 @@ class Frame extends Component {
         }
       };
 
+      return {
+        ...defaultStyle.panel,
+        ...defaultStyle[panel],
+        /* If the centre panel is rendered, then it is the only panel that expands.
+          If not, then the other panels need to have flex 1 to expand. */
+        ...checkPanelFlex( panel ),
+      };
+    };
+
+    const getStyling = ( panel ) => {
       // filter links for panel
       const inheritedLinks = [
         ...filterThemes(
@@ -280,14 +278,12 @@ class Frame extends Component {
       const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
       const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
 
+      const combinedThemeProps = objectMerge( inheritedThemeProps, themeProps );
+
+      // console.log( inheritedThemeProps, themeProps, combinedThemeProps );
+
       return {
-        ...defaultStyle.panel,
-        ...defaultStyle[panel],
-        /* If the centre panel is rendered, then it is the only panel that expands.
-          If not, then the other panels need to have flex 1 to expand. */
-        ...checkPanelFlex( panel ),
-        ...inheritedThemeProps,
-        ...themeProps,
+        ...combinedThemeProps,
       };
     };
 
@@ -322,6 +318,7 @@ class Frame extends Component {
                 rootCode={rootCode}
                 location="NORTH"
                 style={getStylingByPanel( 'north' )} // theme props for this element filterThemes() -> getPropsFromThemes()
+                inheritedProps={getStyling( 'north' )}
                 isExpandable={isExpandable( 'NORTH' )}
                 // onLayout={this.handlePanelOnLayout}
               >
@@ -350,6 +347,7 @@ class Frame extends Component {
                           rootCode={rootCode}
                           location="WEST"
                           style={getStylingByPanel( 'west' )}
+                          inheritedProps={getStyling( 'west' )}
                           isExpandable={isExpandable( 'WEST' )}
                           // onLayout={this.handlePanelOnLayout}
                         >
@@ -370,6 +368,7 @@ class Frame extends Component {
                           rootCode={rootCode}
                           location="CENTRE"
                           style={getStylingByPanel( 'centre' )}
+                          inheritedProps={getStyling( 'centre' )}
                           isExpandable={isExpandable( 'CENTRE' )}
                           // onLayout={this.handlePanelOnLayout}
                         >
@@ -390,6 +389,7 @@ class Frame extends Component {
                           rootCode={rootCode}
                           location="EAST"
                           style={getStylingByPanel( 'east' )}
+                          inheritedProps={getStyling( 'east' )}
                           isExpandable={isExpandable( 'EAST' )}
                           // onLayout={this.handlePanelOnLayout}
                         >
@@ -414,6 +414,7 @@ class Frame extends Component {
                   rootCode={rootCode}
                   location="SOUTH"
                   style={getStylingByPanel( 'south' )}
+                  inheritedProps={getStyling( 'south' )}
                   isExpandable={isExpandable( 'SOUTH' )}
                   // onLayout={this.handlePanelOnLayout}
                 >

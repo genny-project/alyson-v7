@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, number, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge } from '../../../../utils';
 import { Box, Collapsible, EventTouchable } from '../../index';
 import VisualControl from '../visual-control';
 
@@ -117,10 +117,13 @@ class FormGroup extends Component {
     const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
     const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
 
+    const combinedThemeProps = objectMerge(
+      isObject( this.props.inheritedProps ) ? this.props.inheritedProps : {},
+      objectMerge( inheritedThemeProps, themeProps )
+    );
+
     return {
-      ...isObject( this.props.inheritedProps ) ? this.props.inheritedProps : {},
-      ...inheritedThemeProps,
-      ...themeProps,
+      ...combinedThemeProps,
     };
   }
 
@@ -153,7 +156,16 @@ class FormGroup extends Component {
       handleKeyPress,
       addRef,
     } = functions;
-    const { questionCode, attributeCode, mandatory, question, contextList, readonly, placeholder } = ask;
+    const {
+      questionCode,
+      attributeCode,
+      mandatory,
+      question,
+      contextList,
+      readonly,
+      placeholder,
+    } = ask;
+
     const baseEntityDefinition = dataTypes[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
@@ -198,7 +210,7 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: question.placeholder || question.name,
+      placeholder: placeholder || question.placeholder || question.name,
     };
 
     return (
@@ -259,6 +271,11 @@ class FormGroup extends Component {
       });
     };
 
+    // console.log( '-------------' );
+    // console.log( 'inherit themes', this.getInhertiableThemes());
+    // console.log( 'inheritedProps', this.props.inheritedProps );
+    // console.log( 'getStyling', this.getStyling());
+
     checkThemeForProperties( this.props.inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
@@ -280,14 +297,14 @@ class FormGroup extends Component {
               )
             ) : null
           }
-          headerIconProps={this.getStyling()}
+          headerIconProps={this.getStyling()['default']}
         >
           <Box
             key={name}
             zIndex={150 - index}
             {...defaultStyle.group}
             // padding={10}
-            {...this.getStyling()}
+            {...this.getStyling()['default']}
           >
             {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
               if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
@@ -325,7 +342,7 @@ class FormGroup extends Component {
             zIndex={150 - index}
             {...defaultStyle.group}
             borderColor
-            {...this.getStyling()}
+            {...this.getStyling()['default']}
           >
             {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
               if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
@@ -354,7 +371,7 @@ class FormGroup extends Component {
         zIndex={150 - index}
         {...defaultStyle.group}
         // padding={10}
-        {...this.getStyling()}
+        {...this.getStyling()['default']}
       >
         {
           (
