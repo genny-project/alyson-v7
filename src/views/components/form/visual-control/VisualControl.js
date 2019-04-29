@@ -38,6 +38,8 @@ class VisualControl extends Component {
     themes: object,
     error: string,
     required: bool,
+    editable: bool,
+    disabled: bool,
   }
 
   state = {
@@ -144,6 +146,13 @@ class VisualControl extends Component {
     };
   }
 
+  handleStateChange = ( newState ) => {
+    this.setState( state => ({
+      ...state,
+      ...newState,
+    }));
+  }
+
   render() {
     const {
       inheritedThemes,
@@ -171,12 +180,41 @@ class VisualControl extends Component {
     checkThemeForProperties( inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
+    const getPropsByType = ( type ) => {
+      const typeThemes = this.getStyling( type );
+
+      return {
+        ...restProps,
+        ...isObject( typeThemes, { withProperty: 'default' }) ? typeThemes['default'] : {},
+        ...isObject( typeThemes, { withProperty: 'hover' }) && this.state.hover ? typeThemes['hover'] : {},
+        ...isObject( typeThemes, { withProperty: 'active' }) && this.state.active ? typeThemes['active'] : {},
+        ...isObject( typeThemes, { withProperty: 'disabled' }) &&
+          ( this.props.editable === false || this.props.disabled )
+          ? typeThemes['disabled'] : {},
+      };
+    };
+
     const InputWrapper = properties.renderVisualControlIcon ? Box : Fragment;
 
-    const inputProps = {
-      ...restProps,
-      theme: this.getStyling( 'input' )['default'],
-    };
+    /*
+      get themes for each visual control element,
+      and for the current visual control state
+
+      is active different from selected ?
+
+      states: {
+        hover, (cursor is highlighting the input, but its not selected)
+        active, (input is currently focused)
+        readonly, (input is read only)
+        disabled, (input functionality is disabled)
+        error, (input failed validation)
+        closed, (any parent component is closed)
+      }
+    */
+
+    /*
+      does icon need to be included in the input?
+    */
 
     return (
       /* WRAPPER */
@@ -185,7 +223,7 @@ class VisualControl extends Component {
         flex={1}
         justifyContent="centre"
         // padding={5}
-        {...this.getStyling( 'wrapper' )['default']}
+        {...getPropsByType( 'wrapper' )}
       >
 
         {(
@@ -199,13 +237,13 @@ class VisualControl extends Component {
 
             {/* LABEL */}
             <Box
-              {...this.getStyling( 'label' )['default']}
+              {...getPropsByType( 'label' )}
             >
               <Text
                 size="xs"
                 text={this.props.question.name}
                 // decoration="underline"
-                {...this.getStyling( 'label' )['default']}
+                {...getPropsByType( 'label' )}
               />
             </Box>
 
@@ -233,14 +271,14 @@ class VisualControl extends Component {
                 paddingLeft={5}
                 paddingRight={5}
                 cursor="pointer"
-                {...this.getStyling( 'hint' )['default']}
+                {...getPropsByType( 'hint' )}
               >
                 <Icon
                   name="help"
                   size="xs"
                   color="grey"
                   cursor="help"
-                  {...this.getStyling( 'hint' )['default']}
+                  {...getPropsByType( 'hint' )}
                 />
               </Box>
             )}
@@ -253,12 +291,12 @@ class VisualControl extends Component {
         ) && (
           <Box
             paddingBottom={5}
-            {...this.getStyling( 'description' )['default']}
+            {...getPropsByType( 'description' )}
           >
             <Text
               size="xxs"
               text="Description text goes here"
-              {...this.getStyling( 'description' )['default']}
+              {...getPropsByType( 'description' )}
             />
           </Box>
         )}
@@ -273,23 +311,23 @@ class VisualControl extends Component {
           ) && (
             <Box
               paddingRight={5}
-              {...this.getStyling( 'icon' )['default']}
+              {...getPropsByType( 'icon' )}
             >
               <Icon
                 name="home"
                 color="black"
                 cursor="default"
-                {...this.getStyling( 'icon' )['default']}
+                {...getPropsByType( 'icon' )}
               />
             </Box>
           )}
 
           {/* INPUT COMPONENT */}
           <FormInput
-            {...inputProps}
+            {...getPropsByType( 'input' )}
             inheritedProps={this.getInhertiableThemes()}
             padding={3}
-            // backgroundColor="white"
+            onChangeState={this.handleStateChange}
           />
 
         </InputWrapper>
@@ -299,13 +337,13 @@ class VisualControl extends Component {
           this.props.error != null
         ) && (
           <Box
-            {...this.getStyling( 'error' )['default']}
+            {...getPropsByType( 'error' )}
           >
             <Text
               size="xxs"
               color="red"
               text={this.props.error}
-              {...this.getStyling( 'error' )['default']}
+              {...getPropsByType( 'error' )}
             />
           </Box>
         )}
