@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
 import { Box, Text, Icon /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
 
@@ -191,6 +191,7 @@ class VisualControl extends Component {
         ...isObject( typeThemes, { withProperty: 'disabled' }) &&
           ( this.props.editable === false || this.props.disabled )
           ? typeThemes['disabled'] : {},
+        ...isObject( typeThemes, { withProperty: 'error' }) && this.props.error ? typeThemes['error'] : {},
       };
     };
 
@@ -210,9 +211,7 @@ class VisualControl extends Component {
       }
     */
 
-    /*
-      does icon need to be included in the input?
-    */
+    // console.log( this.props.error );
 
     return (
       /* WRAPPER */
@@ -299,27 +298,6 @@ class VisualControl extends Component {
           </Box>
         )}
 
-        {/* <InputWrapper
-          flexDirection="row"
-          width="100%"
-        > */}
-        {/* ICON */}
-        {/* {(
-          properties.renderVisualControlIcon
-        ) && (
-          <Box
-            paddingRight={5}
-            {...getPropsByType( 'icon' )}
-          >
-            <Icon
-              name="home"
-              color="black"
-              cursor="default"
-              {...getPropsByType( 'icon' )}
-            />
-          </Box>
-        )} */}
-
         {/* INPUT COMPONENT */}
         <FormInput
           {...getPropsByType( 'input' )}
@@ -329,13 +307,12 @@ class VisualControl extends Component {
           onChangeState={this.handleStateChange}
         />
 
-        {/* </InputWrapper> */}
-
         {/* ERROR MESSAGE */}
         {(
-          this.props.error != null
+          isString( this.props.error )
         ) && (
           <Box
+            flexDirection="column"
             {...getPropsByType( 'error' )}
           >
             <Text
@@ -346,6 +323,26 @@ class VisualControl extends Component {
             />
           </Box>
         )}
+        {/* {(
+          isArray( this.props.error, { ofMinLength: 1 })
+        ) && (
+          <Box
+            flexDirection="column"
+            {...getPropsByType( 'error' )}
+          >
+            {this.props.error.map( errorMessage => {
+              return (
+                <Text
+                  key={errorMessage}
+                  size="xxs"
+                  color="red"
+                  text={errorMessage}
+                  {...getPropsByType( 'error' )}
+                />
+              );
+            })}
+          </Box>
+        )} */}
       </Box>
     );
   }

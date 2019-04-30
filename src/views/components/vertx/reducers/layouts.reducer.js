@@ -152,6 +152,7 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
     ...( dlv( attributes, 'PRI_CONTENT_HOVER.value' ) ? { hover: dlv( attributes, 'PRI_CONTENT_HOVER.value' ) } : null ),
     ...( dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) ? { disabled: dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) } : null ),
     ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) } : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_ERROR.value' ) ? { error: dlv( attributes, 'PRI_CONTENT_ERROR.value' ) } : null ),
   };
 
   if ( shouldReplaceEntity === true ) {

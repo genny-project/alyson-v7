@@ -139,6 +139,7 @@ class Input extends PureComponent {
     borderTopLeftRadius: number,
     borderTopRightRadius: number,
     borderSize: number,
+    borderStyle: string,
     returnKeyLabel: string,
     returnKeyType: oneOf(
       ['done', 'next', 'go', 'search', 'send', 'default']
@@ -316,6 +317,7 @@ class Input extends PureComponent {
       borderColor,
       borderRadius,
       borderSize,
+      borderStyle,
       returnKeyLabel,
       returnKeyType,
       borderBottomLeftRadius,
@@ -359,7 +361,7 @@ class Input extends PureComponent {
       textAlign: textAlign,
       height,
       width: '100%', // Always be 100% of the parent width
-      backgroundColor,
+      backgroundColor: backgroundColor === 'none' ? null : backgroundColor,
       borderWidth,
       borderTopWidth,
       borderRightWidth,
@@ -368,6 +370,7 @@ class Input extends PureComponent {
       borderColor,
       borderRadius,
       borderSize,
+      borderStyle,
       borderBottomLeftRadius,
       borderBottomRightRadius,
       borderTopLeftRadius,
@@ -383,6 +386,8 @@ class Input extends PureComponent {
 
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
+
+    // console.log( 'style', inputStyle );
 
     return (
       <Box

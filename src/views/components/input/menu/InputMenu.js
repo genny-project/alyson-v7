@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array, string, object } from 'prop-types';
-import { isArray, isString } from '../../../../utils';
-import { Text, Dropdown, Icon } from '../../index';
+import { isArray, isString, isObject } from '../../../../utils';
+import { Text, Dropdown, Icon, Box } from '../../index';
 
 class InputMenu extends Component {
   static propTypes = {
@@ -11,17 +11,21 @@ class InputMenu extends Component {
     rootQuestionGroupCode: string,
     question: object,
     icon: string,
+    iconProps: object,
   }
 
   render() {
     const {
       items,
       icon,
+      iconProps,
       parentGroupCode,
       rootQuestionGroupCode,
       ...restProps
     } = this.props;
     const { question } = this.props;
+
+    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
 
     return (
       <Dropdown
@@ -41,14 +45,19 @@ class InputMenu extends Component {
           }))
           : null}
       >
-        {
-          isString( icon, { ofMinLength: 1 })
-            ? (
+        { hasIcon
+          ? (
+            <Box
+              marginRight={5}
+              {...iconProps}
+            >
               <Icon
-                color={this.props.color}
                 name={icon}
+                color="black"
+                {...iconProps}
               />
-            ) : null
+            </Box>
+          ) : null
         }
         {
           isString( question.name, { isNotSameAs: ' ' })

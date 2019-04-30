@@ -30,6 +30,8 @@ class InputEvent extends Component {
     } = this.props;
     // const { contextList } = question;
 
+    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+
     // get eventType from somewhere in the question
 
     return (
@@ -45,7 +47,7 @@ class InputEvent extends Component {
         flex={1}
         justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
       >
-        { isObject( iconProps )
+        { hasIcon
           ? (
             <Box
               marginRight={5}
@@ -62,7 +64,7 @@ class InputEvent extends Component {
         {
           isString( question.name, { isNotSameAs: ' ' }) && !(
             this.props.isClosed &&
-            isObject( iconProps )
+            hasIcon
           )
             ? (
               <Text

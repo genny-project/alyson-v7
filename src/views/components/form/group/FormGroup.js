@@ -123,6 +123,15 @@ class FormGroup extends Component {
       objectMerge( inheritedThemeProps, themeProps )
     );
 
+    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' ) {
+    //   console.log( '=========================' );
+    //   console.log( 'props', this.props );
+    //   console.log( 'this.props.inheritedProps', this.props.inheritedProps );
+    //   console.log( 'inheritedThemeProps', inheritedThemeProps );
+    //   console.log( 'themeProps', themeProps );
+    //   console.log( 'combinedThemeProps', combinedThemeProps );
+    // }
+
     return {
       ...combinedThemeProps,
     };
@@ -365,6 +374,9 @@ class FormGroup extends Component {
         </EventTouchable>
       );
     }
+
+    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' )
+    // console.log( 'style', this.getStyling());
 
     return (
       <Box

@@ -346,19 +346,32 @@ class Form extends Component {
         return {};
       }
 
+      // const errors = [];
+
       if (
         values[field] == null &&
         required
       ) {
         newState[field] = 'Please enter this field';
+        // errors.push( 'Please enter this field' );
       }
 
       const isValid = validationArray.every( validation => {
-        return new RegExp( validation.regex ).test( String( values[field] ));
+        const doesPass = new RegExp( validation.regex ).test( String( values[field] ));
+
+        // if ( !doesPass ) {
+        //   // errors.push( validation.message );
+        //   errors.push( validation.name );
+        // }
+
+        return doesPass;
       });
+
+      // console.log( 'errors', errors );
 
       if ( !isValid )
         newState[field] = 'Error';
+        // newState[field] = errors;
     });
 
     return newState;
