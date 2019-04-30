@@ -3,7 +3,7 @@ import { TextInput, Platform } from 'react-native';
 import { string, oneOf, number, shape, bool, func, oneOfType, node, object } from 'prop-types';
 import dlv from 'dlv';
 // import memoize from 'memoize-one';
-import { isObject } from '../../../../utils';
+import { isObject, isString } from '../../../../utils';
 import { Box, Text, Icon } from '../../../components';
 
 /** Ensure the props we're going to use were indeed passed through. */
@@ -331,10 +331,13 @@ class Input extends PureComponent {
       useAttributeNameAsValue,
       useQuestionNameAsValue,
       outline,
+      icon,
       iconProps,
     } = this.props;
 
     const { isFocused, isHovering, valueLength } = this.state; // eslint-disable-line no-unused-vars
+
+    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
 
     /* TODO: performance optimisation? */
     const inputStyle = filterOutUnspecifiedProps({
@@ -351,7 +354,7 @@ class Input extends PureComponent {
       paddingTop: paddingTop,
       paddingRight: paddingRight,
       paddingBottom,
-      paddingLeft: paddingLeft || 30,
+      paddingLeft: paddingLeft || hasIcon ? 30 : null,
       fontSize: textSizes[textSize],
       textAlign: textAlign,
       height,
@@ -387,7 +390,7 @@ class Input extends PureComponent {
         flex={1}
         width={width}
       >
-        { isObject( iconProps )
+        { hasIcon
           ? (
             <Box
               position="absolute"
@@ -398,7 +401,6 @@ class Input extends PureComponent {
               <Icon
                 name="home"
                 color="black"
-                cursor="default"
                 {...iconProps}
               />
             </Box>

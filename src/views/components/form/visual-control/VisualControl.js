@@ -218,7 +218,7 @@ class VisualControl extends Component {
       /* WRAPPER */
       <Box
         flexDirection="column"
-        flex={1}
+        // flex={1}
         justifyContent="centre"
         // padding={5}
         {...getPropsByType( 'wrapper' )}

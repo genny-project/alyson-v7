@@ -54,7 +54,6 @@ class InputEvent extends Component {
               <Icon
                 name={icon}
                 color="black"
-                cursor="default"
                 {...iconProps}
               />
             </Box>
