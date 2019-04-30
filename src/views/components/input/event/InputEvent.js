@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
 import { Text, EventTouchable, Icon, Box } from '../../index';
-import { isString } from '../../../../utils';
+import { isString, isObject } from '../../../../utils';
 
 class InputEvent extends Component {
   static propTypes = {
@@ -10,8 +10,9 @@ class InputEvent extends Component {
     parentGroupCode: string,
     rootQuestionGroupCode: string,
     messageType: string,
-    icon: string,
+    iconProps: bool,
     onPress: func,
+    icon: string,
     isClosed: bool,
   }
 
@@ -22,6 +23,7 @@ class InputEvent extends Component {
       parentGroupCode,
       rootQuestionGroupCode,
       icon,
+      iconProps,
       onPress, // eslint-disable-line no-unused-vars
       color,
       ...restProps
@@ -43,22 +45,25 @@ class InputEvent extends Component {
         flex={1}
         justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
       >
-        {
-          isString( icon, { ofMinLength: 1 })
-            ? (
+        { isObject( iconProps )
+          ? (
+            <Box
+              marginRight={5}
+              {...iconProps}
+            >
               <Icon
-                color={color}
                 name={icon}
+                color="black"
+                cursor="default"
+                {...iconProps}
               />
-            ) : null
+            </Box>
+          ) : null
         }
-        <Box
-          paddingRight={5}
-        />
         {
           isString( question.name, { isNotSameAs: ' ' }) && !(
             this.props.isClosed &&
-            isString( icon, { ofMinLength: 1 })
+            isObject( iconProps )
           )
             ? (
               <Text

@@ -10,7 +10,8 @@ const defaultStyle = {
   group: {
     flexDirection: 'column',
     position: 'relative',
-    flex: 1,
+    // flex: 1,
+    // width: '100%',
   },
 };
 

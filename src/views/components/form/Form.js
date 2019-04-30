@@ -7,7 +7,7 @@ import dlv from 'dlv';
 import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
 import shallowCompare from '../../../utils/shallow-compare';
-import { Box, Text, KeyboardAwareScrollView, Fragment } from '../index';
+import { Box, Text, Fragment } from '../index';
 import FormGroup from './group';
 
 class Form extends Component {
@@ -576,9 +576,6 @@ class Form extends Component {
 
     const { initialValues } = this.state;
 
-    // check the top level groups to see if any have 'fullWidth: true' in the contextList
-    const isFullWidth = fullWidth != null ? fullWidth : this.checkIfFullWidth( questionGroups );
-
     return (
       <Formik
         initialValues={initialValues}
@@ -596,43 +593,33 @@ class Form extends Component {
           isSubmitting,
           setFieldValue,
           setFieldTouched,
-          handleSubmit,
         }) => {
           const isFormValid = shallowCompare( this.doValidate( values ), {});
 
           return (
-            <KeyboardAwareScrollView
-              testID={testID}
-            >
-              <Box
-                // accessibilityRole="form"
-                flexDirection="column"
-                // flex={1}
-                {...isFullWidth ? { width: '100%' } : {}}
-                onSubmit={handleSubmit}
-                // backgroundColor="white"
-              >
-                <Fragment>
-                  {questionGroups.map(( questionGroup, index ) => {
-                    return this.renderQuestionGroup(
-                      questionGroup,
-                      index,
-                      {
-                        values,
-                        errors,
-                        touched,
-                        setFieldValue,
-                        setFieldTouched,
-                        isSubmitting,
-                        submitCount,
-                        submitForm,
-                        isFormValid,
-                      }
-                    );
-                  })}
-                </Fragment>
-              </Box>
-            </KeyboardAwareScrollView>
+            // <KeyboardAwareScrollView
+            //   testID={testID}
+            // >
+            <Fragment>
+              {questionGroups.map(( questionGroup, index ) => {
+                return this.renderQuestionGroup(
+                  questionGroup,
+                  index,
+                  {
+                    values,
+                    errors,
+                    touched,
+                    setFieldValue,
+                    setFieldTouched,
+                    isSubmitting,
+                    submitCount,
+                    submitForm,
+                    isFormValid,
+                  }
+                );
+              })}
+            </Fragment>
+            // </KeyboardAwareScrollView>
           );
         }}
       </Formik>

@@ -3,7 +3,8 @@ import { TextInput, Platform } from 'react-native';
 import { string, oneOf, number, shape, bool, func, oneOfType, node, object } from 'prop-types';
 import dlv from 'dlv';
 // import memoize from 'memoize-one';
-import { Box, Text } from '../../../components';
+import { isObject } from '../../../../utils';
+import { Box, Text, Icon } from '../../../components';
 
 /** Ensure the props we're going to use were indeed passed through. */
 const filterOutUnspecifiedProps = props => {
@@ -160,6 +161,7 @@ class Input extends PureComponent {
     useQuestionNameAsValue: bool,
     question: object,
     outline: string,
+    iconProps: object,
   }
 
   state = {
@@ -329,6 +331,7 @@ class Input extends PureComponent {
       useAttributeNameAsValue,
       useQuestionNameAsValue,
       outline,
+      iconProps,
     } = this.props;
 
     const { isFocused, isHovering, valueLength } = this.state; // eslint-disable-line no-unused-vars
@@ -348,7 +351,7 @@ class Input extends PureComponent {
       paddingTop: paddingTop,
       paddingRight: paddingRight,
       paddingBottom,
-      paddingLeft,
+      paddingLeft: paddingLeft || 30,
       fontSize: textSizes[textSize],
       textAlign: textAlign,
       height,
@@ -384,6 +387,23 @@ class Input extends PureComponent {
         flex={1}
         width={width}
       >
+        { isObject( iconProps )
+          ? (
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              pointerEvents="none"
+            >
+              <Icon
+                name="home"
+                color="black"
+                cursor="default"
+                {...iconProps}
+              />
+            </Box>
+          ) : null
+        }
         <TextInput
           testID={`input-text ${testID}`}
           autoCapitalize={autoCapitalize}

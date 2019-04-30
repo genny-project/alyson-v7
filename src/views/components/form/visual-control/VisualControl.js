@@ -3,7 +3,7 @@ import { string, object, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
-import { Box, Text, Icon, Fragment /* Tooltip */ } from '../../../components';
+import { Box, Text, Icon /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
 
 /*
@@ -194,8 +194,6 @@ class VisualControl extends Component {
       };
     };
 
-    const InputWrapper = properties.renderVisualControlIcon ? Box : Fragment;
-
     /*
       get themes for each visual control element,
       and for the current visual control state
@@ -301,36 +299,37 @@ class VisualControl extends Component {
           </Box>
         )}
 
-        <InputWrapper
+        {/* <InputWrapper
           flexDirection="row"
           width="100%"
-        >
-          {/* ICON */}
-          {(
-            properties.renderVisualControlIcon
-          ) && (
-            <Box
-              paddingRight={5}
+        > */}
+        {/* ICON */}
+        {/* {(
+          properties.renderVisualControlIcon
+        ) && (
+          <Box
+            paddingRight={5}
+            {...getPropsByType( 'icon' )}
+          >
+            <Icon
+              name="home"
+              color="black"
+              cursor="default"
               {...getPropsByType( 'icon' )}
-            >
-              <Icon
-                name="home"
-                color="black"
-                cursor="default"
-                {...getPropsByType( 'icon' )}
-              />
-            </Box>
-          )}
+            />
+          </Box>
+        )} */}
 
-          {/* INPUT COMPONENT */}
-          <FormInput
-            {...getPropsByType( 'input' )}
-            inheritedProps={this.getInhertiableThemes()}
-            padding={3}
-            onChangeState={this.handleStateChange}
-          />
+        {/* INPUT COMPONENT */}
+        <FormInput
+          {...getPropsByType( 'input' )}
+          iconProps={getPropsByType( 'icon' )}
+          inheritedProps={this.getInhertiableThemes()}
+          padding={3}
+          onChangeState={this.handleStateChange}
+        />
 
-        </InputWrapper>
+        {/* </InputWrapper> */}
 
         {/* ERROR MESSAGE */}
         {(
