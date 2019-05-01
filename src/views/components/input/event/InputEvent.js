@@ -54,6 +54,7 @@ class InputEvent extends Component {
     const { isHovering } = this.state; // eslint-disable-line no-unused-vars
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasText = isString( question.name, { isNotSameAs: ' ' });
 
     // get eventType from somewhere in the question
 
@@ -74,9 +75,7 @@ class InputEvent extends Component {
       >
         { hasIcon
           ? (
-            <Box
-              paddingRight={5}
-            >
+            <Box>
               <Icon
                 name={icon}
                 color="black"
@@ -85,8 +84,16 @@ class InputEvent extends Component {
             </Box>
           ) : null
         }
+        { hasIcon &&
+          hasText
+          ? (
+            <Box
+              paddingRight={5}
+            />
+          ) : null
+        }
         {
-          isString( question.name, { isNotSameAs: ' ' }) && !(
+          hasText && !(
             this.props.isClosed &&
             hasIcon
           )
