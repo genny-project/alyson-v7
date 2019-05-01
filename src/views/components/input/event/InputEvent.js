@@ -14,6 +14,29 @@ class InputEvent extends Component {
     onPress: func,
     icon: string,
     isClosed: bool,
+    onChangeState: func,
+  }
+
+  state = {
+    isHovering: false,
+  }
+
+  handleMouseEnter = () => {
+    this.setState({
+      isHovering: true,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: true });
+  }
+
+  handleMouseLeave = () => {
+    this.setState({
+      isHovering: false,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: false });
   }
 
   render() {
@@ -28,7 +51,7 @@ class InputEvent extends Component {
       color,
       ...restProps
     } = this.props;
-    // const { contextList } = question;
+    const { isHovering } = this.state; // eslint-disable-line no-unused-vars
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
 
@@ -44,14 +67,15 @@ class InputEvent extends Component {
         rootCode={rootQuestionGroupCode}
         flexDirection="row"
         alignItems="center"
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
         flex={1}
         justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
       >
         { hasIcon
           ? (
             <Box
-              marginRight={5}
-              {...iconProps}
+              paddingRight={5}
             >
               <Icon
                 name={icon}

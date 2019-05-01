@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { any, bool, func, string, object, node } from 'prop-types';
+import { any, bool, func, string, object, node, oneOf } from 'prop-types';
 import { Box, Icon, Touchable }  from '../../components';
 
 class Collapsible extends Component {
@@ -9,6 +9,7 @@ class Collapsible extends Component {
     wrapperProps: {},
     headerWrapperProps: {},
     headerIconProps: {},
+    iconPlacement: 'right',
   }
 
   static propTypes = {
@@ -22,6 +23,9 @@ class Collapsible extends Component {
     headerIconProps: object,
     renderHeader: node,
     isClosed: bool,
+    iconPlacement: oneOf(
+      ['left', 'right']
+    ),
   }
 
   state = {
@@ -42,6 +46,7 @@ class Collapsible extends Component {
       headerIconProps,
       renderHeader,
       isClosed,
+      iconPlacement,
     } = this.props;
 
     const { isOpen } = this.state;
@@ -62,6 +67,7 @@ class Collapsible extends Component {
               <Box
                 flex={1}
                 justifyContent="space-between"
+                flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
               >
                 {/* header alt goes here */}
                 {renderHeader}
@@ -70,16 +76,22 @@ class Collapsible extends Component {
                     ? (
                       <Box
                         justifyContent="center"
-                        transform={[
-                          { rotate: isOpen ? '0deg' : '270deg' },
-                        ]}
+                        alignItems="center"
                         {...headerWrapperProps}
                       >
-                        <Icon
-                          name="keyboard_arrow_down"
-                          color="black"
-                          {...headerIconProps}
-                        />
+                        <Box
+                          transform={[
+                            { rotate: isOpen ? '0deg' : '270deg' },
+                          ]}
+                          {...headerWrapperProps}
+                        >
+                          <Icon
+                            name="keyboard_arrow_down"
+                            color="black"
+                            cursor="pointer"
+                            {...headerIconProps}
+                          />
+                        </Box>
                       </Box>
                     ) : null
                 }

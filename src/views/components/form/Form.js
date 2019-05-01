@@ -346,7 +346,7 @@ class Form extends Component {
         return {};
       }
 
-      // const errors = [];
+      let error = null;
 
       if (
         values[field] == null &&
@@ -359,10 +359,10 @@ class Form extends Component {
       const isValid = validationArray.every( validation => {
         const doesPass = new RegExp( validation.regex ).test( String( values[field] ));
 
-        // if ( !doesPass ) {
-        //   // errors.push( validation.message );
-        //   errors.push( validation.name );
-        // }
+        if ( !doesPass ) {
+          // errors.push( validation.errorMessage );
+          error = validation.errorMessage;
+        }
 
         return doesPass;
       });
@@ -370,7 +370,7 @@ class Form extends Component {
       // console.log( 'errors', errors );
 
       if ( !isValid )
-        newState[field] = 'Error';
+        newState[field] = error;
         // newState[field] = errors;
     });
 

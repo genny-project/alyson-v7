@@ -1,8 +1,8 @@
 import React, { Component, isValidElement } from 'react';
-import { array, bool, object, any, string } from 'prop-types';
+import { array, bool, object, any, string, func } from 'prop-types';
 // import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
-import { isArray, isString, Bridge } from '../../../utils';
+import { isArray, isString, isObject, Bridge } from '../../../utils';
 import { Fragment, Icon, Box, TestIdHandler, Text,
   Menu, MenuButton, MenuItem, MenuContent,
 } from '../index';
@@ -41,9 +41,16 @@ class Dropdown extends Component {
     children: any,
     history: object,
     color: string,
+    backgroundColor: string,
+    iconProps: object,
+    onChangeState: func,
   }
 
   inputs = {};
+
+  state = {
+    isHovering: false,
+  }
 
   focus() {
     if ( this.inputs && this.inputs[0] )
@@ -53,6 +60,24 @@ class Dropdown extends Component {
   blur() {
     if ( this.inputs && this.inputs[0] )
       this.input[0].blur();
+  }
+
+  handleMouseEnter = () => {
+    this.setState({
+      isHovering: true,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: true });
+  }
+
+  handleMouseLeave = () => {
+    this.setState({
+      isHovering: false,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: false });
   }
 
   handleSelect = item => () => {
@@ -89,7 +114,10 @@ class Dropdown extends Component {
       children,
       testID,
       color,
+      backgroundColor,
+      iconProps,
     } = this.props;
+    const { isHovering } = this.state; // eslint-disable-line no-unused-vars
 
     return (
       <Menu
@@ -150,6 +178,7 @@ class Dropdown extends Component {
                     ...{
                       ...styles['menuListStyle'],
                       color,
+                      backgroundColor,
                     },
                   }}
                   ref={input => this.input = input}
@@ -157,6 +186,9 @@ class Dropdown extends Component {
                   identifier={testID}
                 >
                   {items.map(( item, index ) => {
+                    const hasIcon = isObject( iconProps ) &&
+                      isString( item.icon, { ofMinLength: 1 });
+
                     return (
                       <MenuItem
                         key={item.text}
@@ -166,29 +198,37 @@ class Dropdown extends Component {
                           : this.handleSelect( item )
                         }
                         id={index}
+                        onMouseEnter={this.handleMouseEnter}
+                        onMouseLeave={this.handleMouseLeave}
+                        {...item.style}
                       >
                         <TestIdHandler
                           testID={`${item.parentCode}:${item.code}`}
                         >
-                          {isValidElement( item.children ) ? item.children
-                          : isString( item.text ) ? (
-                            <Text
-                              text={item.text}
-                              {...{
-                                ...styles['menuItemStyle'],
-                                color,
-                                ...item.style,
-                              }}
-                            />
-                          )
-                            : isArray( item.children )
-                              ? item.children.map(( child ) => (
-                                isValidElement( child )
-                                  ? child
-                                  : null
-                              ))
-                              : null
-                        }
+                          { hasIcon
+                            ? (
+                              <Box
+                                paddingRight={5}
+                              >
+                                <Icon
+                                  name={item.icon}
+                                  color="black"
+                                  {...iconProps}
+                                />
+                              </Box>
+                            ) : null
+                          }
+                          {
+                            isString( item.text, { isNotSameAs: ' ' })
+                              ? (
+                                <Text
+                                  color={color}
+                                  whiteSpace="nowrap"
+                                  text={item.text}
+                                  {...item.style}
+                                />
+                              ) : null
+                          }
                         </TestIdHandler>
                       </MenuItem>
                     );

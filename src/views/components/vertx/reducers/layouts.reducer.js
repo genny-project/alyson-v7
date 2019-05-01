@@ -21,6 +21,14 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderQuestionGroupInput',
   },
+  PRI_HAS_QUESTION_GRP_TITLE: {
+    default: false,
+    label: 'renderQuestionGroupTitle',
+  },
+  PRI_HAS_QUESTION_GRP_DESCRIPTION: {
+    default: false,
+    label: 'renderQuestionGroupDescription',
+  },
   PRI_HAS_LABEL: {
     default: true,
     label: 'renderVisualControlLabel',
