@@ -237,10 +237,10 @@ class Form extends Component {
   checkForUpdatedQuestionTargets = ( newProps ) => {
     const { questionGroups } = this.state;
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
-
+    
     if ( questionGroups.length < 1 ) return false;
 
-    const compareTargetCode = ( newAsk, existingAsk ) => {
+    const compareTargetCode = ( newAsk, existingAsk, level ) => {
       if ( !newAsk.question && !existingAsk.question ) return false;
 
       if ( !newAsk.question || !existingAsk.question ) return true;
@@ -258,15 +258,19 @@ class Form extends Component {
 
       if ( isMatch ) return false;
 
-      const isChildMatch = newAsk.childAsks.some(( childAsk, index ) => {
-        return compareTargetCode( childAsk, existingAsk.childAsks[index], index );
-      });
+      if ( isArray(  newAsk.childAsks, { ofMinLength: 1 })) {
+        const isChildMatch = newAsk.childAsks.some(( childAsk, index ) => {
+          return compareTargetCode( childAsk, existingAsk.childAsks[index], level + 1 );
+        });
 
-      return !isChildMatch;
+        return isChildMatch;
+      }
+       
+      return true;
     };
 
     const isDifference = newQuestionGroup.childAsks.some(( childAsk, index ) => {
-      return compareTargetCode( childAsk, questionGroups[0].childAsks[index], index );
+      return compareTargetCode( childAsk, questionGroups[0].childAsks[index], 1 );
     });
 
     return isDifference;
