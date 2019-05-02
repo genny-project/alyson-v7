@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, isValidElement } from 'react';
 import { string, integer, node } from 'prop-types';
 import { store } from '../../../redux';
 import * as actions from '../../../redux/actions';
@@ -59,11 +59,12 @@ class TestIdHandler extends Component {
 
     return (
       React.Children.map( children, child => (
-        React.cloneElement( child, {
-          ...child.props,
-          onMouseOver: this.handleMouseOverDebounced,
-          onMouseOut: this.handleMouseOutDebounced,
-        })
+        isValidElement( child )
+          ? React.cloneElement( child, {
+            ...child.props,
+            onMouseOver: this.handleMouseOverDebounced,
+            onMouseOut: this.handleMouseOutDebounced,
+          }) : null
       ))
     );
   }

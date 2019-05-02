@@ -3,7 +3,7 @@ import { string, object, number, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge } from '../../../../utils';
-import { Box, Collapsible, EventTouchable } from '../../index';
+import { Box, Collapsible, EventTouchable, Fragment, Text } from '../../index';
 import VisualControl from '../visual-control';
 
 const defaultStyle = {
@@ -142,6 +142,7 @@ class FormGroup extends Component {
     questionGroupCode,
     index,
     form,
+    additionalProps,
   ) => {
     const {
       dataTypes,
@@ -227,6 +228,7 @@ class FormGroup extends Component {
       <VisualControl
         key={questionCode}
         {...inputProps}
+        {...additionalProps}
       />
     );
   }
@@ -257,6 +259,7 @@ class FormGroup extends Component {
   render() {
     const { index, questionGroup, form, parentGroupCode, rootCode } = this.props;
     const {
+      description,
       name,
       childAsks,
       question,
@@ -289,6 +292,9 @@ class FormGroup extends Component {
     checkThemeForProperties( this.props.inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
+    const hasTitle = name && properties.renderQuestionGroupTitle;
+    const hasDescription = description && properties.renderQuestionGroupDescription;
+
     if (
       properties.expandable
     ) {
@@ -304,6 +310,9 @@ class FormGroup extends Component {
                 parentGroupCode,
                 index,
                 form,
+                {
+                  flexWrapper: true,
+                }
               )
             ) : null
           }
@@ -313,7 +322,6 @@ class FormGroup extends Component {
             key={name}
             zIndex={150 - index}
             {...defaultStyle.group}
-            // padding={10}
             {...this.getStyling()['default']}
           >
             {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
@@ -379,42 +387,81 @@ class FormGroup extends Component {
     // console.log( 'style', this.getStyling());
 
     return (
-      <Box
-        key={name}
-        zIndex={150 - index}
-        {...defaultStyle.group}
-        // padding={10}
-        {...this.getStyling()['default']}
-      >
-        {
-          (
-            question &&
-            properties.renderQuestionGroupInput
-          ) ? (
-              this.renderInput(
-                questionGroup,
-                parentGroupCode,
-                index,
-                form,
-              )) : null
-        }
-        {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-          if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-            return this.renderQuestionGroup(
-              ask,
-              index,
-              form
-            );
+      <Fragment>
+        <Box
+          key={name}
+          zIndex={150 - index}
+          {...defaultStyle.group}
+          // padding={10}
+          {...this.getStyling()['default']}
+        >
+          {
+            (
+              hasTitle &&
+              hasDescription
+            ) ? (
+              <Box
+                marginBottom={10}
+                padding={10}
+                flexDirection="column"
+              >
+                {
+                  hasTitle ? (
+                    <Box
+                      // justifyContent="center"
+                      marginBottom={10}
+                    >
+                      <Text
+                        size="xl"
+                        text={name}
+                        bold
+                      />
+                    </Box>
+                  ) : null
+                }
+                {
+                  hasDescription ? (
+                    <Box>
+                      <Text
+                        size="sm"
+                        text={description}
+                      />
+                    </Box>
+                  ) : null
+                }
+              </Box>
+              ) : null
           }
+          {
+            (
+              question &&
+              properties.renderQuestionGroupInput
+            ) ? (
+                this.renderInput(
+                  questionGroup,
+                  parentGroupCode,
+                  index,
+                  form,
+                )) : null
+          }
+          {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+            if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+              return this.renderQuestionGroup(
+                ask,
+                index,
+                form
+              );
+            }
 
-          return this.renderInput(
-            ask,
-            questionCode,
-            index,
-            form,
-          );
-        })}
-      </Box>
+            return this.renderInput(
+              ask,
+              questionCode,
+              index,
+              form,
+            );
+          })}
+        </Box>
+      </Fragment>
     );
   }
 }

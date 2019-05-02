@@ -40,6 +40,7 @@ class VisualControl extends Component {
     required: bool,
     editable: bool,
     disabled: bool,
+    flexWrapper: bool,
   }
 
   state = {
@@ -157,6 +158,7 @@ class VisualControl extends Component {
     const {
       inheritedThemes,
       themes,
+      flexWrapper,
       ...restProps
     } = this.props;
 
@@ -217,7 +219,7 @@ class VisualControl extends Component {
       /* WRAPPER */
       <Box
         flexDirection="column"
-        // flex={1}
+        flex={flexWrapper ? 1 : null}
         justifyContent="centre"
         // padding={5}
         {...getPropsByType( 'wrapper' )}
@@ -301,7 +303,7 @@ class VisualControl extends Component {
         {/* INPUT COMPONENT */}
         <FormInput
           {...getPropsByType( 'input' )}
-          iconProps={getPropsByType( 'icon' )}
+          iconProps={properties.renderVisualControlIcon ? getPropsByType( 'icon' ) : null}
           inheritedProps={this.getInhertiableThemes()}
           padding={3}
           onChangeState={this.handleStateChange}
@@ -323,26 +325,6 @@ class VisualControl extends Component {
             />
           </Box>
         )}
-        {/* {(
-          isArray( this.props.error, { ofMinLength: 1 })
-        ) && (
-          <Box
-            flexDirection="column"
-            {...getPropsByType( 'error' )}
-          >
-            {this.props.error.map( errorMessage => {
-              return (
-                <Text
-                  key={errorMessage}
-                  size="xxs"
-                  color="red"
-                  text={errorMessage}
-                  {...getPropsByType( 'error' )}
-                />
-              );
-            })}
-          </Box>
-        )} */}
       </Box>
     );
   }

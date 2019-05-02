@@ -51,7 +51,7 @@ const isString = ( string, options = {}) => {
     return string === isSameAs;
 
   if ( isNotSameAs != null )
-    return string !== isSameAs;
+    return string !== isNotSameAs;
 
   /* If the array is valid and no options were passed, return as valid. */
   return true;

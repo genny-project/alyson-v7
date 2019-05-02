@@ -15,13 +15,14 @@ class MenuItem extends Component {
   }
 
   render() {
-    const { children, id } = this.props;
+    const { children, id, ...restProps } = this.props;
 
     return (
       <MenuConsumer>
         {({ setRef, handlePressItem }) => {
           return (
             <Touchable
+              {...restProps}
               withFeedback
               onPress={event => {
                 handlePressItem();
