@@ -241,8 +241,9 @@ class Form extends Component {
     if ( questionGroups.length < 1 ) return false;
 
     const compareTargetCode = ( newAsk, existingAsk, level ) => {
+      if ( !newAsk && !existingAsk ) return false;
+      if ( !newAsk || !existingAsk ) return true;
       if ( !newAsk.question && !existingAsk.question ) return false;
-
       if ( !newAsk.question || !existingAsk.question ) return true;
 
       const newQuestionCode = newAsk.questionCode;
