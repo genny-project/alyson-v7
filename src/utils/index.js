@@ -12,6 +12,7 @@ export { default as sort } from './sort';
 export * from './vertx';
 export * from './format';
 export * from './page';
+export * from './array';
 export * from './object';
 export * from './string';
 export * from './types';
