@@ -213,6 +213,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
             ...item.contextList.contexts.map( link => {
               const nameTypes = {
                 THEME: 'theme',
+                ICON: 'icon',
               };
 
               const valueTypes = {

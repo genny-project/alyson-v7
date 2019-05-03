@@ -50,6 +50,7 @@ class Dropdown extends Component {
 
   state = {
     isHovering: false,
+    currentComponent: null,
   }
 
   focus() {
@@ -62,9 +63,10 @@ class Dropdown extends Component {
       this.input[0].blur();
   }
 
-  handleMouseEnter = () => {
+  handleMouseEnter = component => () => {
     this.setState({
       isHovering: true,
+      currentComponent: component,
     });
 
     if ( this.props.onChangeState )
@@ -74,6 +76,7 @@ class Dropdown extends Component {
   handleMouseLeave = () => {
     this.setState({
       isHovering: false,
+      currentComponent: null,
     });
 
     if ( this.props.onChangeState )
@@ -85,6 +88,14 @@ class Dropdown extends Component {
       item.code &&
       item.parentCode
     ) {
+      this.setState({
+        isHovering: false,
+        currentComponent: null,
+      });
+
+      if ( this.props.onChangeState )
+        this.props.onChangeState({ hover: false });
+
       Bridge.sendFormattedEvent(
         item
       );
@@ -117,7 +128,7 @@ class Dropdown extends Component {
       backgroundColor,
       iconProps,
     } = this.props;
-    const { isHovering } = this.state; // eslint-disable-line no-unused-vars
+    const { isHovering, currentComponent } = this.state; // eslint-disable-line no-unused-vars
 
     return (
       <Menu
@@ -137,6 +148,8 @@ class Dropdown extends Component {
                   }}
                   data-testid={testID}
                   testID={testID}
+                  onMouseEnter={this.handleMouseEnter( 'button' )}
+                  onMouseLeave={this.handleMouseLeave}
                 >
                   <Box
                     justifyContent="space-between"
@@ -198,7 +211,7 @@ class Dropdown extends Component {
                           : this.handleSelect( item )
                         }
                         id={index}
-                        onMouseEnter={this.handleMouseEnter}
+                        onMouseEnter={this.handleMouseEnter( item.code )}
                         onMouseLeave={this.handleMouseLeave}
                         {...item.style}
                       >

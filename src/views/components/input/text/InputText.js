@@ -404,7 +404,7 @@ class Input extends PureComponent {
               pointerEvents="none"
             >
               <Icon
-                name="home"
+                name={icon}
                 color="black"
                 {...iconProps}
               />

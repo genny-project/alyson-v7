@@ -33,6 +33,7 @@ class VisualControl extends Component {
     // onChangeValue: func.isRequired,
     ask: object,
     asks: object,
+    attributes: object,
     inheritedProps: object,
     inheritedThemes: object,
     themes: object,
@@ -70,15 +71,11 @@ class VisualControl extends Component {
   getThemes = () => {
     const { ask, asks } = this.props;
 
-    if ( !ask ) {
-      return null;
-    }
+    if ( !ask ) return null;
 
     const { questionCode } = ask;
 
-    if ( !asks || !asks[questionCode] ) {
-      return null;
-    }
+    if ( !asks || !asks[questionCode] ) return null;
 
     const askData = asks[questionCode];
 
@@ -87,6 +84,29 @@ class VisualControl extends Component {
 
     /* update the state  */
     this.updateThemes( linkedThemes );
+  }
+
+  getIcon = () => {
+    const { ask, asks } = this.props;
+
+    if ( !ask ) return null;
+
+    const { questionCode } = ask;
+
+    if ( !asks || !asks[questionCode] ) return null;
+
+    if (
+      isObject( ask, { withProperty: 'questionCode' }) &&
+      isObject( asks, { withProperty: questionCode }) &&
+      isObject(  asks[questionCode], { withProperty: 'links' }) &&
+      isArray( asks[questionCode].links.filter( link => link.type === 'icon' ), { ofMinLength: 1 })
+    ) {
+      const icon = dlv( this.props.attributes, `${asks[questionCode].links.filter( link => link.type === 'icon' )[0].code}.PRI_ICON_CODE.value` );
+
+      return icon;
+    }
+
+    return null;
   }
 
   updateThemes = ( links ) => {
@@ -194,26 +214,9 @@ class VisualControl extends Component {
           ( this.props.editable === false || this.props.disabled )
           ? typeThemes['disabled'] : {},
         ...isObject( typeThemes, { withProperty: 'error' }) && this.props.error ? typeThemes['error'] : {},
+        icon: this.getIcon(),
       };
     };
-
-    /*
-      get themes for each visual control element,
-      and for the current visual control state
-
-      is active different from selected ?
-
-      states: {
-        hover, (cursor is highlighting the input, but its not selected)
-        active, (input is currently focused)
-        readonly, (input is read only)
-        disabled, (input functionality is disabled)
-        error, (input failed validation)
-        closed, (any parent component is closed)
-      }
-    */
-
-    // console.log( this.props.error );
 
     return (
       /* WRAPPER */
@@ -335,6 +338,7 @@ export { VisualControl };
 const mapStateToProps = state => ({
   themes: state.vertx.layouts.themes,
   asks: state.vertx.layouts.asks,
+  attributes: state.vertx.baseEntities.attributes,
 });
 
 export default connect( mapStateToProps )( VisualControl );

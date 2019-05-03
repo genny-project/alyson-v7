@@ -10,7 +10,7 @@ class MenuButton extends Component {
   }
 
   render() {
-    const { children, testID } = this.props;
+    const { children, testID, ...restProps } = this.props;
 
     return (
       <MenuConsumer>
@@ -23,6 +23,7 @@ class MenuButton extends Component {
               {( props ) => {
                 return (
                   <Touchable
+                    {...restProps}
                     withFeedback
                     onPress={handleToggle}
                     onRef={ref => setRef( ref, 'button' )}
