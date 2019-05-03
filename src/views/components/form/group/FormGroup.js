@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, number, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge, arrayAddDelimiter } from '../../../../utils';
 import { Box, Collapsible, EventTouchable, Fragment, Text } from '../../index';
 import VisualControl from '../visual-control';
 
@@ -294,6 +294,19 @@ class FormGroup extends Component {
 
     const hasTitle = name && properties.renderQuestionGroupTitle;
     const hasDescription = description && properties.renderQuestionGroupDescription;
+    const hasDelimiter = properties.renderQuestionGroupDelimiter;
+
+    const delimiterComponent = (
+      <Box
+        // delimiter props
+        padding={2}
+        backgroundColor="#162533"
+      />
+    );
+
+    const delimiterHandler = ( array ) => {
+      return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
+    };
 
     if (
       properties.expandable
@@ -325,22 +338,25 @@ class FormGroup extends Component {
             {...defaultStyle.group}
             {...this.getStyling()['default']}
           >
-            {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
-              if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
-                return this.renderQuestionGroup(
-                  childAsk,
-                  index,
-                  form
-                );
-              }
+            {hasDelimiter && delimiterComponent}
+            {delimiterHandler(
+              sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
+                if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
+                  return this.renderQuestionGroup(
+                    childAsk,
+                    index,
+                    form
+                  );
+                }
 
-              return this.renderInput(
-                childAsk,
-                questionCode,
-                index,
-                form,
-              );
-            })}
+                return this.renderInput(
+                  childAsk,
+                  questionCode,
+                  index,
+                  form,
+                );
+              })
+            )}
           </Box>
         </Collapsible>
       );
@@ -433,34 +449,35 @@ class FormGroup extends Component {
               </Box>
               ) : null
           }
-          {
-            (
-              question &&
-              properties.renderQuestionGroupInput
-            ) ? (
-                this.renderInput(
-                  questionGroup,
-                  parentGroupCode,
-                  index,
-                  form,
-                )) : null
-          }
-          {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-            if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-              return this.renderQuestionGroup(
-                ask,
+          {(
+            question &&
+            properties.renderQuestionGroupInput
+          ) ? (
+              this.renderInput(
+                questionGroup,
+                parentGroupCode,
                 index,
-                form
-              );
-            }
+                form,
+              )) : null
+          }
+          {delimiterHandler(
+            sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+                return this.renderQuestionGroup(
+                  ask,
+                  index,
+                  form
+                );
+              }
 
-            return this.renderInput(
-              ask,
-              questionCode,
-              index,
-              form,
-            );
-          })}
+              return this.renderInput(
+                ask,
+                questionCode,
+                index,
+                form,
+              );
+            })
+          )}
         </Box>
       </Fragment>
     );

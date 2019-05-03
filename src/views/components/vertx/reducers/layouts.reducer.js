@@ -49,6 +49,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderVisualControlIcon',
   },
+  PRI_HAS_QUESTION_GRP_DELIMITER: {
+    default: false,
+    label: 'renderQuestionGroupDelimiter',
+  },
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
