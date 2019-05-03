@@ -25,6 +25,7 @@ class MenuButton extends Component {
                   <Touchable
                     {...restProps}
                     withFeedback
+                    testID={testID}
                     onPress={handleToggle}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"

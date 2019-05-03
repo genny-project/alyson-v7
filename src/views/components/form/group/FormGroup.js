@@ -301,6 +301,7 @@ class FormGroup extends Component {
       return (
         <Collapsible
           isClosed={this.props.isClosed}
+          testID={`${parentGroupCode}:${questionCode}:COLLAPSIBLE`}
           renderHeader={(
             question &&
             properties.renderQuestionGroupInput

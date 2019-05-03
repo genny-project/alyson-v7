@@ -3,7 +3,7 @@ import { array, bool, object, any, string, func } from 'prop-types';
 // import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
 import { isArray, isString, isObject, Bridge } from '../../../utils';
-import { Fragment, Icon, Box, TestIdHandler, Text,
+import { Fragment, Icon, Box, Text,
   Menu, MenuButton, MenuItem, MenuContent,
 } from '../index';
 import './Dropdown.css';
@@ -137,53 +137,49 @@ class Dropdown extends Component {
         {({ isOpen }) => {
           return (
             <Fragment>
-              <TestIdHandler
+              <MenuButton
+                disabled={disabled || !isArray( items, { ofMinLength: 1 })}
+                style={{
+                  ...styles['menuButtonStyle'],
+                  color,
+                }}
+                data-testid={testID}
                 testID={testID}
+                onMouseEnter={this.handleMouseEnter( 'button' )}
+                onMouseLeave={this.handleMouseLeave}
               >
-                <MenuButton
-                  disabled={disabled || !isArray( items, { ofMinLength: 1 })}
-                  style={{
-                    ...styles['menuButtonStyle'],
-                    color,
-                  }}
-                  data-testid={testID}
-                  testID={testID}
-                  onMouseEnter={this.handleMouseEnter( 'button' )}
-                  onMouseLeave={this.handleMouseLeave}
+                <Box
+                  justifyContent="space-between"
+                  id={`element-${testID}`}
                 >
-                  <Box
-                    justifyContent="space-between"
-                    id={`element-${testID}`}
-                  >
-                    {isValidElement( children ) ? children
-                    : isString( text ) ? text
-                    : isArray( children )
-                      ? children.map(( child ) => (
-                        isValidElement( child )
-                          ? child
-                          : null
-                      ))
-                      : null
+                  {isValidElement( children ) ? children
+                  : isString( text ) ? text
+                  : isArray( children )
+                    ? children.map(( child ) => (
+                      isValidElement( child )
+                        ? child
+                        : null
+                    ))
+                    : null
                     }
+                  <Box
+                    justifyContent="center"
+                    transform={[
+                      { rotate: isOpen ? '0deg' : '270deg' },
+                    ]}
+                  >
                     <Box
-                      justifyContent="center"
-                      transform={[
-                        { rotate: isOpen ? '0deg' : '270deg' },
-                      ]}
+                      paddingTop={2}
                     >
-                      <Box
-                        paddingTop={2}
-                      >
-                        <Icon
-                          name="expand_more"
-                          color={this.props.color || 'black'}
-                          size="xs"
-                        />
-                      </Box>
+                      <Icon
+                        name="expand_more"
+                        color={this.props.color || 'black'}
+                        size="xs"
+                      />
                     </Box>
                   </Box>
-                </MenuButton>
-              </TestIdHandler>
+                </Box>
+              </MenuButton>
 
               {isArray( items, { ofMinLength: 1 }) && (
                 <MenuContent
@@ -195,7 +191,6 @@ class Dropdown extends Component {
                     },
                   }}
                   ref={input => this.input = input}
-                  testID={testID}
                   identifier={testID}
                 >
                   {items.map(( item, index ) => {
@@ -211,38 +206,35 @@ class Dropdown extends Component {
                           : this.handleSelect( item )
                         }
                         id={index}
+                        testID={`${item.parentCode || item.rootCode}:${item.code}`}
                         onMouseEnter={this.handleMouseEnter( item.code )}
                         onMouseLeave={this.handleMouseLeave}
                         {...item.style}
                       >
-                        <TestIdHandler
-                          testID={`${item.parentCode}:${item.code}`}
-                        >
-                          { hasIcon
+                        { hasIcon
+                          ? (
+                            <Box
+                              paddingRight={5}
+                            >
+                              <Icon
+                                name={item.icon}
+                                color="black"
+                                {...iconProps}
+                              />
+                            </Box>
+                          ) : null
+                        }
+                        {
+                          isString( item.text, { isNotSameAs: ' ' })
                             ? (
-                              <Box
-                                paddingRight={5}
-                              >
-                                <Icon
-                                  name={item.icon}
-                                  color="black"
-                                  {...iconProps}
-                                />
-                              </Box>
+                              <Text
+                                color={color}
+                                whiteSpace="nowrap"
+                                text={item.text}
+                                {...item.style}
+                              />
                             ) : null
-                          }
-                          {
-                            isString( item.text, { isNotSameAs: ' ' })
-                              ? (
-                                <Text
-                                  color={color}
-                                  whiteSpace="nowrap"
-                                  text={item.text}
-                                  {...item.style}
-                                />
-                              ) : null
-                          }
-                        </TestIdHandler>
+                        }
                       </MenuItem>
                     );
                   })}
