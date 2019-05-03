@@ -7,6 +7,7 @@ class InputEvent extends Component {
   static propTypes = {
     color: string,
     question: object,
+    ask: object,
     parentGroupCode: string,
     rootQuestionGroupCode: string,
     messageType: string,
@@ -42,6 +43,7 @@ class InputEvent extends Component {
   render() {
     const {
       question,
+      ask,
       messageType,
       parentGroupCode,
       rootQuestionGroupCode,
@@ -66,6 +68,7 @@ class InputEvent extends Component {
         code={question.code}
         parentCode={parentGroupCode}
         rootCode={rootQuestionGroupCode}
+        targetCode={ask.targetCode}
         flexDirection="row"
         alignItems="center"
         onMouseEnter={this.handleMouseEnter}
