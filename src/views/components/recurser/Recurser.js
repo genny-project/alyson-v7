@@ -7,14 +7,20 @@ import { SublayoutLegacy } from '../../components-legacy';
 import { isArray, sort, arrayAddDelimiter } from '../../../utils';
 
 class Recurser extends Component {
+  static defaultProps = {
+    delimiterProps: {},
+  }
+
   static propTypes = {
     themes: object,
     content: array,
     isClosed: bool,
+    delimiterProps: object,
+    hasDelimiter: bool,
   }
 
   render() {
-    const { content, themes, isClosed } = this.props;
+    const { content, themes, delimiterProps, hasDelimiter, isClosed } = this.props;
 
     if ( !isArray( content, { ofMinLength: 1 })) {
       return null;
@@ -23,14 +29,18 @@ class Recurser extends Component {
     const delimiterComponent = (
       <Box
         // delimiter props
-        padding={2}
-        // backgroundColor="red"
+        padding={5}
+        {...delimiterProps['default']}
       />
     );
 
+    const delimiterHandler = ( array ) => {
+      return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
+    };
+
     return (
       <Fragment>
-        { arrayAddDelimiter(
+        { delimiterHandler(
           sort( content, { paths: ['weight', 'created'], direction: 'desc' }).map( child => {
             const baseEntityCode = child.code;
             const linkType = child.type;

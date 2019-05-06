@@ -102,7 +102,9 @@ class FormGroup extends Component {
       ...filterThemes(
         this.props.inheritedThemes,
         this.props.themes,
-        { formGroup: true },
+        {
+          formGroup: true,
+        },
       ),
     ];
 
@@ -110,7 +112,9 @@ class FormGroup extends Component {
       ...filterThemes(
         this.state.themes,
         this.props.themes,
-        { formGroup: true },
+        {
+          formGroup: true,
+        },
       ),
     ];
 
@@ -123,14 +127,40 @@ class FormGroup extends Component {
       objectMerge( inheritedThemeProps, themeProps )
     );
 
-    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' ) {
-    //   console.log( '=========================' );
-    //   console.log( 'props', this.props );
-    //   console.log( 'this.props.inheritedProps', this.props.inheritedProps );
-    //   console.log( 'inheritedThemeProps', inheritedThemeProps );
-    //   console.log( 'themeProps', themeProps );
-    //   console.log( 'combinedThemeProps', combinedThemeProps );
-    // }
+    return {
+      ...combinedThemeProps,
+    };
+  }
+
+  getDelimiterStyling = () => {
+    // filter links for panel
+    const inheritedLinks = [
+      ...filterThemes(
+        this.props.inheritedThemes,
+        this.props.themes,
+        {
+          component: 'delimiter',
+          onlyComponentThemes: true,
+        },
+      ),
+    ];
+
+    const panelLinks = [
+      ...filterThemes(
+        this.state.themes,
+        this.props.themes,
+        {
+          component: 'delimiter',
+          onlyComponentThemes: true,
+        },
+      ),
+    ];
+
+    // get props from theme links
+    const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
+    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+    const combinedThemeProps = objectMerge( inheritedThemeProps, themeProps );
 
     return {
       ...combinedThemeProps,
@@ -294,13 +324,13 @@ class FormGroup extends Component {
 
     const hasTitle = name && properties.renderQuestionGroupTitle;
     const hasDescription = description && properties.renderQuestionGroupDescription;
-    const hasDelimiter = properties.renderQuestionGroupDelimiter;
+    const hasDelimiter = properties.renderDelimiter;
 
     const delimiterComponent = (
       <Box
         // delimiter props
-        padding={2}
-        backgroundColor="#162533"
+        padding={5}
+        {...this.getDelimiterStyling()['default']}
       />
     );
 
