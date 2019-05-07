@@ -61,7 +61,7 @@ class Form extends Component {
       isArray( questionGroups, { ofExactLength: 0 })
     ) {
       const newGroups = this.getQuestionGroups();
-
+           
       if ( newGroups.length > 0 ) {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
@@ -146,9 +146,10 @@ class Form extends Component {
       if ( isObject( ask, { withProperty: 'targetCode' })) {
         checkForBE( ask.targetCode );
         const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
+        // console.log('ask', ask, value, value || null);
 
-        if ( value || ask.mandatory )
-          initialValues[ask.questionCode] = value || null;
+        if ( value !== null || ask.mandatory )
+          initialValues[ask.questionCode] = value !== null ? value : null;
       }
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
@@ -299,17 +300,21 @@ class Form extends Component {
 
       if ( isMatch ) return false;
 
-      const isChildMatch = ask.childAsks.some(
-        childAsk => compareAttributeValues( childAsk )
-      );
+      if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+        const isChildMatch = ask.childAsks.some(
+          childAsk => compareAttributeValues( childAsk )
+        );
+        
+        return isChildMatch;
+      }
 
-      return !isChildMatch;
+      return true;
     };
 
     const isDifference = newQuestionGroup.childAsks.some(
       childAsk => compareAttributeValues( childAsk )
     );
-
+    
     return isDifference;
   }
 
