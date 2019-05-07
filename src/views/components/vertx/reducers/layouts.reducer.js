@@ -49,6 +49,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderVisualControlIcon',
   },
+  PRI_HAS_DELIMITER: {
+    default: false,
+    label: 'renderDelimiter',
+  },
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
@@ -116,6 +120,10 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
             LNK_LAYOUT: 'sublayout',
           };
 
+          const panelComponentTypes = {
+            DELIMITER: 'delimiter',
+          };
+
           return {
             code: link.link.targetCode,
             weight: link.link.weight,
@@ -124,6 +132,9 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
               ? linkTypes[link.link.attributeCode]
               : 'none',
             created: link.created,
+            component: panelComponentTypes[link.link.panelComponentType]
+              ? panelComponentTypes[link.link.panelComponentType]
+              : null,
           };
         }),
       ],
@@ -216,7 +227,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                 ICON: 'icon',
               };
 
-              const valueTypes = {
+              const visualControlTypes = {
                 WRAPPER: 'wrapper',
                 INPUT: 'input',
                 ICON: 'icon',
@@ -227,15 +238,21 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                 REQUIRED: 'required',
               };
 
+              const formGroupTypes = {
+                DELIMITER: 'delimiter',
+              };
+
               return {
                 code: link.contextCode,
                 weight: link.weight,
                 type: nameTypes[link.name]
                   ? nameTypes[link.name]
                   : 'none',
-                component: valueTypes[link.visualControlType]
-                  ? valueTypes[link.visualControlType]
-                  : 'all',
+                component: visualControlTypes[link.visualControlType]
+                  ? visualControlTypes[link.visualControlType]
+                  : formGroupTypes[link.formGroupType]
+                    ? formGroupTypes[link.formGroupType]
+                    : 'all',
                 created: link.created,
               };
             }),

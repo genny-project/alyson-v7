@@ -7,6 +7,7 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     component,
     onlyInheritableThemes,
     formGroup,
+    onlyComponentThemes,
   } = options;
 
   const themes = [];
@@ -19,8 +20,14 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
 
   sort( themeLinks, { paths: ['weight', 'created'], direction: 'asc' }).forEach( theme => {
     if ( isString( panel ) && theme.panel !== panel ) return;
+
+    if ( isString( panel ) && ( !isString( component ) && theme.component )) return;
+
     if ( isString( component ) && !( theme.component === component || theme.component === 'all' || theme.component == null )) return;
+
     if ( formGroup && !( theme.component == null || theme.component === 'all' )) return;
+
+    if ( onlyComponentThemes && !( theme.component === component )) return true;
 
     const properties = dlv( allThemes, `${theme.code}.properties` );
 

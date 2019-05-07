@@ -55,25 +55,26 @@ class Collapsible extends Component {
       <Box
         justifyContent="center"
         flexDirection="column"
-        testID={testID}
         {...wrapperProps}
       >
         {showHeader
           ? (
-            <Touchable
-              withFeedback
-              onPress={this.handlePress}
+            <Box
+              // header wrapper styling here?
+              flex={1}
+              justifyContent="space-between"
+              flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
             >
-              <Box
-                flex={1}
-                justifyContent="space-between"
-                flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
-              >
-                {/* header alt goes here */}
-                {renderHeader}
-                {
-                  !isClosed
-                    ? (
+              {/* header alt goes here */}
+              {renderHeader}
+              {
+                !isClosed
+                  ? (
+                    <Touchable
+                      withFeedback
+                      onPress={this.handlePress}
+                      testID={testID}
+                    >
                       <Box
                         justifyContent="center"
                         alignItems="center"
@@ -93,10 +94,10 @@ class Collapsible extends Component {
                           />
                         </Box>
                       </Box>
-                    ) : null
+                    </Touchable>
+                  ) : null
                 }
-              </Box>
-            </Touchable>
+            </Box>
           ) : null
         }
         {isOpen && !isClosed ? (

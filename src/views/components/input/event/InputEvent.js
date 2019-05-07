@@ -22,13 +22,15 @@ class InputEvent extends Component {
     isHovering: false,
   }
 
-  handleMouseEnter = () => {
+  handleMouseEnter = ( event ) => {
     this.setState({
       isHovering: true,
     });
 
     if ( this.props.onChangeState )
       this.props.onChangeState({ hover: true });
+
+    event.stopPropagation();
   }
 
   handleMouseLeave = () => {
