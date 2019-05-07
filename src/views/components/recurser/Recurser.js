@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { object, array, bool } from 'prop-types';
 import { Fragment, Frame, Text, Form, Box } from '../index';
 import { SublayoutLegacy } from '../../components-legacy';
-import { isArray, sort, arrayAddDelimiter } from '../../../utils';
+import { isArray, sort /* arrayAddDelimiter */ } from '../../../utils';
 
 class Recurser extends Component {
   static defaultProps = {
@@ -20,7 +20,7 @@ class Recurser extends Component {
   }
 
   render() {
-    const { content, themes, delimiterProps, hasDelimiter, isClosed } = this.props;
+    const { content, themes, delimiterProps, /* hasDelimiter,*/  isClosed } = this.props;
 
     if ( !isArray( content, { ofMinLength: 1 })) {
       return null;
@@ -35,7 +35,7 @@ class Recurser extends Component {
     );
 
     const delimiterHandler = ( array ) => {
-      return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
+      return /* hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : */ array;
     };
 
     return (

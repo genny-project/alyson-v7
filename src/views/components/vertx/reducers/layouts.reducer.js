@@ -55,6 +55,19 @@ const themeBehaviourAttributes = {
   },
 };
 
+const componentTypes = {
+  // VISUAL_CONTROL: 'visualControl',
+  WRAPPER: 'wrapper',
+  INPUT: 'input',
+  ICON: 'icon',
+  LABEL: 'label',
+  DESCRIPTION: 'description',
+  HINT: 'hint',
+  ERROR: 'error',
+  REQUIRED: 'required',
+  DELIMITER: 'delimiter',
+};
+
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
   // console.log( 'injectFrameIntoState', item, state, state.frames );
   /* alter the state */
@@ -120,21 +133,29 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
             LNK_LAYOUT: 'sublayout',
           };
 
-          const panelComponentTypes = {
-            DELIMITER: 'delimiter',
+          const panelTypes = {
+            NORTH: 'NORTH',
+            SOUTH: 'SOUTH',
+            EAST: 'EAST',
+            WEST: 'WEST',
+            CENTRE: 'CENTRE',
           };
 
           return {
             code: link.link.targetCode,
             weight: link.link.weight,
-            panel: link.link.linkValue,
+            panel: panelTypes[link.link.linkValue]
+              ? panelTypes[link.link.linkValue]
+              : null,
             type: linkTypes[link.link.attributeCode]
               ? linkTypes[link.link.attributeCode]
               : 'none',
             created: link.created,
-            component: panelComponentTypes[link.link.panelComponentType]
-              ? panelComponentTypes[link.link.panelComponentType]
-              : null,
+            component: componentTypes[link.visualControlType]
+              ? componentTypes[link.visualControlType]
+              : componentTypes[link.hint]
+                ? componentTypes[link.hint]
+                : null,
           };
         }),
       ],
@@ -227,32 +248,17 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                 ICON: 'icon',
               };
 
-              const visualControlTypes = {
-                WRAPPER: 'wrapper',
-                INPUT: 'input',
-                ICON: 'icon',
-                LABEL: 'label',
-                DESCRIPTION: 'description',
-                HINT: 'hint',
-                ERROR: 'error',
-                REQUIRED: 'required',
-              };
-
-              const formGroupTypes = {
-                DELIMITER: 'delimiter',
-              };
-
               return {
                 code: link.contextCode,
                 weight: link.weight,
                 type: nameTypes[link.name]
                   ? nameTypes[link.name]
                   : 'none',
-                component: visualControlTypes[link.visualControlType]
-                  ? visualControlTypes[link.visualControlType]
-                  : formGroupTypes[link.formGroupType]
-                    ? formGroupTypes[link.formGroupType]
-                    : 'all',
+                component: componentTypes[link.visualControlType]
+                  ? componentTypes[link.visualControlType]
+                  : componentTypes[link.hint]
+                    ? componentTypes[link.hint]
+                    : null,
                 created: link.created,
               };
             }),

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, number, bool } from 'prop-types';
+import { string, object, number, bool, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge, arrayAddDelimiter } from '../../../../utils';
@@ -21,7 +21,7 @@ class FormGroup extends Component {
     parentGroupCode: string,
     questionGroup: object,
     form: object,
-    inheritedThemes: object,
+    inheritedThemes: array,
     inheritedProps: object,
     index: number,
     dataTypes: object,

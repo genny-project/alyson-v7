@@ -387,7 +387,7 @@ class Frame extends Component {
                 <Recurser
                   content={filterByPanel( panelContent, 'NORTH' )}
                   themes={this.getInhertiableThemes( 'NORTH' )}
-                  delimiterProps={this.getDelimiterStyling( 'NORTH' )}
+                  // delimiterProps={this.getDelimiterStyling( 'NORTH' )}
                   hasDelimiter={this.getPropertiesByPanel( 'NORTH' )['renderDelimiter']}
                   isClosed={isClosed}
                 />
@@ -419,7 +419,7 @@ class Frame extends Component {
                             content={filterByPanel( panelContent, 'WEST' )}
                             // themes={{ ...this.getStyling( 'WEST', true ) }}
                             themes={this.getInhertiableThemes( 'WEST' )}
-                            delimiterProps={this.getDelimiterStyling( 'WEST' )}
+                            // delimiterProps={this.getDelimiterStyling( 'WEST' )}
                             hasDelimiter={this.getPropertiesByPanel( 'WEST' )['renderDelimiter']}
                             isClosed={isClosed}
                           />
@@ -442,7 +442,7 @@ class Frame extends Component {
                             content={filterByPanel( panelContent, 'CENTRE' )}
                             // themes={{ ...this.getStyling( 'CENTRE', true ) }}
                             themes={this.getInhertiableThemes( 'CENTRE' )}
-                            delimiterProps={this.getDelimiterStyling( 'CENTRE' )}
+                            // delimiterProps={this.getDelimiterStyling( 'CENTRE' )}
                             hasDelimiter={this.getPropertiesByPanel( 'CENTER' )['renderDelimiter']}
                             isClosed={isClosed}
                           />
@@ -465,7 +465,7 @@ class Frame extends Component {
                             content={filterByPanel( panelContent, 'EAST' )}
                             // themes={{ ...this.getStyling( 'EAST', true ) }}
                             themes={this.getInhertiableThemes( 'EAST' )}
-                            delimiterProps={this.getDelimiterStyling( 'EAST' )}
+                            // delimiterProps={this.getDelimiterStyling( 'EAST' )}
                             hasDelimiter={this.getPropertiesByPanel( 'EAST' )['renderDelimiter']}
                             isClosed={isClosed}
                           />
@@ -492,7 +492,7 @@ class Frame extends Component {
                     content={filterByPanel( panelContent, 'SOUTH' )}
                     // themes={{ ...this.getStyling( 'SOUTH', true ) }}
                     themes={this.getInhertiableThemes( 'SOUTH' )}
-                    delimiterProps={this.getDelimiterStyling( 'SOUTH' )}
+                    // delimiterProps={this.getDelimiterStyling( 'SOUTH' )}
                     hasDelimiter={this.getPropertiesByPanel( 'SOUTH' )['renderDelimiter']}
                     isClosed={isClosed}
                   />
