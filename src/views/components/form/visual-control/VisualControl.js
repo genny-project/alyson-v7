@@ -233,8 +233,6 @@ class VisualControl extends Component {
         ) && (
           <Box
             flexDirection="row"
-            width="100%"
-            paddingBottom={5}
           >
 
             {/* LABEL */}
