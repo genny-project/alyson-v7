@@ -8,7 +8,7 @@ import { Box, Text, Icon } from '../../../components';
 
 class CheckBox extends Component {
   static defaultProps = {
-    items: ['aggrieve', 'abscond', 'acquiesce', 'acquire'],
+    items: ['one', 'two', 'three', 'four'],
     value: [],
     horizontal: false,
     radio: false,

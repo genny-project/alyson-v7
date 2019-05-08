@@ -49,6 +49,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderVisualControlIcon',
   },
+  PRI_HAS_INPUT: {
+    default: true,
+    label: 'renderVisualControlInput',
+  },
   PRI_HAS_DELIMITER: {
     default: false,
     label: 'renderDelimiter',

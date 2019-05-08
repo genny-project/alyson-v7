@@ -307,6 +307,11 @@ class VisualControl extends Component {
         <FormInput
           {...getPropsByType( 'input' )}
           iconProps={properties.renderVisualControlIcon ? getPropsByType( 'icon' ) : null}
+          iconOnly={(
+            properties.renderVisualControlInput !== null
+              ? !properties.renderVisualControlInput
+              : false
+          )}
           inheritedProps={this.getInhertiableThemes()}
           padding={3}
           onChangeState={this.handleStateChange}

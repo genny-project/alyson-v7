@@ -16,6 +16,7 @@ class InputEvent extends Component {
     icon: string,
     isClosed: bool,
     onChangeState: func,
+    iconOnly: bool,
   }
 
   state = {
@@ -53,12 +54,13 @@ class InputEvent extends Component {
       iconProps,
       onPress, // eslint-disable-line no-unused-vars
       color,
+      iconOnly,
       ...restProps
     } = this.props;
     const { isHovering } = this.state; // eslint-disable-line no-unused-vars
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
-    const hasText = isString( question.name, { isNotSameAs: ' ' });
+    const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
 
     // get eventType from somewhere in the question
 

@@ -364,7 +364,7 @@ class FormGroup extends Component {
         >
           <Box
             key={name}
-            zIndex={150 - index}
+            zIndex={20 - index}
             {...defaultStyle.group}
             {...this.getStyling()['default']}
           >
@@ -404,7 +404,7 @@ class FormGroup extends Component {
         >
           <Box
             key={name}
-            zIndex={150 - index}
+            zIndex={20 - index}
             {...defaultStyle.group}
             borderColor
             {...this.getStyling()['default']}
@@ -437,7 +437,7 @@ class FormGroup extends Component {
       <Fragment>
         <Box
           key={name}
-          zIndex={150 - index}
+          zIndex={20 - index}
           {...defaultStyle.group}
           // padding={10}
           {...this.getStyling()['default']}
