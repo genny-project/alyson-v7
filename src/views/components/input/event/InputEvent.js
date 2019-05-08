@@ -4,6 +4,10 @@ import { Text, EventTouchable, Icon, Box } from '../../index';
 import { isString, isObject } from '../../../../utils';
 
 class InputEvent extends Component {
+  static defaultProps = {
+    iconOnly: false,
+  }
+
   static propTypes = {
     color: string,
     question: object,

@@ -308,7 +308,7 @@ class VisualControl extends Component {
           {...getPropsByType( 'input' )}
           iconProps={properties.renderVisualControlIcon ? getPropsByType( 'icon' ) : null}
           iconOnly={(
-            properties.renderVisualControlInput !== null
+            properties.renderVisualControlInput != null
               ? !properties.renderVisualControlInput
               : false
           )}
