@@ -1,35 +1,70 @@
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
 import { Text, EventTouchable, Icon, Box } from '../../index';
-import { isString } from '../../../../utils';
+import { isString, isObject } from '../../../../utils';
 
 class InputEvent extends Component {
+  static defaultProps = {
+    iconOnly: false,
+  }
+
   static propTypes = {
     color: string,
     question: object,
+    ask: object,
     parentGroupCode: string,
     rootQuestionGroupCode: string,
     messageType: string,
-    icon: string,
+    iconProps: bool,
     onPress: func,
+    icon: string,
     isClosed: bool,
-    ask: object,
-    value: object,
+    onChangeState: func,
+    iconOnly: bool,
+  }
+
+  state = {
+    isHovering: false,
+  }
+
+  handleMouseEnter = ( event ) => {
+    this.setState({
+      isHovering: true,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: true });
+
+    event.stopPropagation();
+  }
+
+  handleMouseLeave = () => {
+    this.setState({
+      isHovering: false,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: false });
   }
 
   render() {
     const {
       question,
+      ask,
       messageType,
       parentGroupCode,
       rootQuestionGroupCode,
       icon,
+      iconProps,
       onPress, // eslint-disable-line no-unused-vars
       color,
-      ask,
+      iconOnly,
       ...restProps
     } = this.props;
-    // const { contextList } = question;
+    const { isHovering } = this.state; // eslint-disable-line no-unused-vars
+
+    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
 
     // get eventType from somewhere in the question
 
@@ -41,31 +76,37 @@ class InputEvent extends Component {
         code={question.code}
         parentCode={parentGroupCode}
         rootCode={rootQuestionGroupCode}
+        targetCode={ask.targetCode}
         flexDirection="row"
         alignItems="center"
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
         flex={1}
         justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
-        value={{
-          targetCode: ask.targetCode,
-          ...this.props.value,
-        }}
       >
-        {
-          isString( icon, { ofMinLength: 1 })
-            ? (
+        { hasIcon
+          ? (
+            <Box>
               <Icon
-                color={color}
                 name={icon}
+                color="black"
+                {...iconProps}
               />
-            ) : null
+            </Box>
+          ) : null
         }
-        <Box
-          paddingRight={5}
-        />
+        { hasIcon &&
+          hasText
+          ? (
+            <Box
+              paddingRight={5}
+            />
+          ) : null
+        }
         {
-          isString( question.name, { isNotSameAs: ' ' }) && !(
+          hasText && !(
             this.props.isClosed &&
-            isString( icon, { ofMinLength: 1 })
+            hasIcon
           )
             ? (
               <Text

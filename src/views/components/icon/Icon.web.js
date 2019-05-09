@@ -27,6 +27,7 @@ const Icon = ({
   name,
   color = 'white',
   size = 'md',
+  cursor = 'auto',
 }) => {
   const style = {
     fontFamily: 'Material Icons',
@@ -37,6 +38,7 @@ const Icon = ({
     direction: 'ltr',
     fontSize: sizes[size],
     color: colors[color] || color,
+    cursor,
   };
 
   return (
@@ -59,6 +61,9 @@ Icon.propTypes = {
   color: string,
   size: oneOf(
     ['xs', 'sm', 'md', 'lg', 'xl']
+  ),
+  cursor: oneOf(
+    ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text']
   ),
 };
 

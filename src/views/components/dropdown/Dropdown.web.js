@@ -1,9 +1,9 @@
 import React, { Component, isValidElement } from 'react';
-import { array, bool, object, any, string } from 'prop-types';
+import { array, bool, object, any, string, func } from 'prop-types';
 // import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
 import { withRouter } from 'react-router-dom';
-import { isArray, isString, Bridge } from '../../../utils';
-import { Fragment, Icon, Box, TestIdHandler, Text,
+import { isArray, isString, isObject, Bridge } from '../../../utils';
+import { Fragment, Icon, Box, Text,
   Menu, MenuButton, MenuItem, MenuContent,
 } from '../index';
 import './Dropdown.css';
@@ -41,9 +41,17 @@ class Dropdown extends Component {
     children: any,
     history: object,
     color: string,
+    backgroundColor: string,
+    iconProps: object,
+    onChangeState: func,
   }
 
   inputs = {};
+
+  state = {
+    isHovering: false,
+    currentComponent: null,
+  }
 
   focus() {
     if ( this.inputs && this.inputs[0] )
@@ -55,11 +63,39 @@ class Dropdown extends Component {
       this.input[0].blur();
   }
 
+  handleMouseEnter = component => () => {
+    this.setState({
+      isHovering: true,
+      currentComponent: component,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: true });
+  }
+
+  handleMouseLeave = () => {
+    this.setState({
+      isHovering: false,
+      currentComponent: null,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: false });
+  }
+
   handleSelect = item => () => {
     if (
       item.code &&
       item.parentCode
     ) {
+      this.setState({
+        isHovering: false,
+        currentComponent: null,
+      });
+
+      if ( this.props.onChangeState )
+        this.props.onChangeState({ hover: false });
+
       Bridge.sendFormattedEvent(
         item
       );
@@ -89,7 +125,10 @@ class Dropdown extends Component {
       children,
       testID,
       color,
+      backgroundColor,
+      iconProps,
     } = this.props;
+    const { isHovering, currentComponent } = this.state; // eslint-disable-line no-unused-vars
 
     return (
       <Menu
@@ -98,51 +137,49 @@ class Dropdown extends Component {
         {({ isOpen }) => {
           return (
             <Fragment>
-              <TestIdHandler
+              <MenuButton
+                disabled={disabled || !isArray( items, { ofMinLength: 1 })}
+                style={{
+                  ...styles['menuButtonStyle'],
+                  color,
+                }}
+                data-testid={testID}
                 testID={testID}
+                onMouseEnter={this.handleMouseEnter( 'button' )}
+                onMouseLeave={this.handleMouseLeave}
               >
-                <MenuButton
-                  disabled={disabled || !isArray( items, { ofMinLength: 1 })}
-                  style={{
-                    ...styles['menuButtonStyle'],
-                    color,
-                  }}
-                  data-testid={testID}
-                  testID={testID}
+                <Box
+                  justifyContent="space-between"
+                  id={`element-${testID}`}
                 >
-                  <Box
-                    justifyContent="space-between"
-                    id={`element-${testID}`}
-                  >
-                    {isValidElement( children ) ? children
-                    : isString( text ) ? text
-                    : isArray( children )
-                      ? children.map(( child ) => (
-                        isValidElement( child )
-                          ? child
-                          : null
-                      ))
-                      : null
+                  {isValidElement( children ) ? children
+                  : isString( text ) ? text
+                  : isArray( children )
+                    ? children.map(( child ) => (
+                      isValidElement( child )
+                        ? child
+                        : null
+                    ))
+                    : null
                     }
+                  <Box
+                    justifyContent="center"
+                    transform={[
+                      { rotate: isOpen ? '0deg' : '270deg' },
+                    ]}
+                  >
                     <Box
-                      justifyContent="center"
-                      transform={[
-                        { rotate: isOpen ? '0deg' : '270deg' },
-                      ]}
+                      paddingTop={2}
                     >
-                      <Box
-                        paddingTop={2}
-                      >
-                        <Icon
-                          name="expand_more"
-                          color={this.props.color || 'black'}
-                          size="xs"
-                        />
-                      </Box>
+                      <Icon
+                        name="expand_more"
+                        color={this.props.color || 'black'}
+                        size="xs"
+                      />
                     </Box>
                   </Box>
-                </MenuButton>
-              </TestIdHandler>
+                </Box>
+              </MenuButton>
 
               {isArray( items, { ofMinLength: 1 }) && (
                 <MenuContent
@@ -150,13 +187,16 @@ class Dropdown extends Component {
                     ...{
                       ...styles['menuListStyle'],
                       color,
+                      backgroundColor,
                     },
                   }}
                   ref={input => this.input = input}
-                  testID={testID}
                   identifier={testID}
                 >
                   {items.map(( item, index ) => {
+                    const hasIcon = isObject( iconProps ) &&
+                      isString( item.icon, { ofMinLength: 1 });
+
                     return (
                       <MenuItem
                         key={item.text}
@@ -166,30 +206,35 @@ class Dropdown extends Component {
                           : this.handleSelect( item )
                         }
                         id={index}
+                        testID={`${item.parentCode || item.rootCode}:${item.code}`}
+                        onMouseEnter={this.handleMouseEnter( item.code )}
+                        onMouseLeave={this.handleMouseLeave}
+                        {...item.style}
                       >
-                        <TestIdHandler
-                          testID={`${item.parentCode}:${item.code}`}
-                        >
-                          {isValidElement( item.children ) ? item.children
-                          : isString( item.text ) ? (
-                            <Text
-                              text={item.text}
-                              {...{
-                                ...styles['menuItemStyle'],
-                                color,
-                                ...item.style,
-                              }}
-                            />
-                          )
-                            : isArray( item.children )
-                              ? item.children.map(( child ) => (
-                                isValidElement( child )
-                                  ? child
-                                  : null
-                              ))
-                              : null
+                        { hasIcon
+                          ? (
+                            <Box
+                              paddingRight={5}
+                            >
+                              <Icon
+                                name={item.icon}
+                                color="black"
+                                {...iconProps}
+                              />
+                            </Box>
+                          ) : null
                         }
-                        </TestIdHandler>
+                        {
+                          isString( item.text, { isNotSameAs: ' ' })
+                            ? (
+                              <Text
+                                color={color}
+                                whiteSpace="nowrap"
+                                text={item.text}
+                                {...item.style}
+                              />
+                            ) : null
+                        }
                       </MenuItem>
                     );
                   })}

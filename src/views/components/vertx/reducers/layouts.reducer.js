@@ -13,18 +13,6 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'expandable',
   },
-  PRI_IS_SELECTION_AREA: {
-    default: false,
-    label: 'selectionArea',
-  },
-  PRI_IS_SELECTABLE_AREA: {
-    default: false,
-    label: 'selectableArea',
-  },
-  PRI_IS_PAGINATION: {
-    default: false,
-    label: 'pagination',
-  },
   PRI_IS_INHERITABLE: {
     default: true,
     label: 'inheritable',
@@ -33,6 +21,55 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderQuestionGroupInput',
   },
+  PRI_HAS_QUESTION_GRP_TITLE: {
+    default: false,
+    label: 'renderQuestionGroupTitle',
+  },
+  PRI_HAS_QUESTION_GRP_DESCRIPTION: {
+    default: false,
+    label: 'renderQuestionGroupDescription',
+  },
+  PRI_HAS_LABEL: {
+    default: true,
+    label: 'renderVisualControlLabel',
+  },
+  PRI_HAS_REQUIRED: {
+    default: true,
+    label: 'renderVisualControlRequired',
+  },
+  PRI_HAS_HINT: {
+    default: false,
+    label: 'renderVisualControlHint',
+  },
+  PRI_HAS_DESCRIPTION: {
+    default: false,
+    label: 'renderVisualControlDescription',
+  },
+  PRI_HAS_ICON: {
+    default: false,
+    label: 'renderVisualControlIcon',
+  },
+  PRI_HAS_INPUT: {
+    default: true,
+    label: 'renderVisualControlInput',
+  },
+  PRI_HAS_DELIMITER: {
+    default: false,
+    label: 'renderDelimiter',
+  },
+};
+
+const componentTypes = {
+  // VISUAL_CONTROL: 'visualControl',
+  WRAPPER: 'wrapper',
+  INPUT: 'input',
+  ICON: 'icon',
+  LABEL: 'label',
+  DESCRIPTION: 'description',
+  HINT: 'hint',
+  ERROR: 'error',
+  REQUIRED: 'required',
+  DELIMITER: 'delimiter',
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
@@ -63,8 +100,8 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
         ...(
           item.code === 'FRM_CONTENT' &&
           isArray( item.links, { ofMaxLength: 0 }) && (
-            !state.frames['FRM_CONTENT'] || 
-            isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) && 
+            !state.frames['FRM_CONTENT'] ||
+            isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) &&
             isArray( state.frames[item.code].links.filter( x => x.type !== 'sublayout' ), { ofMaxLength: 0 })
           )
         ) ? [
@@ -89,7 +126,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
                 hasNewNonLegacyLink
               ) return false;
             }
-          
+
             return !item.links.some( newLink => newLink.link.targetCode === existingLink.code );
           }) : [],
         ...item.links.map( link => {
@@ -100,14 +137,29 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
             LNK_LAYOUT: 'sublayout',
           };
 
+          const panelTypes = {
+            NORTH: 'NORTH',
+            SOUTH: 'SOUTH',
+            EAST: 'EAST',
+            WEST: 'WEST',
+            CENTRE: 'CENTRE',
+          };
+
           return {
             code: link.link.targetCode,
             weight: link.link.weight,
-            panel: link.link.linkValue,
+            panel: panelTypes[link.link.linkValue]
+              ? panelTypes[link.link.linkValue]
+              : null,
             type: linkTypes[link.link.attributeCode]
               ? linkTypes[link.link.attributeCode]
               : 'none',
             created: link.created,
+            component: componentTypes[link.visualControlType]
+              ? componentTypes[link.visualControlType]
+              : componentTypes[link.hint]
+                ? componentTypes[link.hint]
+                : null,
           };
         }),
       ],
@@ -138,7 +190,14 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
 
   // console.log( attributes );
 
-  const themeData = dlv( attributes, 'PRI_CONTENT.value' );
+  const themeData = {
+    ...( dlv( attributes, 'PRI_CONTENT.value' ) ? { default: dlv( attributes, 'PRI_CONTENT.value' ) } : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) ? { active: dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) } : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_HOVER.value' ) ? { hover: dlv( attributes, 'PRI_CONTENT_HOVER.value' ) } : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) ? { disabled: dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) } : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) } : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_ERROR.value' ) ? { error: dlv( attributes, 'PRI_CONTENT_ERROR.value' ) } : null ),
+  };
 
   if ( shouldReplaceEntity === true ) {
     if (
@@ -190,6 +249,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
             ...item.contextList.contexts.map( link => {
               const nameTypes = {
                 THEME: 'theme',
+                ICON: 'icon',
               };
 
               return {
@@ -198,6 +258,11 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                 type: nameTypes[link.name]
                   ? nameTypes[link.name]
                   : 'none',
+                component: componentTypes[link.visualControlType]
+                  ? componentTypes[link.visualControlType]
+                  : componentTypes[link.hint]
+                    ? componentTypes[link.hint]
+                    : null,
                 created: link.created,
               };
             }),

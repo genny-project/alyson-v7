@@ -94,10 +94,19 @@ It is possible, probably even, that a given component will end up with multiple 
 ### Theme Attributes
 | Option | Value Type | Example | Required | Description |
 | ------ | ---------- | ------- | -------- | ----------- |
-| PRI_CONTENT | Object | { "backgroundColor": "#ddd" } | true | An object composed of key-value pairings defining CSS values that will be passed to the rendered element in the frontend. |
+| PRI_CONTENT | Object | { "backgroundColor": "#ddd" } | false | An object composed of key-value pairings defining component props that will be passed to the rendered element in the frontend. These props are always passed to the component. |
+| PRI_CONTENT_HOVER | Object | { "color": "green" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the users mouse is hovering over the component. |
+| PRI_CONTENT_ACTIVE | Object | { "color": "red" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently active. |
+| PRI_CONTENT_DISABLED | Object | { "color": "grey" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is disabled. |
+| PRI_CONTENT_CLOSED | Object | { "width": 50 } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component or any of it's parents are closed. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
+| PRI_HAS_LABEL | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Label. |
+| PRI_HAS_REQUIRED | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a symbol to indicate the field is mandatory. |
+| PRI_HAS_HINT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
+| PRI_HAS_DESCRIPTION | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Description. |
+| PRI_HAS_ICON | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Icon. |
 
 ## Question Sets
 ( prefix: QUE_ )
@@ -105,10 +114,10 @@ It is possible, probably even, that a given component will end up with multiple 
 The **Question Sets** are composed of **Question Groups** and **Questions**. A **Question Sets** is rendered as a Form component with each **Question Group** being rendered as a **FormGroup** Component, and each **Question** as an **Input** component. They cover almost all of the display elements and interactable elements shown on the page.
 
 ### Applying Themes.
-Unlike Base Entities, **Themes** are connected to Question Sets by the **ContextList**.
+Unlike Base Entities, **Themes** are connected to Question Sets using the **Context List** instead of Links.
 
 ### Questions
-A Question is connected to an Ask, which has an Attribute. It is displayed as an Input component. The data for the Input is used from the `question` field.
+A Question is connected to an Ask, which has an Attribute. It is displayed as a **Visual Control** (see below). The data for the Visual Control is used from the `question` field.
 
 ### Question Groups
 The Question Group is a container form a group of Questions and/or Question Groups. It can be used to pass inheritable Theme data to all of the children, and also can told to render in a different way if there are any Behavioural Attributes attached to the Theme.
@@ -126,6 +135,28 @@ The answer is that if the object has `childAsks`, then it is rendered as a Quest
 *explain attributes*
 *explain with images why question group inputs are neccessary*
 *Collapsible*
+
+## Visual Control 
+
+A **Visual Control** is the group of components that are render as part of a **Question**.
+
+The basic components of a Visual Control are as follows:
+
+![Visual Control Layout](https://i.imgur.com/ZUh3Fdo.png)
+
+- Input: input or display component that will be rendered
+- Wrapper: box containing all the other componennts of the visual control
+- Label: text displaying the question name
+- Required: symbol indicating if a question is mandatory
+- Hint: icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input
+- Description: additional text to provide for information or context
+- Icon: icon rendered as part of the input
+- Error: text render if answer is invalid or an error occurs
+
+### Applying Themes.
+Any Themes which are attached to a **Question** via the **Context List** will be passed to all elements of the **Visual Control**. A Theme can be directed to only be applied to a specific component of the **Visual Control** by using the field `visualControlType` (set the value to any of the above types, written in ALL CAPS eg `"visualControlType": "INPUT"`).
+
+Themes which have a visualControlType specified can still be passed through other Question Groups and Questions. If you want to apply a Theme for a Visual Control to every input in a Question Set, you can attach that Theme to the root Question Group of the Question Set, and it will be propagated to all of the child Questions.
 
 ## Legacy Layouts
 ( prefix: LAY_ )
@@ -168,6 +199,27 @@ The **Panel** the child will be linked to is defined by the `linkValue` field. T
   "updated": "2019-02-06T04:25:25",
   "valueString": "CENTRE",
   "weight": 1
+}
+```
+## Context List
+
+The Context List is used to connect **Themes** to **Questions** and **Question Groups**. Context List is used instead of Themes because Links must connect two Base Entities, which Question Sets aren't.
+
+The field `visualControlType` can be used to specify a Visual Control component to apply the Theme to.
+
+#### Link Structure
+```
+"contextList": {
+  "contexts": [
+    {
+      "contextCode": "THM_COLOR_ONE",
+      "created": "2019-02-06T04:24:58",
+      "name": "THEME",
+      "visualControlType": "LABEL",
+      "realm": "genny",
+      "weight": 1
+    }
+  ]
 }
 ```
 

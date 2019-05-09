@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object } from 'prop-types';
+import { string, object, func } from 'prop-types';
 import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
@@ -33,6 +33,12 @@ class Input extends Component {
     typeOnlyProps: object,
     question: object,
     theme: object,
+    onChangeState: func,
+  }
+
+  state = {
+    active: false,
+    hover: false,
   }
 
   blur() {
@@ -53,16 +59,27 @@ class Input extends Component {
     }
   }
 
+  handleStateChange = ( newState ) => {
+    this.setState( state => ({
+      ...state,
+      ...newState,
+    }), () => {
+      if ( this.props.onChangeState )
+        this.props.onChangeState( this.state );
+    });
+  }
+
   render() {
-    const { type, theme, ...restProps } = this.props;
+    const { type, ...restProps } = this.props;
+
+    /*
+      move theme state filtering to visual control component
+    */
 
     const inputProps = {
       ...restProps,
-      ...theme,
       type,
     };
-
-    // console.log( 'isClosed', this.props.isClosed );
 
     switch ( type ) {
       case 'text':
@@ -73,6 +90,7 @@ class Input extends Component {
           <InputText
             {...inputProps}
             ref={input => this.input = input}
+            onChangeState={this.handleStateChange}
           />
         );
 
@@ -92,6 +110,7 @@ class Input extends Component {
             keyboardType="email-address"
             {...inputProps}
             ref={input => this.input = input}
+            onChangeState={this.handleStateChange}
           />
         );
 

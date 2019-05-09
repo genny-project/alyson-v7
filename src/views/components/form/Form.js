@@ -7,7 +7,7 @@ import dlv from 'dlv';
 import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
 import shallowCompare from '../../../utils/shallow-compare';
-import { Box, Text, KeyboardAwareScrollView, Fragment } from '../index';
+import { Box, Text, Fragment } from '../index';
 import FormGroup from './group';
 
 class Form extends Component {
@@ -15,7 +15,7 @@ class Form extends Component {
     loadingText: 'Loading form...',
     testID: 'form',
     shouldSetInitialValues: true,
-    inheritedThemes: {},
+    inheritedProps: {},
   }
 
   static propTypes = {
@@ -25,7 +25,7 @@ class Form extends Component {
     loadingText: string,
     testID: string,
     shouldSetInitialValues: bool,
-    inheritedThemes: object,
+    inheritedProps: object,
     fullWidth: bool,
     isClosed: bool,
   }
@@ -61,7 +61,7 @@ class Form extends Component {
       isArray( questionGroups, { ofExactLength: 0 })
     ) {
       const newGroups = this.getQuestionGroups();
-
+           
       if ( newGroups.length > 0 ) {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
@@ -146,9 +146,10 @@ class Form extends Component {
       if ( isObject( ask, { withProperty: 'targetCode' })) {
         checkForBE( ask.targetCode );
         const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
+        // console.log('ask', ask, value, value || null);
 
-        if ( value || ask.mandatory )
-          initialValues[ask.questionCode] = value || null;
+        if ( value !== null || ask.mandatory )
+          initialValues[ask.questionCode] = value !== null ? value : null;
       }
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
@@ -182,7 +183,7 @@ class Form extends Component {
     const setValidation = ( ask ) => {
       // handle targetCode
       if ( isObject( ask, { withProperty: 'targetCode' })) {
-        const dataType = dlv( data, `${ask.attributeCode}.${dataType}` );
+        const dataType = dlv( data, `${ask.attributeCode}.dataType` );
 
         validationList[ask.questionCode] = {
           dataType,
@@ -237,12 +238,13 @@ class Form extends Component {
   checkForUpdatedQuestionTargets = ( newProps ) => {
     const { questionGroups } = this.state;
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
-
+    
     if ( questionGroups.length < 1 ) return false;
 
-    const compareTargetCode = ( newAsk, existingAsk ) => {
+    const compareTargetCode = ( newAsk, existingAsk, level ) => {
+      if ( !newAsk && !existingAsk ) return false;
+      if ( !newAsk || !existingAsk ) return true;
       if ( !newAsk.question && !existingAsk.question ) return false;
-
       if ( !newAsk.question || !existingAsk.question ) return true;
 
       const newQuestionCode = newAsk.questionCode;
@@ -258,15 +260,19 @@ class Form extends Component {
 
       if ( isMatch ) return false;
 
-      const isChildMatch = newAsk.childAsks.some(( childAsk, index ) => {
-        return compareTargetCode( childAsk, existingAsk.childAsks[index], index );
-      });
+      if ( isArray(  newAsk.childAsks, { ofMinLength: 1 })) {
+        const isChildMatch = newAsk.childAsks.some(( childAsk, index ) => {
+          return compareTargetCode( childAsk, existingAsk.childAsks[index], level + 1 );
+        });
 
-      return !isChildMatch;
+        return isChildMatch;
+      }
+       
+      return true;
     };
 
     const isDifference = newQuestionGroup.childAsks.some(( childAsk, index ) => {
-      return compareTargetCode( childAsk, questionGroups[0].childAsks[index], index );
+      return compareTargetCode( childAsk, questionGroups[0].childAsks[index], 1 );
     });
 
     return isDifference;
@@ -294,17 +300,21 @@ class Form extends Component {
 
       if ( isMatch ) return false;
 
-      const isChildMatch = ask.childAsks.some(
-        childAsk => compareAttributeValues( childAsk )
-      );
+      if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+        const isChildMatch = ask.childAsks.some(
+          childAsk => compareAttributeValues( childAsk )
+        );
+        
+        return isChildMatch;
+      }
 
-      return !isChildMatch;
+      return true;
     };
 
     const isDifference = newQuestionGroup.childAsks.some(
       childAsk => compareAttributeValues( childAsk )
     );
-
+    
     return isDifference;
   }
 
@@ -346,19 +356,32 @@ class Form extends Component {
         return {};
       }
 
+      let error = null;
+
       if (
         values[field] == null &&
         required
       ) {
         newState[field] = 'Please enter this field';
+        // errors.push( 'Please enter this field' );
       }
 
       const isValid = validationArray.every( validation => {
-        return new RegExp( validation.regex ).test( String( values[field] ));
+        const doesPass = new RegExp( validation.regex ).test( String( values[field] ));
+
+        if ( !doesPass ) {
+          // errors.push( validation.errorMessage );
+          error = validation.errorMessage;
+        }
+
+        return doesPass;
       });
 
+      // console.log( 'errors', errors );
+
       if ( !isValid )
-        newState[field] = 'Error';
+        newState[field] = error;
+        // newState[field] = errors;
     });
 
     return newState;
@@ -520,15 +543,13 @@ class Form extends Component {
         },
     };
 
-    // console.log( this.props.isClosed );
-
     return (
       <FormGroup
         key={questionGroup.questionCode}
         questionGroup={questionGroup}
         form={form}
         rootCode={this.props.questionGroupCode}
-        inheritedThemes={this.props.inheritedThemes}
+        inheritedProps={this.props.inheritedProps}
         index={index}
         functions={functions}
         inputRefs={this.inputRefs}
@@ -578,9 +599,6 @@ class Form extends Component {
 
     const { initialValues } = this.state;
 
-    // check the top level groups to see if any have 'fullWidth: true' in the contextList
-    const isFullWidth = fullWidth != null ? fullWidth : this.checkIfFullWidth( questionGroups );
-
     return (
       <Formik
         initialValues={initialValues}
@@ -598,43 +616,33 @@ class Form extends Component {
           isSubmitting,
           setFieldValue,
           setFieldTouched,
-          handleSubmit,
         }) => {
           const isFormValid = shallowCompare( this.doValidate( values ), {});
 
           return (
-            <KeyboardAwareScrollView
-              testID={testID}
-            >
-              <Box
-                // accessibilityRole="form"
-                flexDirection="column"
-                // flex={1}
-                {...isFullWidth ? { width: '100%' } : {}}
-                onSubmit={handleSubmit}
-                // backgroundColor="white"
-              >
-                <Fragment>
-                  {questionGroups.map(( questionGroup, index ) => {
-                    return this.renderQuestionGroup(
-                      questionGroup,
-                      index,
-                      {
-                        values,
-                        errors,
-                        touched,
-                        setFieldValue,
-                        setFieldTouched,
-                        isSubmitting,
-                        submitCount,
-                        submitForm,
-                        isFormValid,
-                      }
-                    );
-                  })}
-                </Fragment>
-              </Box>
-            </KeyboardAwareScrollView>
+            // <KeyboardAwareScrollView
+            //   testID={testID}
+            // >
+            <Fragment>
+              {questionGroups.map(( questionGroup, index ) => {
+                return this.renderQuestionGroup(
+                  questionGroup,
+                  index,
+                  {
+                    values,
+                    errors,
+                    touched,
+                    setFieldValue,
+                    setFieldTouched,
+                    isSubmitting,
+                    submitCount,
+                    submitForm,
+                    isFormValid,
+                  }
+                );
+              })}
+            </Fragment>
+            // </KeyboardAwareScrollView>
           );
         }}
       </Formik>

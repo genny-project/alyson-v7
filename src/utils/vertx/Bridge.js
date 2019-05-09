@@ -86,6 +86,7 @@ class Bridge {
     code,
     parentCode,
     rootCode,
+    targetCode,
     eventType = 'BTN_CLICK',
     messageType = 'BTN',
     value,
@@ -102,6 +103,7 @@ class Bridge {
           code,
           parentCode,
           rootCode,
+          targetCode,
           ...value,
         },
       });

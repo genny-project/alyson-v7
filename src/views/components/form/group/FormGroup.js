@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { string, object, number, bool } from 'prop-types';
+import { string, object, number, bool, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort } from '../../../../utils';
-import { Box, Collapsible, EventTouchable } from '../../index';
-import FormInput from '../input';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge, arrayAddDelimiter } from '../../../../utils';
+import { Box, Collapsible, EventTouchable, Fragment, Text } from '../../index';
+import VisualControl from '../visual-control';
 
 const defaultStyle = {
   group: {
     flexDirection: 'column',
     position: 'relative',
-    flex: 1,
+    // flex: 1,
+    // width: '100%',
   },
 };
 
@@ -20,7 +21,8 @@ class FormGroup extends Component {
     parentGroupCode: string,
     questionGroup: object,
     form: object,
-    inheritedThemes: object,
+    inheritedThemes: array,
+    inheritedProps: object,
     index: number,
     dataTypes: object,
     functions: object,
@@ -81,14 +83,87 @@ class FormGroup extends Component {
     }, () => {});
   }
 
-  getStyling = ( onlyInheritableThemes ) => {
-    return {
-      ...this.props.inheritedThemes,
+  getInhertiableThemes = () => {
+    return [
+      ...isArray( this.props.inheritedThemes ) ? this.props.inheritedThemes : [],
       ...filterThemes(
         this.state.themes,
         this.props.themes,
-        { onlyInheritableThemes: onlyInheritableThemes }
+        {
+          onlyInheritableThemes: true,
+        }
       ),
+    ];
+  }
+
+  getStyling = () => {
+    // filter links for panel
+    const inheritedLinks = [
+      ...filterThemes(
+        this.props.inheritedThemes,
+        this.props.themes,
+        {
+          formGroup: true,
+        },
+      ),
+    ];
+
+    const panelLinks = [
+      ...filterThemes(
+        this.state.themes,
+        this.props.themes,
+        {
+          formGroup: true,
+        },
+      ),
+    ];
+
+    // get props from theme links
+    const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
+    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+    const combinedThemeProps = objectMerge(
+      isObject( this.props.inheritedProps ) ? this.props.inheritedProps : {},
+      objectMerge( inheritedThemeProps, themeProps )
+    );
+
+    return {
+      ...combinedThemeProps,
+    };
+  }
+
+  getDelimiterStyling = () => {
+    // filter links for panel
+    const inheritedLinks = [
+      ...filterThemes(
+        this.props.inheritedThemes,
+        this.props.themes,
+        {
+          component: 'delimiter',
+          onlyComponentThemes: true,
+        },
+      ),
+    ];
+
+    const panelLinks = [
+      ...filterThemes(
+        this.state.themes,
+        this.props.themes,
+        {
+          component: 'delimiter',
+          onlyComponentThemes: true,
+        },
+      ),
+    ];
+
+    // get props from theme links
+    const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
+    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+    const combinedThemeProps = objectMerge( inheritedThemeProps, themeProps );
+
+    return {
+      ...combinedThemeProps,
     };
   }
 
@@ -97,6 +172,7 @@ class FormGroup extends Component {
     questionGroupCode,
     index,
     form,
+    additionalProps,
   ) => {
     const {
       dataTypes,
@@ -121,7 +197,16 @@ class FormGroup extends Component {
       handleKeyPress,
       addRef,
     } = functions;
-    const { questionCode, attributeCode, mandatory, question, contextList, readonly } = ask;
+    const {
+      questionCode,
+      attributeCode,
+      mandatory,
+      question,
+      contextList,
+      readonly,
+      placeholder,
+    } = ask;
+
     const baseEntityDefinition = dataTypes[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
@@ -160,19 +245,20 @@ class FormGroup extends Component {
       ...contextList,
       parentGroupCode: questionGroupCode,
       rootQuestionGroupCode: this.props.rootCode,
-      inheritedThemes: this.getStyling( true ),
+      inheritedProps: isObject( this.props.inheritedProps ) ? this.props.inheritedProps : null,
+      inheritedThemes: this.getInhertiableThemes(),
       ask,
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
+      placeholder: placeholder || question.placeholder || question.name,
     };
 
-    // console.log( this.props.isClosed );
-
     return (
-      <FormInput
+      <VisualControl
         key={questionCode}
         {...inputProps}
+        {...additionalProps}
       />
     );
   }
@@ -186,7 +272,8 @@ class FormGroup extends Component {
           form: form,
           parentGroupCode: this.props.questionGroup.questionCode,
           rootCode: this.props.rootCode,
-          inheritedThemes: this.getStyling( true ),
+          inheritedProps: this.props.inheritedProps,
+          inheritedThemes: this.getInhertiableThemes(),
           index: index,
           dataTypes: this.props.dataTypes,
           functions: this.props.functions,
@@ -202,6 +289,7 @@ class FormGroup extends Component {
   render() {
     const { index, questionGroup, form, parentGroupCode, rootCode } = this.props;
     const {
+      description,
       name,
       childAsks,
       question,
@@ -211,16 +299,44 @@ class FormGroup extends Component {
 
     let properties = {};
 
-    this.state.themes.forEach( linkedTheme => {
-      const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
+    const checkThemeForProperties = ( themes ) => {
+      if ( !isArray( themes )) return;
 
-      if ( isObject( themeProperties )) {
-        properties = {
-          ...properties,
-          ...themeProperties,
-        };
-      }
-    });
+      themes.forEach( linkedTheme => {
+        const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
+
+        if ( isObject( themeProperties )) {
+          properties = {
+            ...properties,
+            ...themeProperties,
+          };
+        }
+      });
+    };
+
+    // console.log( '-------------' );
+    // console.log( 'inherit themes', this.getInhertiableThemes());
+    // console.log( 'inheritedProps', this.props.inheritedProps );
+    // console.log( 'getStyling', this.getStyling());
+
+    checkThemeForProperties( this.props.inheritedThemes );
+    checkThemeForProperties( this.state.themes );
+
+    const hasTitle = name && properties.renderQuestionGroupTitle;
+    const hasDescription = description && properties.renderQuestionGroupDescription;
+    const hasDelimiter = properties.renderDelimiter;
+
+    const delimiterComponent = (
+      <Box
+        // delimiter props
+        padding={5}
+        {...this.getDelimiterStyling()['default']}
+      />
+    );
+
+    const delimiterHandler = ( array ) => {
+      return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
+    };
 
     if (
       properties.expandable
@@ -228,6 +344,7 @@ class FormGroup extends Component {
       return (
         <Collapsible
           isClosed={this.props.isClosed}
+          testID={`${parentGroupCode}:${questionCode}:COLLAPSIBLE`}
           renderHeader={(
             question &&
             properties.renderQuestionGroupInput
@@ -237,34 +354,39 @@ class FormGroup extends Component {
                 parentGroupCode,
                 index,
                 form,
+                {
+                  flexWrapper: true,
+                }
               )
             ) : null
           }
-          headerIconProps={this.getStyling( true )}
+          headerIconProps={this.getStyling()['default']}
         >
           <Box
             key={name}
-            zIndex={150 - index}
+            zIndex={20 - index}
             {...defaultStyle.group}
-            // padding={10}
-            {...this.getStyling()}
+            {...this.getStyling()['default']}
           >
-            {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
-              if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
-                return this.renderQuestionGroup(
-                  childAsk,
-                  index,
-                  form
-                );
-              }
+            {hasDelimiter && delimiterComponent}
+            {delimiterHandler(
+              sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
+                if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
+                  return this.renderQuestionGroup(
+                    childAsk,
+                    index,
+                    form
+                  );
+                }
 
-              return this.renderInput(
-                childAsk,
-                questionCode,
-                index,
-                form,
-              );
-            })}
+                return this.renderInput(
+                  childAsk,
+                  questionCode,
+                  index,
+                  form,
+                );
+              })
+            )}
           </Box>
         </Collapsible>
       );
@@ -282,10 +404,10 @@ class FormGroup extends Component {
         >
           <Box
             key={name}
-            zIndex={150 - index}
+            zIndex={20 - index}
             {...defaultStyle.group}
             borderColor
-            {...this.getStyling()}
+            {...this.getStyling()['default']}
           >
             {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
               if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
@@ -308,17 +430,56 @@ class FormGroup extends Component {
       );
     }
 
+    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' )
+    // console.log( 'style', this.getStyling());
+
     return (
-      <Box
-        key={name}
-        zIndex={150 - index}
-        {...defaultStyle.group}
-        // padding={10}
-        borderColor
-        {...this.getStyling()}
-      >
-        {
-          (
+      <Fragment>
+        <Box
+          key={name}
+          zIndex={20 - index}
+          {...defaultStyle.group}
+          // padding={10}
+          {...this.getStyling()['default']}
+        >
+          {
+            (
+              hasTitle &&
+              hasDescription
+            ) ? (
+              <Box
+                marginBottom={10}
+                padding={10}
+                flexDirection="column"
+              >
+                {
+                  hasTitle ? (
+                    <Box
+                      // justifyContent="center"
+                      marginBottom={10}
+                    >
+                      <Text
+                        size="xl"
+                        text={name}
+                        bold
+                      />
+                    </Box>
+                  ) : null
+                }
+                {
+                  hasDescription ? (
+                    <Box>
+                      <Text
+                        size="sm"
+                        text={description}
+                      />
+                    </Box>
+                  ) : null
+                }
+              </Box>
+              ) : null
+          }
+          {(
             question &&
             properties.renderQuestionGroupInput
           ) ? (
@@ -328,24 +489,27 @@ class FormGroup extends Component {
                 index,
                 form,
               )) : null
-        }
-        {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-          if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-            return this.renderQuestionGroup(
-              ask,
-              index,
-              form
-            );
           }
+          {delimiterHandler(
+            sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+                return this.renderQuestionGroup(
+                  ask,
+                  index,
+                  form
+                );
+              }
 
-          return this.renderInput(
-            ask,
-            questionCode,
-            index,
-            form,
-          );
-        })}
-      </Box>
+              return this.renderInput(
+                ask,
+                questionCode,
+                index,
+                form,
+              );
+            })
+          )}
+        </Box>
+      </Fragment>
     );
   }
 }

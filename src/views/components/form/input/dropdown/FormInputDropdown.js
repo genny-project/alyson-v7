@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { object, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { Input } from '../../../index';
-import { isArray, isObject, getLayoutLinksOfType, filterThemes } from '../../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes } from '../../../../../utils';
 
 class FormInputDropdown extends Component {
   static propTypes = {
     question: object,
     baseEntities: object,
     themes: object,
+    inheritedThemes: array,
+    inheritedProps: object,
   }
 
   state = {
@@ -57,22 +59,11 @@ class FormInputDropdown extends Component {
                 linkGroup[linkValue].forEach( link => {
                   const baseEntity = dlv( data, link.link.targetCode );
 
-                  // get all links, check for themes for this base entity
-
-                  const linkedThemes = isArray( baseEntity.links )
-                    ? getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' )
-                    : [];
-                  const style = filterThemes( linkedThemes, this.props.themes );
-
-                  // console.log( 'links', baseEntity.links, linkedThemes );
-                  // console.log( 'themes', style );
-
                   if ( isObject( baseEntity )) {
                     items.push({
                       label: baseEntity.name,
                       value: baseEntity.code,
                       weight: link.weight || 1,
-                      style: style,
                     });
                   }
                 });
@@ -86,9 +77,71 @@ class FormInputDropdown extends Component {
     return items;
   }
 
+  getThemesForItems = ( items ) => {
+    const { data } = this.props.baseEntities;
+
+    if ( isArray( items )) {
+      const itemsWithStyling = items.map( item => {
+        const baseEntity = dlv( data, item.value );
+        // get all links, check for themes for this base entity
+
+        if ( !isObject( baseEntity )) return;
+
+        const linkedThemes = isArray( baseEntity.links )
+          ? getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' )
+          : [];
+
+        const getStyling = () => {
+          // filter links for panel
+          const inheritedLinks = [
+            ...filterThemes(
+              this.props.inheritedProps,
+              this.props.themes,
+            ),
+          ];
+
+          const panelLinks = [
+            ...filterThemes(
+              linkedThemes,
+              this.props.themes,
+            ),
+          ];
+
+          // get props from theme links
+          const inheritedThemeProps = getPropsFromThemes(
+            inheritedLinks,
+            this.props.themes,
+          );
+          const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+
+          const props = {
+            ...this.props.inheritedProps,
+            ...inheritedThemeProps,
+            ...themeProps,
+          };
+
+          return props;
+        };
+
+        const newItem = {
+          ...item,
+          style: getStyling()['default'],
+        };
+
+        return newItem;
+      });
+
+      return itemsWithStyling;
+    }
+
+    return items;
+  }
+
   checkForUpdatedItems() {
     const { items } = this.state;
     const newItems = this.getItems();
+
+    // TODO check for new theme information
 
     if (
       items.length === 0 &&
@@ -139,10 +192,12 @@ class FormInputDropdown extends Component {
     const { ...restProps } = this.props;
     const { items } = this.state;
 
+    const itemsWithThemes = this.getThemesForItems( items );
+
     return (
       <Input
         {...restProps}
-        items={items}
+        items={itemsWithThemes}
         ref={input => this.input = input}
       />
     );

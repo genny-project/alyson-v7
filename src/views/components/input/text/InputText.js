@@ -3,7 +3,8 @@ import { TextInput, Platform } from 'react-native';
 import { string, oneOf, number, shape, bool, func, oneOfType, node, object } from 'prop-types';
 import dlv from 'dlv';
 // import memoize from 'memoize-one';
-import { Box, Icon, Text } from '../../../components';
+import { isObject, isString } from '../../../../utils';
+import { Box, Text, Icon } from '../../../components';
 
 /** Ensure the props we're going to use were indeed passed through. */
 const filterOutUnspecifiedProps = props => {
@@ -23,40 +24,6 @@ const textSizes = {
   md: 18,
   lg: 20,
   xl: 24,
-};
-
-const InputPrefixWrapper = ({ children }) => (
-  <Box
-    position="absolute"
-    left={15}
-    height="100%"
-    alignItems="center"
-  >
-    {children}
-  </Box>
-);
-
-const InputSuffixWrapper = ({ children }) => (
-  <Box
-    position="absolute"
-    right={15}
-    height="100%"
-    alignItems="center"
-  >
-    {children}
-  </Box>
-);
-
-const errorStyle = {
-
-};
-
-const warningStyle = {
-
-};
-
-const successStyle = {
-
 };
 
 class Input extends PureComponent {
@@ -80,6 +47,7 @@ class Input extends PureComponent {
     textAlign: 'left',
     prefixColor: 'grey',
     editable: true,
+    outline: 'none',
   }
 
   static propTypes = {
@@ -102,6 +70,7 @@ class Input extends PureComponent {
     onChange: func,
     onChangeValue: func,
     onChangeText: func,
+    onChangeState: func,
     onFocus: func,
     onKeyPress: func,
     onLayout: func,
@@ -170,7 +139,7 @@ class Input extends PureComponent {
     borderTopLeftRadius: number,
     borderTopRightRadius: number,
     borderSize: number,
-    wrapperProps: object,
+    borderStyle: string,
     returnKeyLabel: string,
     returnKeyType: oneOf(
       ['done', 'next', 'go', 'search', 'send', 'default']
@@ -192,11 +161,13 @@ class Input extends PureComponent {
     useAttributeNameAsValue: bool,
     useQuestionNameAsValue: bool,
     question: object,
+    outline: string,
+    iconProps: object,
   }
 
   state = {
     isFocused: false,
-    // isHovering: false,
+    isHovering: false,
     valueLength: 0,
   }
 
@@ -244,6 +215,24 @@ class Input extends PureComponent {
       this.props.onChangeValue( value );
   }
 
+  handleMouseOver = () => {
+    this.setState({
+      isHovering: true,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: true });
+  }
+
+  handleMouseOut = () => {
+    this.setState({
+      isHovering: false,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: false });
+  }
+
   handleFocus = event => {
     if ( this.props.editable === false || this.props.disabled )
       return null;
@@ -251,6 +240,11 @@ class Input extends PureComponent {
     this.setState({
       isFocused: true,
     });
+
+    // console.log( 'focus' );
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ active: true });
 
     if ( this.props.onFocus )
       this.props.onFocus( event );
@@ -264,66 +258,11 @@ class Input extends PureComponent {
       isFocused: false,
     });
 
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ active: false });
+
     if ( this.props.onBlur )
       this.props.onBlur( event );
-  }
-
-  renderPrefix() {
-    const { prefix, prefixIcon, prefixColor, prefixIconType } = this.props;
-
-    if ( prefixIcon ) {
-      return (
-        <InputPrefixWrapper>
-          <Icon
-            name={prefixIcon}
-            color={prefixColor}
-            type={prefixIconType}
-          />
-        </InputPrefixWrapper>
-      );
-    }
-
-    if ( typeof prefix !== 'string' )
-      return prefix;
-
-    return (
-      <InputPrefixWrapper>
-        <Text
-          color="black"
-        >
-          {prefix}
-        </Text>
-      </InputPrefixWrapper>
-    );
-  }
-
-  renderSuffix() {
-    const { suffix, icon, suffixColor, iconColor, iconType } = this.props;
-
-    if ( icon ) {
-      return (
-        <InputSuffixWrapper>
-          <Icon
-            name={icon}
-            color={iconColor || suffixColor || this.getStatusColor()}
-            type={iconType}
-          />
-        </InputSuffixWrapper>
-      );
-    }
-
-    if ( typeof suffix !== 'string' )
-      return suffix;
-
-    return (
-      <InputSuffixWrapper>
-        <Text
-          color={suffixColor}
-        >
-          {suffix}
-        </Text>
-      </InputSuffixWrapper>
-    );
   }
 
   render() {
@@ -364,14 +303,7 @@ class Input extends PureComponent {
       paddingBottom,
       paddingLeft,
       value,
-      error,
-      success,
-      warning,
-      icon,
       width,
-      prefix,
-      suffix,
-      prefixIcon,
       textSize,
       textAlign,
       height,
@@ -385,16 +317,14 @@ class Input extends PureComponent {
       borderColor,
       borderRadius,
       borderSize,
-      wrapperProps,
+      borderStyle,
       returnKeyLabel,
       returnKeyType,
       borderBottomLeftRadius,
       borderBottomRightRadius,
       borderTopLeftRadius,
       borderTopRightRadius,
-      activeStyling,
       placeholderColor,
-      activeProps,
       color,
       testID,
       showCharacterCount,
@@ -402,15 +332,14 @@ class Input extends PureComponent {
       characterCountTextProps,
       useAttributeNameAsValue,
       useQuestionNameAsValue,
+      outline,
+      icon,
+      iconProps,
     } = this.props;
 
-    const { isFocused, valueLength } = this.state;
+    const { isFocused, isHovering, valueLength } = this.state; // eslint-disable-line no-unused-vars
 
-    const statusStyle =
-      error ? errorStyle
-      : success ? successStyle
-      : warning ? warningStyle
-      : {};
+    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
 
     /* TODO: performance optimisation? */
     const inputStyle = filterOutUnspecifiedProps({
@@ -427,12 +356,12 @@ class Input extends PureComponent {
       paddingTop: paddingTop,
       paddingRight: paddingRight,
       paddingBottom,
-      paddingLeft,
+      paddingLeft: paddingLeft || hasIcon ? 30 : null,
       fontSize: textSizes[textSize],
       textAlign: textAlign,
       height,
       width: '100%', // Always be 100% of the parent width
-      backgroundColor,
+      backgroundColor: backgroundColor === 'none' ? null : backgroundColor,
       borderWidth,
       borderTopWidth,
       borderRightWidth,
@@ -441,12 +370,13 @@ class Input extends PureComponent {
       borderColor,
       borderRadius,
       borderSize,
+      borderStyle,
       borderBottomLeftRadius,
       borderBottomRightRadius,
       borderTopLeftRadius,
       borderTopRightRadius,
       color,
-      ...isFocused ? activeStyling : {},
+      outline,
       ...editable === false ? { cursor: 'default' } : {},
     });
 
@@ -457,13 +387,30 @@ class Input extends PureComponent {
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
 
+    // console.log( 'style', inputStyle );
+
     return (
       <Box
-        {...wrapperProps}
         position="relative"
         flex={1}
         width={width}
       >
+        { hasIcon
+          ? (
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              pointerEvents="none"
+            >
+              <Icon
+                name={icon}
+                color="black"
+                {...iconProps}
+              />
+            </Box>
+          ) : null
+        }
         <TextInput
           testID={`input-text ${testID}`}
           autoCapitalize={autoCapitalize}
@@ -484,6 +431,8 @@ class Input extends PureComponent {
           onChangeText={this.handleChangeText}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
+          onMouseOver={this.handleMouseOver}
+          onMouseOut={this.handleMouseOut}
           onKeyPress={onKeyPress}
           onSelectionChange={onSelectionChange}
           onSubmitEditing={onSubmitEditing}
@@ -497,7 +446,6 @@ class Input extends PureComponent {
           spellCheck={spellCheck}
           style={[
             inputStyle,
-            statusStyle,
           ]}
           value={useAttributeNameAsValue
             ? attributeName
@@ -510,22 +458,7 @@ class Input extends PureComponent {
             android: nativeProps,
           })}
           ref={this.handleRef}
-          {...isFocused ? activeProps : {}}
         />
-
-        {(
-          prefix ||
-          prefixIcon
-        )
-          ? this.renderPrefix()
-          : null}
-
-        {(
-          icon ||
-          suffix
-        )
-          ? this.renderSuffix()
-          : null}
 
         {!showCharacterCount ? null : (
           <Box {...characterCountWrapperProps}>
@@ -540,13 +473,5 @@ class Input extends PureComponent {
     );
   }
 }
-
-InputPrefixWrapper.propTypes = {
-  children: node,
-};
-
-InputSuffixWrapper.propTypes = {
-  children: node,
-};
 
 export default Input;

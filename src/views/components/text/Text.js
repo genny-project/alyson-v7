@@ -44,6 +44,7 @@ const Text = ({
   text,
   transform,
   whiteSpace = 'normal',
+  cursor,
   ...restProps
 }) => {
   const style = {
@@ -58,6 +59,7 @@ const Text = ({
       web: 'system-ui, sans-serif',
       native: 'System',
     }),
+    cursor,
     whiteSpace,
   };
 
@@ -109,6 +111,9 @@ Text.propTypes = {
   ),
   whiteSpace: oneOf(
     ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap', 'initial', 'inherit']
+  ),
+  cursor: oneOf(
+    ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text']
   ),
 };
 

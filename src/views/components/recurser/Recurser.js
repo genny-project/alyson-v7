@@ -2,73 +2,92 @@
 
 import React, { Component } from 'react';
 import { object, array, bool } from 'prop-types';
-import { Fragment, Frame, Text, Form } from '../index';
+import { Fragment, Frame, Text, Form, Box } from '../index';
 import { SublayoutLegacy } from '../../components-legacy';
-import { isArray, sort } from '../../../utils';
+import { isArray, sort /* arrayAddDelimiter */ } from '../../../utils';
 
 class Recurser extends Component {
+  static defaultProps = {
+    delimiterProps: {},
+  }
+
   static propTypes = {
     themes: object,
     content: array,
     isClosed: bool,
+    delimiterProps: object,
+    hasDelimiter: bool,
   }
 
   render() {
-    const { content, themes, isClosed } = this.props;
+    const { content, themes, delimiterProps, /* hasDelimiter,*/  isClosed } = this.props;
 
     if ( !isArray( content, { ofMinLength: 1 })) {
       return null;
     }
 
-    // console.log( isClosed );
+    const delimiterComponent = (
+      <Box
+        // delimiter props
+        padding={5}
+        {...delimiterProps['default']}
+      />
+    );
+
+    const delimiterHandler = ( array ) => {
+      return /* hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : */ array;
+    };
 
     return (
       <Fragment>
-        { sort( content, { paths: ['weight', 'created'], direction: 'desc' }).map( child => {
-          const baseEntityCode = child.code;
-          const linkType = child.type;
+        { delimiterHandler(
+          sort( content, { paths: ['weight', 'created'], direction: 'desc' }).map( child => {
+            const baseEntityCode = child.code;
+            const linkType = child.type;
 
-          if ( linkType === 'ask' ) {
+            if ( linkType === 'ask' ) {
+              return (
+                <Form
+                  inheritedProps={themes}
+                  key={baseEntityCode}
+                  questionGroupCode={baseEntityCode}
+                  isClosed={isClosed}
+                />
+              );
+            }
+
+            if ( linkType === 'frame' ) {
+              return (
+                <Frame
+                  key={baseEntityCode}
+                  rootCode={baseEntityCode}
+                  inheritedProps={themes}
+                  isClosed={isClosed}
+                />
+              );
+            }
+
+            if ( linkType === 'sublayout' ) {
+              return (
+                <SublayoutLegacy
+                  key={baseEntityCode}
+                  layoutName={baseEntityCode}
+                  layoutType="pages"
+                  identifier="INITIAL"
+                />
+              );
+            }
+
             return (
-              <Form
-                inheritedThemes={themes}
+              <Text
+                {...themes}
                 key={baseEntityCode}
-                questionGroupCode={baseEntityCode}
-                isClosed={isClosed}
+                text={baseEntityCode}
               />
             );
-          }
-
-          if ( linkType === 'frame' ) {
-            return (
-              <Frame
-                key={baseEntityCode}
-                rootCode={baseEntityCode}
-                inheritedThemes={themes}
-                isClosed={isClosed}
-              />
-            );
-          }
-
-          if ( linkType === 'sublayout' ) {
-            return (
-              <SublayoutLegacy
-                key={baseEntityCode}
-                layoutName={baseEntityCode}
-                layoutType="pages"
-                identifier="INITIAL"
-              />
-            );
-          }
-
-          return (
-            <Text
-              {...themes}
-              key={baseEntityCode}
-              text={baseEntityCode}
-            />
-          );
-        })}
+          }),
+          delimiterComponent
+        )}
       </Fragment>
 
     );

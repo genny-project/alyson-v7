@@ -1,24 +1,34 @@
 import dlv from 'dlv';
 import { isArray, isObject, isString, sort  } from '../../index';
 
-const filterThemes = ( themeCodes, allThemes, options = {}) => {
+const filterThemes = ( themeLinks, allThemes, options = {}) => {
   const {
     panel,
+    component,
     onlyInheritableThemes,
+    formGroup,
+    onlyComponentThemes,
   } = options;
 
-  let styling = {};
+  const themes = [];
 
   if (
-    !isArray( themeCodes ) ||
+    !isArray( themeLinks ) ||
     !isObject( allThemes )
   )
     return {};
 
-  sort( themeCodes, { paths: ['weight', 'created'], direction: 'asc' }).forEach( theme => {
+  sort( themeLinks, { paths: ['weight', 'created'], direction: 'asc' }).forEach( theme => {
     if ( isString( panel ) && theme.panel !== panel ) return;
 
-    const themeData = dlv( allThemes, `${theme.code}.data` );
+    if ( isString( panel ) && ( !isString( component ) && theme.component )) return;
+
+    if ( isString( component ) && !( theme.component === component || theme.component === 'all' || theme.component == null )) return;
+
+    if ( formGroup && !( theme.component == null || theme.component === 'all' )) return;
+
+    if ( onlyComponentThemes && !( theme.component === component )) return true;
+
     const properties = dlv( allThemes, `${theme.code}.properties` );
 
     if (
@@ -28,15 +38,12 @@ const filterThemes = ( themeCodes, allThemes, options = {}) => {
     )
       return;
 
-    if ( isObject( themeData )) {
-      styling = {
-        ...styling,
-        ...themeData,
-      };
-    }
+    // console.log( 'added' );
+
+    themes.push( theme );
   });
 
-  return styling;
+  return themes;
 };
 
 export default filterThemes;

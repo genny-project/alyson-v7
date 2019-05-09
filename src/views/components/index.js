@@ -62,6 +62,7 @@ export { default as Toggle } from './toggle';
 export { default as Touchable } from './touchable';
 export { default as WebView } from './web-view';
 
+export { default as Tooltip } from './tooltip';
 export { default as TestIdHandler } from './test-id-handler';
 
 export { default as Frame } from './frame';
