@@ -9,6 +9,7 @@ import InputFile from './file';
 import InputScroll from './scroll';
 import InputRating from './rating';
 import InputText from './text';
+import InputTextArea from './textarea';
 import Switch from './switch';
 import InputDropdown from './dropdown';
 import Passcode from './passcode';
@@ -72,10 +73,6 @@ class Input extends Component {
   render() {
     const { type, ...restProps } = this.props;
 
-    /*
-      move theme state filtering to visual control component
-    */
-
     const inputProps = {
       ...restProps,
       type,
@@ -116,10 +113,9 @@ class Input extends Component {
 
       case 'textarea':
         return (
-          <InputText
+          <InputTextArea
             multiline
-            numberOfLines={3}
-            height={100}
+            numberOfLines={2}
             {...inputProps}
             ref={input => this.input = input}
           />

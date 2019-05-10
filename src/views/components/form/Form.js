@@ -61,7 +61,7 @@ class Form extends Component {
       isArray( questionGroups, { ofExactLength: 0 })
     ) {
       const newGroups = this.getQuestionGroups();
-           
+
       if ( newGroups.length > 0 ) {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
@@ -238,7 +238,7 @@ class Form extends Component {
   checkForUpdatedQuestionTargets = ( newProps ) => {
     const { questionGroups } = this.state;
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
-    
+
     if ( questionGroups.length < 1 ) return false;
 
     const compareTargetCode = ( newAsk, existingAsk, level ) => {
@@ -267,7 +267,7 @@ class Form extends Component {
 
         return isChildMatch;
       }
-       
+
       return true;
     };
 
@@ -304,7 +304,7 @@ class Form extends Component {
         const isChildMatch = ask.childAsks.some(
           childAsk => compareAttributeValues( childAsk )
         );
-        
+
         return isChildMatch;
       }
 
@@ -314,7 +314,7 @@ class Form extends Component {
     const isDifference = newQuestionGroup.childAsks.some(
       childAsk => compareAttributeValues( childAsk )
     );
-    
+
     return isDifference;
   }
 
@@ -599,6 +599,10 @@ class Form extends Component {
 
     const { initialValues } = this.state;
 
+    // if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' ) console.log( 'render FORM' );
+
+    // let formProps = {};
+
     return (
       <Formik
         initialValues={initialValues}
@@ -618,6 +622,40 @@ class Form extends Component {
           setFieldTouched,
         }) => {
           const isFormValid = shallowCompare( this.doValidate( values ), {});
+
+          // const newFormProps = {
+          //   values,
+          //   errors,
+          //   touched,
+          //   submitForm,
+          //   submitCount,
+          //   isSubmitting,
+          //   setFieldValue,
+          //   setFieldTouched,
+          // };
+
+          /*
+          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
+            console.log( 'render FORMIK', formProps, newFormProps );
+          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
+            console.log( 'errors', shallowCompare( formProps.errors, newFormProps.errors ));
+          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
+            console.log( 'touched', shallowCompare( formProps.touched, newFormProps.touched ));
+          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
+            console.log( 'values', shallowCompare( formProps.values, newFormProps.values ));
+
+          if (
+            !(
+              shallowCompare( formProps.errors, newFormProps.errors ) &&
+              shallowCompare( formProps.touched, newFormProps.touched ) &&
+              shallowCompare( formProps.values, newFormProps.values )
+            )
+          ) {
+            if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' ) console.log( 'SHOULD UPDATE' );
+          }
+          */
+
+          // formProps = newFormProps;
 
           return (
             // <KeyboardAwareScrollView

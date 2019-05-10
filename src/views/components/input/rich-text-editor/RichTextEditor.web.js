@@ -159,7 +159,7 @@ class RichTextEditor extends Component {
     const string = html.serialize( value );
 
     this.props.onChangeValue( string );
-    
+
     this.setState({
       value: value,
       hasUserTyped: true,

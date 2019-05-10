@@ -240,7 +240,7 @@ class FormGroup extends Component {
         ? 'next'
         : 'default',
       onKeyPress: handleKeyPress( submitForm, index, questionGroupCode ), // functions
-      onPress: () => submitForm(),
+      // onPress: () => submitForm(),
       testID: `${questionGroupCode}:${questionCode}` || '',
       ...contextList,
       parentGroupCode: questionGroupCode,
@@ -364,7 +364,7 @@ class FormGroup extends Component {
         >
           <Box
             key={name}
-            zIndex={20 - index}
+            // zIndex={20 - index}
             {...defaultStyle.group}
             {...this.getStyling()['default']}
           >
@@ -404,7 +404,7 @@ class FormGroup extends Component {
         >
           <Box
             key={name}
-            zIndex={20 - index}
+            // zIndex={20 - index}
             {...defaultStyle.group}
             borderColor
             {...this.getStyling()['default']}

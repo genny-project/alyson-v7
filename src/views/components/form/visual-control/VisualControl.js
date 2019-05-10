@@ -223,7 +223,8 @@ class VisualControl extends Component {
       <Box
         flexDirection="column"
         flex={flexWrapper ? 1 : null}
-        justifyContent="centre"
+        justifyContent="center"
+        zIndex={100}
         // padding={5}
         {...getPropsByType( 'wrapper' )}
       >
