@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
 
 import { stateToHTML } from 'draft-js-export-html';
-import { stateFromHTML } from 'draft-js-import-html';
 import { func, string, object, bool } from 'prop-types';
 import style from './style.css'; //eslint-disable-line
 
-class RichEditorExample extends Component {
+class RichEditor extends Component {
   static propTypes = {
     onChangeValue: func,
-    value: string,
   };
 
   constructor( props ) {
@@ -23,17 +21,6 @@ class RichEditorExample extends Component {
     this.handleToggleBlockType = this._toggleBlockType.bind( this );
     this.handleToggleInlineStyle = this._toggleInlineStyle.bind( this );
     this.handleBlur = this.handleBlur.bind( this );
-  }
-
-  componentDidUpdate( prevprops ) {
-    if ( this.props.value !== prevprops.value ) {
-      const getStateFromHTML = stateFromHTML( this.props.value );
-
-      // eslint-disable-next-line
-      this.setState({
-        editorState: EditorState.createWithContent( getStateFromHTML ),
-      });
-    }
   }
 
   _handleKeyCommand( command, editorState ) {
@@ -252,4 +239,4 @@ InlineStyleControls.propTypes = {
   editorState: object,
 };
 
-export default RichEditorExample;
+export default RichEditor;
