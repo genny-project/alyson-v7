@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { TextInput, Platform } from 'react-native';
-import { string, oneOf, number, shape, bool, func, oneOfType, node, object } from 'prop-types';
+import { string, oneOf, number, shape, bool, func, oneOfType, object } from 'prop-types';
 import dlv from 'dlv';
-// import memoize from 'memoize-one';
+import { TEXT_SIZES } from '../../../../constants';
 import { isObject, isString } from '../../../../utils';
 import { Box, Text, Icon } from '../../../components';
 
@@ -18,15 +18,7 @@ const filterOutUnspecifiedProps = props => {
   }, {});
 };
 
-const textSizes = {
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 20,
-  xl: 24,
-};
-
-class Input extends PureComponent {
+class Input extends Component {
   static defaultProps = {
     autoCapitalize: 'sentences',
     autoComplete: 'no',
@@ -40,12 +32,8 @@ class Input extends PureComponent {
     secureTextEntry: false,
     selectTextOnFocus: false,
     spellCheck: true,
-    error: false,
-    success: false,
-    warning: false,
     textSize: 'xs',
     textAlign: 'left',
-    prefixColor: 'grey',
     editable: true,
     outline: 'none',
   }
@@ -92,9 +80,7 @@ class Input extends PureComponent {
     marginRight: number,
     marginBottom: number,
     marginLeft: number,
-    error: bool,
-    success: bool,
-    warning: bool,
+    error: string,
     icon: string,
     padding: number,
     paddingX: number,
@@ -103,15 +89,6 @@ class Input extends PureComponent {
     paddingRight: number,
     paddingBottom: number,
     paddingLeft: number,
-    prefix: oneOfType(
-      [string, node]
-    ),
-    suffix: oneOfType(
-      [string, node]
-    ),
-    prefixColor: string,
-    suffixColor: string,
-    iconColor: string,
     textSize: oneOf(
       ['xs','sm','md','lg','xl']
     ),
@@ -124,7 +101,6 @@ class Input extends PureComponent {
     width: oneOfType(
       [string, number]
     ),
-    prefixIcon: string,
     editable: bool,
     backgroundColor: string,
     borderWidth: number,
@@ -163,12 +139,15 @@ class Input extends PureComponent {
     question: object,
     outline: string,
     iconProps: object,
+    overflow: string,
+    numberOfLines: number,
   }
 
   state = {
     isFocused: false,
     isHovering: false,
     valueLength: 0,
+    value: null,
   }
 
   componentDidMount() {
@@ -176,14 +155,25 @@ class Input extends PureComponent {
       this.setState({ valueLength: String( this.props.value ).length });
   }
 
-  getStatusColor() {
-    const { disabled, success, error, warning } = this.props;
+  componentDidUpdate( prevProps, prevState ) {
+    if (
+      ((
+        prevProps.value !== this.props.value &&
+        this.state.value !== this.props.value
+      ) ||
+        prevState.value !== this.state.value
+      ) &&
+      !this.state.isFocused
+    ) {
+      this.updateValue( this.props.value );
+    }
+  }
 
-    return disabled ? 'lightGrey'
-      : success ? 'green'
-      : error ? 'red'
-      : warning ? 'yellow'
-      : 'grey';
+  updateValue = ( value ) => {
+    this.setState({
+      value: value,
+      valueLength: String( value ).length,
+    });
   }
 
   focus() {
@@ -204,15 +194,12 @@ class Input extends PureComponent {
     if ( this.props.editable === false || this.props.disabled )
       return null;
 
+    const newValue = value;
+
     this.setState({
-      valueLength: value.length,
+      valueLength: newValue.length,
+      value: newValue,
     });
-
-    if ( this.props.onChangeText )
-      this.props.onChangeText( value );
-
-    if ( this.props.onChangeValue )
-      this.props.onChangeValue( value );
   }
 
   handleMouseOver = () => {
@@ -258,6 +245,12 @@ class Input extends PureComponent {
       isFocused: false,
     });
 
+    if ( this.props.onChangeText )
+      this.props.onChangeText( this.state.value );
+
+    if ( this.props.onChangeValue )
+      this.props.onChangeValue( this.state.value );
+
     if ( this.props.onChangeState )
       this.props.onChangeState({ active: false });
 
@@ -295,14 +288,14 @@ class Input extends PureComponent {
       marginRight,
       marginBottom,
       marginLeft,
-      padding,
+      // padding,
       paddingX,
       paddingY,
       paddingTop,
       paddingRight,
       paddingBottom,
       paddingLeft,
-      value,
+      // value,
       width,
       textSize,
       textAlign,
@@ -335,9 +328,16 @@ class Input extends PureComponent {
       outline,
       icon,
       iconProps,
+      numberOfLines,
+      overflow,
     } = this.props;
 
-    const { isFocused, isHovering, valueLength } = this.state; // eslint-disable-line no-unused-vars
+    const {
+      isFocused, // eslint-disable-line no-unused-vars
+      isHovering, // eslint-disable-line no-unused-vars
+      valueLength,
+      value,
+    } = this.state;
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
 
@@ -350,14 +350,14 @@ class Input extends PureComponent {
       marginRight,
       marginBottom,
       marginLeft,
-      padding,
+      // padding,
       paddingHorizontal: paddingX,
       paddingVertical: paddingY,
       paddingTop: paddingTop,
       paddingRight: paddingRight,
       paddingBottom,
       paddingLeft: paddingLeft || hasIcon ? 30 : null,
-      fontSize: textSizes[textSize],
+      fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,
       width: '100%', // Always be 100% of the parent width
@@ -377,6 +377,7 @@ class Input extends PureComponent {
       borderTopRightRadius,
       color,
       outline,
+      overflow,
       ...editable === false ? { cursor: 'default' } : {},
     });
 
@@ -386,8 +387,6 @@ class Input extends PureComponent {
 
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
-
-    // console.log( 'style', inputStyle );
 
     return (
       <Box
@@ -427,6 +426,7 @@ class Input extends PureComponent {
           maxLength={maxLength}
           name={this.props.name}
           multiline={multiline}
+          numberOfLines={numberOfLines}
           onChange={onChange}
           onChangeText={this.handleChangeText}
           onFocus={this.handleFocus}
@@ -437,7 +437,7 @@ class Input extends PureComponent {
           onSelectionChange={onSelectionChange}
           onSubmitEditing={onSubmitEditing}
           placeholder={placeholder}
-          placeholderTextColor={placeholderColor || this.getStatusColor()}
+          placeholderTextColor={placeholderColor || color}
           returnKeyLabel={!multiline ? returnKeyLabel : null}
           returnKeyType={!multiline ? returnKeyType : null}
           secureTextEntry={secureTextEntry}

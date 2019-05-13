@@ -1,28 +1,30 @@
 import React, { Component } from 'react';
-import { string, number, oneOfType } from 'prop-types';
+import { string, number, oneOfType, func } from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import SignaturePad from 'react-signature-pad-wrapper';
-import { Tabs, InputText , Input, Button } from '../..';
+import { InputText, Input, Button } from '../../../components';
+import { TabsLegacy as Tabs } from '../../../components-legacy';
 
 class InputSignature extends Component {
   static defaultProps = {
     height: 'auto',
     width: '100%',
-  }
+  };
 
-   static propTypes = {
-     height: oneOfType( [string, number] ),
-     width: oneOfType( [string, number] ),
-   }
+  static propTypes = {
+    height: oneOfType( [string, number] ),
+    width: oneOfType( [string, number] ),
+    onChangeValue: func,
+  };
 
   state = {
     textSignatureValue: '',
     validated: false,
-  }
+  };
 
   /* Helper method for submitting */
-  submitSignature = async ( dataFromDrawingPad ) => {
+  submitSignature = async dataFromDrawingPad => {
     const { config } = this.props;
 
     if ( !config || !config.ENV_SIGNATURE_URL ) {
@@ -37,11 +39,11 @@ class InputSignature extends Component {
         if ( data && data.data.signatureURL ) {
           this.setState({ validated: true });
         }
-        if ( this.props.onChangeValue ) //eslint-disable-line
+        if ( this.props.onChangeValue )
+          //eslint-disable-line
           this.props.onChangeValue( data.data.signatureURL );
       });
-    }
-    catch ( error ) {
+    } catch ( error ) {
       console.error( 'Error while sending the signatures', error );
     }
   };
@@ -51,26 +53,26 @@ class InputSignature extends Component {
     const dataFromDrawingPad = this.signaturePad.toDataURL();
 
     this.submitSignature({ type: 'draw', data: dataFromDrawingPad });
-  }
+  };
 
   /* submit text  signature data */
   handleSignatureSubmitOnText = () => {
     const { textSignatureValue } = this.state;
 
-    this.submitSignature({ type: 'draw', data: textSignatureValue });
-  }
+    this.submitSignature({ type: 'text', data: textSignatureValue });
+  };
 
   // clear the canvas
   handleClearCanvas = () => {
     this.signaturePad.clear();
-  }
+  };
 
   /* handle text signature change */
   handleTextSignatureChange = event => {
     const { value } = event.target;
 
     this.setState({ textSignatureValue: value });
-  }
+  };
 
   renderButtons = () => {
     const { validated } = this.state;
@@ -81,7 +83,14 @@ class InputSignature extends Component {
 
     return (
       <div>
-        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', backgroundColor: 'whitesmoke' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            backgroundColor: 'whitesmoke',
+          }}
+        >
           <div style={{ width: '100%' }}>
             <Button
               width="100%"
@@ -90,7 +99,7 @@ class InputSignature extends Component {
               withFeedback
               style={{ marginTop: '10px', width: '100%' }}
             >
-            Reset
+              Reset
             </Button>
           </div>
 
@@ -101,14 +110,13 @@ class InputSignature extends Component {
               color="green"
               withFeedback
             >
-            Validate
+              Validate
             </Button>
-
           </div>
         </div>
       </div>
     );
-  }
+  };
 
   render() {
     const { height, width } = this.props;
@@ -116,9 +124,11 @@ class InputSignature extends Component {
     return (
       <div
         className="custom-signature"
-        style={{ width: width,
+        style={{
+          width: width,
           height: height,
-          marginTop: '50px' }}
+          marginTop: '50px',
+        }}
       >
         <Tabs
           tabBackground="#f5f5f5"
@@ -127,19 +137,23 @@ class InputSignature extends Component {
           tabBarBackground="#f1f1f1"
           tabBarSize="md"
           textColor="black"
-          tabs={
-          [
-            { key: 0, title: 'Draw ' },
-            { key: 1, title: 'Write ' },
-            { key: 2, title: 'Upload ' },
-          ]
-          }
+          tabs={[
+            { key: 0, title: 'Draw ', testID: 'Draw' },
+            { key: 1, title: 'Write ', testID: 'Write' },
+            { key: 2, title: 'Upload ', testID: 'Upload' },
+
+          ]}
         >
-          <div style={{ width: '100%', height: '100%', margin: '20px',
-            background: '#f9f9f9' }}
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              margin: '20px',
+              background: '#f9f9f9',
+            }}
           >
             <SignaturePad
-              ref={ref => this.signaturePad = ref}
+              ref={ref => ( this.signaturePad = ref )}
               backgroundColor="red"
               height={150}
               redrawOnResize
@@ -150,7 +164,7 @@ class InputSignature extends Component {
             {this.renderButtons()}
           </div>
 
-          <div style={{ width: '100%', marginTop: 20 ,backgroundColor: '#fff', padding: 20 }}>
+          <div style={{ width: '100%', marginTop: 20, backgroundColor: '#fff', padding: 20 }}>
             <InputText
               type="text"
               size="lg"
