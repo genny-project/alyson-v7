@@ -12,7 +12,6 @@
     "setup-images": "app-icon generate -i $IMAGE",
     "serve:web": "node server.js",
     "clear-cache:web": "rm -rf ./node_modules/.cache/babel-loader/*",
-    "layout-editor": "node layout-editor",
     "lint": "eslint --fix ."
   },
   "dependencies": {
@@ -70,7 +69,6 @@
     "match-sorter": "2.3.0",
     "memoize-one": "^4.0.2",
     "moment": "^2.22.2",
-    "monaco-editor-webpack-plugin": "^1.5.1",
     "nprogress": "^0.2.0",
     "prettier": "^1.13.7",
     "prettier-bytes": "^1.0.4",
@@ -85,7 +83,6 @@
     "react-helmet": "^5.2.0",
     "react-markdown": "3.4.1",
     "react-modal": "^3.4.5",
-    "react-monaco-editor": "^0.18.0",
     "react-native": "0.55.4",
     "react-native-audio-recorder-player": "^1.2.2",
     "react-native-blur": "^3.2.2",
