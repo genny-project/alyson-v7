@@ -4,16 +4,7 @@ import { string, number, oneOf, oneOfType, bool, node } from 'prop-types';
 import capitalize from 'lodash.capitalize';
 import upperCase from 'lodash.uppercase';
 import lowerCase from 'lodash.lowercase';
-
-const textSizes = {
-  xxs: 12,
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 20,
-  xl: 24,
-  xxl: 32,
-};
+import { TEXT_SIZES } from '../../../constants';
 
 const colors = {
   black: 'black',
@@ -51,7 +42,7 @@ const Text = ({
     textDecorationLine: decoration,
     fontWeight: bold ? 'bold' : fontWeight,
     height,
-    fontSize: textSizes[size],
+    fontSize: TEXT_SIZES[size],
     textAlign: align,
     width,
     color: colors[color] || color,

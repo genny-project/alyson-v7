@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TextInput, Platform } from 'react-native';
 import { string, oneOf, number, shape, bool, func, oneOfType, object } from 'prop-types';
 import dlv from 'dlv';
-// import memoize from 'memoize-one';
+import { TEXT_SIZES } from '../../../../constants';
 import { isObject, isString } from '../../../../utils';
 import { Box, Text, Icon } from '../../../components';
 
@@ -16,14 +16,6 @@ const filterOutUnspecifiedProps = props => {
 
     return filteredProps;
   }, {});
-};
-
-const textSizes = {
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 20,
-  xl: 24,
 };
 
 class Input extends Component {
@@ -365,7 +357,7 @@ class Input extends Component {
       paddingRight: paddingRight,
       paddingBottom,
       paddingLeft: paddingLeft || hasIcon ? 30 : null,
-      fontSize: textSizes[textSize],
+      fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,
       width: '100%', // Always be 100% of the parent width

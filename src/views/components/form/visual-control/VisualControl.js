@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, bool } from 'prop-types';
+import { string, object, bool, number } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
@@ -42,6 +42,7 @@ class VisualControl extends Component {
     editable: bool,
     disabled: bool,
     flexWrapper: bool,
+    index: number,
   }
 
   state = {
@@ -179,6 +180,7 @@ class VisualControl extends Component {
       inheritedThemes,
       themes,
       flexWrapper,
+      index,
       ...restProps
     } = this.props;
 
@@ -224,7 +226,7 @@ class VisualControl extends Component {
         flexDirection="column"
         flex={flexWrapper ? 1 : null}
         justifyContent="center"
-        zIndex={100}
+        zIndex={100 - index}
         // padding={5}
         {...getPropsByType( 'wrapper' )}
       >

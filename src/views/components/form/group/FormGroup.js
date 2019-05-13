@@ -30,6 +30,7 @@ class FormGroup extends Component {
     themes: object,
     asks: object,
     isClosed: bool,
+    indexNumber: number,
   }
 
   state = {
@@ -251,7 +252,8 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: placeholder || question.placeholder || question.name,
+      placeholder: placeholder || question.placeholder,
+      index,
     };
 
     return (
@@ -294,7 +296,6 @@ class FormGroup extends Component {
       childAsks,
       question,
       questionCode,
-      // contextList,
     } = questionGroup;
 
     let properties = {};
@@ -313,11 +314,6 @@ class FormGroup extends Component {
         }
       });
     };
-
-    // console.log( '-------------' );
-    // console.log( 'inherit themes', this.getInhertiableThemes());
-    // console.log( 'inheritedProps', this.props.inheritedProps );
-    // console.log( 'getStyling', this.getStyling());
 
     checkThemeForProperties( this.props.inheritedThemes );
     checkThemeForProperties( this.state.themes );
@@ -437,7 +433,7 @@ class FormGroup extends Component {
       <Fragment>
         <Box
           key={name}
-          zIndex={20 - index}
+          zIndex={50 - index}
           {...defaultStyle.group}
           // padding={10}
           {...this.getStyling()['default']}

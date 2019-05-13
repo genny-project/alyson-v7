@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 import { number, bool, func, oneOf } from 'prop-types';
 import dlv from 'dlv';
+import { TEXT_SIZES } from '../../../../constants';
 import { isString, isInteger } from '../../../../utils';
 import { Input } from '../..';
-
-const textSizes = {
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 20,
-  xl: 24,
-};
 
 class InputTextArea extends Component {
   static defaultProps = {
@@ -66,7 +59,7 @@ class InputTextArea extends Component {
     this.tempElement.innerHTML = isString( text ) ? text : null;
     this.tempElement.setAttribute( 'style', `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} ${tempElementStyle}` );
 
-    const rowHeight = 3 + ( textSizes[this.props.textSize] || 14 );
+    const rowHeight = 3 + ( TEXT_SIZES[this.props.textSize] || 14 );
     const minRows = this.props.numberOfLines;
     const contentHeight = this.tempElement.clientHeight;
     const totalRows = Math.ceil( contentHeight / rowHeight ) + numberOfNewLines;
