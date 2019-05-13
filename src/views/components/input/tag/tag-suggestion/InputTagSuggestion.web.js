@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, object, string } from 'prop-types';
+import { bool, object, string, func } from 'prop-types';
 import { Box, Touchable, Text } from '../../../index';
 
 class InputTagSuggestion extends Component {
@@ -11,6 +11,16 @@ class InputTagSuggestion extends Component {
     allowMultipleSelection: bool,
     functions: object,
     testID: string,
+    onFocus: func,
+    onBlur: func,
+  }
+
+  handleFocus = () => {
+    if ( this.props.onFocus ) this.props.onFocus();
+  }
+
+  handleBlur = () => {
+    if ( this.props.onBlur ) this.props.onBlur();
   }
 
   render() {
@@ -38,6 +48,8 @@ class InputTagSuggestion extends Component {
           }
         }}
         testID={`input-tag-option ${testID}`}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}
       >
         <Box
           padding={15}
@@ -45,6 +57,7 @@ class InputTagSuggestion extends Component {
           borderColor="#DDD"
           borderStyle="solid"
           alignItems="center"
+          backgroundColor={isHighlighted ? 'red' : 'white'}
         >
           <Text
             color={isHighlighted ? 'black' : 'gray'}

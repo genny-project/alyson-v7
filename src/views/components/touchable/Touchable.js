@@ -90,6 +90,7 @@ class Touchable extends Component {
     opacity: number,
     onLayout: func,
     onPress: func,
+    onFocus: func,
     accessible: bool,
     accessibilityRole: string,
     accessibilityLabel: string,
@@ -154,6 +155,10 @@ class Touchable extends Component {
 
     if ( this.props.onPress )
       this.props.onPress( event );
+  }
+
+  handleFocus = event => {
+    if ( this.props.onFocus ) this.props.onFocus( event );
   }
 
   render() {
@@ -311,6 +316,7 @@ class Touchable extends Component {
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
           onPress={this.handlePress}
+          onFocus={this.handleFocus}
           ref={onRef}
         >
           {children}

@@ -48,7 +48,14 @@ class MultiDownshift extends React.Component {
 
   getStateAndHelpers( downshift ) {
     const { selectedItems } = this.state;
-    const { getRemoveButtonProps, removeItem, selectMultipleItems, handleToggleMenu } = this;
+    const {
+      getRemoveButtonProps,
+      removeItem,
+      selectMultipleItems,
+      handleToggleMenu,
+      handleOpenMenu,
+      handleCloseMenu,
+    } = this;
 
     return {
       getRemoveButtonProps: getRemoveButtonProps( downshift ),
@@ -56,6 +63,8 @@ class MultiDownshift extends React.Component {
       selectedItems,
       selectMultipleItems: selectMultipleItems( downshift ),
       handleToggleMenu,
+      handleOpenMenu,
+      handleCloseMenu,
       ...downshift,
     };
   }
@@ -69,6 +78,7 @@ class MultiDownshift extends React.Component {
   }
 
   stateReducer = ( state, changes ) => {
+    console.log( state.highlightedIndex );
     switch ( changes.type ) {
       case Downshift.stateChangeTypes.keyDownEnter:
       case Downshift.stateChangeTypes.clickItem:
@@ -138,12 +148,26 @@ class MultiDownshift extends React.Component {
   }
 
   handleToggleMenu = () => {
+    console.log( 'handle Toggle' );
     this.setState(
       ({ isOpen }) => {
         return {
           isOpen: !isOpen,
         };
       });
+  }
+
+  handleOpenMenu = () => {
+    console.log( 'handle Open' );
+    this.setState({
+      isOpen: true,
+    });
+  }
+
+  handleCloseMenu = () => {
+    this.setState({
+      isOpen: false,
+    });
   }
 
   handleSelection = ( selectedItem, downshift ) => {

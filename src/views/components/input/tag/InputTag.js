@@ -34,13 +34,26 @@ class InputTag extends Component {
     testID: string,
   }
 
-  state = { preSelected: [] }
+  inputs = {};
+
+  state = {
+    preSelected: [],
+  }
 
   shouldComponentUpdate( nextProps ) {
     if ( nextProps.items !== this.props.items )
       return true;
 
     return false;
+  }
+
+  setRef = ( ref, id ) => {
+    // console.log( 'setref', ref );
+    if ( ref ) {
+      this.inputs[id] = ref;
+    }
+
+    // console.log( this.inputs );
   }
 
   itemToString = ( item ) => {
@@ -126,6 +139,8 @@ class InputTag extends Component {
       ...restProps
     } = this.props;
 
+    // console.log( this.inputs );
+
     return (
        // STATE HOLDER
       <MultiDownshift
@@ -162,12 +177,15 @@ class InputTag extends Component {
           selectedItems,
           highlightedIndex,
           handleToggleMenu,
+          handleOpenMenu,
+          handleCloseMenu,
           selectItem,
           onInputValueChange,
           clearSelection,
           selectMultipleItems,
+          setHighlightedIndex,
         }) => {
-          // console.log( highlightedIndex );
+          console.log( 'highlightedIndex', highlightedIndex );
 
           return (
             // WRAPPER
@@ -188,6 +206,13 @@ class InputTag extends Component {
                 inputValue={inputValue}
                 onChangeValue={onInputValueChange}
                 testID={testID}
+                onFocus={() => {
+                  setHighlightedIndex( -1 );
+                  handleOpenMenu();
+                }}
+                isHighlighted={highlightedIndex === -1}
+                onRef={this.setRef}
+                // onBlur={handleCloseMenu}
               />
 
               {/* SELECTED TAGS CONTAINER */ }
@@ -300,6 +325,7 @@ class InputTag extends Component {
                             handleToggleMenu: handleToggleMenu,
                           }}
                           testID={testID}
+                          onFocus={() => setHighlightedIndex( index )}
                         />
                       );
                     })
