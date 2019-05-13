@@ -367,6 +367,8 @@ class Input extends Component {
 
       case 'htmlarea':
       case 'rich-text-editor':
+      case 'editor':
+      case 'texteditor':
         return (
           <RichTextEditor
             {...inputProps}
