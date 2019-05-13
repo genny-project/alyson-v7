@@ -3,6 +3,7 @@ import { BackHandler } from 'react-native';
 import dlv from 'dlv';
 import AuthenticatedApp from './authenticated';
 import TestDisplay from './test-display';
+import Routing from '../routing';
 import { location } from '../../utils';
 
 class App extends Component {
@@ -69,6 +70,7 @@ class App extends Component {
     return (
       <AuthenticatedApp>
         {debug && <TestDisplay />}
+        <Routing />
       </AuthenticatedApp>
     );
   }
