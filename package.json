@@ -84,6 +84,7 @@
     "react-dom": "16.4.1",
     "react-helmet": "^5.2.0",
     "react-markdown": "3.4.1",
+    "deep-parse-json": "^1.0.1",
     "react-modal": "^3.4.5",
     "react-monaco-editor": "^0.18.0",
     "react-native": "0.55.4",
@@ -144,7 +145,8 @@
     "vertx3-eventbus-client": "github:genny-project/vertx3-eventbus-client",
     "webpack": "^4.14.0",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.4",
+    "zstd-codec": "^0.1.1"
   },
   "devDependencies": {
     "app-icon": "^0.6.3",
