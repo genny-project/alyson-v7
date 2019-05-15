@@ -23,12 +23,7 @@ const colors = {
   yellow: 'yellow',
 };
 
-const Icon = ({
-  name,
-  color = 'white',
-  size = 'md',
-  cursor = 'auto',
-}) => {
+const Icon = ({ name, color = 'white', size = 'md', cursor = 'auto' }) => {
   const style = {
     fontFamily: 'Material Icons',
     whiteSpace: 'nowrap',
@@ -42,16 +37,8 @@ const Icon = ({
   };
 
   return (
-    <Text
-      style={[
-        styles.wrapper,
-        style,
-      ]}
-    >
-      {name && name.includes( '-' )
-        ? name.replace( /-/g, '_' )
-        : name
-      }
+    <Text style={[styles.wrapper, style]}>
+      {name && name !== 'undefined' && name.includes( '-' ) ? name.replace( /-/g, '_' ) : name}
     </Text>
   );
 };
@@ -59,12 +46,8 @@ const Icon = ({
 Icon.propTypes = {
   name: string.isRequired,
   color: string,
-  size: oneOf(
-    ['xs', 'sm', 'md', 'lg', 'xl']
-  ),
-  cursor: oneOf(
-    ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text']
-  ),
+  size: oneOf( ['xs', 'sm', 'md', 'lg', 'xl'] ),
+  cursor: oneOf( ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text'] ),
 };
 
 export default Icon;
