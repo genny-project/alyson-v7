@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { object, func, bool, string } from 'prop-types';
-import { Box, Input, Icon, Touchable } from '../../../index';
+import { Box, Input, Icon, Touchable, Text } from '../../../index';
 
 class InputTagInputField extends Component {
   static propTypes = {
@@ -8,21 +8,40 @@ class InputTagInputField extends Component {
     getInputProps: func,
     onPress: func,
     handleFocus: func,
-    shouldFocus: bool,
     inputValue: string,
     onChangeValue: func,
     isOpen: bool,
     testID: string,
   }
 
+  state = {
+    focused: false,
+  }
+
   handleKeyPress = ( event ) => {
-    console.log( 'keypress', event.nativeEvent.key );
+    // console.log( 'keypress', event.nativeEvent.key );
+    if ( this.props.onKeyPress ) this.props.onKeyPress( event.nativeEvent.key );
   }
 
   handleRef = ( input ) => {
     this.input = input;
 
     if ( this.props.onRef ) this.props.onRef( input, 'input' );
+  }
+
+  // handleFocus = () => {
+  //   console.log( 'focus TOUCHABLE' );
+  //   this.setState({
+
+  //   });
+  // }
+
+  handleState = ( event ) => {
+    console.log( 'state', event );
+    this.setState({
+      focused: event === 'focus' ? true : false,
+      focusing: true,
+    });
   }
 
   render() {
@@ -32,26 +51,35 @@ class InputTagInputField extends Component {
       getInputProps,
       onChangeValue,
       inputValue,
-      shouldFocus,
+      isOpen,
       testID,
       onFocus,
       onBlur,
+      formattedItems,
     } = this.props;
+
+    console.log( formattedItems, formattedItems.length );
 
     return (
       <Touchable
         onPress={() => {
-          if ( !this.props.isHighlighted ) {
-            onPress();
-            shouldFocus && this.input.focus();
-          }
+          console.log( 'touchable press', this.state.focusing, this.state.focused, isOpen );
+          this.state.focusing ? null : onPress();
+          this.setState({
+            focusing: false,
+          });
         }}
+        // onFocus={this.handleFocus}
       >
         <Box
           zIndex={10}
           position="relative"
           flexDirection="row"
         >
+          <Text
+            text={formattedItems}
+            color="black"
+          />
           <Input
             {...getInputProps({
               ...inputProps,
@@ -62,7 +90,11 @@ class InputTagInputField extends Component {
               value: inputValue || '',
             })}
             onKeyPress={this.handleKeyPress}
-            onFocus={onFocus}
+            onFocus={() => {
+              onFocus();
+              this.handleState( 'focus' );
+            }}
+            onBlur={() => this.handleState( 'blur' )}
             testID={`input-tag ${testID}`}
           />
           <Box
@@ -73,7 +105,7 @@ class InputTagInputField extends Component {
             zIndex={5}
           >
             <Icon
-              name={!shouldFocus ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
+              name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
               color="black"
               size="md"
             />

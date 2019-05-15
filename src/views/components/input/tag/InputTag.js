@@ -48,12 +48,9 @@ class InputTag extends Component {
   }
 
   setRef = ( ref, id ) => {
-    // console.log( 'setref', ref );
     if ( ref ) {
       this.inputs[id] = ref;
     }
-
-    // console.log( this.inputs );
   }
 
   itemToString = ( item ) => {
@@ -92,15 +89,6 @@ class InputTag extends Component {
     }
   }
 
-  handleChange = selectedItems => {
-    if ( this.props.onChangeValue ) {
-      this.props.onChangeValue( selectedItems.map( i => i[this.props.itemValueKey]
-        ? i[this.props.itemValueKey]
-        : i
-      ));
-    }
-  }
-
   handleFilter = ( inputValue, selectedItems ) => dropdownItem => {
     const { itemStringKey } = this.props;
     const itemString = isObject( dropdownItem ) ? dropdownItem[itemStringKey] : dropdownItem;
@@ -122,6 +110,26 @@ class InputTag extends Component {
     }
 
     return false;
+  }
+
+  handleKeyPress = ( key, func, index, maxIndex ) => {
+    console.log( index );
+
+    switch ( key ) {
+      case 'ArrowDown':
+        console.log( 'KEY: arrow down' );
+        func( index >= maxIndex || index == null ? 0 : index + 1 );
+        break;
+      case 'ArrowUp':
+        console.log( 'KEY: arrow up' );
+        func( index <= 0 || index == null ? maxIndex : index - 1 );
+        break;
+      case 'Enter':
+        console.log( 'KEY: enter' );
+        break;
+      default:
+        console.log( 'KEY', key );
+    }
   }
 
   render() {
@@ -185,7 +193,19 @@ class InputTag extends Component {
           selectMultipleItems,
           setHighlightedIndex,
         }) => {
-          console.log( 'highlightedIndex', highlightedIndex );
+          // console.log( 'highlightedIndex', highlightedIndex );
+
+          const formattedItems = () => {
+            return isArray( selectedItems, { ofMinLength: 1 }) ? (
+              selectedItems.map( item => {
+                const itemString = isObject( item ) ? item[itemStringKey] : item;
+
+                return itemString;
+              })
+            ).join() : '';
+          };
+
+          console.log( formattedItems());
 
           return (
             // WRAPPER
@@ -202,7 +222,7 @@ class InputTag extends Component {
                 inputProps={restProps}
                 getInputProps={getInputProps}
                 onPress={handleToggleMenu}
-                shouldFocus={!isOpen}
+                isOpen={isOpen}
                 inputValue={inputValue}
                 onChangeValue={onInputValueChange}
                 testID={testID}
@@ -210,13 +230,16 @@ class InputTag extends Component {
                   setHighlightedIndex( -1 );
                   handleOpenMenu();
                 }}
-                isHighlighted={highlightedIndex === -1}
+                formattedItems={formattedItems()}
                 onRef={this.setRef}
+                onKeyPress={( key ) => {
+                  this.handleKeyPress( key, setHighlightedIndex, highlightedIndex, items.length );
+                }}
                 // onBlur={handleCloseMenu}
               />
 
               {/* SELECTED TAGS CONTAINER */ }
-              <Box
+              {/* <Box
                 flexWrap="wrap"
                 marginTop={10}
                 {...tagsWrapperProps}
@@ -255,7 +278,7 @@ class InputTag extends Component {
                     );
                   })
                 )}
-              </Box>
+              </Box> */}
               {/* SUGGESTIONS CONTAINER */ }
               <InputTagSuggestionContainer
                 isOpen={isOpen}
@@ -325,7 +348,11 @@ class InputTag extends Component {
                             handleToggleMenu: handleToggleMenu,
                           }}
                           testID={testID}
-                          onFocus={() => setHighlightedIndex( index )}
+                          index={index}
+                          onFocus={() => {
+                            setHighlightedIndex( index );
+                            if ( this.inputs && this.inputs['input'] ) this.inputs['input'].focus();
+                          }}
                         />
                       );
                     })

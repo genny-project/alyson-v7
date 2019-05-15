@@ -78,7 +78,6 @@ class MultiDownshift extends React.Component {
   }
 
   stateReducer = ( state, changes ) => {
-    console.log( state.highlightedIndex );
     switch ( changes.type ) {
       case Downshift.stateChangeTypes.keyDownEnter:
       case Downshift.stateChangeTypes.clickItem:
@@ -148,7 +147,6 @@ class MultiDownshift extends React.Component {
   }
 
   handleToggleMenu = () => {
-    console.log( 'handle Toggle' );
     this.setState(
       ({ isOpen }) => {
         return {
@@ -158,7 +156,6 @@ class MultiDownshift extends React.Component {
   }
 
   handleOpenMenu = () => {
-    console.log( 'handle Open' );
     this.setState({
       isOpen: true,
     });

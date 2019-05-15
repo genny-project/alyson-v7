@@ -133,6 +133,20 @@ class Touchable extends Component {
     }, {});
   }
 
+  focus() {
+    if ( this.input )
+      this.input.focus();
+  }
+
+  blur() {
+    if ( this.input )
+      this.input.blur();
+  }
+
+  handleRef = input => {
+    this.input = input;
+  }
+
   handleMouseEnter = event => {
     this.setState({ isHovering: true });
 
@@ -317,7 +331,9 @@ class Touchable extends Component {
           onMouseLeave={this.handleMouseLeave}
           onPress={this.handlePress}
           onFocus={this.handleFocus}
-          ref={onRef}
+          onKeyPress={this.handleKeyPress}
+          onKeyDown={this.handleKeyPress}
+          ref={this.handleRef}
         >
           {children}
         </Element>

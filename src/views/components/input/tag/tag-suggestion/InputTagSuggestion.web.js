@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { bool, object, string, func } from 'prop-types';
-import { Box, Touchable, Text } from '../../../index';
+import { Box, Touchable, Text, Input } from '../../../index';
 
 class InputTagSuggestion extends Component {
   static propTypes = {
@@ -13,9 +13,11 @@ class InputTagSuggestion extends Component {
     testID: string,
     onFocus: func,
     onBlur: func,
+    onPress: func,
   }
 
   handleFocus = () => {
+    console.log( 'FOCUS' );
     if ( this.props.onFocus ) this.props.onFocus();
   }
 
@@ -32,11 +34,14 @@ class InputTagSuggestion extends Component {
       allowMultipleSelection,
       functions,
       testID,
+      onFocus,
+      onPress,
     } = this.props;
 
     return (
       <Touchable
         withFeedback
+        tabIndex={-1}
         onPress={() => {
           if ( allowMultipleSelection ) {
             functions.addItemToPreSelection( item, functions.selectMultipleItems );
@@ -46,10 +51,10 @@ class InputTagSuggestion extends Component {
             functions.clearSelection();
             functions.handleToggleMenu();
           }
+          if ( onPress ) onPress();
         }}
+        onFocus={onFocus}
         testID={`input-tag-option ${testID}`}
-        onFocus={this.handleFocus}
-        onBlur={this.handleBlur}
       >
         <Box
           padding={15}

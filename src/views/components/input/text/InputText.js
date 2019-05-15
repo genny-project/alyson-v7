@@ -152,7 +152,10 @@ class Input extends Component {
 
   componentDidMount() {
     if ( this.props.value )
-      this.setState({ valueLength: String( this.props.value ).length });
+      this.setState({
+        value: this.props.value,
+        valueLength: String( this.props.value ).length,
+      });
   }
 
   componentDidUpdate( prevProps, prevState ) {
