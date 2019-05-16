@@ -74,7 +74,7 @@
     "prop-types": "^15.6.2",
     "query-string": "^6.1.0",
     "rc-time-picker": "^3.3.1",
-    "react": "^16.3.1",
+    "react": "^16.8.6",
     "react-day-picker": "^7.1.9",
     "react-dom": "16.4.1",
     "react-helmet": "^5.2.0",
