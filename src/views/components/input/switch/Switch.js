@@ -44,10 +44,12 @@ class Switch extends PureComponent {
     const { testID } = this.props;
     const { value } = this.state;
 
+    // if ( this.props.testID === 'QUE_INPUTS_GRP:QUE_SWITCH' ) console.log( this.props.testID );
+
     return (
       <View testID={testID}>
         <NativeSwitch
-          {...this.props}
+          // {...this.props}
           onValueChange={this.handleChangeValue}
           value={value}
         />

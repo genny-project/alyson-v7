@@ -1,7 +1,6 @@
 require( 'dotenv/config' );
 const webpack = require( 'webpack' );
 const merge = require( 'webpack-merge' );
-const MonacoWebpackPlugin = require( 'monaco-editor-webpack-plugin' );
 const Dotenv = require( 'dotenv-webpack' );
 const common = require( './webpack.common.js' );
 
@@ -22,17 +21,12 @@ function formatEnvironmentVariables( envVars ) {
 }
 
 module.exports = env => {
-  const plugins = [
-    new MonacoWebpackPlugin(),
-    new Dotenv({ path: './.env' }),
-  ];
+  const plugins = [new Dotenv({ path: './.env' })];
 
   if ( env ) {
     const envVars = formatEnvironmentVariables( env );
 
-    plugins.push(
-      new webpack.DefinePlugin( envVars )
-    );
+    plugins.push( new webpack.DefinePlugin( envVars ));
   }
 
   return merge( common, {

@@ -79,6 +79,15 @@ class InputTag extends Component {
     }
   }
 
+  handleChange = selectedItems => {
+    if ( this.props.onChangeValue ) {
+      this.props.onChangeValue( selectedItems.map( i => i[this.props.itemValueKey]
+        ? i[this.props.itemValueKey]
+        : i
+      ));
+    }
+  }
+
   handleFilter = ( inputValue, selectedItems ) => dropdownItem => {
     const { itemStringKey } = this.props;
     const itemString = isObject( dropdownItem ) ? dropdownItem[itemStringKey] : dropdownItem;
@@ -157,101 +166,38 @@ class InputTag extends Component {
           onInputValueChange,
           clearSelection,
           selectMultipleItems,
-        }) => (
-          // WRAPPER
-          <InputTagBody
-            bodyProps={{
-              ...getRootProps( undefined, { suppressRefError: true }),
-              flexDirection: 'column',
-            }}
-            isOpen={isOpen}
-            handleToggleMenu={handleToggleMenu}
-          >
-            {/* INPUT */ }
-            <InputTagInputField
-              inputProps={restProps}
-              getInputProps={getInputProps}
-              onPress={handleToggleMenu}
-              shouldFocus={!isOpen}
-              inputValue={inputValue}
-              onChangeValue={onInputValueChange}
-              testID={testID}
-            />
+        }) => {
+          // console.log( highlightedIndex );
 
-            {/* SELECTED TAGS CONTAINER */ }
-            <Box
-              flexWrap="wrap"
-              marginTop={10}
-              {...tagsWrapperProps}
-            >
-              {selectedItems.length > 0 && (
-                selectedItems.map( item => {
-                  const itemString = isObject( item ) ? item[itemStringKey] : item;
-                  const itemId = isObject( item ) ? item[itemValueKey] : item;
-                  const itemObject = isObject( item )
-                    ? item
-                    : {
-                      [itemStringKey]: itemString,
-                      [itemValueKey]: itemId,
-                    };
-                  const onPress = () => {
-                    removeItem( itemObject,  );
-                    this.removeItemToPreSelection( itemObject );
-                  };
-
-                  return (
-                    <InputTagItem
-                      key={itemId}
-                      renderProp={renderTag}
-                      item={itemObject}
-                      itemString={itemString}
-                      touchableProps={getRemoveButtonProps({
-                        withFeedback: true,
-                        onPress: onPress,
-                        style: {
-                          padding: 10,
-                        },
-                      })}
-                      onPress={onPress}
-                      testID={testID}
-                    />
-                  );
-                })
-              )}
-            </Box>
-            {/* SUGGESTIONS CONTAINER */ }
-            <InputTagSuggestionContainer
-              isOpen={isOpen}
-              onPressClose={handleToggleMenu}
-              onPressClear={clearSelection}
-              onPressItem={() => {
-                selectMultipleItems( this.state.preSelected );
-                handleToggleMenu();
-                clearSelection();
+          return (
+            // WRAPPER
+            <InputTagBody
+              bodyProps={{
+                ...getRootProps( undefined, { suppressRefError: true }),
+                flexDirection: 'column',
               }}
-              inputValue={inputValue}
-              allowMultipleSelection={allowMultipleSelection}
-              inputProps={getInputProps({
-                type: 'text',
-                clearButtonMode: 'while-editing',
-                autoFocus: true,
-                paddingLeft: 50,
-                paddingY: 15,
-                width: '100%',
-                backgroundColor: 'transparent',
-                borderBottomWidth: 2,
-                borderColor: '#DDD',
-                borderStyle: 'solid',
-              })}
+              isOpen={isOpen}
+              handleToggleMenu={handleToggleMenu}
             >
-              {(
-                isArray( items ) ||
-                inputValue.length > 0
-              ) ? (
-                  items
-                  .concat( allowNewTags ? [inputValue] : [] )
-                  .filter( this.handleFilter( inputValue ))
-                  .map(( item, index ) => {
+              {/* INPUT */ }
+              <InputTagInputField
+                inputProps={restProps}
+                getInputProps={getInputProps}
+                onPress={handleToggleMenu}
+                shouldFocus={!isOpen}
+                inputValue={inputValue}
+                onChangeValue={onInputValueChange}
+                testID={testID}
+              />
+
+              {/* SELECTED TAGS CONTAINER */ }
+              <Box
+                flexWrap="wrap"
+                marginTop={10}
+                {...tagsWrapperProps}
+              >
+                {selectedItems.length > 0 && (
+                  selectedItems.map( item => {
                     const itemString = isObject( item ) ? item[itemStringKey] : item;
                     const itemId = isObject( item ) ? item[itemValueKey] : item;
                     const itemObject = isObject( item )
@@ -260,59 +206,126 @@ class InputTag extends Component {
                         [itemStringKey]: itemString,
                         [itemValueKey]: itemId,
                       };
-                    const isSelected = allowMultipleSelection
-                      ? (
-                        this.state.preSelected &&
-                        this.state.preSelected.filter(
-                          i => i[itemValueKey] === itemId
-                        ).length > 0
-                      )
-                      : selectedItems && selectedItems.includes( itemString );
+                    const onPress = () => {
+                      removeItem( itemObject,  );
+                      this.removeItemToPreSelection( itemObject );
+                    };
 
                     return (
-                      // RENDER SUGGESTION
-                      <InputTagSuggestion
+                      <InputTagItem
                         key={itemId}
-                        renderProp={renderSuggestion}
+                        renderProp={renderTag}
                         item={itemObject}
                         itemString={itemString}
-                        isSelected={isSelected}
-                        isHighlighted={highlightedIndex === index}
-                        getItemProps={getItemProps}
-                        allowMultipleSelection={allowMultipleSelection}
-                        functions={{
-                          selectMultipleItems: selectMultipleItems,
-                          addItemToPreSelection: this.addItemToPreSelection,
-                          selectItem: selectItem,
-                          clearSelection: clearSelection,
-                          handleToggleMenu: handleToggleMenu,
-                        }}
+                        touchableProps={getRemoveButtonProps({
+                          withFeedback: true,
+                          onPress: onPress,
+                          style: {
+                            padding: 10,
+                          },
+                        })}
+                        onPress={onPress}
                         testID={testID}
                       />
                     );
                   })
-                ) : (
-                  <Box
-                    paddingX={15}
-                    paddingY={10}
-                    width="100%"
-                    justifyContent="center"
-                  >
-                    <Text
-                      align="center"
-                      color="grey"
-                      size="xs"
-                    >
-                      {inputValue.length > 0
-                        ? 'No results'
-                        : 'Please type...'
-                    }
-                    </Text>
-                  </Box>
                 )}
-            </InputTagSuggestionContainer>
-          </InputTagBody>
-        )}
+              </Box>
+              {/* SUGGESTIONS CONTAINER */ }
+              <InputTagSuggestionContainer
+                isOpen={isOpen}
+                onPressClose={handleToggleMenu}
+                onPressClear={clearSelection}
+                onPressItem={() => {
+                  selectMultipleItems( this.state.preSelected );
+                  handleToggleMenu();
+                  clearSelection();
+                }}
+                inputValue={inputValue}
+                allowMultipleSelection={allowMultipleSelection}
+                inputProps={getInputProps({
+                  type: 'text',
+                  clearButtonMode: 'while-editing',
+                  autoFocus: true,
+                  paddingLeft: 50,
+                  paddingY: 15,
+                  width: '100%',
+                  backgroundColor: 'transparent',
+                  borderBottomWidth: 2,
+                  borderColor: '#DDD',
+                  borderStyle: 'solid',
+                })}
+              >
+                {(
+                  isArray( items ) ||
+                  inputValue.length > 0
+                ) ? (
+                    items
+                    .concat( allowNewTags ? [inputValue] : [] )
+                    .filter( this.handleFilter( inputValue ))
+                    .map(( item, index ) => {
+                      const itemString = isObject( item ) ? item[itemStringKey] : item;
+                      const itemId = isObject( item ) ? item[itemValueKey] : item;
+                      const itemObject = isObject( item )
+                        ? item
+                        : {
+                          [itemStringKey]: itemString,
+                          [itemValueKey]: itemId,
+                        };
+                      const isSelected = allowMultipleSelection
+                        ? (
+                          this.state.preSelected &&
+                          this.state.preSelected.filter(
+                            i => i[itemValueKey] === itemId
+                          ).length > 0
+                        )
+                        : selectedItems && selectedItems.includes( itemString );
+
+                      return (
+                        // RENDER SUGGESTION
+                        <InputTagSuggestion
+                          key={itemId}
+                          renderProp={renderSuggestion}
+                          item={itemObject}
+                          itemString={itemString}
+                          isSelected={isSelected}
+                          isHighlighted={highlightedIndex === index}
+                          getItemProps={getItemProps}
+                          allowMultipleSelection={allowMultipleSelection}
+                          functions={{
+                            selectMultipleItems: selectMultipleItems,
+                            addItemToPreSelection: this.addItemToPreSelection,
+                            selectItem: selectItem,
+                            clearSelection: clearSelection,
+                            handleToggleMenu: handleToggleMenu,
+                          }}
+                          testID={testID}
+                        />
+                      );
+                    })
+                  ) : (
+                    <Box
+                      paddingX={15}
+                      paddingY={10}
+                      width="100%"
+                      justifyContent="center"
+                    >
+                      <Text
+                        align="center"
+                        color="grey"
+                        size="xs"
+                      >
+                        {inputValue.length > 0
+                          ? 'No results'
+                          : 'Please type...'
+                      }
+                      </Text>
+                    </Box>
+                  )}
+              </InputTagSuggestionContainer>
+            </InputTagBody>
+          );
+        }}
       </MultiDownshift>
     );
   }

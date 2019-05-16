@@ -2,7 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { Picker } from 'react-native';
 import { oneOfType, arrayOf, string, any, shape, number, func, bool, oneOf } from 'prop-types';
 // import memoize from 'memoize-one';
-import { isArray, isObject, isString } from '../../../../utils';
+import { TEXT_SIZES } from '../../../../constants';
+import { isArray, isObject, sort } from '../../../../utils';
 
 /** Ensure the props we're going to use were indeed passed through. */
 const filterOutUnspecifiedProps = props => {
@@ -14,14 +15,6 @@ const filterOutUnspecifiedProps = props => {
 
     return filteredProps;
   }, {});
-};
-
-const textSizes = {
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 20,
-  xl: 24,
 };
 
 class InputDropdown extends Component {
@@ -142,46 +135,6 @@ class InputDropdown extends Component {
       this.props.onChangeValue( value );
   }
 
-  handleSort = ( a, b ) => {
-    const { sortByWeight } = this.props;
-
-    if ( sortByWeight ) {
-      if ( isObject( a ) && isObject( b )) {
-        if ( a.weight < b.weight ) return - 1;
-        if ( a.weight === b.weight ) return 0;
-        if ( a.weight > b.weight ) return 1;
-      }
-    }
-
-    let stringA; let stringB;
-
-    if ( isObject( a ) && isObject( b )) {
-      if ( isString( a.name ) && isString( b.name )) {
-        stringA = a.name.toLowerCase();
-        stringB = b.name.toLowerCase();
-      }
-      else if ( isString( a.label ) && isString( b.label )) {
-        stringA = a.label.toLowerCase();
-        stringB = b.label.toLowerCase();
-      }
-    }
-    else if ( isString( a ) && isString( b )) {
-      stringA = a.toLowerCase();
-      stringB = b.toLowerCase();
-    }
-
-    // console.warn({ a, b, stringA, stringB });
-
-    if ( !stringA && !stringB ) return 0;
-    if ( !stringA ) return 1;
-    if ( !stringB ) return -1;
-
-    if ( stringA < stringB ) return -1;
-    if ( stringA > stringB ) return 1;
-
-    return 0;
-  }
-
   render() {
     const {
       items,
@@ -241,7 +194,7 @@ class InputDropdown extends Component {
       paddingRight: paddingRight,
       paddingBottom,
       paddingLeft,
-      fontSize: textSizes[textSize],
+      fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,
       // width: '100%', // Always be 100% of the parent width
@@ -290,24 +243,24 @@ class InputDropdown extends Component {
               />
             ) : null}
 
-            {uniqueItems
-              .sort( this.handleSort )
-              .map( item => {
-                const isItemObject = isObject( item );
+            {
+              sort( uniqueItems, { paths: ['weight'], direction: 'desc' })
+                .map( item => {
+                  const isItemObject = isObject( item );
 
-                return (
-                  <Picker.Item
-                    key={(
-                      isItemObject
-                        ? ( item[itemIdKey] || item[itemStringKey] )
-                        : item
-                    )}
-                    testID={`input-dropdown-option ${testID}`}
-                    label={isItemObject ? item[itemStringKey] : item}
-                    value={isItemObject ? item[itemValueKey] : item}
-                  />
-                );
-              })
+                  return (
+                    <Picker.Item
+                      key={(
+                        isItemObject
+                          ? ( item[itemIdKey] || item[itemStringKey] )
+                          : item
+                      )}
+                      testID={`input-dropdown-option ${testID}`}
+                      label={isItemObject ? item[itemStringKey] : item}
+                      value={isItemObject ? item[itemValueKey] : item}
+                    />
+                  );
+                })
             }
           </Fragment>
         ) : (
