@@ -296,6 +296,7 @@ class FormGroup extends Component {
       childAsks,
       question,
       questionCode,
+      targetCode,
     } = questionGroup;
 
     let properties = {};
@@ -397,6 +398,8 @@ class FormGroup extends Component {
           code={question.code}
           parentCode={parentGroupCode || questionCode}
           rootCode={rootCode}
+          targetCode={targetCode}
+          width="100%"
         >
           <Box
             key={name}
