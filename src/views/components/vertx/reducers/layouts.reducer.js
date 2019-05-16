@@ -238,34 +238,43 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
     state.asks[item.questionCode] = {
       name: item.name,
       code: item.questionCode,
-      ...( isObject( item.contextList ) && isArray( item.contextList.contexts )
-        ? {
+      ...(
+        ( isObject( item.contextList ) && isArray( item.contextList.contexts )) ||
+        ( isObject( state.asks[item.questionCode], { withProperty: 'links' }) && isArray( state.asks[item.questionCode].links )
+        ) ? {
           links: [
-            ...( isObject( state.asks[item.code], { withProperty: 'links' }) && isArray( state.asks[item.code].links ))
-              ? state.asks[item.code].links.filter( existingLink => (
-                !item.contextList.contexts
-                  .some( newLink => newLink.contextCode === existingLink.code )
-              )) : [],
-            ...item.contextList.contexts.map( link => {
-              const nameTypes = {
-                THEME: 'theme',
-                ICON: 'icon',
-              };
+            ...( isObject( state.asks[item.questionCode], { withProperty: 'links' }) && isArray( state.asks[item.questionCode].links ))
+              ? item.replace === true
+                ? []
+                : state.asks[item.questionCode].links.filter( existingLink => (
+                  ( isObject( item.contextList ) && isArray( item.contextList.contexts ))
+                    ? !item.contextList.contexts
+                      .some( newLink => newLink.contextCode === existingLink.code )
+                    : true
+                ))
+              : [],
+            ...( isObject( item.contextList ) && isArray( item.contextList.contexts ))
+              ? item.contextList.contexts.map( link => {
+                const nameTypes = {
+                  THEME: 'theme',
+                  ICON: 'icon',
+                };
 
-              return {
-                code: link.contextCode,
-                weight: link.weight,
-                type: nameTypes[link.name]
-                  ? nameTypes[link.name]
-                  : 'none',
-                component: componentTypes[link.visualControlType]
-                  ? componentTypes[link.visualControlType]
-                  : componentTypes[link.hint]
-                    ? componentTypes[link.hint]
-                    : null,
-                created: link.created,
-              };
-            }),
+                return {
+                  code: link.contextCode,
+                  weight: link.weight,
+                  type: nameTypes[link.name]
+                    ? nameTypes[link.name]
+                    : 'none',
+                  component: componentTypes[link.visualControlType]
+                    ? componentTypes[link.visualControlType]
+                    : componentTypes[link.hint]
+                      ? componentTypes[link.hint]
+                      : null,
+                  created: link.created,
+                };
+              })
+              : [],
           ],
         } : {}
       ),
