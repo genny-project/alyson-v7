@@ -37,7 +37,6 @@ class InputTagInputField extends Component {
   // }
 
   handleState = ( event ) => {
-    console.log( 'state', event );
     this.setState({
       focused: event === 'focus' ? true : false,
       focusing: true,
@@ -58,8 +57,6 @@ class InputTagInputField extends Component {
       formattedItems,
     } = this.props;
 
-    console.log( formattedItems, formattedItems.length );
-
     return (
       <Touchable
         onPress={() => {
@@ -79,6 +76,7 @@ class InputTagInputField extends Component {
           <Text
             text={formattedItems}
             color="black"
+            size="xs"
           />
           <Input
             {...getInputProps({

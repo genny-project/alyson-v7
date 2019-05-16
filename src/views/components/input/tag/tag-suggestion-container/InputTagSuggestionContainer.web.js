@@ -18,7 +18,7 @@ class InputTagBody extends Component {
         flexDirection="column"
         position="absolute"
         backgroundColor="white"
-        top={50}
+        top={20}
         left={0}
         width="100%"
         zIndex={100}

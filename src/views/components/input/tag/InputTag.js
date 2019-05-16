@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { string, func, array, bool, object } from 'prop-types';
-import { isString, isArray, isObject } from '../../../../utils';
+import { isString, isArray, isObject, isInteger } from '../../../../utils';
 import { Box, MultiDownshift, Text } from '../../index';
 import InputTagBody from './tag-body';
 import InputTagInputField from './tag-input-field';
@@ -41,6 +41,9 @@ class InputTag extends Component {
   }
 
   shouldComponentUpdate( nextProps ) {
+    console.log( '=============================' );
+    console.log( nextProps.items );
+
     if ( nextProps.items !== this.props.items )
       return true;
 
@@ -112,23 +115,19 @@ class InputTag extends Component {
     return false;
   }
 
-  handleKeyPress = ( key, func, index, maxIndex ) => {
-    console.log( index );
-
+  handleKeyPress = ( key, func, index, maxIndex, item, onEnterPressCallback ) => {
     switch ( key ) {
       case 'ArrowDown':
-        console.log( 'KEY: arrow down' );
         func( index >= maxIndex || index == null ? 0 : index + 1 );
         break;
       case 'ArrowUp':
-        console.log( 'KEY: arrow up' );
         func( index <= 0 || index == null ? maxIndex : index - 1 );
         break;
       case 'Enter':
-        console.log( 'KEY: enter' );
+        if ( item )
+          this.addItemToPreSelection( item, onEnterPressCallback );
         break;
       default:
-        console.log( 'KEY', key );
     }
   }
 
@@ -147,7 +146,7 @@ class InputTag extends Component {
       ...restProps
     } = this.props;
 
-    // console.log( this.inputs );
+    console.log( '~~~~~~~~~~~~~~~~~~~~~~~~~~~~' );
 
     return (
        // STATE HOLDER
@@ -155,13 +154,26 @@ class InputTag extends Component {
         allowMultipleSelection
         onChange={this.handleChange}
         itemToString={this.itemToString}
-        selectedItems={isArray( value )
-          ? value.map( i => isObject( i )
-            ? items.filter( x => x[itemValueKey] === i ).length > 0
-              ? items.filter( x => x[itemValueKey] === i )[0]
-              : i
-            : { [itemStringKey]: i, [itemValueKey]: i })
-          : null
+        selectedItems={
+          isArray( value )
+            ? value.map( i => {
+              console.log( '-------------' );
+              console.log( 'ITEM', i, items, itemValueKey );
+
+              const item = isObject( i )
+                ? items.filter( x => x[itemValueKey] === i[itemValueKey] ).length > 0
+                  ? items.filter( x => x[itemValueKey] === i[itemValueKey] )[0]
+                  : i
+                : items.filter( x => x[itemValueKey] === i ).length > 0
+                  ? items.filter( x => x[itemValueKey] === i )[0]
+                  : { [itemStringKey]: i, [itemValueKey]: i };
+
+              console.log( 'output', item );
+              console.log( '-------------' );
+
+              return item;
+            })
+            : null
         }
         addItemFunction={(( selectedItems, newItem ) => {
           return selectedItems.filter( i => (
@@ -193,7 +205,7 @@ class InputTag extends Component {
           selectMultipleItems,
           setHighlightedIndex,
         }) => {
-          // console.log( 'highlightedIndex', highlightedIndex );
+          console.log( 'SELECTED', selectedItems );
 
           const formattedItems = () => {
             return isArray( selectedItems, { ofMinLength: 1 }) ? (
@@ -202,8 +214,12 @@ class InputTag extends Component {
 
                 return itemString;
               })
-            ).join() : '';
+            ).join( ', ' ) : '';
           };
+
+          const filteredItems = items
+            .concat( allowNewTags ? [inputValue] : [] )
+            .filter( this.handleFilter( inputValue ));
 
           console.log( formattedItems());
 
@@ -233,7 +249,16 @@ class InputTag extends Component {
                 formattedItems={formattedItems()}
                 onRef={this.setRef}
                 onKeyPress={( key ) => {
-                  this.handleKeyPress( key, setHighlightedIndex, highlightedIndex, items.length );
+                  this.handleKeyPress(
+                    key,
+                    setHighlightedIndex,
+                    highlightedIndex,
+                    items.length,
+                    isInteger( highlightedIndex )
+                      ? filteredItems[highlightedIndex]
+                      : null,
+                    selectMultipleItems,
+                  );
                 }}
                 // onBlur={handleCloseMenu}
               />
@@ -305,12 +330,10 @@ class InputTag extends Component {
                 })}
               >
                 {(
-                  isArray( items ) ||
+                  isArray( filteredItems ) ||
                   inputValue.length > 0
                 ) ? (
-                    items
-                    .concat( allowNewTags ? [inputValue] : [] )
-                    .filter( this.handleFilter( inputValue ))
+                    filteredItems
                     .map(( item, index ) => {
                       const itemString = isObject( item ) ? item[itemStringKey] : item;
                       const itemId = isObject( item ) ? item[itemValueKey] : item;

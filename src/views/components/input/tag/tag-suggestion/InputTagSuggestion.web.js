@@ -17,7 +17,6 @@ class InputTagSuggestion extends Component {
   }
 
   handleFocus = () => {
-    console.log( 'FOCUS' );
     if ( this.props.onFocus ) this.props.onFocus();
   }
 
@@ -57,12 +56,13 @@ class InputTagSuggestion extends Component {
         testID={`input-tag-option ${testID}`}
       >
         <Box
-          padding={15}
+          padding={5}
           borderBottomWidth={1}
           borderColor="#DDD"
           borderStyle="solid"
           alignItems="center"
           backgroundColor={isHighlighted ? 'red' : 'white'}
+          width="100%"
         >
           <Text
             color={isHighlighted ? 'black' : 'gray'}
