@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray } from '../../../../utils';
+import { isArray, isObject } from '../../../../utils';
 
 const reduceChildAsks = ( childAsks, state ) => {
   if (
@@ -50,7 +50,7 @@ const reducer = ( state = {}, { type, payload }) => {
                         .some( newLink => newLink.contextCode === existingLink.contextCode )
                     ))
                   : [],
-                ...current.contextList.contexts,
+                ...isObject( current.contextList, { withProperty: 'contexts' }) ? current.contextList.contexts : [],
               ],
             },
             childAsks: reduceChildAsks( current.childAsks, state ),
