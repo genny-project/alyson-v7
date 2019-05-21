@@ -75,7 +75,7 @@ class InputCheckBoxNewNew extends React.Component {
 
         /* Dont allow to select more than one button/icon */
         if ( !multiSelect && selected.length >= 1 ) {
-          // if the selected value is more or equal to 1 dont allow to add the value
+          /* if the selected value is more or equal to 1 dont allow to add the value */
           return { selected: [...state.selected] };
         }
 
@@ -88,12 +88,6 @@ class InputCheckBoxNewNew extends React.Component {
       }
     );
   };
-
-  renderIcons() {
-    console.warn('Render Icons'); //eslint-disable-line
-  }
-
-  // select icons depending upon the Check box or Radio Item
 
   render() {
     const { selected } = this.state;
@@ -123,7 +117,6 @@ class InputCheckBoxNewNew extends React.Component {
                   />
                 </Box>
               </Touchable>
-
               <Touchable
                 withFeedback
                 onPress={this.handleChange( item.value )}
