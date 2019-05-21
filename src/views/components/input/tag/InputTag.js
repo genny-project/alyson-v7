@@ -114,69 +114,61 @@ class InputTag extends Component {
     return false;
   }
 
-  handleKeyPress = (
+  handleKeyPress = ({
     key,
-    func,
-    index,
+    setHighlightedIndex,
+    highlightedIndex,
     maxIndex,
     item,
-    onEnterPressCallback,
-    close,
-    open,
+    selectMultipleItems,
+    handleCloseMenu,
+    handleOpenMenu,
     isOpen,
-    selectItem
-  ) => {
+    selectItem,
+  }) => {
+    const itemString = isObject( item ) ? item[this.props.itemStringKey] : item;
+    const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
+    const itemObject = isObject( item )
+      ? item
+      : {
+        [this.props.itemStringKey]: itemString,
+        [this.props.itemValueKey]: itemId,
+      };
+
     switch ( key ) {
       case 'ArrowDown':
-        if ( !isOpen ) open();
-        func( index >= maxIndex || index == null ? 0 : index + 1 );
+        if ( !isOpen ) handleOpenMenu();
+        setHighlightedIndex(
+          highlightedIndex >= maxIndex || highlightedIndex == null
+            ? 0 : highlightedIndex + 1
+        );
         break;
       case 'ArrowUp':
-        if ( !isOpen ) open();
-        func( index <= 0 || index == null ? maxIndex : index - 1 );
+        if ( !isOpen ) handleOpenMenu();
+        setHighlightedIndex(
+          highlightedIndex <= 0 || highlightedIndex == null
+            ? maxIndex : highlightedIndex - 1
+        );
         break;
       case 'Enter':
-        if ( isObject( item )) {
-          if ( this.props.allowMultipleSelection ) {
-            this.addItemToPreSelection( item, onEnterPressCallback );
-          }
-          else {
-            selectItem( item );
-            close();
-            if ( this.inputs && this.inputs['input'] ) {
-              this.inputs['input'].blur();
-            }
-          }
+        if ( this.props.allowMultipleSelection ) {
+          this.addItemToPreSelection( itemObject, selectMultipleItems );
         }
-        else if ( isString( item )) {
-          const itemString = isObject( item ) ? item[this.props.itemStringKey] : item;
-          const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
-          const itemObject = isObject( item )
-            ? item
-            : {
-              [this.props.itemStringKey]: itemString,
-              [this.props.itemValueKey]: itemId,
-            };
-
-          if ( this.props.allowMultipleSelection ) {
-            this.addItemToPreSelection( itemObject, onEnterPressCallback );
-          }
-          else {
-            selectItem( itemObject );
-            close();
-            if ( this.inputs && this.inputs['input'] ) {
-              this.inputs['input'].blur();
-            }
+        else {
+          selectItem( itemObject );
+          handleCloseMenu();
+          if ( this.inputs && this.inputs['input'] ) {
+            this.inputs['input'].blur();
           }
         }
         break;
       case 'Tab':
-        if ( close ) close();
+        if ( handleCloseMenu ) handleCloseMenu();
         break;
 
       default:
         if ( maxIndex > 0 ) {
-          func( 0 );
+          setHighlightedIndex( 0 );
         }
     }
   }
@@ -363,12 +355,12 @@ class InputTag extends Component {
                 allowMultipleSelection={allowMultipleSelection}
                 onRef={this.handleRef}
                 onKeyPress={( key ) => {
-                  this.handleKeyPress(
+                  this.handleKeyPress({
                     key,
                     setHighlightedIndex,
                     highlightedIndex,
-                    filteredItems.length,
-                    isInteger( highlightedIndex )
+                    maxIndex: filteredItems.length,
+                    item: isInteger( highlightedIndex )
                       ? filteredItems[highlightedIndex]
                       : null,
                     selectMultipleItems,
@@ -376,7 +368,7 @@ class InputTag extends Component {
                     handleOpenMenu,
                     isOpen,
                     selectItem,
-                  );
+                  });
                 }}
               >
 
