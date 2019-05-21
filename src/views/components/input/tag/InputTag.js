@@ -32,6 +32,7 @@ class InputTag extends Component {
     renderTag: object,
     renderSuggestion: object,
     testID: string,
+    onBlur: func,
   }
 
   inputs = {};
@@ -203,6 +204,7 @@ class InputTag extends Component {
       renderTag,
       renderSuggestion,
       testID,
+      onBlur, // eslint-disable-line no-unused-vars
       ...restProps
     } = this.props;
 

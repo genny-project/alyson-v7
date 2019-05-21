@@ -186,9 +186,6 @@ class VisualControl extends Component {
       flexWrapper,
       index,
       onBlur,
-      onFocus,
-      onChange,
-      onChangeValue,
       ...restProps
     } = this.props;
 
@@ -316,9 +313,6 @@ class VisualControl extends Component {
         <FormInput
           {...getPropsByType( 'input' )}
           onBlur={onBlur}
-          onFocus={onFocus}
-          onChange={onChange}
-          onChangeValue={onChangeValue}
           iconProps={properties.renderVisualControlIcon ? getPropsByType( 'icon' ) : null}
           iconOnly={(
             properties.renderVisualControlInput != null
