@@ -1,6 +1,6 @@
 // import React from 'react';
 import * as Pages from '../../views/pages';
-// import { Redirect } from '../../views/components';
+import Checkbox from '../../views/components/input/checkbox-5';
 
 const routes = [
   {
@@ -28,11 +28,11 @@ const routes = [
     exact: true,
     component: Pages.Register,
   },
-  // {
-  //   path: '/',
-  //   exact: true,
-  //   component: () => <Redirect to="home" />,
-  // },
+  {
+    path: '/test',
+    exact: true,
+    component: Checkbox,
+  },
   {
     path: '*',
     component: Pages.Generic,
