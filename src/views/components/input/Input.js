@@ -11,7 +11,6 @@ import InputRating from './rating';
 import InputText from './text';
 import InputTextArea from './textarea';
 import Switch from './switch';
-import InputDropdown from './dropdown';
 import Passcode from './passcode';
 import InputRead from './read';
 import InputCurrency from './currency';
@@ -197,8 +196,15 @@ class Input extends Component {
 
       case 'dropdown':
         return (
-          <InputDropdown
+          // <InputDropdown
+          //   {...inputProps}
+          //   ref={input => this.input = input}
+          // />
+          <InputTag
             {...inputProps}
+            placeholder="Please select..."
+            allowMultipleSelection={false}
+            allowNewTags={false}
             ref={input => this.input = input}
           />
         );
@@ -344,8 +350,8 @@ class Input extends Component {
       case 'dropdownmultiple':
         return (
           <InputTag
-            placeholder="Please select..."
             {...inputProps}
+            placeholder="Please select..."
             allowMultipleSelection
             allowNewTags={false}
             ref={input => this.input = input}
@@ -355,6 +361,7 @@ class Input extends Component {
         return (
           <InputTag
             {...inputProps}
+            allowMultipleSelection
             ref={input => this.input = input}
           />
         );
@@ -367,6 +374,7 @@ class Input extends Component {
 
       case 'htmlarea':
       case 'rich-text-editor':
+      case 'editor':
         return (
           <RichTextEditor
             {...inputProps}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { bool, object, string, func } from 'prop-types';
-import { Box, Touchable, Text, Input } from '../../../index';
+import { Box, Touchable, Text, Icon } from '../../../index';
 
 class InputTagSuggestion extends Component {
   static propTypes = {
@@ -14,6 +14,7 @@ class InputTagSuggestion extends Component {
     onFocus: func,
     onBlur: func,
     onPress: func,
+    onMouseEnter: func,
   }
 
   handleFocus = () => {
@@ -35,12 +36,14 @@ class InputTagSuggestion extends Component {
       testID,
       onFocus,
       onPress,
+      onMouseEnter,
     } = this.props;
 
     return (
       <Touchable
         withFeedback
-        tabIndex={-1}
+        // tabIndex="-1"
+        accessibilityRole="link"
         onPress={() => {
           if ( allowMultipleSelection ) {
             functions.addItemToPreSelection( item, functions.selectMultipleItems );
@@ -48,24 +51,31 @@ class InputTagSuggestion extends Component {
           else {
             functions.selectItem( item, );
             functions.clearSelection();
-            functions.handleToggleMenu();
+            functions.handleCloseMenu();
           }
           if ( onPress ) onPress();
         }}
         onFocus={onFocus}
+        onMouseEnter={onMouseEnter}
         testID={`input-tag-option ${testID}`}
       >
         <Box
           padding={5}
-          borderBottomWidth={1}
-          borderColor="#DDD"
-          borderStyle="solid"
           alignItems="center"
-          backgroundColor={isHighlighted ? 'red' : 'white'}
+          backgroundColor={isHighlighted ? '#DDD' : 'white'}
           width="100%"
         >
+          <Icon
+            name={isSelected ? 'check_box' : 'check_box_outline_blank'}
+            size="sm"
+            color="black"
+            cursor="pointer"
+          />
+          <Box
+            padding={5}
+          />
           <Text
-            color={isHighlighted ? 'black' : 'gray'}
+            color={isHighlighted ? 'black' : 'black'}
             fontWeight={isSelected ? 'bold' : 'normal'}
           >
             {itemString}

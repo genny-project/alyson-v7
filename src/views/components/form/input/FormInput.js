@@ -29,14 +29,17 @@ class FormInput extends Component {
   }
 
   handleChangeDebounced = ( value, withSend ) => {
+    // console.log( 'handleChangeDebounced' );
     this.props.onChangeValue( value, withSend );
   }
 
   handleChangeValueWithSend = value => {
+    // console.log( 'handleChangeValueWithSend' );
     this.props.onChangeValue( value, true );
   }
 
   handleChangeValueWithSendAndDebounce = value => {
+    // console.log( 'handleChangeValueWithSendAndDebounce' );
     this.handleChangeDebounced( value, true );
   }
 
@@ -94,6 +97,7 @@ class FormInput extends Component {
       case 'java.time.localdatetime':
       case 'htmlarea':
       case 'rich-text-editor':
+      case 'editor':
         return (
           <Input
             {...inputProps}
