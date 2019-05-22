@@ -2,6 +2,7 @@ import React from 'react';
 import { array, func, string, bool, number } from 'prop-types';
 import { Box, Text, Icon, Touchable } from '../../index';
 import { isArray } from '../../../../utils';
+import BaseCheckBox from '../checkbox-6/';
 
 const mockData = [
   {
@@ -40,6 +41,7 @@ class InputCheckBoxNewNew extends React.Component {
     multiSelect: true,
     initialIcon: 'check_box_outline_blank',
     modifiedIcon: 'check_box',
+    nullValueIcon: 'indeterminate_check_box',
     numberOfColumns: 1,
   };
 
@@ -50,6 +52,7 @@ class InputCheckBoxNewNew extends React.Component {
     initialIcon: string,
     modifiedIcon: string,
     numberOfColumns: number,
+    nullValueIcon: string,
   };
 
   state = {
@@ -61,12 +64,20 @@ class InputCheckBoxNewNew extends React.Component {
     console.log('This is where theme belongs'); // eslint-disable-line
   }
 
-  handleChange = value => () => {
-    console.log({ value }); //eslint-disable-line
+  chooseIcon = input => {
+    console.warn( 'Handle Name triggered' );
+
+    const iconName = !this.state.selected.includes( input )
+      ? this.props.initialIcon
+      : this.props.modifiedIcon;
+
+    return iconName;
+  };
+
+  handlePress = value => () => {
     const { selected } = this.state;
     const { multiSelect } = this.props;
 
-    // console.log({ selected });
     this.setState(
       state => {
         if ( state.selected.includes( value )) {
@@ -89,6 +100,18 @@ class InputCheckBoxNewNew extends React.Component {
     );
   };
 
+  handleName = value => () => {
+    console.warn( 'Handle Name triggered' );
+
+    const iconName = !this.state.selected.includes( value )
+      ? this.props.initialIcon
+      : this.props.modifiedIcon;
+
+    return iconName;
+  };
+
+  // select icons depending upon the Check box or Radio Item
+
   render() {
     const { selected } = this.state;
     const { modifiedIcon, initialIcon, numberOfColumns } = this.props;
@@ -104,35 +127,20 @@ class InputCheckBoxNewNew extends React.Component {
               width={`${100 / numberOfColumns}%`}
               key={item.value}
             >
-              <Touchable
-                withFeedback
-                onPress={this.handleChange( item.value )}
+              <BaseCheckBox
+                onPress={this.handlePress( item.value )}
+                key={item.value}
+                iconName={this.chooseIcon( item.value )}
+                ID={item.value}
+                label={item.label}
               >
-                <Box width="30px">
-                  <Icon
-                    name={!selected.includes( item.value ) ? initialIcon : modifiedIcon}
-                    color="black"
-                    size="md"
-                    id={item.value}
-                  />
-                </Box>
-              </Touchable>
-              <Touchable
-                withFeedback
-                onPress={this.handleChange( item.value )}
-              >
-                <Text
-                  text={item.label}
-                  whiteSpace="normal"
-                />
-              </Touchable>
+                {console.warn( item.label, 'Label item new new' )}
+              </BaseCheckBox>
             </Box>
           ))
         ) : (
           <Text>
-            {' '}
 No Items to Show
-            {' '}
           </Text>
         )}
       </Box>

@@ -2,6 +2,7 @@ import React from 'react';
 import { array, func, string, bool, number, oneOf } from 'prop-types';
 import { Box, Text, Icon, Touchable, object } from '../../index';
 import { isArray } from '../../../../utils';
+import BaseCheckBox from '../checkbox-6/';
 
 const question = {
   text: 'Hello World',
@@ -72,7 +73,7 @@ class InputCheckBoxNewNew extends React.Component {
         flexDirection="row"
         flexWrap="wrap"
       >
-        <Box width={`${100 / numberOfColumns}%`}>
+        {/* <Box width={`${100 / numberOfColumns}%`}>
           <Touchable
             withFeedback
             onPress={this.handleChange}
@@ -95,7 +96,14 @@ class InputCheckBoxNewNew extends React.Component {
               whiteSpace="normal"
             />
           </Touchable>
-        </Box>
+        </Box> */}
+
+        <BaseCheckBox
+          onPress={this.handleChange}
+          iconName={chooseIcon( this.state.value )}
+          ID={question.text}
+          label={question.text}
+        />
       </Box>
     );
   }
