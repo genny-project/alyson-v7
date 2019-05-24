@@ -20,19 +20,25 @@ class InputTagItem extends Component {
     return (
       <Box
         alignItems="center"
-        marginRight={10}
-        marginBottom={10}
-        borderWidth={2}
-        borderRadius={20}
-        borderColor="grey"
-        paddingLeft={10}
-        paddingRight={5}
+        marginRight={5}
+        marginBottom={5}
+        // borderWidth={2}
+        // borderRadius={20}
+        // borderColor="grey"
+        // paddingLeft={10}
+        // paddingRight={5}
+        padding={5}
+        backgroundColor="#ddd"
         cleanStyleObject
       >
-        <Box marginLeft={5}>
-          <Text color="#grey">
-            {itemString}
-          </Text>
+        <Box
+          marginRight={5}
+        >
+          <Text
+            color="black"
+            size="xs"
+            text={itemString}
+          />
         </Box>
 
         <Touchable
@@ -41,7 +47,9 @@ class InputTagItem extends Component {
           <Icon
             type="material-icons"
             name="clear"
-            color="grey"
+            size="sm"
+            color="black"
+            cursor="pointer"
           />
         </Touchable>
       </Box>
