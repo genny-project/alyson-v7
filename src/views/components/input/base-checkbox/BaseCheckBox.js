@@ -3,6 +3,7 @@ import { string, oneOf, object, func } from 'prop-types';
 import { Box, Text, Icon, Touchable } from '../../index';
 
 // Base check box
+
 class BaseCheckBox extends Component {
   static defaultProps = {
     icons: {
