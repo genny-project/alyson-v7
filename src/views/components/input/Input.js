@@ -4,7 +4,8 @@ import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
 import CheckBox from './checkbox';
-import InputDatePicker from './date-picker';
+import InputDatePicker from './date-time/date-picker';
+import InputTimePicker from './date-time/time-picker';
 import InputFile from './file';
 import InputScroll from './scroll';
 import InputRating from './rating';
@@ -276,13 +277,10 @@ class Input extends Component {
           />
         );
 
-      case 'datetime':
-      case 'java.time.localdatetime':
+      case 'time':
         return (
-          <InputDatePicker
+          <InputTimePicker
             {...inputProps}
-            date
-            time
             ref={input => this.input = input}
           />
         );

@@ -89,6 +89,7 @@ class FormInput extends Component {
       case 'audioRecord':
       case 'audiorecord':
       case 'date':
+      case 'time':
       case 'java.time.localdate':
       case 'datetime':
       case 'codeverificationfive':

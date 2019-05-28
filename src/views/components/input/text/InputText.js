@@ -36,6 +36,7 @@ class Input extends Component {
     textAlign: 'left',
     editable: true,
     outline: 'none',
+    updateValueWhenFocused: false,
   }
 
   static propTypes = {
@@ -141,6 +142,8 @@ class Input extends Component {
     iconProps: object,
     overflow: string,
     numberOfLines: number,
+    updateValueWhenFocused: bool,
+    tabIndex: string,
   }
 
   state = {
@@ -159,6 +162,20 @@ class Input extends Component {
   }
 
   componentDidUpdate( prevProps, prevState ) {
+    // if ( this.props.identifier === 'MONTHDROPDOWN' ) {
+    //   console.log( '==================' );
+    //   console.log( 'prevProps.value', prevProps.value );
+    //   console.log( 'this.props.value', this.props.value );
+    //   console.log( 'prevState.value', prevState.value );
+    //   console.log( 'this.state.value', this.state.value );
+    //   console.log( 'check', ((
+    //     prevProps.value !== this.props.value &&
+    //     this.state.value !== this.props.value
+    //   ) ||
+    //     prevState.value !== this.state.value
+    //   ));
+    // }
+
     if (
       ((
         prevProps.value !== this.props.value &&
@@ -166,7 +183,10 @@ class Input extends Component {
       ) ||
         prevState.value !== this.state.value
       ) &&
-      !this.state.isFocused
+      (
+        !this.state.isFocused ||
+        this.props.updateValueWhenFocused
+      )
     ) {
       this.updateValue( this.props.value );
     }
@@ -191,6 +211,8 @@ class Input extends Component {
 
   handleRef = input => {
     this.input = input;
+
+    if ( this.props.onRef ) this.props.onRef( input );
   }
 
   handleChangeText = value => {
@@ -333,6 +355,8 @@ class Input extends Component {
       iconProps,
       numberOfLines,
       overflow,
+      onPress,
+      tabIndex,
     } = this.props;
 
     const {
@@ -437,6 +461,7 @@ class Input extends Component {
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
           onKeyPress={onKeyPress}
+          onPress={onPress}
           onSelectionChange={onSelectionChange}
           onSubmitEditing={onSubmitEditing}
           placeholder={placeholder}
@@ -461,6 +486,7 @@ class Input extends Component {
             android: nativeProps,
           })}
           ref={this.handleRef}
+          {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
         />
 
         {!showCharacterCount ? null : (

@@ -77,46 +77,48 @@ class InputEvent extends Component {
         parentCode={parentGroupCode}
         rootCode={rootQuestionGroupCode}
         targetCode={ask.targetCode}
-        flexDirection="row"
-        alignItems="center"
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        flex={1}
-        justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
+
       >
-        { hasIcon
-          ? (
-            <Box>
+        <Box
+          // {...restProps}
+          flexDirection="row"
+          alignItems="center"
+          flex={1}
+          justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
+        >
+          { hasIcon
+            ? (
               <Icon
                 name={icon}
                 color="black"
                 {...iconProps}
               />
-            </Box>
-          ) : null
-        }
-        { hasIcon &&
-          hasText
-          ? (
-            <Box
-              paddingRight={5}
-            />
-          ) : null
-        }
-        {
-          hasText && !(
-            this.props.isClosed &&
-            hasIcon
-          )
+            ) : null
+          }
+          { hasIcon &&
+            hasText
             ? (
-              <Text
-                color={color}
-                whiteSpace="nowrap"
-                text={question.name}
+              <Box
+                paddingRight={5}
               />
             ) : null
-        }
-
+          }
+          {
+            hasText && !(
+              this.props.isClosed &&
+              hasIcon
+            )
+              ? (
+                <Text
+                  color={color}
+                  whiteSpace="nowrap"
+                  text={question.name}
+                />
+              ) : null
+          }
+        </Box>
       </EventTouchable>
     );
   }

@@ -33,6 +33,7 @@ class InputTag extends Component {
     renderSuggestion: object,
     testID: string,
     onBlur: func,
+    nonTabable: bool,
   }
 
   inputs = {};
@@ -197,6 +198,7 @@ class InputTag extends Component {
       renderSuggestion,
       testID,
       onBlur, // eslint-disable-line no-unused-vars
+      nonTabable,
       ...restProps
     } = this.props;
 
@@ -370,6 +372,7 @@ class InputTag extends Component {
                     selectItem,
                   });
                 }}
+                nonTabable={nonTabable}
               >
 
                 {/* SUGGESTIONS CONTAINER */ }
