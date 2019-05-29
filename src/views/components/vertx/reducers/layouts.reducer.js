@@ -325,6 +325,90 @@ const injectFakeLayoutLinkIntoState = ({ payload, state }) => {
   return state;
 };
 
+function changeContext( payload, state ) {
+  if ( state.asks ) {
+    // console.log( 'changeContext', payload, state.asks );
+
+    if ( isObject( payload.oldContext )) {
+      // console.log( 'oldContext', payload.oldContext );
+
+      if (
+        payload.oldContext.questionCode &&
+        state.asks[payload.oldContext.questionCode]
+      ) {
+        // console.log( 'ask', state.asks[payload.oldContext.questionCode] );
+
+        if (
+          state.asks[payload.oldContext.questionCode].links
+        ) {
+          // console.log( 'links', state.asks[payload.oldContext.questionCode].links );
+
+          if (
+            payload.oldContext.contextCode &&
+            state.asks[payload.oldContext.questionCode].links.filter(
+              link => link.code === payload.oldContext.contextCode ).length > 0
+          ) {
+            // console.log( 'found old context',
+            // state.asks[payload.oldContext.questionCode].links.filter(
+              // link => link.code === payload.oldContext.contextCode ));
+
+            state.asks[payload.oldContext.questionCode].links = [
+              ...state.asks[payload.oldContext.questionCode].links.filter(
+                link => link.code !== payload.oldContext.contextCode ),
+            ];
+
+            // console.log( 'after remove old', state.asks[payload.oldContext.questionCode].links );
+          }
+        }
+      }
+    }
+    if ( isObject( payload.context )) {
+      // console.log( 'oldContext', payload.context );
+
+      if (
+        payload.context.questionCode &&
+        state.asks[payload.context.questionCode]
+      ) {
+        // console.log( 'ask', state.asks[payload.context.questionCode] );
+
+        if (
+          state.asks[payload.context.questionCode].links
+        ) {
+          // console.log( 'links', state.asks[payload.context.questionCode].links );
+
+          const nameTypes = {
+            THEME: 'theme',
+            ICON: 'icon',
+          };
+
+          const newContext = payload.context;
+
+          state.asks[payload.context.questionCode].links = [
+            ...state.asks[payload.context.questionCode].links,
+            {
+              code: newContext.contextCode,
+              weight: newContext.weight,
+              type: nameTypes[newContext.name]
+                ? nameTypes[newContext.name]
+                : 'none',
+              component: componentTypes[newContext.visualControlType]
+                ? componentTypes[newContext.visualControlType]
+                : componentTypes[newContext.hint]
+                  ? componentTypes[newContext.hint]
+                  : null,
+              created: newContext.created,
+            },
+          ];
+
+          // console.log( 'after add new', state.asks[payload.context.questionCode].links );
+        }
+      }
+    }
+  }
+
+  return state;
+}
+
 const reducer = ( state = initialState, { type, payload }) => {
   // console.log( type, payload );
   // TODO - shouldDeleteLinkedBaseEntities
@@ -395,6 +479,13 @@ const reducer = ( state = initialState, { type, payload }) => {
         ...state,
         ...injectFakeLayoutLinkIntoState({ payload, state }),
       };
+
+    case 'ASK_CONTEXT_CHANGE': {
+      return {
+        ...state,
+        ...changeContext( payload, state ),
+      };
+    }
 
     case 'CLEAR_ALL_LAYOUTS':
     case 'USER_LOGOUT':
