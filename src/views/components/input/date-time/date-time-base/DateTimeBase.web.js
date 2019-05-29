@@ -1,42 +1,40 @@
-/**
- * Adapted from https://codesandbox.io/s/j47zv28xkw
- */
-
-import React, { PureComponent } from './node_modules/react';
-import { string, func, oneOfType, object, bool } from './node_modules/prop-types';
-import Downshift from './node_modules/downshift';
-import Kalendaryo from './node_modules/kalendaryo';
-import range from './node_modules/lodash.range';
-import dlv from './node_modules/dlv';
-import { format, isSameMonth, setMonth, setYear, getMonth, getYear, getDate, getDaysInMonth, setDate } from 'date-fns';
-import { isArray } from '../../../../../utils';
+import React, { PureComponent } from 'react';
+import { string, func, oneOfType, object, bool } from 'prop-types';
+import Downshift from 'downshift';
+import Kalendaryo from 'kalendaryo';
+import range from 'lodash.range';
+import dlv from 'dlv';
+import { format, isSameMonth, isToday, setMonth, setYear, getMonth, getYear, getDate, getDaysInMonth, setDate, getHours, getMinutes, setHours, setMinutes } from 'date-fns';
+import { isArray, isString } from '../../../../../utils';
+import { Input, Box, Text, Touchable, Icon } from '../../../../components';
 
 const NUMBER_OF_DOB_YEARS = 125;
+const separatorRegex = /(,|\s|\/|-|_|:)/g;
 
 const currentYear = new Date().getFullYear();
 const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const years = range( NUMBER_OF_DOB_YEARS ).map( year => currentYear + 2 - year );
 
-const dateFormatFields = {
-  // dayOfWeek: ['d', 'do', 'dd', 'ddd', 'dddd'],
-  dayOfMonth: ['D', 'Do', 'DD'],
-  // dayOfYear: ['DDD', 'DDDo', 'DDDD'],
-  // quarter: ['Q', 'Qo'],
+const dateTimeFormats = {
+  dayOfWeek: ['d', 'do', 'dd', 'ddd', 'dddd'],
+  day: ['D', 'Do', 'DD'],
+  dayOfYear: ['DDD', 'DDDo', 'DDDD'],
+  quarter: ['Q', 'Qo'],
   month: ['M', 'Mo', 'MM', 'MMM', 'MMMM'],
   year: ['YY', 'YYYY'],
   hour: ['H', 'HH', 'h', 'hh'],
   minutes: ['m', 'mm'],
-  // seconds: ['s', 'ss'],
+  seconds: ['s', 'ss'],
   ampm: ['A', 'a', 'aa'],
-  // timezone: ['Z', 'ZZ'],
+  timezone: ['Z', 'ZZ'],
 };
 
 class DateTimeBase extends PureComponent {
   static defaultProps = {
-    displayFormat: 'DD/MM/YYYY',
+    // displayFormat: 'DD/MM/YYYY',
+    displayFormat: 'MMMM-Do-YYYY',
     placeholder: 'Please select a date...', // eslint-disable-line
-    // placeholder: 'day month, year',
   }
 
   static propTypes = {
@@ -48,26 +46,21 @@ class DateTimeBase extends PureComponent {
     placeholder: string,
   }
 
-  selectionValues = {
-    day: {},
-    month: {},
-    year: {},
-  }
+  selectionValues = {};
 
-  inputSections = {
-    day: null,
-    month: null,
-    year: null,
-  };
+  selectionFields = [];
+
+  inputSections = [];
 
   state = {
     isCalendarOpen: false,
-    currentInputSection: 'day',
+    currentInputSection: null,
     preventChange: false,
   }
 
   componentDidMount() {
     this.setSelectedItem();
+    this.setFields( this.props.displayFormat );
     this.setSelectionValues( this.props.displayFormat );
   }
 
@@ -88,43 +81,82 @@ class DateTimeBase extends PureComponent {
     }
   }
 
+  setFields = ( formattedDate ) => {
+    const selectionValuesForInputSections = ( datestring ) => {
+      return datestring.split( separatorRegex );
+    };
+
+    const findMatchInFormatFields = ( string ) => {
+      let value = null;
+
+      Object.keys( dateTimeFormats ).some( fieldKey => {
+        const findMatch = dateTimeFormats[fieldKey].some( formatString => {
+          const isMatch = formatString === string;
+
+          if ( isMatch ) value = fieldKey;
+
+          return isMatch;
+        });
+
+        return findMatch;
+      });
+
+      return value;
+    };
+
+    const split = selectionValuesForInputSections( formattedDate );
+
+    const fields = {};
+    const inputs = {};
+
+    split.forEach(( s, index ) => {
+      const field = findMatchInFormatFields( s );
+
+      if ( isString( field )) {
+        fields[index] = {
+          value: s,
+          length: s.length,
+          type: field,
+        };
+
+        inputs[Object.keys( inputs ).length] = field;
+      }
+      else {
+        fields[index] = {
+          value: s,
+          length: s.length,
+          type: 'separator',
+        };
+      }
+    });
+
+    this.selectionFields = fields;
+    this.inputSections = inputs;
+  }
+
   setSelectionValues = ( formattedDate ) => {
     const selectionValuesForInputSections = ( datestring ) => {
-      const regex = /(,\s|\s|\/)/g;
-
-      // console.log( 'selectionValuesForInputSections', datestring, regex );
-
-      return datestring.split( regex );
+      return datestring.split( separatorRegex );
     };
 
     // console.log( 'formattedDate', formattedDate );
     const split = selectionValuesForInputSections( formattedDate );
 
-    const day = split[0];
-    const month = split[2];
-    const year = split[4];
+    const selectionAreas = {};
+    let length = 0;
 
-    const lengths = {
-      day: day.length,
-      month: month.length,
-      year: year.length,
-      total: formattedDate.length,
-    };
+    split.forEach(( string, index ) => {
+      const field = this.selectionFields[index];
 
-    const selectionAreas = {
-      day: {
-        start: 0,
-        end: lengths['day'],
-      },
-      month: {
-        start: lengths['day'] + split[1].length,
-        end: lengths['day'] + split[1].length + lengths['month'],
-      },
-      year: {
-        start: lengths['day'] + split[1].length + lengths['month'] + split[3].length,
-        end: lengths['day'] + split[1].length + lengths['month'] + split[3].length + lengths['year'],
-      },
-    };
+      if ( isString( field.type, { isNotSameAs: 'separator' })) {
+        selectionAreas[field.type] = {
+          start: length,
+          end: length + string.length,
+        };
+      }
+
+      length = length + string.length;
+    });
 
     this.selectionValues = selectionAreas;
   }
@@ -178,11 +210,10 @@ class DateTimeBase extends PureComponent {
   handleSelectionChange = event => {
     const selection = dlv( event, 'nativeEvent.selection' );
 
-    // console.log( 'key', dlv( event, 'nativeEvent.key' ));
-
     const locateSelectionArea = ({ end }) => {
       const areas = this.selectionValues;
-      const index = end;
+      const fields = this.inputSections;
+      const cursorIndex = end;
 
       if (
         this.state.preventChange
@@ -193,29 +224,34 @@ class DateTimeBase extends PureComponent {
 
         return this.state.currentInputSection;
       }
-      if (
-        index >= areas['day'].start &&
-        index < areas['month'].start
-      ) {
-        return 'day';
-      }
-      if (
-        index >= areas['month'].start &&
-        index < areas['year'].start
-      ) {
-        return 'month';
-      }
-      if (
-        index >= areas['year'].start &&
-        index <= areas['year'].end
-      ) {
-        return 'year';
-      }
+
+      const newField = Object.keys( fields ).forEach( fieldKey => {
+        const field = fields[fieldKey];
+        const isLastField = fieldKey >= fields.length - 1;
+        const areaStart = areas[field].start;
+        const areaEnd = isLastField
+          ? areas[field].end
+          : areas[fields[fieldKey + 1]].start;
+
+        if (
+          (
+            !isLastField &&
+            cursorIndex >= areaStart &&
+            cursorIndex < areaEnd
+          ) || (
+            isLastField &&
+            cursorIndex >= areaStart &&
+            cursorIndex <= areaEnd
+          )
+        ) {
+          return field;
+        }
+      });
+
+      return newField;
     };
 
     const field = locateSelectionArea( selection );
-
-    // console.log( 'locateSelectionArea', field );
 
     if ( this.state.currentInputSection !== field ) {
       this.setState({
@@ -226,6 +262,10 @@ class DateTimeBase extends PureComponent {
 
   handleKeyPress = ( value, callback, setDate, date ) => event => {
     const key = event.nativeEvent.key;
+
+    const currentIndex = Object.keys( this.inputSections )
+      .findIndex( key => this.inputSections[key] === this.state.currentInputSection );
+    const maxIndex = Object.keys( this.inputSections ).length;
 
     switch ( key ) {
       case 'ArrowDown':
@@ -241,6 +281,15 @@ class DateTimeBase extends PureComponent {
           return;
         }
         switch ( this.state.currentInputSection ) {
+          case 'ampm':
+            this.handleChangeAmPm( value, key, callback, setDate, date );
+            break;
+          case 'minutes':
+            this.handleIncrementMinutes( value, key, callback, setDate, date );
+            break;
+          case 'hour':
+            this.handleIncrementHours( value, key, callback, setDate, date );
+            break;
           case 'day':
             this.handleIncrementDay( value, key, callback, setDate );
             break;
@@ -255,40 +304,32 @@ class DateTimeBase extends PureComponent {
         }
         break;
       case 'ArrowLeft':
-        // console.log( 'arrow left' );
-        this.setState( state => ({
-          currentInputSection: state.currentInputSection === 'year'
-            ? 'month'
-            : state.currentInputSection === 'month'
-              ? 'day'
-              : 'day',
-        }));
+        this.setState({
+          currentInputSection: this.inputSections[
+            currentIndex <= 0
+              ? currentIndex
+              : currentIndex - 1
+          ],
+        });
         break;
       case 'ArrowRight':
-        // console.log( 'arrow right' );
-        this.setState( state => ({
-          currentInputSection: state.currentInputSection === 'day'
-            ? 'month'
-            : state.currentInputSection === 'month'
-              ? 'year'
-              : 'year',
-        }));
+      case 'Enter':
+        this.setState({
+          currentInputSection: this.inputSections[
+            currentIndex >= maxIndex - 1
+              ? currentIndex
+              : currentIndex + 1
+          ],
+        });
         break;
       case 'Tab':
         this.setState({
-          currentInputSection: 'day',
+          currentInputSection: this.inputSections[0],
         });
         break;
-      case 'Enter':
-        this.setState( state => ({
-          currentInputSection: state.currentInputSection === 'day'
-            ? 'month'
-            : state.currentInputSection === 'month'
-              ? 'year'
-              : 'year',
-        }));
       case 'Space':
-        // console.log( 'enter or space' );
+
+          // console.log( 'enter or space' );
         break;
       default:
     }
@@ -296,6 +337,70 @@ class DateTimeBase extends PureComponent {
 
   handleRef = ( input ) => {
     this.input = input;
+  }
+
+  handleIncrementHours = ( value, key, callback, setDate ) => {
+    const currentHour = getHours( value );
+
+    let newHour = key === 'ArrowUp' ? currentHour + 1 : currentHour - 1;
+
+    if ( currentHour >= 0 && currentHour <= 11 ) {
+      if ( newHour < 0 ) {
+        newHour = 11;
+      }
+      else if ( newHour > 11 ) {
+        newHour = 0;
+      }
+    }
+    else if ( currentHour >= 12 && currentHour <= 23 ) {
+      if ( newHour < 12 ) {
+        newHour = 23;
+      }
+      else if ( newHour > 23 ) {
+        newHour = 12;
+      }
+    }
+
+    const newDate = setHours( value, newHour );
+
+    if ( callback ) callback( newDate );
+    if ( setDate ) setDate( newDate );
+  }
+
+  handleIncrementMinutes = ( value, key, callback, setDate ) => {
+    const minutesIndex = getMinutes( value );
+
+    let newMinutes = key === 'ArrowUp' ? minutesIndex + 1 : minutesIndex - 1;
+
+    if ( newMinutes < 0 ) {
+      newMinutes = 59;
+    }
+    else if ( newMinutes > 59 ) {
+      newMinutes = 0;
+    }
+
+    const newDate = setMinutes( value, newMinutes );
+
+    if ( callback ) callback( newDate );
+    if ( setDate ) setDate( newDate );
+  }
+
+  handleChangeAmPm = ( value, key, callback, setDate ) => {
+    const hoursIndex = getHours( value );
+
+    let newIndex = hoursIndex;
+
+    if ( newIndex < 12 ) {
+      newIndex = newIndex + 12;
+    }
+    else if ( newIndex >= 12 ) {
+      newIndex = newIndex - 12;
+    }
+
+    const newDate = setHours( value, newIndex );
+
+    if ( callback ) callback( newDate );
+    if ( setDate ) setDate( newDate );
   }
 
   handleIncrementDay = ( value, key, callback ) => {
@@ -400,8 +505,6 @@ class DateTimeBase extends PureComponent {
   render() {
     const {
       displayFormat,
-      calendarHeaderColor,
-      calendarHeaderTextColor,
       value,
       testID,
       onChangeValue, // eslint-disable-line no-unused-vars
@@ -435,52 +538,83 @@ class DateTimeBase extends PureComponent {
           selectItem,
         }) => {
           return (
-            <Kalendaryo
-              startCurrentDateAt={selectedItem}
-              selectedItem={selectedItem}
-              getItemProps={getItemProps}
-              calendarHeaderColor={calendarHeaderColor}
-              calendarHeaderTextColor={calendarHeaderTextColor}
-              selectItem={selectItem}
-              render={({
-                // getFormattedDate,
-                getWeeksInMonth,
-                getDatePrevMonth,
-                getDateNextMonth,
-                setDate,
-                getItemProps,
-                selectedItem,
-                date,
-                calendarHeaderColor,
-                calendarHeaderTextColor,
-                selectItem,
-              }) => {
-                const weeksInCurrentMonth = getWeeksInMonth();
-                const isDisabled = dateValue => !isSameMonth( date, dateValue );
-                const isSelectedDay = date => (
-                  selectedItem &&
-                  format( selectedItem ) === format( date )
-                );
+            <Box
+              flex={1}
+              {...getRootProps( undefined, { suppressRefError: true })}
+            >
+              <Box>
+                {isOpen ? (
+                  <Touchable
+                    withFeedback
+                    accessibilityRole="link"
+                    onPress={this.handleCalendarToggle}
+                  >
+                    <Box
+                      position="fixed"
+                      top={0}
+                      left={0}
+                      width="100%"
+                      height="100%"
+                    />
+                  </Touchable>
+                ) : null}
+              </Box>
 
-                const monthValue = [months[getMonth( date )]];
-                const yearValue = [years[years.findIndex( year => year === getYear( date ))]];
-
-                return children({
-                  ...this.state,
-                  getWeeksInMonth,
-                  getDatePrevMonth,
-                  getDateNextMonth,
-                  setDate,
-                  getItemProps,
-                  selectedItem,
-                  date,
-                  calendarHeaderColor,
-                  calendarHeaderTextColor,
-                  selectItem,
-                });
-              }}
-            />
-          );}}
+              <Box
+                position="relative"
+                // width="100%"
+              >
+                <Kalendaryo
+                  startCurrentDateAt={selectedItem}
+                  selectedItem={selectedItem}
+                  getItemProps={getItemProps}
+                  selectItem={selectItem}
+                  render={({
+                    // getFormattedDate,
+                    getWeeksInMonth,
+                    getDatePrevMonth,
+                    getDateNextMonth,
+                    setDate,
+                    getItemProps,
+                    selectedItem,
+                    date,
+                    selectItem,
+                  }) => {
+                    return children({
+                      getRootProps,
+                      getItemProps,
+                      getInputProps,
+                      getWeeksInMonth,
+                      getDatePrevMonth,
+                      getDateNextMonth,
+                      inputValue,
+                      date,
+                      selectedItem,
+                      selectItem,
+                      isOpen,
+                      setDate,
+                      currentYear,
+                      daysOfTheWeek,
+                      months,
+                      years,
+                      selection: this.selectionValues[this.state.currentInputSection],
+                      onRef: this.handleRef,
+                      close: this.handleCalendarClose,
+                      open: this.handleCalendarOpen,
+                      toggle: this.handleCalendarToggle,
+                      onBlur: this.handleBlur,
+                      onKeyPress: this.handleKeyPress,
+                      onSelectionChange: this.handleSelectionChange,
+                      selectDay: this.handleSelectDay,
+                      selectMonth: this.handleSelectMonth,
+                      selectYear: this.handleSelectYear,
+                    });
+                  }}
+                />
+              </Box>
+            </Box>
+          );
+        }}
       </Downshift>
     );
   }

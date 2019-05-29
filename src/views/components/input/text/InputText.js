@@ -387,7 +387,7 @@ class Input extends Component {
       fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,
-      width: '100%', // Always be 100% of the parent width
+      ...this.props.notFullWidth ? {} : { width: '100%' }, // Always be 100% of the parent width
       backgroundColor: backgroundColor === 'none' ? null : backgroundColor,
       borderWidth,
       borderTopWidth,

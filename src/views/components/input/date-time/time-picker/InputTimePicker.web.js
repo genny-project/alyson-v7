@@ -283,71 +283,53 @@ class InputTimePicker extends PureComponent {
   }
 
   handleIncrementHours = ( value, key, callback, setDate ) => {
-    // console.log( 'increment day', value, key );
-
     const currentHour = getHours( value );
 
-    // console.log( 'currentDay', currentDay );
-    // console.log( 'daysInMonth', daysInMonth );
-
-    let newDay = key === 'ArrowUp' ? currentHour + 1 : currentHour - 1;
+    let newHour = key === 'ArrowUp' ? currentHour + 1 : currentHour - 1;
 
     if ( currentHour >= 0 && currentHour <= 11 ) {
-      if ( newDay < 0 ) {
-        newDay = 11;
+      if ( newHour < 0 ) {
+        newHour = 11;
       }
-      else if ( newDay > 11 ) {
-        newDay = 0;
+      else if ( newHour > 11 ) {
+        newHour = 0;
       }
     }
     else if ( currentHour >= 12 && currentHour <= 23 ) {
-      if ( newDay < 12 ) {
-        newDay = 23;
+      if ( newHour < 12 ) {
+        newHour = 23;
       }
-      else if ( newDay > 23 ) {
-        newDay = 12;
+      else if ( newHour > 23 ) {
+        newHour = 12;
       }
     }
 
-    const newDate = setHours( value, newDay );
-
-    // console.log( 'value', value, value && value.length );
-    // console.log( 'newDay', newDay, newDate );
+    const newDate = setHours( value, newHour );
 
     if ( callback ) callback( newDate );
     if ( setDate ) setDate( newDate );
   }
 
   handleIncrementMinutes = ( value, key, callback, setDate ) => {
-    // const currentMonth = [months[getMonth( value )]];
-    const monthIndex = getMinutes( value );
+    const minutesIndex = getMinutes( value );
 
-    // console.log( 'currentMonth', monthIndex );
+    let newMinutes = key === 'ArrowUp' ? minutesIndex + 1 : minutesIndex - 1;
 
-    let newMonth = key === 'ArrowUp' ? monthIndex + 1 : monthIndex - 1;
-
-    if ( newMonth < 0 ) {
-      newMonth = 59;
+    if ( newMinutes < 0 ) {
+      newMinutes = 59;
     }
-    else if ( newMonth > 59 ) {
-      newMonth = 0;
+    else if ( newMinutes > 59 ) {
+      newMinutes = 0;
     }
 
-    const newDate = setMinutes( value, newMonth );
-
-    // console.log( 'value', value, value &&  value.length );
-    // console.log( 'newMonth', newMonth, newDate );
+    const newDate = setMinutes( value, newMinutes );
 
     if ( callback ) callback( newDate );
     if ( setDate ) setDate( newDate );
   }
 
   handleChangeAmPm = ( value, key, callback, setDate ) => {
-    // const yearIndex = years.findIndex( year => year === getYear( value ));
-
     const hoursIndex = getHours( value );
-
-    // console.log( 'year', key, yearIndex, currentYear, years );
 
     let newIndex = hoursIndex;
 
@@ -358,12 +340,7 @@ class InputTimePicker extends PureComponent {
       newIndex = newIndex - 12;
     }
 
-    // const newYear = [years[newIndex]];
-
     const newDate = setHours( value, newIndex );
-
-    // console.log( 'value', value, value &&  value.length );
-    // console.log( 'newYear', newYear, newDate );
 
     if ( callback ) callback( newDate );
     if ( setDate ) setDate( newDate );
