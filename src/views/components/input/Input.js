@@ -6,6 +6,7 @@ import InputAutocomplete from './autocomplete';
 import CheckBox from './checkbox';
 import InputDatePicker from './date-time/date-picker';
 import InputTimePicker from './date-time/time-picker';
+import InputDateTimePicker from './date-time/date-time-picker';
 import InputFile from './file';
 import InputScroll from './scroll';
 import InputRating from './rating';
@@ -280,6 +281,15 @@ class Input extends Component {
       case 'time':
         return (
           <InputTimePicker
+            {...inputProps}
+            ref={input => this.input = input}
+          />
+        );
+
+      case 'datetime':
+      case 'java.time.localdatetime':
+        return (
+          <InputDateTimePicker
             {...inputProps}
             ref={input => this.input = input}
           />

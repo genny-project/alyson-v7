@@ -49,7 +49,7 @@ class InputTagInputField extends Component {
       onPress,
       inputProps,
       getInputProps,
-      onChangeValue,
+      // onChangeValue,
       inputValue,
       isOpen,
       testID,

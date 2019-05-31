@@ -4,8 +4,7 @@
 
 import React, { PureComponent } from 'react';
 import { string, func, oneOfType, object, bool } from 'prop-types';
-import dlv from 'dlv';
-import { format, isSameMonth, isToday, setMonth, setYear, getMonth, getYear, getDate, getDaysInMonth, setDate as setDay } from 'date-fns';
+import { format, isSameMonth, isToday, getMonth, getYear } from 'date-fns';
 import { getDeviceSize } from '../../../../../utils';
 import { Input, Box, Text, Touchable, Icon, Fragment } from '../../../../components';
 import DateTimeBase from '../date-time-base';
@@ -13,7 +12,7 @@ import DateTimeBase from '../date-time-base';
 class InputDatePicker extends PureComponent {
   static defaultProps = {
     // displayFormat: 'DD/MM/YYYY',
-    displayFormat: 'MMMM-Do-YYYY',
+    displayFormat: 'Do-MMMM-YYYY',
     calendarHeaderColor: 'white',
     calendarHeaderTextColor: 'black',
     placeholder: 'Please select a date...', // eslint-disable-line
@@ -109,6 +108,7 @@ class InputDatePicker extends PureComponent {
                   // placeholder,
                     onRef: onRef,
                   })}
+                  onChange={null}
                   onFocus={close}
                   onBlur={onBlur}
                   onKeyPress={onKeyPress( selectedItem, selectItem, setDate, date )}
@@ -194,6 +194,7 @@ class InputDatePicker extends PureComponent {
                         flex={1}
                       >
                         <Icon
+                          color="black"
                           name="arrow-back"
                         />
                       </Box>
@@ -269,6 +270,7 @@ class InputDatePicker extends PureComponent {
                         flex={1}
                       >
                         <Icon
+                          color="black"
                           name="arrow-forward"
                         />
                       </Box>
@@ -309,6 +311,7 @@ class InputDatePicker extends PureComponent {
                       //   WEEK ROW
                       // ---------------
                       <Box
+                        // eslint-disable-next-line
                         key={weekIndex}
                       >
                         {week.map(( day, dayIndex ) => (

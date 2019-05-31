@@ -4,9 +4,22 @@ import Downshift from 'downshift';
 import Kalendaryo from 'kalendaryo';
 import range from 'lodash.range';
 import dlv from 'dlv';
-import { format, isSameMonth, isToday, setMonth, setYear, getMonth, getYear, getDate, getDaysInMonth, setDate, getHours, getMinutes, setHours, setMinutes } from 'date-fns';
+import {
+  format,
+  setMonth,
+  setYear,
+  getMonth,
+  getYear,
+  getDate,
+  getDaysInMonth,
+  setDate as setDay,
+  getHours,
+  getMinutes,
+  setHours,
+  setMinutes,
+} from 'date-fns';
 import { isArray, isString } from '../../../../../utils';
-import { Input, Box, Text, Touchable, Icon } from '../../../../components';
+import { Box, Touchable } from '../../../../components';
 
 const NUMBER_OF_DOB_YEARS = 125;
 const separatorRegex = /(,|\s|\/|-|_|:)/g;
@@ -17,17 +30,17 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const years = range( NUMBER_OF_DOB_YEARS ).map( year => currentYear + 2 - year );
 
 const dateTimeFormats = {
-  dayOfWeek: ['d', 'do', 'dd', 'ddd', 'dddd'],
-  day: ['D', 'Do', 'DD'],
-  dayOfYear: ['DDD', 'DDDo', 'DDDD'],
-  quarter: ['Q', 'Qo'],
+  // dayOfWeek: ['d', 'do', 'dd', 'ddd', 'dddd'],
+  dayOfMonth: ['D', 'Do', 'DD'],
+  // dayOfYear: ['DDD', 'DDDo', 'DDDD'],
+  // quarter: ['Q', 'Qo'],
   month: ['M', 'Mo', 'MM', 'MMM', 'MMMM'],
   year: ['YY', 'YYYY'],
   hour: ['H', 'HH', 'h', 'hh'],
   minutes: ['m', 'mm'],
-  seconds: ['s', 'ss'],
+  // seconds: ['s', 'ss'],
   ampm: ['A', 'a', 'aa'],
-  timezone: ['Z', 'ZZ'],
+  // timezone: ['Z', 'ZZ'],
 };
 
 class DateTimeBase extends PureComponent {
@@ -44,6 +57,7 @@ class DateTimeBase extends PureComponent {
     testID: string,
     editable: bool,
     placeholder: string,
+    children: func,
   }
 
   selectionValues = {};
@@ -51,6 +65,8 @@ class DateTimeBase extends PureComponent {
   selectionFields = [];
 
   inputSections = [];
+
+  tempSectionValue = null;
 
   state = {
     isCalendarOpen: false,
@@ -187,8 +203,6 @@ class DateTimeBase extends PureComponent {
   handleChange = value => {
     const formattedDate = format( value, this.props.displayFormat );
 
-    // console.log( 'change value', format( value ), this.state.value, this.props.value );
-
     this.setSelectionValues( formattedDate );
 
     const date = format( value );
@@ -200,6 +214,7 @@ class DateTimeBase extends PureComponent {
       if ( this.props.onChangeValue ) {
         clearTimeout( this.state.timer );
 
+        // eslint-disable-next-line
         this.state.timer = setTimeout(() => {
           this.props.onChangeValue( date );
         }, 1000 );
@@ -225,13 +240,14 @@ class DateTimeBase extends PureComponent {
         return this.state.currentInputSection;
       }
 
-      const newField = Object.keys( fields ).forEach( fieldKey => {
+      let newField = null;
+
+      Object.keys( fields ).some(( fieldKey, index ) => {
         const field = fields[fieldKey];
-        const isLastField = fieldKey >= fields.length - 1;
+        const nextField = fields[index + 1];
+        const isLastField = index >= Object.keys( fields ).length - 1;
         const areaStart = areas[field].start;
-        const areaEnd = isLastField
-          ? areas[field].end
-          : areas[fields[fieldKey + 1]].start;
+        const areaEnd = isLastField ? areas[field].end : areas[nextField].start;
 
         if (
           (
@@ -244,33 +260,30 @@ class DateTimeBase extends PureComponent {
             cursorIndex <= areaEnd
           )
         ) {
-          return field;
+          newField = field;
+
+          return true;
         }
       });
 
       return newField;
     };
 
-    const field = locateSelectionArea( selection );
+    const finalField = locateSelectionArea( selection );
 
-    if ( this.state.currentInputSection !== field ) {
+    if ( this.state.currentInputSection !== finalField ) {
       this.setState({
-        currentInputSection: field,
+        currentInputSection: finalField,
       });
     }
   }
 
   handleKeyPress = ( value, callback, setDate, date ) => event => {
-    const key = event.nativeEvent.key;
-
-    const currentIndex = Object.keys( this.inputSections )
-      .findIndex( key => this.inputSections[key] === this.state.currentInputSection );
-    const maxIndex = Object.keys( this.inputSections ).length;
+    const key = event.key;
 
     switch ( key ) {
       case 'ArrowDown':
       case 'ArrowUp':
-        // console.log( 'value', value );
         this.setState({
           preventChange: true,
         });
@@ -290,8 +303,8 @@ class DateTimeBase extends PureComponent {
           case 'hour':
             this.handleIncrementHours( value, key, callback, setDate, date );
             break;
-          case 'day':
-            this.handleIncrementDay( value, key, callback, setDate );
+          case 'dayOfMonth':
+            this.handleIncrementDayOfMonth( value, key, callback, setDate );
             break;
           case 'month':
             this.handleIncrementMonth( value, key, callback, setDate );
@@ -300,27 +313,16 @@ class DateTimeBase extends PureComponent {
             this.handleIncrementYear( value, key, callback, setDate, date );
             break;
           default:
-            console.log( 'invalid this.state.currentInputSection' );
+            // eslint-disable-next-line no-console
+            console.warn( 'invalid this.state.currentInputSection' );
         }
         break;
       case 'ArrowLeft':
-        this.setState({
-          currentInputSection: this.inputSections[
-            currentIndex <= 0
-              ? currentIndex
-              : currentIndex - 1
-          ],
-        });
+        this.handleInputSectionChange( 'prev' );
         break;
       case 'ArrowRight':
       case 'Enter':
-        this.setState({
-          currentInputSection: this.inputSections[
-            currentIndex >= maxIndex - 1
-              ? currentIndex
-              : currentIndex + 1
-          ],
-        });
+        this.handleInputSectionChange( 'next' );
         break;
       case 'Tab':
         this.setState({
@@ -328,10 +330,19 @@ class DateTimeBase extends PureComponent {
         });
         break;
       case 'Space':
-
           // console.log( 'enter or space' );
         break;
-      default:
+      default: {
+        const alphaRegex = /^[a-zA-Z]+$/g;
+        const numericRegex = /^[0-9]+$/g;
+
+        if (
+          alphaRegex.test( key ) ||
+          numericRegex.test( key )
+        ) {
+          this.handleAutocompleteSection( value, key, callback, setDate, date );
+        }
+      }
     }
   }
 
@@ -403,14 +414,11 @@ class DateTimeBase extends PureComponent {
     if ( setDate ) setDate( newDate );
   }
 
-  handleIncrementDay = ( value, key, callback ) => {
+  handleIncrementDayOfMonth = ( value, key, callback ) => {
     // console.log( 'increment day', value, key );
 
     const daysInMonth = getDaysInMonth( value );
     const currentDay = getDate( value );
-
-    // console.log( 'currentDay', currentDay );
-    // console.log( 'daysInMonth', daysInMonth );
 
     let newDay = key === 'ArrowUp' ? currentDay + 1 : currentDay - 1;
 
@@ -421,19 +429,13 @@ class DateTimeBase extends PureComponent {
       newDay = 1;
     }
 
-    const newDate = setDate( value, newDay );
-
-    // console.log( 'value', value, value && value.length );
-    // console.log( 'newDay', newDay, newDate );
+    const newDate = setDay( value, newDay );
 
     if ( callback ) callback( newDate );
   }
 
   handleIncrementMonth = ( value, key, callback, setDate ) => {
-    // const currentMonth = [months[getMonth( value )]];
     const monthIndex = getMonth( value );
-
-    // console.log( 'currentMonth', monthIndex );
 
     let newMonth = key === 'ArrowUp' ? monthIndex + 1 : monthIndex - 1;
 
@@ -446,17 +448,12 @@ class DateTimeBase extends PureComponent {
 
     const newDate = setMonth( value, newMonth );
 
-    // console.log( 'value', value, value &&  value.length );
-    // console.log( 'newMonth', newMonth, newDate );
-
     if ( callback ) callback( newDate );
     if ( setDate ) setDate( newDate );
   }
 
   handleIncrementYear = ( value, key, callback, setDate ) => {
     const yearIndex = years.findIndex( year => year === getYear( value ));
-
-    // console.log( 'year', key, yearIndex, currentYear, years );
 
     let newIndex = key === 'ArrowUp' ? yearIndex - 1 : yearIndex + 1;
 
@@ -471,28 +468,21 @@ class DateTimeBase extends PureComponent {
 
     const newDate = setYear( value, newYear );
 
-    // console.log( 'value', value, value &&  value.length );
-    // console.log( 'newYear', newYear, newDate );
-
     if ( callback ) callback( newDate );
     if ( setDate ) setDate( newDate );
   }
 
   handleSelectDay = ( callback, selectItem, day ) => {
-    // console.log( 'day', day, day.dateValue );
-
     selectItem( day.dateValue );
     callback();
   }
 
   handleSelectMonth = ( callback, date ) => value => {
-    // console.log( 'props', callback, setMonth, value );
     const newMonth = isArray( value, { ofMinLength: 1 })
       ? value[0] : value;
     const monthIndex = months.findIndex( m => m === newMonth );
     const newDate = setMonth( date, monthIndex );
 
-    // console.log( 'newDate', newDate );
     callback( newDate );
   }
 
@@ -502,21 +492,158 @@ class DateTimeBase extends PureComponent {
     callback( newDate );
   }
 
+  handleAutocompleteSection = ( value, key, callback, setDate ) => {
+    const { currentInputSection } = this.state;
+    // get stored value and add key to store value
+    const newCharacter = isString( this.tempSectionValue )
+      ? this.tempSectionValue + key
+      : key;
+
+    const findMatchingValue = ( valueOptions, setField ) => {
+      let match = null;
+      let partials = null;
+
+      valueOptions.forEach( valueOption => {
+        const completeMatch = valueOption.toString() === newCharacter.toString();
+        const partialMatch = valueOption.toString().startsWith( newCharacter.toString());
+
+        if ( completeMatch ) {
+          match = valueOption;
+        }
+        else if ( partialMatch ) {
+          partials = true;
+          if ( !match ) {
+            match = valueOption;
+          }
+        }
+      });
+
+      const newDate = setField( value, match );
+
+      if ( !match && !partials && !isString( this.tempSectionValue )) {
+        return;
+      }
+
+      if ( match ) {
+        if ( callback ) callback( newDate );
+        if ( setDate ) setDate( newDate );
+      }
+
+      if ( partials ) {
+        this.tempSectionValue = newCharacter;
+      }
+      else {
+        this.tempSectionValue = null;
+        this.handleInputSectionChange( 'next' );
+      }
+    };
+
+    switch ( currentInputSection ) {
+      case 'ampm': {
+        const ampmValues = ['a', 'p'];
+        const setNewAmPm = ( value, amPm ) => {
+          const hoursIndex = getHours( value );
+          let offsetHour = hoursIndex;
+
+          if ( offsetHour < 12 && amPm === 'p' ) {
+            offsetHour = offsetHour + 12;
+          }
+          else if ( offsetHour >= 12 && amPm === 'a' ) {
+            offsetHour = offsetHour - 12;
+          }
+
+          return setHours( value, offsetHour );
+        };
+
+        findMatchingValue( ampmValues, setNewAmPm );
+      }
+        break;
+      case 'minutes': {
+        const minuteValues = range( 60 ).map( m => m + 1 );
+        const setNewMinutes = ( value, minutes ) => {
+          return setMinutes( value, minutes );
+        };
+
+        findMatchingValue( minuteValues, setNewMinutes );
+      }
+        break;
+      case 'hour': {
+        const hourValues = range( 12 ).map( m => m + 1 );
+        const setNewHours = ( value, hour ) => {
+          return setHours( value, hour );
+        };
+
+        findMatchingValue( hourValues, setNewHours );
+      }
+        break;
+      case 'dayOfMonth': {
+        const daysInMonth = getDaysInMonth( value );
+        const dayValues = range( daysInMonth ).map( m => m + 1 );
+        const setNewDay = ( value, day ) => {
+          return setDay( value, day );
+        };
+
+        findMatchingValue( dayValues, setNewDay );
+      }
+        break;
+      case 'month': {
+        const monthValues = range( 12 ).map( m => m + 1 );
+        const setNewMonth = ( value, month ) => {
+          return setMonth( value, month - 1 );
+        };
+
+        // add function to check against month string eg "Feb"
+
+        findMatchingValue( monthValues, setNewMonth );
+      }
+        break;
+      case 'year': {
+        const yearValues = years.reverse();
+
+        findMatchingValue( yearValues, setYear );
+      }
+        break;
+      default:
+        // eslint-disable-next-line no-console
+        console.log( 'invalid this.state.currentInputSection' );
+    }
+  }
+
+  handleInputSectionChange = ( direction ) => {
+    const currentIndex = Object.keys( this.inputSections )
+      .findIndex( key => this.inputSections[key] === this.state.currentInputSection );
+    const maxIndex = Object.keys( this.inputSections ).length;
+
+    if ( direction === 'prev' ) {
+      this.setState({
+        currentInputSection: this.inputSections[
+          currentIndex <= 0
+            ? currentIndex
+            : currentIndex - 1
+        ],
+      });
+    }
+    else if ( direction === 'next' ) {
+      this.setState({
+        currentInputSection: this.inputSections[
+          currentIndex >= maxIndex - 1
+            ? currentIndex
+            : currentIndex + 1
+        ],
+      });
+    }
+  }
+
   render() {
     const {
       displayFormat,
       value,
-      testID,
+      // testID,
       onChangeValue, // eslint-disable-line no-unused-vars
       children,
-      ...restProps
     } = this.props;
 
     const { isCalendarOpen } = this.state;
-
-    // console.log( this.selectionValues[this.state.currentInputSection] );
-
-    // console.log( this.props );
 
     return (
       <Downshift

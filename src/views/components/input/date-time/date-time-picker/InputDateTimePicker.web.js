@@ -4,12 +4,12 @@
 
 import React, { PureComponent } from 'react';
 import { string, func, oneOfType, object, bool } from 'prop-types';
-import { Input, Box } from '../../../../components';
+import { Input, Box } from '../../..';
 import DateTimeBase from '../date-time-base';
 
 class InputDatePicker extends PureComponent {
   static defaultProps = {
-    displayFormat: 'hh:mm A',
+    displayFormat: 'DD/MM/YYYY hh:mm A',
     calendarHeaderColor: 'white',
     calendarHeaderTextColor: 'black',
     placeholder: 'Please select a date...', // eslint-disable-line
@@ -50,7 +50,6 @@ class InputDatePicker extends PureComponent {
         value={value}
         displayFormat={displayFormat}
         onChangeValue={onChangeValue}
-        type="timepicker"
       >
         {({
           getInputProps,
@@ -90,7 +89,6 @@ class InputDatePicker extends PureComponent {
                 onSelectionChange={onSelectionChange}
                 testID={`input-date-picker ${testID}`}
                 paddingRight={20}
-                identifier="timepicker"
               />
               {/* <Touchable
                 withFeedback

@@ -61,6 +61,8 @@ class Input extends Component {
     onChangeText: func,
     onChangeState: func,
     onFocus: func,
+    onPress: func,
+    onRef: func,
     onKeyPress: func,
     onLayout: func,
     onSelectionChange: func,
@@ -162,20 +164,6 @@ class Input extends Component {
   }
 
   componentDidUpdate( prevProps, prevState ) {
-    // if ( this.props.identifier === 'MONTHDROPDOWN' ) {
-    //   console.log( '==================' );
-    //   console.log( 'prevProps.value', prevProps.value );
-    //   console.log( 'this.props.value', this.props.value );
-    //   console.log( 'prevState.value', prevState.value );
-    //   console.log( 'this.state.value', this.state.value );
-    //   console.log( 'check', ((
-    //     prevProps.value !== this.props.value &&
-    //     this.state.value !== this.props.value
-    //   ) ||
-    //     prevState.value !== this.state.value
-    //   ));
-    // }
-
     if (
       ((
         prevProps.value !== this.props.value &&
@@ -283,6 +271,11 @@ class Input extends Component {
       this.props.onBlur( event );
   }
 
+  handleChange = ( event ) => {
+    if ( this.props.onChange )
+      this.props.onChange( event );
+  }
+
   render() {
     const {
       autoCapitalize,
@@ -296,7 +289,6 @@ class Input extends Component {
       keyboardType,
       maxLength,
       multiline,
-      onChange,
       onKeyPress,
       onLayout,
       onSelectionChange,
@@ -387,7 +379,8 @@ class Input extends Component {
       fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,
-      ...this.props.notFullWidth ? {} : { width: '100%' }, // Always be 100% of the parent width
+      // ...this.props.notFullWidth ? {} : { width: '100%' }, // Always be 100% of the parent width
+      width: '100%',
       backgroundColor: backgroundColor === 'none' ? null : backgroundColor,
       borderWidth,
       borderTopWidth,
@@ -454,7 +447,7 @@ class Input extends Component {
           name={this.props.name}
           multiline={multiline}
           numberOfLines={numberOfLines}
-          onChange={onChange}
+          onChange={this.handleChange}
           onChangeText={this.handleChangeText}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
