@@ -36,6 +36,7 @@ class Input extends Component {
     textAlign: 'left',
     editable: true,
     outline: 'none',
+    updateValueWhenFocused: false,
   }
 
   static propTypes = {
@@ -60,6 +61,8 @@ class Input extends Component {
     onChangeText: func,
     onChangeState: func,
     onFocus: func,
+    onPress: func,
+    onRef: func,
     onKeyPress: func,
     onLayout: func,
     onSelectionChange: func,
@@ -141,6 +144,8 @@ class Input extends Component {
     iconProps: object,
     overflow: string,
     numberOfLines: number,
+    updateValueWhenFocused: bool,
+    tabIndex: string,
   }
 
   state = {
@@ -166,7 +171,10 @@ class Input extends Component {
       ) ||
         prevState.value !== this.state.value
       ) &&
-      !this.state.isFocused
+      (
+        !this.state.isFocused ||
+        this.props.updateValueWhenFocused
+      )
     ) {
       this.updateValue( this.props.value );
     }
@@ -191,6 +199,8 @@ class Input extends Component {
 
   handleRef = input => {
     this.input = input;
+
+    if ( this.props.onRef ) this.props.onRef( input );
   }
 
   handleChangeText = value => {
@@ -261,6 +271,11 @@ class Input extends Component {
       this.props.onBlur( event );
   }
 
+  handleChange = ( event ) => {
+    if ( this.props.onChange )
+      this.props.onChange( event );
+  }
+
   render() {
     const {
       autoCapitalize,
@@ -274,7 +289,6 @@ class Input extends Component {
       keyboardType,
       maxLength,
       multiline,
-      onChange,
       onKeyPress,
       onLayout,
       onSelectionChange,
@@ -333,6 +347,8 @@ class Input extends Component {
       iconProps,
       numberOfLines,
       overflow,
+      onPress,
+      tabIndex,
     } = this.props;
 
     const {
@@ -363,7 +379,8 @@ class Input extends Component {
       fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,
-      width: '100%', // Always be 100% of the parent width
+      // ...this.props.notFullWidth ? {} : { width: '100%' }, // Always be 100% of the parent width
+      width: '100%',
       backgroundColor: backgroundColor === 'none' ? null : backgroundColor,
       borderWidth,
       borderTopWidth,
@@ -430,13 +447,14 @@ class Input extends Component {
           name={this.props.name}
           multiline={multiline}
           numberOfLines={numberOfLines}
-          onChange={onChange}
+          onChange={this.handleChange}
           onChangeText={this.handleChangeText}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
           onKeyPress={onKeyPress}
+          onPress={onPress}
           onSelectionChange={onSelectionChange}
           onSubmitEditing={onSubmitEditing}
           placeholder={placeholder}
@@ -461,6 +479,7 @@ class Input extends Component {
             android: nativeProps,
           })}
           ref={this.handleRef}
+          {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
         />
 
         {!showCharacterCount ? null : (
