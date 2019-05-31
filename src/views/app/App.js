@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { BackHandler } from 'react-native';
 import dlv from 'dlv';
-import Routing from '../routing';
 import AuthenticatedApp from './authenticated';
-import LayoutEditor from './layout-editor';
 import TestDisplay from './test-display';
+import Routing from '../routing';
 import { location } from '../../utils';
 
 class App extends Component {
@@ -17,13 +16,11 @@ class App extends Component {
   }
 
   state = {
-    layoutEditorOpen: false,
     debug: false,
   };
 
   componentDidMount() {
-    if ( BackHandler )
-      BackHandler.addEventListener( 'hardwareBackPress', this.handleBackPress );
+    if ( BackHandler ) BackHandler.addEventListener( 'hardwareBackPress', this.handleBackPress );
   }
 
   componentDidUpdate() {
@@ -42,12 +39,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    if ( BackHandler )
-      BackHandler.removeEventListener( 'hardwareBackPress', this.handleBackPress );
-  }
-
-  openLayoutEditor() {
-    this.setState({ layoutEditorOpen: true });
+    if ( BackHandler ) BackHandler.removeEventListener( 'hardwareBackPress', this.handleBackPress );
   }
 
   showDebugView() {
@@ -57,10 +49,7 @@ class App extends Component {
   handleBackPress = () => {
     const currentLocation = location.getBasePath();
 
-    const exitableRoutes = [
-      '/home',
-      '/splash',
-    ];
+    const exitableRoutes = ['/home', '/splash'];
 
     const exitOnBack = exitableRoutes.includes( currentLocation );
 
@@ -76,13 +65,12 @@ class App extends Component {
   };
 
   render() {
-    const { layoutEditorOpen, debug } = this.state;
+    const { debug } = this.state;
 
     return (
       <AuthenticatedApp>
-        { debug && <TestDisplay /> }
-        { !layoutEditorOpen && <Routing /> }
-        { layoutEditorOpen && <LayoutEditor /> }
+        {debug && <TestDisplay />}
+        <Routing />
       </AuthenticatedApp>
     );
   }
