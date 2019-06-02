@@ -43,6 +43,14 @@ const dateTimeFormats = {
   // timezone: ['Z', 'ZZ'],
 };
 
+const letterOnlyFields = [
+  'MMM',
+  'MMMM',
+  'dd',
+  'ddd',
+  'dddd',
+];
+
 class DateTimeBase extends PureComponent {
   static defaultProps = {
     // displayFormat: 'DD/MM/YYYY',
@@ -340,7 +348,7 @@ class DateTimeBase extends PureComponent {
           alphaRegex.test( key ) ||
           numericRegex.test( key )
         ) {
-          this.handleAutocompleteSection( value, key, callback, setDate, date );
+          this.handleAutocompleteSection( value, key, callback, setDate, date,  );
         }
       }
     }
@@ -501,17 +509,18 @@ class DateTimeBase extends PureComponent {
 
     const findMatchingValue = ( valueOptions, setField ) => {
       let match = null;
-      let partials = null;
+      let partials = 0;
 
       valueOptions.forEach( valueOption => {
-        const completeMatch = valueOption.toString() === newCharacter.toString();
-        const partialMatch = valueOption.toString().startsWith( newCharacter.toString());
+        const formatValue = ( value ) => value.toString().toLowerCase();
+        const completeMatch = formatValue( valueOption ) === formatValue( newCharacter );
+        const partialMatch = formatValue( valueOption ).startsWith( formatValue( newCharacter ));
 
         if ( completeMatch ) {
           match = valueOption;
         }
         else if ( partialMatch ) {
-          partials = true;
+          partials = partials + 1;
           if ( !match ) {
             match = valueOption;
           }
@@ -529,7 +538,7 @@ class DateTimeBase extends PureComponent {
         if ( setDate ) setDate( newDate );
       }
 
-      if ( partials ) {
+      if ( partials >= 2 ) {
         this.tempSectionValue = newCharacter;
       }
       else {
@@ -588,17 +597,28 @@ class DateTimeBase extends PureComponent {
         break;
       case 'month': {
         const monthValues = range( 12 ).map( m => m + 1 );
+        const monthNames = months;
+
+        const monthField = Object.keys( this.selectionFields ).filter( f => this.selectionFields[f].type === 'month' ).length > 0
+          ? this.selectionFields[Object.keys( this.selectionFields ).filter( f => this.selectionFields[f].type === 'month' )[0]].value
+          : '';
+
+        const fieldType = letterOnlyFields.includes( monthField );
+
         const setNewMonth = ( value, month ) => {
-          return setMonth( value, month - 1 );
+          const monthIndex = months.findIndex( m => m === month );
+
+          return setMonth( value, fieldType ? monthIndex : month - 1 );
         };
 
         // add function to check against month string eg "Feb"
 
-        findMatchingValue( monthValues, setNewMonth );
+        findMatchingValue( fieldType ? monthNames : monthValues, setNewMonth );
       }
         break;
       case 'year': {
-        const yearValues = years.reverse();
+        // const yearValues = years.reverse();
+        const yearValues = years;
 
         findMatchingValue( yearValues, setYear );
       }
