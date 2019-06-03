@@ -60,6 +60,12 @@ const reducer = ( state = {}, { type, payload }) => {
         }, {}),
       };
 
+    case 'ASK_CONTEXT_CHANGE': {
+      return {
+        ...state,
+      };
+    }
+
     case 'USER_LOGOUT':
       return {};
 

@@ -234,10 +234,21 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
     }
   }
 
+  // need to add childAsks here so pathing is easier
+
   if ( state.asks ) {
     state.asks[item.questionCode] = {
       name: item.name,
       code: item.questionCode,
+      ...(
+        isArray( item.childAsks )
+          ? {
+            childAsks: [
+              ...item.childAsks.map( childAsk => childAsk.questionCode ),
+            ],
+          }
+          : {}
+      ),
       ...(
         ( isObject( item.contextList ) && isArray( item.contextList.contexts )) ||
         ( isObject( state.asks[item.questionCode], { withProperty: 'links' }) && isArray( state.asks[item.questionCode].links )
@@ -326,85 +337,101 @@ const injectFakeLayoutLinkIntoState = ({ payload, state }) => {
 };
 
 function changeContext( payload, state ) {
+  const handleAskContext = ( ask ) => {
+    if ( isArray( ask.links )) {
+      // console.log( 'check target', payload.targetCodes, ask );
+
+      let didChangeLinks = false;
+
+      // remove contexts
+      let newLinks = ask.links.filter( link => {
+        const shouldRemove = payload.contexts.map( c => c.contextCode ).includes( link.code );
+
+        if ( shouldRemove ) didChangeLinks = true;
+        // console.log( 'shouldRemove', shouldRemove );
+
+        return !shouldRemove;
+      });
+
+      if (
+        isArray( payload.targetCodes ) &&
+        payload.targetCodes.includes( ask.code )
+      ) {
+        // console.log( 'isTarget' );
+        // if in target codes, add contexts to targets
+
+        // add contexts
+        if ( isArray( payload.contexts )) {
+          didChangeLinks = true;
+
+          newLinks = [
+            ...newLinks,
+            ...payload.contexts.map( context => {
+              const nameTypes = {
+                THEME: 'theme',
+                ICON: 'icon',
+              };
+
+              return {
+                code: context.contextCode,
+                weight: context.weight,
+                type: nameTypes[context.name]
+                  ? nameTypes[context.name]
+                  : 'none',
+                component: componentTypes[context.visualControlType]
+                  ? componentTypes[context.visualControlType]
+                  : componentTypes[context.hint]
+                    ? componentTypes[context.hint]
+                    : null,
+                created: context.created,
+              };
+            }),
+          ];
+        }
+      }
+
+      if ( didChangeLinks ) {
+        // console.log( 'newLinks', newLinks );
+
+        // add to state
+        // console.log( 'didChangeLinks', didChangeLinks );
+
+        state.asks[ask.code]['links'] = newLinks;
+      }
+    }
+
+    // loop over children
+    if ( isArray( ask.childAsks )) {
+      ask.childAsks.forEach( childAskCode => {
+        const childAsk = state.asks[childAskCode];
+
+        // console.log( 'childAsk', childAsk );
+
+        handleAskContext( childAsk );
+      });
+    }
+  };
+
   if ( state.asks ) {
     // console.log( 'changeContext', payload, state.asks );
 
-    if ( isObject( payload.oldContext )) {
-      // console.log( 'oldContext', payload.oldContext );
+    // find Root Ask
 
-      if (
-        payload.oldContext.questionCode &&
-        state.asks[payload.oldContext.questionCode]
-      ) {
-        // console.log( 'ask', state.asks[payload.oldContext.questionCode] );
+    if (
+      isString( payload.root ) &&
+      state.asks[payload.root]
+    ) {
+      const rootAsk = state.asks[payload.root];
+//
+      // console.log( 'rootAsk', rootAsk );
 
-        if (
-          state.asks[payload.oldContext.questionCode].links
-        ) {
-          // console.log( 'links', state.asks[payload.oldContext.questionCode].links );
-
-          if (
-            payload.oldContext.contextCode &&
-            state.asks[payload.oldContext.questionCode].links.filter(
-              link => link.code === payload.oldContext.contextCode ).length > 0
-          ) {
-            // console.log( 'found old context',
-            // state.asks[payload.oldContext.questionCode].links.filter(
-              // link => link.code === payload.oldContext.contextCode ));
-
-            state.asks[payload.oldContext.questionCode].links = [
-              ...state.asks[payload.oldContext.questionCode].links.filter(
-                link => link.code !== payload.oldContext.contextCode ),
-            ];
-
-            // console.log( 'after remove old', state.asks[payload.oldContext.questionCode].links );
-          }
-        }
-      }
-    }
-    if ( isObject( payload.context )) {
-      // console.log( 'oldContext', payload.context );
-
-      if (
-        payload.context.questionCode &&
-        state.asks[payload.context.questionCode]
-      ) {
-        // console.log( 'ask', state.asks[payload.context.questionCode] );
-
-        if (
-          state.asks[payload.context.questionCode].links
-        ) {
-          // console.log( 'links', state.asks[payload.context.questionCode].links );
-
-          const nameTypes = {
-            THEME: 'theme',
-            ICON: 'icon',
-          };
-
-          const newContext = payload.context;
-
-          state.asks[payload.context.questionCode].links = [
-            ...state.asks[payload.context.questionCode].links,
-            {
-              code: newContext.contextCode,
-              weight: newContext.weight,
-              type: nameTypes[newContext.name]
-                ? nameTypes[newContext.name]
-                : 'none',
-              component: componentTypes[newContext.visualControlType]
-                ? componentTypes[newContext.visualControlType]
-                : componentTypes[newContext.hint]
-                  ? componentTypes[newContext.hint]
-                  : null,
-              created: newContext.created,
-            },
-          ];
-
-          // console.log( 'after add new', state.asks[payload.context.questionCode].links );
-        }
-      }
+      handleAskContext( rootAsk );
     }
   }
+
+  // console.log( '=================' );
+  // console.log( state );
+  // console.log( '=================' );
 
   return state;
 }
