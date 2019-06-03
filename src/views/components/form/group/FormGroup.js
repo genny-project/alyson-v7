@@ -35,6 +35,7 @@ class FormGroup extends Component {
 
   state = {
     themes: [],
+    hover: false,
   }
 
   /* eslint-disable react/sort-comp */
@@ -55,6 +56,14 @@ class FormGroup extends Component {
       )) {
         this.getThemes();
       }
+    }
+  }
+
+  handleHover = ( hover ) => {
+    if ( hover !== this.state.hover ) {
+      this.setState({
+        hover: hover,
+      });
     }
   }
 
@@ -400,31 +409,28 @@ class FormGroup extends Component {
           rootCode={rootCode}
           targetCode={targetCode}
           width="100%"
+          onMouseEnter={() => this.handleHover( true )}
+          onMouseLeave={() => this.handleHover( false )}
+          {...defaultStyle.group}
+          {...this.getStyling()['default']}
+          {...this.state.hover ? this.getStyling()['hover'] : {}}
         >
-          <Box
-            key={name}
-            // zIndex={20 - index}
-            {...defaultStyle.group}
-            borderColor
-            {...this.getStyling()['default']}
-          >
-            {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                return this.renderQuestionGroup(
-                  ask,
-                  index,
-                  form
-                );
-              }
-
-              return this.renderInput(
+          {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+            if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+              return this.renderQuestionGroup(
                 ask,
-                questionCode,
                 index,
-                form,
+                form
               );
-            })}
-          </Box>
+            }
+
+            return this.renderInput(
+              ask,
+              questionCode,
+              index,
+              form,
+            );
+          })}
         </EventTouchable>
       );
     }
