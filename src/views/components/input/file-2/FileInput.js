@@ -1,23 +1,12 @@
 import React, { Component } from 'react';
 import { bool } from 'prop-types';
-import { Box, Text, Icon, EventTouchable } from '../../../components';
+import { Box, Text, Touchable, Icon } from '../../../components';
 import Preview from './Preview';
-import { isArray, isObject, sort } from '../../../../utils';
-import uuid from 'uuid/v4';
+import { isArray } from '../../../../utils';
 
-const fileTypes = ['image/jpeg', 'image/pjpeg', 'image/png'];
-
-// Check if file is of valid type
-
-function validFileType( file ) {
-  for ( var i = 0; i < fileTypes.length; i++ ) {
-    if ( file.type === fileTypes[i] ) {
-      return true;
-    }
-  }
-
-  return false;
-}
+/* These are commented out to be revisited later */
+// import Camera from './Camera';
+// const fileTypes = ['image/jpeg', 'image/pjpeg', 'image/png'];
 
 class FileInput extends Component {
   static defaultProps = {
@@ -31,11 +20,13 @@ class FileInput extends Component {
   constructor( props ) {
     super( props );
     this.inputFileNew = React.createRef();
+    this.uploadButtonRef = React.createRef();
   }
 
   state = {
     selectedFiles: [],
     numberOfFilesSelected: 0,
+    requestCamera: false,
   };
 
   getAllFiles = () => {
@@ -45,18 +36,30 @@ class FileInput extends Component {
     return files;
   };
 
+  // To be visited later for getting data from camera
   // Calculates the size of a selected file to be uploaded in MB
-  calculateFileSize( number ) {
-    if ( number < 1024 ) {
-      return `${number}bytes`;
-    }
-    if ( number >= 1024 && number < 1048576 ) {
-      return `${( number / 1024 ).toFixed( 1 )}KB`;
-    }
-    if ( number >= 1048576 ) {
-      return `${( number / 1048576 ).toFixed( 1 )}MB`;
-    }
-  }
+  // CalculateFileSize( number ) {
+  //   if ( number < 1024 ) {
+  //     return `${number}bytes`;
+  //   }
+  //   if ( number >= 1024 && number < 1048576 ) {
+  //     return `${( number / 1024 ).toFixed( 1 )}KB`;
+  //   }
+  //   if ( number >= 1048576 ) {
+  //     return `${( number / 1048576 ).toFixed( 1 )}MB`;
+  //   }
+  // }
+
+  // Check if the incoming value type is correct
+  // validFileType( file ) {
+  //   for ( var i = 0; i < fileTypes.length; i++ ) {
+  //     if ( file.type === fileTypes[i] ) {
+  //       return true;
+  //     }
+  //   }
+
+  //   return false;
+  // }
 
   sendFilesToBackend() {
     console.log('This method will send files to the backend'); //eslint-disable-line
@@ -68,12 +71,14 @@ class FileInput extends Component {
 
     // Handle the closing of close button in preview component
     const handleClose = file => () => {
-      const dataInhandleCloase = this.state.selectedFiles.filter( item => item.name !== file.name );
+      // const dataInhandleCloase =
+      // this.state.selectedFiles.filter( item => item.name !== file.name );
 
       console.warn({ file }); //eslint-disable-line
       this.setState( state => {
         return {
           selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
+          // eslint-disable-next-line max-len
           numberOfFilesSelected: state.selectedFiles.filter( item => item.name !== file.name ).length,
         };
       }, console.warn(this.state, 'state in handle close')); //eslint-disable-line
@@ -107,6 +112,10 @@ class FileInput extends Component {
     );
   };
 
+  handleClickOnHiddenButton = () => {
+    this.inputFileNew.current.click();
+  };
+
   handleChange = () => {
     const allFiles = this.getAllFiles();
     const allFilesArray = Array.from( allFiles );
@@ -120,33 +129,89 @@ class FileInput extends Component {
     });
   };
 
+  // Please donot remove
+  // See the comments on the top
+  // handleCamera = () => {
+  //   const { requestCamera } = this.state;
+
+  //   this.setState({
+  //     requestCamera: true,
+  //   });
+  // };
+
   render() {
     const { multiple } = this.props;
     const { numberOfFilesSelected } = this.state;
 
     return (
-      <div>
-        <h2>
-File input component
-        </h2>
-        <input
-          onChange={this.handleChange}
-          ref={this.inputFileNew}
-          type="file"
-          multiple={multiple}
-          name="file-upload"
-        />
+      <Box
+        flexDirection="column"
+        height="auto"
+        justifyContent="space-around"
+      >
+        <Box
+          backgroundColor="#121254e8"
+          width="100px"
+          height="40px"
+          alignItems="center"
+        >
+          <Touchable
+            onClick={this.handleClickOnHiddenButton}
+            withFeedback
+            width="100%"
+          >
+            <Box
+              justifyContent="space-around"
+              width="100%"
+              alignItems="center"
+            >
+              <Icon
+                name="cloud_upload"
+                color="#fff"
+              />
+              <Text
+                size="xxs"
+                text="Upload"
+                color="#FFF"
+              />
+              <Text
+                text={`(${numberOfFilesSelected})`}
+                color="white"
+                size="xxs"
+              />
+            </Box>
+          </Touchable>
 
-        <Box>
-          <Text text="Selected Items:" />
-          <Text text={numberOfFilesSelected} />
-          <Box>
-            {this.generatePreview()}
-          </Box>
+          <input
+            onChange={this.handleChange}
+            ref={this.inputFileNew}
+            type="file"
+            multiple={multiple}
+            name="fileupload"
+            onClick={this.handleClickOnHiddenButton}
+            style={buttonStyle}
+          />
         </Box>
-      </div>
+
+        {this.generatePreview()}
+        {/* Please DONOT REMOVE*/}
+        {/* See the comments above */}
+
+        {/* <EventTouchable
+          onPress={this.handleCamera}
+          withFeedback
+        >
+          <Text text=" Camera" />
+        </EventTouchable> */}
+        {/* Commented out because we are not using this for now */}
+        {/* {requestCamera ? <Camera /> : null} */}
+      </Box>
     );
   }
 }
+
+const buttonStyle = {
+  visibility: 'hidden',
+};
 
 export default FileInput;

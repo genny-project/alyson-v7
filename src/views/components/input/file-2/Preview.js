@@ -3,8 +3,6 @@ import { array, func } from 'prop-types';
 import { Box, Text, Icon, Touchable } from '../../../components';
 import { trimAndAppendDots } from '../../../../utils';
 
-console.warn({ trimAndAppendDots });
-
 // This method decides which icon to send for preview based on the type of attached file
 const previewIcons = {
   'application/pdf': 'picture_as_pdf',
