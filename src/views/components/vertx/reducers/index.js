@@ -7,7 +7,6 @@ import user from './user.reducer';
 import layouts from './layouts.reducer';
 import actionCache from './actionCache.reducer';
 import controls from './controls.reducer';
-import layoutsLegacy from './layoutsLegacy.reducer'; // legacy compatibility
 
 const reducer = combineReducers({
   baseEntities,
@@ -18,7 +17,6 @@ const reducer = combineReducers({
   layouts,
   actionCache,
   controls,
-  layoutsLegacy, // legacy compatibility
 });
 
 export default reducer;
