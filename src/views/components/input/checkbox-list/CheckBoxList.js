@@ -8,7 +8,7 @@ class CheckBoxList extends React.Component {
   static defaultProps = {
     items: [],
     value: [],
-    multiSelect: true,
+    multiSelect: false,
     numberOfColumns: 1,
   };
 
@@ -42,6 +42,7 @@ class CheckBoxList extends React.Component {
     });
   }
 
+  // Component Did update
   componentDidUpdate( prevProps ) {
     if ( this.props.items !== prevProps.items ) {
       const data = this.constructInitialValues();
@@ -102,9 +103,27 @@ class CheckBoxList extends React.Component {
       dataToModify.checkBoxStatus = modifiedBoolean;
 
       console.warn({ dataToModify }, 'modified' );
+      this.setState(
+        state => {
+          if ( multiSelect === true ) {
+            return { data: [...state.data, ...dataToModify] };
+          }
+
+          return { data: state.data };
+        },
+        () => {
+          console.log( this.state );
+        }
+      );
     }
 
     if ( multiSelect === false ) {
+      if ( this.state.data.length >= 1 ) {
+        this.setState( state => {
+          return { data: [...state.data] };
+        });
+      }
+
       dataToModify = this.state.data.find( item => value === item.value );
 
       console.warn({ dataToModify });
@@ -113,21 +132,8 @@ class CheckBoxList extends React.Component {
 
       dataToModify.checkBoxStatus = modifiedBoolean;
 
-      console.warn({ dataToModify }, 'modified' );
+      return { data: [...this.state.data, ...dataToModify] };
     }
-
-    this.setState(
-      state => {
-        if ( multiSelect === true ) {
-          return { data: [...state.data, ...dataToModify] };
-        }
-
-        return { data: state.data };
-      },
-      () => {
-        console.log( this.state );
-      }
-    );
   };
 
   // Select icons depending upon the Check box or Radio Item
