@@ -317,15 +317,6 @@ class Input extends Component {
             ref={input => ( this.input = input )}
           />
         );
-
-      case 'checkboxmultiple':
-        return (
-          <CheckBoxList
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
       case 'payment':
         return (
           <InputPayment
