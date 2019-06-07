@@ -4,31 +4,10 @@ import { Box, Text } from '../../index';
 import { isArray } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
 
-const mockData = [
-  {
-    label: 'Dropdo',
-    value: 'SEL_DROPDOWN_ITEM_ONE',
-  },
-  {
-    label: 'Dropdown item two',
-    value: 'SEL_DROPDOWN_ITEM_THREE',
-  },
-  {
-    label: 'Dropdown iddfada Dropdown item three',
-    value: 'SEL_DROPDOWN_ITEM_THREEE',
-  },
-  {
-    label: 'Dropdown',
-    value: 'SEL_DROPDOWN_ITEM_FOURF3',
-  },
-];
-
-const values = ['SEL_DROPDOWN_ITEM_FOURF3', 'SEL_DROPDOWN_ITEM_THREEE'];
-
 class InputCheckBoxNewNew extends React.Component {
   static defaultProps = {
-    items: mockData,
-    value: values,
+    items: [],
+    value: [],
     multiSelect: false,
     numberOfColumns: 1,
   };

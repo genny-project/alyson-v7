@@ -1,6 +1,6 @@
 import React from 'react';
 import { oneOf } from 'prop-types';
-import { Box, object } from '../../index';
+import { Box, object, Text } from '../../index';
 import BaseCheckBox from '../base-checkbox/';
 
 const question = {
@@ -10,7 +10,7 @@ const question = {
 class InputCheckBoxNewNew extends React.Component {
   static defaultProps = {
     value: null,
-    question: question,
+    question: {},
     // question.name,
   };
 
@@ -48,13 +48,17 @@ class InputCheckBoxNewNew extends React.Component {
         flexDirection="row"
         flexWrap="wrap"
       >
-        <BaseCheckBox
-          onPress={this.handleChange}
-          checkBoxStatus={value}
-          iconName={value}
-          ID={question.text}
-          label={question.text}
-        />
+        {question && question.text ? (
+          <BaseCheckBox
+            onPress={this.handleChange}
+            checkBoxStatus={value}
+            iconName={value}
+            ID={question.text}
+            label={question.text}
+          />
+        ) : (
+          <Text text="No items to Show" />
+        )}
       </Box>
     );
   }

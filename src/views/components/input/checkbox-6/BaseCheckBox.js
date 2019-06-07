@@ -13,7 +13,7 @@ class BaseCheckBox extends Component {
   };
 
   static propTypes = {
-    checkBoxStatus: oneOf( [true, false, null] ).isRequired, // Values expected from the parent component
+    checkBoxStatus: oneOf( [true, false, null] ).isRequired,
   };
 
   static propTypes = {
@@ -41,16 +41,21 @@ class BaseCheckBox extends Component {
     }
   }
 
-  handleIcons = () => {
-    const { checkBoxStatus, icons } = this.props;
+  handleIcons = status => {
+    const { icons } = this.props;
 
-    if ( checkBoxStatus === true ) return icons.true;
-    if ( checkBoxStatus === false ) return icons.false;
-    if ( checkBoxStatus === null ) return icons.null;
+    console.warn({ status }, 'in handle icons' );
+
+    if ( status === true ) return icons.true;
+    if ( status === false ) return icons.false;
+    if ( status === null ) return icons.null;
   };
 
   render() {
     const { label } = this.props;
+    const { currentIcon } = this.state;
+
+    console.warn({ currentIcon });
 
     return (
       <Fragment>
@@ -60,7 +65,7 @@ class BaseCheckBox extends Component {
         >
           <Box width="30px">
             <Icon
-              name={this.state.currentIcon} // eslint-disable-line
+              name={currentIcon} // eslint-disable-line
               color="black"
               size="md"
               id={this.props.ID} // eslint-disable-line
