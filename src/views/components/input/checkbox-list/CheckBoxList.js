@@ -1,14 +1,14 @@
 import React from 'react';
-import { array, bool, number } from 'prop-types';
+import { array, bool, number, object } from 'prop-types';
 import { Box, Text } from '../../index';
 import { isArray } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
 
-class InputCheckBoxNewNew extends React.Component {
+class CheckBoxList extends React.Component {
   static defaultProps = {
     items: [],
     value: [],
-    multiSelect: false,
+    multiSelect: true,
     numberOfColumns: 1,
   };
 
@@ -17,6 +17,7 @@ class InputCheckBoxNewNew extends React.Component {
     numberOfColumns: number,
     items: array,
     multiSelect: bool,
+    icons: object,
   };
 
   state = {
@@ -24,6 +25,10 @@ class InputCheckBoxNewNew extends React.Component {
   };
 
   componentDidMount() {
+    // Items Props
+    console.warn( this.props.items, 'ITEMS PROPS' );
+    console.warn( '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' );
+
     console.warn( this.props.items, 'items' );
     console.warn( this.props.value, 'values' );
     const data = this.constructInitialValues();
@@ -35,6 +40,18 @@ class InputCheckBoxNewNew extends React.Component {
       data,
       noOfSelectedItems: noSelectedItems,
     });
+  }
+
+  componentDidUpdate( prevProps ) {
+    if ( this.props.items !== prevProps.items ) {
+      const data = this.constructInitialValues();
+      const noSelectedItems = this.setNumberOFSelectedItemsAtStart();
+      // eslint-disable-next-line
+      this.setState({
+        data,
+        noOfSelectedItems: noSelectedItems,
+      });
+    }
   }
 
   // this method returns number of selected items of the value
@@ -113,10 +130,10 @@ class InputCheckBoxNewNew extends React.Component {
     );
   };
 
-  // select icons depending upon the Check box or Radio Item
+  // Select icons depending upon the Check box or Radio Item
 
   render() {
-    const { numberOfColumns } = this.props;
+    const { numberOfColumns, icons } = this.props;
 
     const { data } = this.state;
 
@@ -132,6 +149,7 @@ class InputCheckBoxNewNew extends React.Component {
               key={item.value}
             >
               <BaseCheckBox
+                icons={icons}
                 onPress={this.handlePress( item.value )}
                 key={item.value}
                 checkBoxStatus={item.checkBoxStatus}
@@ -150,4 +168,4 @@ No Items to Show
   }
 }
 
-export default InputCheckBoxNewNew;
+export default CheckBoxList;

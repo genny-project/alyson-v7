@@ -212,6 +212,7 @@ class Input extends Component {
         );
 
       case 'checkbox':
+      case 'checkboxmultiple':
         return (
           <CheckBoxList
             {...inputProps}
@@ -221,9 +222,10 @@ class Input extends Component {
 
       case 'radio':
         return (
-          <CheckBox
+          <CheckBoxList
             {...inputProps}
-            radio
+            multiSelect={false}
+            icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: '' }}
             ref={input => ( this.input = input )}
           />
         );

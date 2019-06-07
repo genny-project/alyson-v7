@@ -3,10 +3,6 @@ import { oneOf } from 'prop-types';
 import { Box, object, Text } from '../../index';
 import BaseCheckBox from '../base-checkbox/';
 
-const question = {
-  text: 'Hello World new ',
-};
-
 class InputCheckBoxNewNew extends React.Component {
   static defaultProps = {
     value: null,

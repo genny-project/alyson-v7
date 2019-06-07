@@ -64,21 +64,13 @@ class FormInput extends Component {
       case 'dropdownmultiple':
       case 'tag':
       case 'menu':
-      case 'checkboxlist':
+      case 'checkboxmultiple':
+      case 'radio':
         return (
           <FormInputDropdown
             {...inputProps}
             onChangeValue={this.handleChangeValueWithSendAndDebounce}
             ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'checkboxmultiple':
-        return (
-          <FormInputCheckbox
-            {...inputProps}
-            ref={input => ( this.input = input )}
-            onChangeValue={this.handleChangeValueWithSendAndDebounce}
           />
         );
 
