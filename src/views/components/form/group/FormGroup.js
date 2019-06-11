@@ -261,7 +261,7 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: placeholder || question.placeholder,
+      placeholder: placeholder || question.placeholder || question.name,
       index,
     };
 

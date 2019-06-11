@@ -345,7 +345,9 @@ function changeContext( payload, state ) {
 
       // remove contexts
       let newLinks = ask.links.filter( link => {
-        const shouldRemove = payload.contexts.map( c => c.contextCode ).includes( link.code );
+        const shouldRemove = payload.contextList.contexts
+          .map( c => c.contextCode )
+          .includes( link.code );
 
         if ( shouldRemove ) didChangeLinks = true;
         // console.log( 'shouldRemove', shouldRemove );
@@ -361,12 +363,12 @@ function changeContext( payload, state ) {
         // if in target codes, add contexts to targets
 
         // add contexts
-        if ( isArray( payload.contexts )) {
+        if ( isArray( payload.contextList.contexts )) {
           didChangeLinks = true;
 
           newLinks = [
             ...newLinks,
-            ...payload.contexts.map( context => {
+            ...payload.contextList.contexts.map( context => {
               const nameTypes = {
                 THEME: 'theme',
                 ICON: 'icon',
@@ -418,10 +420,10 @@ function changeContext( payload, state ) {
     // find Root Ask
 
     if (
-      isString( payload.root ) &&
-      state.asks[payload.root]
+      isString( payload.code ) &&
+      state.asks[payload.code]
     ) {
-      const rootAsk = state.asks[payload.root];
+      const rootAsk = state.asks[payload.code];
 //
       // console.log( 'rootAsk', rootAsk );
 
