@@ -1,12 +1,14 @@
 import React from 'react';
 import { array, bool, number, object } from 'prop-types';
-import { Box, Text } from '../../index';
+import { Box, Text, Debug } from '../../index';
 import { isArray } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
 
+const mockData = [{ value: 'adadada', label: 'adad' }, { value: 'adadada2', label: 'ada1d' }];
+
 class CheckBoxList extends React.Component {
   static defaultProps = {
-    items: [],
+    items: mockData,
     value: [],
     multiSelect: false,
     numberOfColumns: 1,
@@ -103,9 +105,20 @@ class CheckBoxList extends React.Component {
       dataToModify.checkBoxStatus = modifiedBoolean;
 
       console.warn({ dataToModify }, 'modified' );
+
       this.setState(
         state => {
           if ( multiSelect === true ) {
+            console.log( 'MULTI SELECT TRUE' );
+
+            var count = 0;
+
+            state.data.map( dd => {
+              if ( dd.checkBoxStatus ) {
+                count++;
+              }
+            });
+
             return { data: [...state.data, ...dataToModify] };
           }
 
@@ -118,21 +131,18 @@ class CheckBoxList extends React.Component {
     }
 
     if ( multiSelect === false ) {
-      if ( this.state.data.length >= 1 ) {
-        this.setState( state => {
-          return { data: [...state.data] };
-        });
-      }
+      console.warn({ dataToModify }, 'modified' );
 
-      dataToModify = this.state.data.find( item => value === item.value );
+      this.setState(
+        state => {
+          console.log( 'THIS TRIGGERED' );
 
-      console.warn({ dataToModify });
-
-      const modifiedBoolean = !dataToModify.checkBoxStatus;
-
-      dataToModify.checkBoxStatus = modifiedBoolean;
-
-      return { data: [...this.state.data, ...dataToModify] };
+          return { data: state.data };
+        },
+        () => {
+          console.log( this.state );
+        }
+      );
     }
   };
 
@@ -169,6 +179,8 @@ class CheckBoxList extends React.Component {
 No Items to Show
           </Text>
         )}
+
+        <Debug value={this.state} />
       </Box>
     );
   }
