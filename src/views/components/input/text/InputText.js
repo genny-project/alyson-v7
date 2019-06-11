@@ -258,8 +258,8 @@ class Input extends Component {
       isFocused: false,
     });
 
-    if ( this.props.onChangeText )
-      this.props.onChangeText( this.state.value );
+    // if ( this.props.onChangeText )
+    //   this.props.onChangeText( this.state.value );
 
     if ( this.props.onChangeValue )
       this.props.onChangeValue( this.state.value );
@@ -274,6 +274,11 @@ class Input extends Component {
   handleChange = ( event ) => {
     if ( this.props.onChange )
       this.props.onChange( event );
+  }
+
+  handleChangeValue = ( event ) => {
+    if ( this.props.onChangeValue )
+      this.props.onChangeValue( this.state.value );
   }
 
   render() {
