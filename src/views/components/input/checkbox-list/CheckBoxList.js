@@ -4,7 +4,11 @@ import { Box, Text, Debug } from '../../index';
 import { isArray } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
 
-const mockData = [{ value: 'adadada', label: 'adad' }, { value: 'adadada2', label: 'ada1d' }];
+const mockData = [
+  { value: 'adadada', label: 'adad' },
+  { value: 'adadada2', label: 'ada1d' },
+  { value: 'adad2ada2', label: 'ada21d' },
+];
 
 class CheckBoxList extends React.Component {
   static defaultProps = {
@@ -24,6 +28,7 @@ class CheckBoxList extends React.Component {
 
   state = {
     data: [],
+    selectedItems: 0,
   };
 
   componentDidMount() {
@@ -60,11 +65,6 @@ class CheckBoxList extends React.Component {
   // this method returns number of selected items of the value
   setNumberOFSelectedItemsAtStart() {
     const data = this.constructInitialValues();
-    // const numberOFSelectedItems = data.reduce(( acc, currentVal ) => {
-    //   if ( currentVal.checkBoxStatus === true ) {
-    //     return acc + 1;
-    //   }
-    // }, 0 );
 
     let count = 0;
 
@@ -96,6 +96,7 @@ class CheckBoxList extends React.Component {
     let dataToModify;
 
     if ( multiSelect === true ) {
+      console.warn( 'TRUE' );
       dataToModify = this.state.data.find( item => value === item.value );
 
       console.warn({ dataToModify });
@@ -109,38 +110,42 @@ class CheckBoxList extends React.Component {
       this.setState(
         state => {
           if ( multiSelect === true ) {
-            console.log( 'MULTI SELECT TRUE' );
-
-            var count = 0;
-
-            state.data.map( dd => {
-              if ( dd.checkBoxStatus ) {
-                count++;
-              }
-            });
-
             return { data: [...state.data, ...dataToModify] };
           }
 
           return { data: state.data };
         },
         () => {
-          console.log( this.state );
+          console.log(this.state); //eslint-disable-line
         }
       );
     }
 
     if ( multiSelect === false ) {
-      console.warn({ dataToModify }, 'modified' );
+      dataToModify = this.state.data.find( item => value === item.value );
+      const dd = [...dataToModify];
+
+      console.warn( 'FALSE' );
+
+      console.warn({ dataToModify });
+
+      const modifiedBoolean = !dd.checkBoxStatus;
+
+      dataToModify.checkBoxStatus = modifiedBoolean;
 
       this.setState(
         state => {
-          console.log( 'THIS TRIGGERED' );
+          // Condition if the value is already checked
 
-          return { data: state.data };
+          if ( state.selectedItems >= 1 ) {
+            return { data: state.data };
+          }
+
+          // return the default data
+          return { data: state.data, selectedItems: state.selectedItems++ };
         },
         () => {
-          console.log( this.state );
+          console.log(this.state); // eslint-disable-line
         }
       );
     }
