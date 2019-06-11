@@ -43,7 +43,7 @@ const Icon = ({ name, color = 'white', size = 'md', cursor = 'auto' }) => {
         style,
       ]}
     >
-   {name && name !== 'undefined' && name.includes( '-' ) ? name.replace( /-/g, '_' ) : name}
+      {name && name !== 'undefined' && name.includes( '-' ) ? name.replace( /-/g, '_' ) : name}
 
     </Text>
   );
