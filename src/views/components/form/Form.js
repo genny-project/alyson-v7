@@ -37,9 +37,8 @@ class Form extends Component {
   state = {
     validationList: {},
     initialValues: {},
-    initialValues2: {},
     questionGroups: [],
-    formStatus: null,
+    // formStatus: null,
     missingBaseEntities: [],
   }
 
@@ -429,16 +428,14 @@ class Form extends Component {
         // newState[field] = errors;
     });
 
-    console.log( 'UPDATE', newState );
-
     this.errors = newState;
+
+    this.state.isUpdating = false; // eslint-disable-line
 
     return newState;
   }
 
   sendAnswer = ( ask, newValue ) => {
-    console.log( 'sendAnswer' );
-
     let finalValue = newValue;
     let finalAttributeCode = ask.attributeCode;
 
@@ -490,8 +487,9 @@ class Form extends Component {
   ) => (
     value,
     sendOnChange,
-    callback,
   ) => {
+    this.state.isUpdating = true; // eslint-disable-line
+
     if ( value == null )
       return;
 
@@ -502,9 +500,6 @@ class Form extends Component {
 
     if ( sendOnChange )
       this.sendAnswer( ask, value );
-
-    if ( callback )
-      callback();
   }
 
   handleFocusNextInput = ( questionGroupCode, currentFocusedIndex ) => () => {
@@ -517,7 +512,9 @@ class Form extends Component {
     }
   }
 
-  handleBlur = ( ask ) => () => {
+  handleBlur = ( ask ) => async () => {
+    await this.state.isUpdating === false;
+
     if ( ask ) {
       const questionCode = ask.questionCode;
 
@@ -603,7 +600,7 @@ class Form extends Component {
 
     const { initialValues } = this.state;
 
-    let oldProps = {};
+    // let oldProps = {};
 
     return (
       <Formik
@@ -618,21 +615,22 @@ class Form extends Component {
             Form values come from here
           */
 
-          const showKeys = [
-            'dirty',
-            'error',
-            'errors',
-            'isSubmitting',
-            'isValid',
-            'isValidating',
-            'touched',
-            'values',
-          ];
+          // const showKeys = [
+          //   'dirty',
+          //   'error',
+          //   'errors',
+          //   'isSubmitting',
+          //   'isValid',
+          //   'isValidating',
+          //   'touched',
+          //   'values',
+          // ];
 
           // console.log( '===================' );
-          // console.log( 'form props', Object.keys( form ).filter( k => showKeys.includes( k )).map( key => form[key] ), oldProps );
+          // console.log( 'form props', Object.keys( form )
+          //  .filter( k => showKeys.includes( k )).map( key => form[key] ), oldProps );
 
-          oldProps = form;
+          // oldProps = form;
 
           const {
             values,
@@ -643,7 +641,6 @@ class Form extends Component {
             validateField,
             validateForm,
             handleBlur,
-            handleChange,
             submitForm,
             handleSubmit,
 //             dirty: false
@@ -653,7 +650,6 @@ class Form extends Component {
 //             handleChange: ƒ (eventOrPath)
 //             handleReset: ƒ ()
 //             handleSubmit: ƒ (e)
-//             initialValues: {QUE_INPUTS_GRP: undefined, QUE_TEXT: undefined, QUE_TEXT_AREA: undefined, QUE_ADDRESS: undefined, QUE_DROPDOWN: undefined, …}
 //             isSubmitting: false
 //             isValid: false
 //             isValidating: true

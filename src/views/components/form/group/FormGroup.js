@@ -188,9 +188,6 @@ class FormGroup extends Component {
       setFieldValue,
       setFieldTouched,
       isFormValid,
-      validateField,
-      submitForm,
-      onBlur,
     } = form;
     const {
       handleChange,
@@ -418,9 +415,6 @@ class FormGroup extends Component {
         </EventTouchable>
       );
     }
-
-    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' )
-    // console.log( 'style', this.getStyling());
 
     return (
       <Fragment>

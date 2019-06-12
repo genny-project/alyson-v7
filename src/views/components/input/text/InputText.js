@@ -276,7 +276,7 @@ class Input extends Component {
       this.props.onChange( event );
   }
 
-  handleChangeValue = ( event ) => {
+  handleChangeValue = () => {
     if ( this.props.onChangeValue )
       this.props.onChangeValue( this.state.value );
   }

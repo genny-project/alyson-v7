@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { string, object, func } from 'prop-types';
 import debounce from 'lodash.debounce';
-import { Input } from '../../index';
 import { Field } from 'formik';
+import { Input } from '../../index';
 import FormInputDropdown from './dropdown';
 import FormInputCheckbox from './checkbox';
 
@@ -29,15 +29,15 @@ class FormInput extends Component {
     }
   }
 
-  validateUsername = ( value ) => {
-    let error;
+  // validateUsername = ( value ) => {
+  //   let error;
 
-    if ( value === 'admin' ) {
-      error = 'Nice try!';
-    }
+  //   if ( value === 'admin' ) {
+  //     error = 'Nice try!';
+  //   }
 
-    return error;
-  }
+  //   return error;
+  // }
 
   handleChangeDebounced = ( value, withSend ) => {
     // console.log( 'handleChangeDebounced' );
@@ -53,10 +53,6 @@ class FormInput extends Component {
     // console.log( 'handleChangeValueWithSendAndDebounce' );
     this.handleChangeDebounced( value, true );
   }
-
-  // handleChangeWithValidation = ({ validateField, name }) => ( value ) => {
-  //   console.log( 'handleChangeWithValidation', value, validateField, name );
-  // }
 
   render() {
     const { type, question } = this.props;
@@ -144,16 +140,15 @@ class FormInput extends Component {
         return (
           <Field
             name={this.props.ask.questionCode}
-            validate={this.validateUsername}
+            // validate={this.validateUsername}
           >
-            {({ form, field }) => {
-              // console.log( 'value', field, form, this.props.value );
-
+            {(
+              // { form, field }
+            ) => {
               return (
                 <Input
                   {...inputProps}
                   // value={field.value}
-                  // onChangeValue={this.handleChangeWithValidation({ validateField: form.validateField, name: this.props.ask.questionCode })}
                   ref={input => this.input = input}
                 />
               );
