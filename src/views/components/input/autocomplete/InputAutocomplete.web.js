@@ -78,6 +78,7 @@ class InputAutocomplete extends Component {
   }
 
   handleChange = item => {
+    console.log( 'handleChange', item );
     this.setState({
       filterValue: item.description,
     });
@@ -89,6 +90,7 @@ class InputAutocomplete extends Component {
   }
 
   handleType = ( item ) => {
+    console.log( 'handleType', item );
     this.setState({
       filterValue: item,
     });
@@ -105,10 +107,13 @@ class InputAutocomplete extends Component {
       onBlur,
       value, // eslint-disable-line no-unused-vars
       testID,
+      onChange, // eslint-disable-line no-unused-vars
       ...restProps
     } = this.props;
 
     // console.log( 'autocompprops', this.props && this.props.value );
+
+    console.log( 'props', this.props, restProps );
 
     return (
       <Downshift
@@ -146,7 +151,7 @@ class InputAutocomplete extends Component {
                 {...getInputProps( restProps )}
                 type={inputType}
                 clearButtonMode="while-editing"
-                onChangeValue={this.handleType}
+                onChangeText={this.handleType}
                 onBlur={onBlur}
                 width="100%"
                 testID={`${testID}`}

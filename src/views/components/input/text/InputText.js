@@ -204,6 +204,7 @@ class Input extends Component {
   }
 
   handleChangeText = value => {
+    console.log( 'handleChangeText', value );
     if ( this.props.editable === false || this.props.disabled )
       return null;
 
@@ -213,6 +214,9 @@ class Input extends Component {
       valueLength: newValue.length,
       value: newValue,
     });
+
+    if ( this.props.onChangeText )
+      this.props.onChangeText( newValue );
   }
 
   handleMouseOver = () => {
@@ -277,6 +281,7 @@ class Input extends Component {
   }
 
   handleChangeValue = () => {
+    console.log( 'handleChangeValue', this.state.value );
     if ( this.props.onChangeValue )
       this.props.onChangeValue( this.state.value );
   }
@@ -413,6 +418,8 @@ class Input extends Component {
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
 
+    console.log( 'props', this.props );
+
     return (
       <Box
         position="relative"
@@ -454,6 +461,7 @@ class Input extends Component {
           numberOfLines={numberOfLines}
           onChange={this.handleChange}
           onChangeText={this.handleChangeText}
+          onChangeValue={this.handleChangeValue}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           onMouseOver={this.handleMouseOver}

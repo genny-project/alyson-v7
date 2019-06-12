@@ -24,14 +24,11 @@ class InputAddress extends Component {
     injectCustomAddressComponents: {
       street_address: '{{street_number}} {{street_name}}',
     },
-    icon: 'expand-more',
     placeholder: 'Select an address...',
     getShortNameForAddressComponents: ['country'],
   }
 
   static propTypes = {
-    icon: string,
-    prefixIcon: string,
     placeholder: string,
     onChange: func,
     onChangeValue: func,
@@ -56,9 +53,12 @@ class InputAddress extends Component {
 
   state = {
     items: [],
+    error: null,
   }
 
   autocompleteAddress = async address => {
+    console.log( 'autocompleteAddress', address );
+
     const { google } = this.props;
 
     try {
@@ -73,6 +73,8 @@ class InputAddress extends Component {
   }
 
   geocodeAddress = async address => {
+    console.log( 'geocodeAddress', address );
+
     const { google } = this.props;
 
     try {
@@ -85,6 +87,8 @@ class InputAddress extends Component {
   }
 
   formatPlace( place ) {
+    console.log( 'formatPlace', place );
+
     try {
       const { injectCustomAddressComponents } = this.props;
       const { formatted_address, address_components, geometry } = place;
@@ -186,6 +190,8 @@ class InputAddress extends Component {
   }
 
   handleChange = async item => {
+    console.log( 'handleChange', item );
+
     const { google } = this.props;
     const { place_id } = item;
 
@@ -222,12 +228,15 @@ class InputAddress extends Component {
   }
 
   handleType = text => {
+    console.log( 'handleType', text );
     this.autocompleteAddress( text );
   }
 
   render() {
-    const { prefixIcon, placeholder, icon, testID, ...restProps } = this.props;
+    const { placeholder, testID, ...restProps } = this.props;
     const { items } = this.state;
+
+    console.log( 'props', this.props );
 
     return (
       <Input
@@ -237,8 +246,6 @@ class InputAddress extends Component {
         borderBetweenItems
         inputProps={{
           placeholder,
-          prefixIcon,
-          icon,
           flex: 1,
         }}
         onType={this.handleType}
