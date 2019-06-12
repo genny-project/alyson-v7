@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, bool, number } from 'prop-types';
+import { string, object, bool, number, func } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
@@ -43,6 +43,7 @@ class VisualControl extends Component {
     disabled: bool,
     flexWrapper: bool,
     index: number,
+    onBlur: func,
   }
 
   state = {
@@ -181,6 +182,7 @@ class VisualControl extends Component {
       themes,
       flexWrapper,
       index,
+      onBlur,
       ...restProps
     } = this.props;
 
@@ -307,6 +309,7 @@ class VisualControl extends Component {
         {/* INPUT COMPONENT */}
         <FormInput
           {...getPropsByType( 'input' )}
+          onBlur={onBlur}
           iconProps={properties.renderVisualControlIcon ? getPropsByType( 'icon' ) : null}
           iconOnly={(
             properties.renderVisualControlInput != null
