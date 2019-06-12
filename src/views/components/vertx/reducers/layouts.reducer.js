@@ -216,40 +216,58 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
     }
   }
 
+  // need to add childAsks here so pathing is easier
+
   if ( state.asks ) {
     state.asks[item.questionCode] = {
       name: item.name,
       code: item.questionCode,
-      ...( isObject( item.contextList ) && isArray( item.contextList.contexts )
-        ? {
+      ...(
+        isArray( item.childAsks )
+          ? {
+            childAsks: [
+              ...item.childAsks.map( childAsk => childAsk.questionCode ),
+            ],
+          }
+          : {}
+      ),
+      ...(
+        ( isObject( item.contextList ) && isArray( item.contextList.contexts )) ||
+        ( isObject( state.asks[item.questionCode], { withProperty: 'links' }) && isArray( state.asks[item.questionCode].links )
+        ) ? {
           links: [
-            ...( isObject( state.asks[item.code], { withProperty: 'links' }) &&
-              isArray( state.asks[item.code].links )
-              ? state.asks[item.code].links.filter(
-                existingLink =>
-                  !item.contextList.contexts.some(
-                    newLink => newLink.contextCode === existingLink.code
-                  )
-              )
-              : [] ),
-            ...item.contextList.contexts.map( link => {
-              const nameTypes = {
-                THEME: 'theme',
-                ICON: 'icon',
-              };
+            ...( isObject( state.asks[item.questionCode], { withProperty: 'links' }) && isArray( state.asks[item.questionCode].links ))
+              ? item.replace === true
+                ? []
+                : state.asks[item.questionCode].links.filter( existingLink => (
+                  ( isObject( item.contextList ) && isArray( item.contextList.contexts ))
+                    ? !item.contextList.contexts
+                      .some( newLink => newLink.contextCode === existingLink.code )
+                    : true
+                ))
+              : [],
+            ...( isObject( item.contextList ) && isArray( item.contextList.contexts ))
+              ? item.contextList.contexts.map( link => {
+                const nameTypes = {
+                  THEME: 'theme',
+                  ICON: 'icon',
+                };
 
-              return {
-                code: link.contextCode,
-                weight: link.weight,
-                type: nameTypes[link.name] ? nameTypes[link.name] : 'none',
-                component: componentTypes[link.visualControlType]
-                  ? componentTypes[link.visualControlType]
-                  : componentTypes[link.hint]
-                    ? componentTypes[link.hint]
-                    : null,
-                created: link.created,
-              };
-            }),
+                return {
+                  code: link.contextCode,
+                  weight: link.weight,
+                  type: nameTypes[link.name]
+                    ? nameTypes[link.name]
+                    : 'none',
+                  component: componentTypes[link.visualControlType]
+                    ? componentTypes[link.visualControlType]
+                    : componentTypes[link.hint]
+                      ? componentTypes[link.hint]
+                      : null,
+                  created: link.created,
+                };
+              })
+              : [],
           ],
         }
         : {}),
@@ -302,6 +320,108 @@ const injectFakeLayoutLinkIntoState = ({ payload, state }) => {
 
   return state;
 };
+
+function changeContext( payload, state ) {
+  const handleAskContext = ( ask ) => {
+    if ( isArray( ask.links )) {
+      // console.log( 'check target', payload.targetCodes, ask );
+
+      let didChangeLinks = false;
+
+      // remove contexts
+      let newLinks = ask.links.filter( link => {
+        const shouldRemove = payload.contextList.contexts
+          .map( c => c.contextCode )
+          .includes( link.code );
+
+        if ( shouldRemove ) didChangeLinks = true;
+        // console.log( 'shouldRemove', shouldRemove );
+
+        return !shouldRemove;
+      });
+
+      if (
+        isArray( payload.targetCodes ) &&
+        payload.targetCodes.includes( ask.code )
+      ) {
+        // console.log( 'isTarget' );
+        // if in target codes, add contexts to targets
+
+        // add contexts
+        if ( isArray( payload.contextList.contexts )) {
+          didChangeLinks = true;
+
+          newLinks = [
+            ...newLinks,
+            ...payload.contextList.contexts.map( context => {
+              const nameTypes = {
+                THEME: 'theme',
+                ICON: 'icon',
+              };
+
+              return {
+                code: context.contextCode,
+                weight: context.weight,
+                type: nameTypes[context.name]
+                  ? nameTypes[context.name]
+                  : 'none',
+                component: componentTypes[context.visualControlType]
+                  ? componentTypes[context.visualControlType]
+                  : componentTypes[context.hint]
+                    ? componentTypes[context.hint]
+                    : null,
+                created: context.created,
+              };
+            }),
+          ];
+        }
+      }
+
+      if ( didChangeLinks ) {
+        // console.log( 'newLinks', newLinks );
+
+        // add to state
+        // console.log( 'didChangeLinks', didChangeLinks );
+
+        state.asks[ask.code]['links'] = newLinks;
+      }
+    }
+
+    // loop over children
+    if ( isArray( ask.childAsks )) {
+      ask.childAsks.forEach( childAskCode => {
+        const childAsk = state.asks[childAskCode];
+
+        // console.log( 'childAsk', childAsk );
+
+        handleAskContext( childAsk );
+      });
+    }
+  };
+
+  if ( state.asks ) {
+    // console.log( 'changeContext', payload, state.asks );
+
+    // find Root Ask
+
+    if (
+      isString( payload.code ) &&
+      state.asks[payload.code]
+    ) {
+      const rootAsk = state.asks[payload.code];
+//
+      // console.log( 'rootAsk', rootAsk );
+
+      handleAskContext( rootAsk );
+    }
+  }
+
+  // console.log( '=================' );
+  // console.log( state );
+  // console.log( '=================' );
+
+  return state;
+}
 
 const reducer = ( state = initialState, { type, payload }) => {
   // console.log( type, payload );
@@ -371,6 +491,13 @@ const reducer = ( state = initialState, { type, payload }) => {
         ...state,
         ...injectFakeLayoutLinkIntoState({ payload, state }),
       };
+
+    case 'ASK_CONTEXT_CHANGE': {
+      return {
+        ...state,
+        ...changeContext( payload, state ),
+      };
+    }
 
     case 'CLEAR_ALL_LAYOUTS':
     case 'USER_LOGOUT':
