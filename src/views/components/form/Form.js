@@ -515,8 +515,6 @@ class Form extends Component {
     setFieldValue( valuePath, value );
     setFieldTouched( valuePath, true );
 
-    // this.values[field] = value;
-
     dset( this.values, valuePath, value );
 
     if ( sendOnChange )
@@ -542,13 +540,19 @@ class Form extends Component {
       if (
         questionCode &&
         this.values &&
-        dlv( this.values, valuePath ) &&
-        (
-          !this.errors ||
-          !dlv( this.errors, valuePath )
-        )
+        isString( valuePath )
       ) {
-        this.sendAnswer( ask, this.values[questionCode] );
+        const value = dlv( this.values, valuePath );
+
+        if (
+          value &&
+          (
+            !this.errors ||
+            !dlv( this.errors, valuePath )
+          )
+        ) {
+          this.sendAnswer( ask, value );
+        }
       }
     }
   }
