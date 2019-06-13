@@ -31,6 +31,7 @@ class FormGroup extends Component {
     asks: object,
     isClosed: bool,
     indexNumber: number,
+    groupPath: string,
   }
 
   state = {
@@ -222,12 +223,20 @@ class FormGroup extends Component {
     const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
     const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
 
+    const valuePath = `${this.props.groupPath}.${questionCode}`;
+
     const inputProps = {
-      onChangeValue: handleChange( questionCode, setFieldValue, setFieldTouched, ask ), // functions
-      value: values && values[questionCode],
+      onChangeValue: handleChange(
+        questionCode,
+        setFieldValue,
+        setFieldTouched,
+        ask,
+        valuePath,
+      ),
+      value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
-      error: touched[questionCode] && errors[questionCode],
-      onBlur: handleBlur( ask ), // functions
+      error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
+      onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
       question,
       disabled: isFormSubmit
@@ -282,6 +291,7 @@ class FormGroup extends Component {
           asks: this.props.asks,
           themes: this.props.themes,
           isClosed: this.props.isClosed,
+          groupPath: `${this.props.groupPath}.${ask.questionCode}`,
         },
       )
     );
