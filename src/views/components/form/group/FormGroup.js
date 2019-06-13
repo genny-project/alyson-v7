@@ -31,10 +31,12 @@ class FormGroup extends Component {
     asks: object,
     isClosed: bool,
     indexNumber: number,
+    groupPath: string,
   }
 
   state = {
     themes: [],
+    hover: false,
   }
 
   /* eslint-disable react/sort-comp */
@@ -55,6 +57,14 @@ class FormGroup extends Component {
       )) {
         this.getThemes();
       }
+    }
+  }
+
+  handleHover = ( hover ) => {
+    if ( hover !== this.state.hover ) {
+      this.setState({
+        hover: hover,
+      });
     }
   }
 
@@ -213,12 +223,20 @@ class FormGroup extends Component {
     const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
     const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
 
+    const valuePath = `${this.props.groupPath}.${questionCode}`;
+
     const inputProps = {
-      onChangeValue: handleChange( questionCode, setFieldValue, setFieldTouched, ask ), // functions
-      value: values && values[questionCode],
+      onChangeValue: handleChange(
+        questionCode,
+        setFieldValue,
+        setFieldTouched,
+        ask,
+        valuePath,
+      ),
+      value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
-      error: touched[questionCode] && errors[questionCode],
-      onBlur: handleBlur( ask ), // functions
+      error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
+      onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
       question,
       disabled: isFormSubmit
@@ -242,7 +260,7 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: placeholder || question.placeholder,
+      placeholder: placeholder || question.placeholder || question.name,
       index,
     };
 
@@ -273,6 +291,7 @@ class FormGroup extends Component {
           asks: this.props.asks,
           themes: this.props.themes,
           isClosed: this.props.isClosed,
+          groupPath: `${this.props.groupPath}.${ask.questionCode}`,
         },
       )
     );
@@ -286,6 +305,7 @@ class FormGroup extends Component {
       childAsks,
       question,
       questionCode,
+      targetCode,
     } = questionGroup;
 
     let properties = {};
@@ -387,31 +407,30 @@ class FormGroup extends Component {
           code={question.code}
           parentCode={parentGroupCode || questionCode}
           rootCode={rootCode}
+          targetCode={targetCode}
+          width="100%"
+          onMouseEnter={() => this.handleHover( true )}
+          onMouseLeave={() => this.handleHover( false )}
+          {...defaultStyle.group}
+          {...this.getStyling()['default']}
+          {...this.state.hover ? this.getStyling()['hover'] : {}}
         >
-          <Box
-            key={name}
-            // zIndex={20 - index}
-            {...defaultStyle.group}
-            borderColor
-            {...this.getStyling()['default']}
-          >
-            {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                return this.renderQuestionGroup(
-                  ask,
-                  index,
-                  form
-                );
-              }
-
-              return this.renderInput(
+          {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+            if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+              return this.renderQuestionGroup(
                 ask,
-                questionCode,
                 index,
-                form,
+                form
               );
-            })}
-          </Box>
+            }
+
+            return this.renderInput(
+              ask,
+              questionCode,
+              index,
+              form,
+            );
+          })}
         </EventTouchable>
       );
     }

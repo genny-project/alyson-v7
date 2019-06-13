@@ -1,4 +1,7 @@
-const reduceChildAsks = childAsks => {
+import dlv from 'dlv';
+import { isArray, isObject } from '../../../../utils';
+
+const reduceChildAsks = ( childAsks, state ) => {
   if (
     !childAsks ||
     !( childAsks instanceof Array ) ||
@@ -9,9 +12,25 @@ const reduceChildAsks = childAsks => {
 
   return childAsks.map( childAsk => ({
     ...childAsk,
-    childAsks: reduceChildAsks( childAsk.childAsks ),
+    // TO BE ADDED: context for child asks
+    // contextList: {
+    //   contexts: [
+    //     ...( isArray( dlv( state, `${childAsk.questionCode}.contextList.contexts` )))
+    //       ? childAsk.replace === true
+    //         ? []
+    //         : state[childAsk.questionCode].contextList.contexts.filter( existingLink => (
+    //           !childAsk.contextList.contexts
+    //             .some( newLink => newLink.contextCode === existingLink.contextCode )
+    //         ))
+    //       : [],
+    //     ...childAsk.contextList.contexts,
+    //   ],
+    // },
+    childAsks: reduceChildAsks( childAsk.childAsks, state ),
   }));
 };
+
+// dlv( state, `${current.questionCode}.contextList.contexts` )
 
 const reducer = ( state = {}, { type, payload }) => {
   switch ( type ) {
@@ -21,12 +40,31 @@ const reducer = ( state = {}, { type, payload }) => {
         ...payload.items.reduce(( resultant, current ) => {
           resultant[current.questionCode] = {
             ...current,
-            childAsks: reduceChildAsks( current.childAsks ),
+            contextList: {
+              contexts: [
+                ...( isArray( dlv( state, `${current.questionCode}.contextList.contexts` )))
+                  ? current.replace === true
+                    ? []
+                    : state[current.questionCode].contextList.contexts.filter( existingLink => (
+                      !current.contextList.contexts
+                        .some( newLink => newLink.contextCode === existingLink.contextCode )
+                    ))
+                  : [],
+                ...isObject( current.contextList, { withProperty: 'contexts' }) ? current.contextList.contexts : [],
+              ],
+            },
+            childAsks: reduceChildAsks( current.childAsks, state ),
           };
 
           return resultant;
         }, {}),
       };
+
+    case 'ASK_CONTEXT_CHANGE': {
+      return {
+        ...state,
+      };
+    }
 
     case 'USER_LOGOUT':
       return {};
