@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { string, object, func } from 'prop-types';
 import debounce from 'lodash.debounce';
+import { Field } from 'formik';
 import { Input } from '../../index';
 import FormInputDropdown from './dropdown';
 import FormInputCheckbox from './checkbox';
@@ -27,6 +28,16 @@ class FormInput extends Component {
       this.input.focus();
     }
   }
+
+  // validateUsername = ( value ) => {
+  //   let error;
+
+  //   if ( value === 'admin' ) {
+  //     error = 'Nice try!';
+  //   }
+
+  //   return error;
+  // }
 
   handleChangeDebounced = ( value, withSend ) => {
     // console.log( 'handleChangeDebounced' );
@@ -89,6 +100,7 @@ class FormInput extends Component {
       case 'audioRecord':
       case 'audiorecord':
       case 'date':
+      case 'time':
       case 'java.time.localdate':
       case 'datetime':
       case 'codeverificationfive':
@@ -126,10 +138,22 @@ class FormInput extends Component {
 
       default:
         return (
-          <Input
-            {...inputProps}
-            ref={input => this.input = input}
-          />
+          <Field
+            name={this.props.ask.questionCode}
+            // validate={this.validateUsername}
+          >
+            {(
+              // { form, field }
+            ) => {
+              return (
+                <Input
+                  {...inputProps}
+                  // value={field.value}
+                  ref={input => this.input = input}
+                />
+              );
+            }}
+          </Field>
         );
     }
   }

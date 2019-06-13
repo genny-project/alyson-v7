@@ -187,15 +187,12 @@ class FormGroup extends Component {
       touched,
       setFieldValue,
       setFieldTouched,
-      isSubmitting,
-      submitForm,
       isFormValid,
     } = form;
     const {
       handleChange,
-      handleFocusNextInput,
+      // handleFocusNextInput,
       handleBlur,
-      handleKeyPress,
       addRef,
     } = functions;
     const {
@@ -221,27 +218,20 @@ class FormGroup extends Component {
       value: values && values[questionCode],
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
       error: touched[questionCode] && errors[questionCode],
-      onBlur: handleBlur( ask, values, errors ), // functions
+      onBlur: handleBlur( ask ), // functions
       required: mandatory,
       question,
       disabled: isFormSubmit
         ? !isFormValid
-        : isSubmitting,
+        : false,
       editable: !readonly,
-      onSubmitEditing: handleFocusNextInput( questionGroupCode, index ), // functions
-      blurOnSubmit: (
-        !inputRefs[questionGroupCode] ||
-        !inputRefs[questionGroupCode][index + 1] // refs
-      ),
-      ref: input => addRef( questionGroupCode, index, input ),
+      ref: addRef,
       returnKeyType: (
         inputRefs[questionGroupCode] &&
         inputRefs[questionGroupCode][index + 1] // refs
       )
         ? 'next'
         : 'default',
-      onKeyPress: handleKeyPress( submitForm, index, questionGroupCode ), // functions
-      // onPress: () => submitForm(),
       testID: `${questionGroupCode}:${questionCode}` || '',
       ...contextList,
       parentGroupCode: questionGroupCode,
@@ -425,9 +415,6 @@ class FormGroup extends Component {
         </EventTouchable>
       );
     }
-
-    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' )
-    // console.log( 'style', this.getStyling());
 
     return (
       <Fragment>

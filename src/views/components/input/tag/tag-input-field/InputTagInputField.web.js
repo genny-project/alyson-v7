@@ -18,6 +18,7 @@ class InputTagInputField extends Component {
     allowMultipleSelection: bool,
     testID: string,
     selectedItems: array,
+    nonTabable: bool,
   }
 
   state = {
@@ -48,7 +49,7 @@ class InputTagInputField extends Component {
       onPress,
       inputProps,
       getInputProps,
-      onChangeValue,
+      // onChangeValue,
       inputValue,
       isOpen,
       testID,
@@ -57,6 +58,7 @@ class InputTagInputField extends Component {
       children,
       allowMultipleSelection,
       selectedItems,
+      nonTabable,
     } = this.props;
 
     const selectedItem = selectedItems.map( item => item.label ).join();
@@ -70,7 +72,7 @@ class InputTagInputField extends Component {
             focusing: false,
           });
         }}
-        // onFocus={onFocusTouchable}
+        accessibilityRole="link"
       >
         <Box
           zIndex={10}
@@ -82,16 +84,16 @@ class InputTagInputField extends Component {
               ...inputProps,
               type: 'text',
               width: '100%',
-              ref: this.handleRef,
-              onChangeValue: onChangeValue,
               value: ( allowMultipleSelection ? inputValue : selectedItem ) || '',
             })}
+            updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
             onFocus={() => {
               onFocusInput();
               this.handleState( 'focus' );
             }}
             testID={`input-tag ${testID}`}
+            {...( nonTabable ? { tabIndex: '-1' } : null )}
           />
           <Box
             position="absolute"
