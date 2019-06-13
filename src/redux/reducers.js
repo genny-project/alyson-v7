@@ -7,15 +7,12 @@ import dialog from '../views/components/dialog/dialog.reducer';
 
 import testDisplay from '../views/app/test-display/testDisplay.reducer';
 
-import theme from '../views/components-legacy/theme/theme.reducer'; // legacy compatibility
-
 const reducers = combineReducers({
   keycloak,
   vertx,
   router,
   navigation,
   dialog,
-  theme,
   testDisplay,
 });
 

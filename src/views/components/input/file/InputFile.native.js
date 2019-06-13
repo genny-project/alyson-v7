@@ -17,7 +17,7 @@ class InputFile extends Component {
     imageOnly: false,
     config: {},
     testID: 'input-file',
-  }
+  };
 
   static propTypes = {
     imageOnly: bool,
@@ -30,22 +30,12 @@ class InputFile extends Component {
       takePhotoButtonTitle: string,
       chooseFromLibraryButtonTitle: string,
       customButtons: array,
-      cameraType: oneOf(
-        ['front', 'back']
-      ),
-      mediaType: oneOf(
-        ['photo', 'video', 'mixed', 'photo', 'video']
-      ),
-      maxWidth: oneOfType(
-        [number, string]
-      ),
-      maxHeight: oneOfType(
-        [number, string]
-      ),
+      cameraType: oneOf( ['front', 'back'] ),
+      mediaType: oneOf( ['photo', 'video', 'mixed', 'photo', 'video'] ),
+      maxWidth: oneOfType( [number, string] ),
+      maxHeight: oneOfType( [number, string] ),
       quality: number,
-      videoQuality: oneOf(
-        ['low', 'high']
-      ),
+      videoQuality: oneOf( ['low', 'high'] ),
       durationLimit: number,
       rotation: number,
       allowsEditing: bool,
@@ -65,21 +55,19 @@ class InputFile extends Component {
     }),
     testID: string,
     keycloak: object,
-  }
+  };
 
   state = {
     files: [],
-  }
+  };
 
   propagateParentOnChange = () => {
     const { files } = this.state;
 
-    if ( this.props.onChange )
-      this.props.onChange({ target: { value: files } });
+    if ( this.props.onChange ) this.props.onChange({ target: { value: files } });
 
-    if ( this.props.onChangeValue )
-      this.props.onChangeValue( files );
-  }
+    if ( this.props.onChangeValue ) this.props.onChangeValue( files );
+  };
 
   uploadFile = async result => {
     const { keycloak } = this.props;
@@ -97,8 +85,7 @@ class InputFile extends Component {
     if (
       responseGet.status !== 200 ||
       responseGet.data == null ||
-      responseGet.data.fields == null
-    ) {
+      responseGet.data.fields == null ) {
       return;
     }
 
@@ -159,65 +146,31 @@ class InputFile extends Component {
     };
 
     this.handleComplete( formattedFile );
-  }
-
-  __legacy__handlePress = async () => {
-    const { imageOnly } = this.props;
-
-    if ( imageOnly ) {
-      // await Expo.Permissions.askAsync( Expo.Permissions.CAMERA_ROLL );
-      // await Expo.Permissions.askAsync( Expo.Permissions.CAMERA );
-
-      try {
-        // const result = await ImagePicker.launchImageLibraryAsync({
-          // allowsEditing: true,
-          // aspect: [4, 3],
-        // });
-
-        // if ( !result.cancelled ) {
-          // this.uploadFile( result );
-        // }
-      }
-      catch ( e ) {
-        // do nothing
-      }
-    }
-    else {
-      try {
-        // const result = await DocumentPicker.getDocumentAsync();
-
-        // if ( result.type !== 'cancel' ) {
-          // this.uploadFile( result );
-        // }
-      }
-      catch ( e ) {
-        // do nothing
-      }
-    }
-  }
+  };
 
   handlePress = () => {
     ImagePicker.showImagePicker( this.props.config, response => {
       if ( response.didCancel ) {
         // do nothing
-      }
-      else if ( response.error ) {
+      } else if ( response.error ) {
         alert({
           title: 'Error',
           message: response.error,
         });
-      }
-      else {
+      } else {
         this.uploadFile( response );
       }
     });
-  }
+  };
 
   handleRemoveFile = removeId => () => {
-    this.setState( prevState => ({
-      files: prevState.files.filter(({ id }) => id !== removeId ),
-    }), this.propagateParentOnChange );
-  }
+    this.setState(
+      prevState => ({
+        files: prevState.files.filter(({ id }) => id !== removeId ),
+      }),
+      this.propagateParentOnChange
+    );
+  };
 
   handleComplete = result => {
     this.setState( state => {
@@ -231,16 +184,13 @@ class InputFile extends Component {
         files: [result],
       };
     }, this.propagateParentOnChange );
-  }
+  };
 
   render() {
     const { imageOnly, multiple, testID } = this.props;
     const { files } = this.state;
 
-    const multipleFiles = (
-      multiple &&
-      files.length > 0
-    );
+    const multipleFiles = multiple && files.length > 0;
 
     return (
       <Box
@@ -248,8 +198,8 @@ class InputFile extends Component {
         flexDirection="column"
         testID={testID}
       >
-        {isArray( files, { ofMinLength: 1 }) ? (
-          files.map( file => (
+        {isArray( files, { ofMinLength: 1 })
+          ? files.map( file => (
             <InputFileItem
               key={file.id}
               id={file.id}
@@ -262,17 +212,15 @@ class InputFile extends Component {
               onRemove={this.handleRemoveFile}
             />
           ))
-        ) : null}
+          : null}
 
         <InputFileTouchable
           onPress={this.handlePress}
-          text={
-            `Pick a${
-              imageOnly
-                ? `n${multipleFiles ? 'other' : ''} image from camera roll`
-                : `${multipleFiles ? 'nother' : ''} file from your device`
-            }`
-          }
+          text={`Pick a${
+            imageOnly
+              ? `n${multipleFiles ? 'other' : ''} image from camera roll`
+              : `${multipleFiles ? 'nother' : ''} file from your device`
+          }`}
         />
       </Box>
     );

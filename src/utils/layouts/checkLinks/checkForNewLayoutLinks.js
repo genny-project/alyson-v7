@@ -1,21 +1,13 @@
 import dlv from 'dlv';
-import { isArray, isObject, shallowCompare  } from '../../index';
+import { isArray, isObject, shallowCompare } from '../../index';
 
 const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {}) => {
-  const {
-    ignoreAdd,
-    ignoreRemove,
-    ignoreNewPanel,
-  } = options;
+  const { ignoreAdd, ignoreRemove, ignoreNewPanel } = options;
 
   const currentLinks = [];
   const newLinks = [];
 
-  if (
-    !isArray( currentArray ) ||
-    !isArray( newArray ) ||
-    !isObject( layoutData )
-  ) {
+  if ( !isArray( currentArray ) || !isArray( newArray ) || !isObject( layoutData )) {
     return false;
   }
 
@@ -33,13 +25,7 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
        entity. If no entity is found that matches the target code  of the link, it is
        not added to the array of new links */
 
-      if ( 
-        item.type === 'sublayout' ||
-        isObject( dlv( layoutData,
-          item.type === 'sublayout' // legacy compatibility
-            ? `layoutsLegacy.${item.code.split( '/' )[0]}.${item.code.split( '/' ).slice( 1, item.code.split( '/' ).length ).join( '/' )}` // legacy compatibility
-            : `${item.type}s.${item.code}` )
-        )) {
+      if ( item.type === 'sublayout' || isObject( dlv( layoutData, `${item.type}s.${item.code}` ))) {
         // console.log(item.code)
         newLinks.push( item.code );
       }
@@ -65,11 +51,7 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
   });
 
   /* if any changes are found, update */
-  if (
-    toAdd.length > 0 ||
-    toRemove.length > 0 ||
-    toChangePanel.length > 0
-  ) {
+  if ( toAdd.length > 0 || toRemove.length > 0 || toChangePanel.length > 0 ) {
     return true;
   }
 
