@@ -1,4 +1,3 @@
-
 import dlv from 'dlv';
 import { isArray, isString, isObject } from '../../../../utils';
 
@@ -84,9 +83,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
   });
 
   if ( shouldReplaceEntity === true ) {
-    if (
-      state.frames[item.code]
-    ) {
+    if ( state.frames[item.code] ) {
       delete state.frames[item.code];
     }
   }
@@ -96,39 +93,20 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
       name: item.name,
       code: item.code,
       links: [
-        // legacy compatibiity start
-        ...(
-          item.code === 'FRM_CONTENT' &&
-          isArray( item.links, { ofMaxLength: 0 }) && (
-            !state.frames['FRM_CONTENT'] ||
-            isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) &&
-            isArray( state.frames[item.code].links.filter( x => x.type !== 'sublayout' ), { ofMaxLength: 0 })
-          )
-        ) ? [
-            {
-              code: '/home',
-              weight: 1,
-              panel: 'CENTRE',
-              type: 'sublayout',
-              created: new Date().toString(),
-            },
-          ] : [],
-        // legacy compatibiity end
-        ...(
-          isObject( state.frames[item.code], { withProperty: 'links' }) &&
-          isArray( state.frames[item.code].links )
-        ) ? state.frames[item.code].links.filter( existingLink => {
+        ...( isObject( state.frames[item.code], { withProperty: 'links' }) &&
+        isArray( state.frames[item.code].links )
+          ? state.frames[item.code].links.filter( existingLink => {
             if ( item.code === 'FRM_CONTENT' ) {
-              const hasNewNonLegacyLink = item.links.filter( x => x.type !== 'sublayout' && x.type !== 'theme' );
+              const hasNewNonLegacyLink = item.links.filter(
+                x => x.type !== 'sublayout' && x.type !== 'theme'
+              );
 
-              if (
-                existingLink.type === 'sublayout' &&
-                hasNewNonLegacyLink
-              ) return false;
+              if ( existingLink.type === 'sublayout' && hasNewNonLegacyLink ) return false;
             }
 
             return !item.links.some( newLink => newLink.link.targetCode === existingLink.code );
-          }) : [],
+          })
+          : [] ),
         ...item.links.map( link => {
           const linkTypes = {
             LNK_THEME: 'theme',
@@ -148,12 +126,8 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
           return {
             code: link.link.targetCode,
             weight: link.link.weight,
-            panel: panelTypes[link.link.linkValue]
-              ? panelTypes[link.link.linkValue]
-              : null,
-            type: linkTypes[link.link.attributeCode]
-              ? linkTypes[link.link.attributeCode]
-              : 'none',
+            panel: panelTypes[link.link.linkValue] ? panelTypes[link.link.linkValue] : null,
+            type: linkTypes[link.link.attributeCode] ? linkTypes[link.link.attributeCode] : 'none',
             created: link.created,
             component: componentTypes[link.visualControlType]
               ? componentTypes[link.visualControlType]
@@ -191,18 +165,28 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
   // console.log( attributes );
 
   const themeData = {
-    ...( dlv( attributes, 'PRI_CONTENT.value' ) ? { default: dlv( attributes, 'PRI_CONTENT.value' ) } : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) ? { active: dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) } : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_HOVER.value' ) ? { hover: dlv( attributes, 'PRI_CONTENT_HOVER.value' ) } : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) ? { disabled: dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) } : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) } : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_ERROR.value' ) ? { error: dlv( attributes, 'PRI_CONTENT_ERROR.value' ) } : null ),
+    ...( dlv( attributes, 'PRI_CONTENT.value' )
+      ? { default: dlv( attributes, 'PRI_CONTENT.value' ) }
+      : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_ACTIVE.value' )
+      ? { active: dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) }
+      : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_HOVER.value' )
+      ? { hover: dlv( attributes, 'PRI_CONTENT_HOVER.value' ) }
+      : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_DISABLED.value' )
+      ? { disabled: dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) }
+      : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' )
+      ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) }
+      : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_ERROR.value' )
+      ? { error: dlv( attributes, 'PRI_CONTENT_ERROR.value' ) }
+      : null ),
   };
 
   if ( shouldReplaceEntity === true ) {
-    if (
-      state.themes[item.code]
-    ) {
+    if ( state.themes[item.code] ) {
       delete state.themes[item.code];
     }
   }
@@ -227,9 +211,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
   // TODO - shouldDeleteLinkedBaseEntities
 
   if ( shouldReplaceEntity === true ) {
-    if (
-      state.frames[item.questionCode]
-    ) {
+    if ( state.frames[item.questionCode] ) {
       delete state.frames[item.questionCode];
     }
   }
@@ -240,31 +222,30 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
     state.asks[item.questionCode] = {
       name: item.name,
       code: item.questionCode,
-      ...(
-        isArray( item.childAsks )
-          ? {
-            childAsks: [
-              ...item.childAsks.map( childAsk => childAsk.questionCode ),
-            ],
-          }
-          : {}
-      ),
-      ...(
-        ( isObject( item.contextList ) && isArray( item.contextList.contexts )) ||
-        ( isObject( state.asks[item.questionCode], { withProperty: 'links' }) && isArray( state.asks[item.questionCode].links )
-        ) ? {
+      ...( isArray( item.childAsks )
+        ? {
+          childAsks: [...item.childAsks.map( childAsk => childAsk.questionCode )],
+        }
+        : {}),
+      ...(( isObject( item.contextList ) && isArray( item.contextList.contexts )) ||
+      ( isObject( state.asks[item.questionCode], { withProperty: 'links' }) &&
+        isArray( state.asks[item.questionCode].links ))
+        ? {
           links: [
-            ...( isObject( state.asks[item.questionCode], { withProperty: 'links' }) && isArray( state.asks[item.questionCode].links ))
+            ...( isObject( state.asks[item.questionCode], { withProperty: 'links' }) &&
+              isArray( state.asks[item.questionCode].links )
               ? item.replace === true
                 ? []
-                : state.asks[item.questionCode].links.filter( existingLink => (
-                  ( isObject( item.contextList ) && isArray( item.contextList.contexts ))
-                    ? !item.contextList.contexts
-                      .some( newLink => newLink.contextCode === existingLink.code )
-                    : true
-                ))
-              : [],
-            ...( isObject( item.contextList ) && isArray( item.contextList.contexts ))
+                : state.asks[item.questionCode].links.filter(
+                  existingLink =>
+                    isObject( item.contextList ) && isArray( item.contextList.contexts )
+                      ? !item.contextList.contexts.some(
+                        newLink => newLink.contextCode === existingLink.code
+                      )
+                      : true
+                )
+              : [] ),
+            ...( isObject( item.contextList ) && isArray( item.contextList.contexts )
               ? item.contextList.contexts.map( link => {
                 const nameTypes = {
                   THEME: 'theme',
@@ -274,9 +255,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                 return {
                   code: link.contextCode,
                   weight: link.weight,
-                  type: nameTypes[link.name]
-                    ? nameTypes[link.name]
-                    : 'none',
+                  type: nameTypes[link.name] ? nameTypes[link.name] : 'none',
                   component: componentTypes[link.visualControlType]
                     ? componentTypes[link.visualControlType]
                     : componentTypes[link.hint]
@@ -285,10 +264,10 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
                   created: link.created,
                 };
               })
-              : [],
+              : [] ),
           ],
-        } : {}
-      ),
+        }
+        : {}),
       created: item.created,
     };
 
@@ -304,140 +283,6 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
   }
 };
 
-const injectFakeLayoutLinkIntoState = ({ payload, state }) => {
-  if ( state.frames ) {
-    return {
-      ...state,
-      frames: {
-        ...state.frames,
-        FRM_CONTENT: {
-          ...state.frames.FRM_CONTENT ? state.frames.FRM_CONTENT : {
-            name: 'Content Frame',
-            code: 'FRM_CONTENT',
-            created: new Date().toString(),
-          },
-          links: [
-            ...( isObject( state.frames['FRM_CONTENT'], { withProperty: 'links' }) && isArray( state.frames['FRM_CONTENT'].links ))
-              ? state.frames['FRM_CONTENT'].links.filter( link => link.type !== 'sublayout' )
-              : [],
-            {
-              code: payload.code,
-              weight: 1,
-              panel: 'CENTRE',
-              type: 'sublayout',
-              created: new Date().toString(),
-            },
-          ],
-        },
-      },
-    };
-  }
-
-  return state;
-};
-
-function changeContext( payload, state ) {
-  const handleAskContext = ( ask ) => {
-    if ( isArray( ask.links )) {
-      // console.log( 'check target', payload.targetCodes, ask );
-
-      let didChangeLinks = false;
-
-      // remove contexts
-      let newLinks = ask.links.filter( link => {
-        const shouldRemove = payload.contextList.contexts
-          .map( c => c.contextCode )
-          .includes( link.code );
-
-        if ( shouldRemove ) didChangeLinks = true;
-        // console.log( 'shouldRemove', shouldRemove );
-
-        return !shouldRemove;
-      });
-
-      if (
-        isArray( payload.targetCodes ) &&
-        payload.targetCodes.includes( ask.code )
-      ) {
-        // console.log( 'isTarget' );
-        // if in target codes, add contexts to targets
-
-        // add contexts
-        if ( isArray( payload.contextList.contexts )) {
-          didChangeLinks = true;
-
-          newLinks = [
-            ...newLinks,
-            ...payload.contextList.contexts.map( context => {
-              const nameTypes = {
-                THEME: 'theme',
-                ICON: 'icon',
-              };
-
-              return {
-                code: context.contextCode,
-                weight: context.weight,
-                type: nameTypes[context.name]
-                  ? nameTypes[context.name]
-                  : 'none',
-                component: componentTypes[context.visualControlType]
-                  ? componentTypes[context.visualControlType]
-                  : componentTypes[context.hint]
-                    ? componentTypes[context.hint]
-                    : null,
-                created: context.created,
-              };
-            }),
-          ];
-        }
-      }
-
-      if ( didChangeLinks ) {
-        // console.log( 'newLinks', newLinks );
-
-        // add to state
-        // console.log( 'didChangeLinks', didChangeLinks );
-
-        state.asks[ask.code]['links'] = newLinks;
-      }
-    }
-
-    // loop over children
-    if ( isArray( ask.childAsks )) {
-      ask.childAsks.forEach( childAskCode => {
-        const childAsk = state.asks[childAskCode];
-
-        // console.log( 'childAsk', childAsk );
-
-        handleAskContext( childAsk );
-      });
-    }
-  };
-
-  if ( state.asks ) {
-    // console.log( 'changeContext', payload, state.asks );
-
-    // find Root Ask
-
-    if (
-      isString( payload.code ) &&
-      state.asks[payload.code]
-    ) {
-      const rootAsk = state.asks[payload.code];
-//
-      // console.log( 'rootAsk', rootAsk );
-
-      handleAskContext( rootAsk );
-    }
-  }
-
-  // console.log( '=================' );
-  // console.log( state );
-  // console.log( '=================' );
-
-  return state;
-}
-
 const reducer = ( state = initialState, { type, payload }) => {
   // console.log( type, payload );
   // TODO - shouldDeleteLinkedBaseEntities
@@ -446,75 +291,56 @@ const reducer = ( state = initialState, { type, payload }) => {
 
   switch ( type ) {
     case 'BASE_ENTITY_MESSAGE': {
-      if ( !isArray( payload.items, { ofMinLength: 1 }))
-        return state;
+      if ( !isArray( payload.items, { ofMinLength: 1 })) return state;
 
       /* Loop through all of the layouts and store them in their corresponding layout groups. */
-      return payload.items.reduce(( newState, item ) => {
-        // console.log( newState );
-        try {
-          if ( isString( item.code, { startsWith: 'FRM_' })) {
-            injectFrameIntoState({ item, state: newState, shouldReplaceEntity });
+      return payload.items.reduce(
+        ( newState, item ) => {
+          // console.log( newState );
+          try {
+            if ( isString( item.code, { startsWith: 'FRM_' })) {
+              injectFrameIntoState({ item, state: newState, shouldReplaceEntity });
+            } else if ( isString( item.code, { startsWith: 'THM_' })) {
+              injectThemeIntoState({ item, state: newState, shouldReplaceEntity });
+            } else {
+              return state;
+            }
+          } catch ( error ) {
+            // eslint-disable-next-line no-console
+            console.warn( 'Unable to add layout to reducer state', error, item.code, item );
           }
-          else if ( isString( item.code, { startsWith: 'THM_' })) {
-            injectThemeIntoState({ item, state: newState, shouldReplaceEntity });
-          }
-          else {
-            return state;
-          }
-        }
-        catch ( error ) {
-          // eslint-disable-next-line no-console
-          console.warn( 'Unable to add layout to reducer state', error, item.code, item );
-        }
 
-        return newState;
-      }, { ...state });
+          return newState;
+        },
+        { ...state }
+      );
     }
 
     case 'ASK_DATA':
       // console.log('ASK DATA', payload.items)
-      if ( !isArray( payload.items, { ofMinLength: 1 }))
-        return state;
+      if ( !isArray( payload.items, { ofMinLength: 1 })) return state;
 
-        // TODO - shouldDeleteLinkedBaseEntities
+      // TODO - shouldDeleteLinkedBaseEntities
 
       /* Loop through all of the layouts and store them in their corresponding layout groups. */
-      return payload.items.reduce(( newState, item ) => {
-        // console.log( newState );
-        try {
-          if ( isString( item.questionCode, { startsWith: 'QUE_' })) {
-            injectAskIntoState({ item, state: newState, shouldReplaceEntity });
+      return payload.items.reduce(
+        ( newState, item ) => {
+          // console.log( newState );
+          try {
+            if ( isString( item.questionCode, { startsWith: 'QUE_' })) {
+              injectAskIntoState({ item, state: newState, shouldReplaceEntity });
+            } else {
+              return state;
+            }
+          } catch ( error ) {
+            // eslint-disable-next-line no-console
+            console.warn( 'Unable to add layout to reducer state', error, item.code, item );
           }
-          else {
-            return state;
-          }
-        }
-        catch ( error ) {
-          // eslint-disable-next-line no-console
-          console.warn( 'Unable to add layout to reducer state', error, item.code, item );
-        }
 
-        return newState;
-      }, { ...state });
-
-    case 'ROUTE_CHANGE':
-      // legacy compatibiity
-      // automatically creates a link to FRM_CONTENT
-      if ( !isObject( payload, { withProperty: 'code' }))
-        return state;
-
-      return {
-        ...state,
-        ...injectFakeLayoutLinkIntoState({ payload, state }),
-      };
-
-    case 'ASK_CONTEXT_CHANGE': {
-      return {
-        ...state,
-        ...changeContext( payload, state ),
-      };
-    }
+          return newState;
+        },
+        { ...state }
+      );
 
     case 'CLEAR_ALL_LAYOUTS':
     case 'USER_LOGOUT':
