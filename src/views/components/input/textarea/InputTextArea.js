@@ -16,7 +16,6 @@ class InputTextArea extends Component {
     onBlur: func,
     onChange: func,
     onChangeValue: func,
-    onChangeText: func,
     onChangeState: func,
     onFocus: func,
     onKeyPress: func,

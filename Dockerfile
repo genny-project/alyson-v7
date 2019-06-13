@@ -3,6 +3,7 @@ FROM node:10.14.0-alpine AS builder
 WORKDIR /app
 ADD package.json package.json
 ADD . .
+RUN rm -f .env
 RUN apk add git
 RUN npm install
 RUN npm run build:web

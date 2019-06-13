@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { string, object, func } from 'prop-types';
 import debounce from 'lodash.debounce';
+import { Field } from 'formik';
 import { Input } from '../../index';
 import FormInputDropdown from './dropdown';
-import FormInputCheckbox from './checkbox';
 
 /*
 1. This component handles higher level data and passes them to individual components
@@ -29,15 +29,28 @@ class FormInput extends Component {
     }
   }
 
+  // validateUsername = ( value ) => {
+  //   let error;
+
+  //   if ( value === 'admin' ) {
+  //     error = 'Nice try!';
+  //   }
+
+  //   return error;
+  // }
+
   handleChangeDebounced = ( value, withSend ) => {
+    // console.log( 'handleChangeDebounced' );
     this.props.onChangeValue( value, withSend );
   };
 
   handleChangeValueWithSend = value => {
+    // console.log( 'handleChangeValueWithSend' );
     this.props.onChangeValue( value, true );
   };
 
   handleChangeValueWithSendAndDebounce = value => {
+    // console.log( 'handleChangeValueWithSendAndDebounce' );
     this.handleChangeDebounced( value, true );
   };
 
@@ -81,6 +94,7 @@ class FormInput extends Component {
       case 'audioRecord':
       case 'audiorecord':
       case 'date':
+      case 'time':
       case 'java.time.localdate':
       case 'datetime':
       case 'codeverificationfive':
@@ -89,6 +103,7 @@ class FormInput extends Component {
       case 'java.time.localdatetime':
       case 'htmlarea':
       case 'rich-text-editor':
+      case 'editor':
         return (
           <Input
             {...inputProps}
@@ -117,10 +132,23 @@ class FormInput extends Component {
 
       default:
         return (
-          <Input
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
+          <Field
+            name={this.props.ask.questionCode}
+            // validate={this.validateUsername}
+          >
+            {() =>
+              // { form, field }
+            {
+              return (
+                <Input
+                  {...inputProps}
+                    // value={field.value}
+                  ref={input => ( this.input = input )}
+                />
+              );
+            }
+            }
+          </Field>
         );
     }
   }

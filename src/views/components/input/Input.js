@@ -3,20 +3,19 @@ import { string, object, func } from 'prop-types';
 import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
-import CheckBox from './checkbox';
-import InputDatePicker from './date-picker';
+import InputDatePicker from './date-time/date-picker';
+import InputTimePicker from './date-time/time-picker';
+import InputDateTimePicker from './date-time/date-time-picker';
 import InputFile from './file';
 import InputScroll from './scroll';
 import InputRating from './rating';
 import InputText from './text';
 import InputTextArea from './textarea';
 import Switch from './switch';
-import InputDropdown from './dropdown';
 import Passcode from './passcode';
 import InputRead from './read';
 import InputCurrency from './currency';
 import InputCreditCard from './credit-card';
-import InputCheckbox from './checkbox-2';
 import InputPayment from './payment';
 import AudioRecord from './audio-record';
 import SegmentedControl from './segmented-control';
@@ -205,8 +204,15 @@ class Input extends Component {
 
       case 'dropdown':
         return (
-          <InputDropdown
+          // <InputDropdown
+          //   {...inputProps}
+          //   ref={input => this.input = input}
+          // />
+          <InputTag
             {...inputProps}
+            placeholder="Please select..."
+            allowMultipleSelection={false}
+            allowNewTags={false}
             ref={input => ( this.input = input )}
           />
         );
@@ -280,13 +286,19 @@ class Input extends Component {
           />
         );
 
+      case 'time':
+        return (
+          <InputTimePicker
+            {...inputProps}
+            ref={input => ( this.input = input )}
+          />
+        );
+
       case 'datetime':
       case 'java.time.localdatetime':
         return (
-          <InputDatePicker
+          <InputDateTimePicker
             {...inputProps}
-            date
-            time
             ref={input => ( this.input = input )}
           />
         );
@@ -345,8 +357,8 @@ class Input extends Component {
       case 'dropdownmultiple':
         return (
           <InputTag
-            placeholder="Please select..."
             {...inputProps}
+            placeholder="Please select..."
             allowMultipleSelection
             allowNewTags={false}
             ref={input => ( this.input = input )}
@@ -356,6 +368,7 @@ class Input extends Component {
         return (
           <InputTag
             {...inputProps}
+            allowMultipleSelection
             ref={input => ( this.input = input )}
           />
         );
@@ -364,6 +377,8 @@ class Input extends Component {
 
       case 'htmlarea':
       case 'rich-text-editor':
+      case 'editor':
+      case 'texteditor':
         return <RichTextEditor {...inputProps} />;
 
       case 'event':

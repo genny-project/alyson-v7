@@ -235,7 +235,6 @@ class Touchable extends Component {
       overflowX,
       overflowY,
       display,
-      onRef,
       ...restProps
     } = this.props;
 

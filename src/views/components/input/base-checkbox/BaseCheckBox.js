@@ -14,7 +14,8 @@ class BaseCheckBox extends Component {
   };
 
   static propTypes = {
-    checkBoxStatus: oneOf( [true, false, null] ).isRequired, // Values expected from the parent component
+    // Values expected from the parent component
+    checkBoxStatus: oneOf( [true, false, null] ).isRequired,
   };
 
   static propTypes = {

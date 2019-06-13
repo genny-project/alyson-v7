@@ -5,6 +5,31 @@ import { prefixedLog } from '../../utils';
 import { store } from '../../redux';
 import * as actions from '../../redux/actions';
 
+const { deepParseJson } = require( 'deep-parse-json' );
+const ZstdCodec = require( 'zstd-codec' ).ZstdCodec;
+
+function convertDataURIToBinary( base64 ) {
+  // var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  // var base64 = dataURI.substring(base64Index);
+  var raw = window.atob( base64 );
+  var rawLength = raw.length;
+  var array = new Uint8Array( new ArrayBuffer( rawLength ));
+
+  for ( var i = 0; i < rawLength; i++ ) {
+    array[i] = raw.charCodeAt( i );
+  }
+
+  return array;
+}
+
+const codecFunc = cb =>
+  ZstdCodec.run( zstd => {
+    const simple = new zstd.Simple();
+
+    cb( simple );
+    // console.warn(decoded);
+  });
+
 class Vertx {
   constructor() {
     this.log = prefixedLog( 'Vertx' );
@@ -12,7 +37,7 @@ class Vertx {
 
   constants = {
     RECONNECT_TIMEOUT: 1500,
-  }
+  };
 
   state = {
     connected: false,
@@ -21,16 +46,14 @@ class Vertx {
     eventBus: null,
     reconnectTimeout: null,
     messageQueue: [],
-  }
+  };
 
   setState = state => {
     this.state = {
       ...this.state,
-      ...typeof state === 'function'
-        ? state( this.state )
-        : state,
+      ...( typeof state === 'function' ? state( this.state ) : state ),
     };
-  }
+  };
 
   init( url, token ) {
     this.setState({ token, url });
@@ -56,35 +79,44 @@ class Vertx {
 
     this.log( 'Connected!' );
 
-    if ( this.state.reconnectTimeout )
-      clearTimeout( this.state.reconnectTimeout );
+    if ( this.state.reconnectTimeout ) clearTimeout( this.state.reconnectTimeout );
 
     const sessionData = decodeToken( this.state.token );
 
-    if (
-      sessionData &&
-      sessionData.session_state
-    ) {
+    if ( sessionData && sessionData.session_state ) {
       const { session_state } = sessionData;
       const { eventBus } = this.state;
 
       eventBus.registerHandler( session_state, this.handleRegisterHandler );
 
-      store.dispatch(
-        actions.initVertxSuccess()
-      );
+      store.dispatch( actions.initVertxSuccess());
 
       this.sendQueuedMessages();
     }
-  }
+  };
+
+  uncompress = async ( incomingCompressedMessage, callback ) => {
+    console.warn('Comporession being used.'); // eslint-disable-line
+    codecFunc( simple => {
+      const incomingByteArray = convertDataURIToBinary( incomingCompressedMessage );
+      const decompressedDataArray = simple.decompress( incomingByteArray );
+      const decompressedStr = new TextDecoder( 'utf-8' ).decode( decompressedDataArray );
+      var decoded = window.atob( decompressedStr );
+      const deeplyParsed = deepParseJson( decoded );
+
+      callback( deeplyParsed );
+    });
+  };
 
   handleRegisterHandler = ( error, message ) => {
-    if ( message )
-      this.handleIncomingMessage( message.body );
+    if ( message && message.body && message.body.zip ) {
+      this.uncompress( message.body.zip, data => {
+        this.handleIncomingMessage( data );
+      });
+    } else if ( message ) this.handleIncomingMessage( message.body );
 
-    if ( error )
-      this.log( error, 'error' );
-  }
+    if ( error ) this.log( error, 'error' );
+  };
 
   handleIncomingMessage = ( message, isCachedMessage ) => {
     const { incomingMessageHandler } = this.state;
@@ -98,9 +130,8 @@ class Vertx {
     }
 
     // this.log( 'Receiving a message' );
-    if ( incomingMessageHandler )
-      incomingMessageHandler( message );
-  }
+    if ( incomingMessageHandler ) incomingMessageHandler( message );
+  };
 
   handleEventBusClose = () => {
     const { reconnectTimeout } = this.state;
@@ -108,14 +139,13 @@ class Vertx {
 
     this.log( 'Closed connection.', 'warn' );
 
-    if ( reconnectTimeout )
-      clearInterval( reconnectTimeout );
+    if ( reconnectTimeout ) clearInterval( reconnectTimeout );
 
     this.setState({
       connected: false,
       reconnectTimeout: setTimeout( this.attemptReconnect, RECONNECT_TIMEOUT ),
     });
-  }
+  };
 
   setIncomingMessageHandler( handler ) {
     this.setState({
@@ -127,14 +157,11 @@ class Vertx {
     const { url, token } = this.state;
 
     this.init( url, token );
-  }
+  };
 
   pushToMessageQueue( message ) {
     this.setState( state => ({
-      messageQueue: [
-        ...state.messageQueue,
-        message,
-      ],
+      messageQueue: [...state.messageQueue, message],
     }));
   }
 
@@ -165,8 +192,7 @@ class Vertx {
       this.log( 'Message not sent, not connected to Vertx.', 'warn' );
 
       this.pushToMessageQueue( message );
-    }
-    else {
+    } else {
       this.log( 'Message sent.' );
 
       eventBus.send( 'address.inbound', {

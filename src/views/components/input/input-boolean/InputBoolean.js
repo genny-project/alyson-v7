@@ -1,6 +1,6 @@
 import React from 'react';
 import { oneOf, func } from 'prop-types';
-import { Box, object, Text } from '../../index';
+import { Box, object } from '../../index';
 import BaseCheckBox from '../base-checkbox/';
 
 class InputCheckBoxNewNew extends React.Component {

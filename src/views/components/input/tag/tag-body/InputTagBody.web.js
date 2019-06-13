@@ -16,6 +16,7 @@ class InputTagBody extends Component {
     return (
       <Box
         {...bodyProps}
+        zIndex={1}
       >
         <Box
           position="relative"
