@@ -4,6 +4,7 @@ import { string, object, bool } from 'prop-types';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
+import dset from 'dset';
 import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
 import shallowCompare from '../../../utils/shallow-compare';
@@ -145,69 +146,36 @@ class Form extends Component {
 
     const setQuestionValue = ( ask ) => {
       // handle targetCode
+      let askValue = null;
+
       if ( isObject( ask, { withProperty: 'targetCode' })) {
         checkForBE( ask.targetCode );
         const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
         // console.log('ask', ask, value, value || null);
 
         if ( value !== null || ask.mandatory )
-          initialValues[ask.questionCode] = value !== null ? value : null;
+          askValue = value !== null ? value : null;
       }
+
+      const childValues = {};
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
         ask.childAsks.forEach( childAsk => {
-          setQuestionValue( childAsk );
+          childValues[childAsk.questionCode] = setQuestionValue( childAsk );
         });
       }
+
+      return isArray( ask.childAsks, { ofMinLength: 1 })
+        ? childValues
+        : askValue;
     };
 
-    questionGroups.forEach( questionGroup => {
-      setQuestionValue( questionGroup );
+    questionGroups.map( questionGroup => {
+      initialValues[questionGroup.questionCode] = setQuestionValue( questionGroup );
     });
-
-    // const setQuestionValue2 = ( ask ) => {
-    //   // handle targetCode
-
-    //   console.log( 'setQuestionValue2' );
-
-    //   let askValue = null;
-
-    //   if ( isObject( ask, { withProperty: 'targetCode' })) {
-    //     checkForBE( ask.targetCode );
-    //     const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
-    //     // console.log('ask', ask, value, value || null);
-
-    //     if ( value !== null || ask.mandatory )
-    //       askValue = value !== null ? value : null;
-    //   }
-
-    //   const childValues = {};
-
-    //   if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-    //     ask.childAsks.forEach( childAsk => {
-    //       childValues[childAsk.questionCode] = setQuestionValue2( childAsk );
-    //     });
-    //   }
-
-    //   return isArray( ask.childAsks, { ofMinLength: 1 })
-    //     ? childValues
-    //     : askValue;
-    // };
-
-    // const initialValues2 = {
-    // };
-
-    // questionGroups.map( questionGroup => {
-    //   initialValues2[questionGroup.questionCode] = setQuestionValue2( questionGroup );
-    // }),
-
-    // console.log( 'initialValues2', initialValues2 );
 
     if ( Object.keys( initialValues ).length > 0 && this.props.shouldSetInitialValues ) {
       this.setState({ initialValues });
-
-      this.values = initialValues;
-      this.errors = {};
     }
   }
 
@@ -225,24 +193,31 @@ class Form extends Component {
 
     const setValidation = ( ask ) => {
       // handle targetCode
+      let validation = null;
+
       if ( isObject( ask, { withProperty: 'targetCode' })) {
         const dataType = dlv( data, `${ask.attributeCode}.dataType` );
 
-        validationList[ask.questionCode] = {
+        validation = {
           dataType,
           required: ask.mandatory,
         };
       }
+      const childValidation = {};
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
         ask.childAsks.forEach( childAsk => {
-          setValidation( childAsk );
+          childValidation[childAsk.questionCode] = setValidation( childAsk );
         });
       }
+
+      return isArray( ask.childAsks, { ofMinLength: 1 })
+        ? childValidation
+        : validation;
     };
 
     questionGroups.forEach( questionGroup => {
-      setValidation( questionGroup );
+      validationList[questionGroup.questionCode] = setValidation( questionGroup );
     });
 
     this.setState({ validationList });
@@ -327,6 +302,8 @@ class Form extends Component {
     const { initialValues } = this.state;
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
 
+    let currentPath = newProps.questionGroupCode;
+
     const compareAttributeValues = ( ask ) => {
       if ( !ask.question ) return false;
 
@@ -335,15 +312,24 @@ class Form extends Component {
       const attributeCode = ask.question.attributeCode;
       const baseEntityAttributeValue = dlv( newProps, `baseEntities.attributes.${target}.${attributeCode}.value` );
 
+      // const path = `${currentPath}.${ask.questionCode}`;
+
+      const initialValue = dlv( initialValues, `${currentPath}.${ask.questionCode}` );
+
+      // console.log( 'compare', currentPath,
+      //  ask.questionCode, path, initialValues, initialValue,  );
+
       const isMatch = (
-        initialValues[questionCode] == null &&
+        initialValue == null &&
         baseEntityAttributeValue == null
       ) ||
-      initialValues[questionCode] === baseEntityAttributeValue;
+      initialValue === baseEntityAttributeValue;
 
       if ( isMatch ) return false;
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+        currentPath = `${currentPath}.${questionCode}`;
+
         const isChildMatch = ask.childAsks.some(
           childAsk => compareAttributeValues( childAsk )
         );
@@ -370,69 +356,101 @@ class Form extends Component {
   }
 
   doValidate = values => {
-    // console.log( 'validate' );
     if ( !values )
       return {};
 
     const { validationList } = this.state;
     const { types } = this.props.baseEntities.definitions;
-    const newState = {};
+    const errorList = {};
 
-    Object.keys( values ).forEach( field => {
-      const validationData = validationList[field];
-
-      if ( !validationData ) {
-        return;
-      }
-
-      const { dataType, required } = validationData;
-      const validationArray = types[dataType] && types[dataType].validationList;
-
-      if ( !isArray( validationArray, { ofMinLength: 1 })) {
-        return;
-      }
-
-      if (
-        isArray( Object.keys( values ), { ofExactLength: 1 }) &&
-        types[dataType] &&
-        types[dataType].typeName === 'java.lang.Boolean'
-      ) {
-        return {};
-      }
-
+    const validate = ( value, validation ) => {
+      // handle targetCode
+      // console.log( 'data', value, validation );
       let error = null;
 
-      if (
-        values[field] == null &&
-        required
-      ) {
-        newState[field] = 'Please enter this field';
-        // errors.push( 'Please enter this field' );
+      if ( !validation ) {
+        return;
       }
 
-      const isValid = validationArray.every( validation => {
-        const doesPass = new RegExp( validation.regex ).test( String( values[field] ));
+      const { dataType, required } = validation;
 
-        if ( !doesPass ) {
+      // console.log( 'dataType', types, dataType, validation, validation.dataType );
+
+      const validationArray = types[dataType] && types[dataType].validationList;
+
+      // console.log( 'validationArray', validationArray );
+
+      if (
+        value == null &&
+        required
+      ) {
+        error = 'Please enter this field';
+      // errors.push( 'Please enter this field' );
+      }
+
+      if ( isArray( validationArray, { ofMinLength: 1 })) {
+      // newState[field] = error;
+      // newState[field] = errors;
+        validationArray.every( validation => {
+          const doesPass = new RegExp( validation.regex ).test( String( value ));
+
+          // console.log( 'doesPass', doesPass );
+
+          if ( !doesPass ) {
           // errors.push( validation.errorMessage );
-          error = validation.errorMessage;
-        }
+            error = validation.errorMessage;
+          }
 
-        return doesPass;
-      });
+          return doesPass;
+        });
+      }
 
       // console.log( 'errors', errors );
 
-      if ( !isValid )
-        newState[field] = error;
-        // newState[field] = errors;
+      // console.log( 'validation', validation );
+
+      let childValidation = null;
+
+      // recurse
+
+      // console.log( 'TYPE', value, isObject( value ));
+
+      // console.log( 'TYPE array',
+        // isObject( value ) && isArray( Object.keys( value ), { ofMinLength: 1 }));
+
+      const hasChildren = isObject( value ) && isArray( Object.keys( value ), { ofMinLength: 1 });
+
+      if ( hasChildren ) {
+        // console.log( 'hasChildren' );
+
+        Object.keys( value ).forEach( valueKey => {
+          const hasError = validate( value[valueKey], validation[valueKey] );
+
+          if ( hasError ) {
+            if ( !childValidation ) {
+              childValidation = {};
+            }
+            childValidation[valueKey] = validate( value[valueKey], validation[valueKey] );
+          }
+        });
+      }
+
+      return hasChildren
+        ? childValidation
+        : error;
+    };
+
+    Object.keys( values ).forEach( valueKey => {
+      // console.log( 'value',  valueKey );
+
+      errorList[valueKey] = validate( values[valueKey], validationList[valueKey] );
     });
 
-    this.errors = newState;
+    // console.log( 'errorList', errorList );
 
-    this.state.isUpdating = false; // eslint-disable-line
+    this.errors = errorList;
 
-    return newState;
+    return errorList;
   }
 
   sendAnswer = ( ask, newValue ) => {
@@ -484,6 +502,7 @@ class Form extends Component {
     setFieldValue,
     setFieldTouched,
     ask,
+    valuePath,
   ) => (
     value,
     sendOnChange,
@@ -493,10 +512,12 @@ class Form extends Component {
     if ( value == null )
       return;
 
-    setFieldValue( field, value );
-    setFieldTouched( field, true );
+    setFieldValue( valuePath, value );
+    setFieldTouched( valuePath, true );
 
-    this.values[field] = value;
+    // this.values[field] = value;
+
+    dset( this.values, valuePath, value );
 
     if ( sendOnChange )
       this.sendAnswer( ask, value );
@@ -512,7 +533,7 @@ class Form extends Component {
     }
   }
 
-  handleBlur = ( ask ) => async () => {
+  handleBlur = ( ask, valuePath ) => async () => {
     await this.state.isUpdating === false;
 
     if ( ask ) {
@@ -521,10 +542,10 @@ class Form extends Component {
       if (
         questionCode &&
         this.values &&
-        this.values[questionCode] &&
+        dlv( this.values, valuePath ) &&
         (
           !this.errors ||
-          !this.errors[questionCode]
+          !dlv( this.errors, valuePath )
         )
       ) {
         this.sendAnswer( ask, this.values[questionCode] );
@@ -555,6 +576,7 @@ class Form extends Component {
         functions={functions}
         inputRefs={this.inputRefs}
         isClosed={this.props.isClosed}
+        groupPath={questionGroup.questionCode}
       />
     );
   }
