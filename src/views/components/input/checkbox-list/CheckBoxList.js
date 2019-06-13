@@ -1,20 +1,14 @@
 import React from 'react';
-import { array, bool, number, object } from 'prop-types';
-import { Box, Text, Debug } from '../../index';
+import { array, bool, number, object, func } from 'prop-types';
+import { Box, Text } from '../../index';
 import { isArray } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
-
-// const mockData = [
-//   { value: 'adadada', label: 'adad' },
-//   { value: 'adadada2', label: 'ada1d' },
-//   { value: 'adad2ada2', label: 'ada21d' },
-// ];
 
 class CheckBoxList extends React.Component {
   static defaultProps = {
     items: [],
     value: [],
-    multiSelect: false,
+    multiSelect: true,
     numberOfColumns: 1,
   };
 
@@ -24,6 +18,7 @@ class CheckBoxList extends React.Component {
     items: array,
     multiSelect: bool,
     icons: object,
+    onChangeValue: func,
   };
 
   state = {
@@ -31,6 +26,15 @@ class CheckBoxList extends React.Component {
     selectedItems: 0,
     selected: this.props.value,
   };
+
+  componentDidUpdate( prevProps ) {
+    if ( this.props.items !== prevProps.items ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        data: this.props.items,
+      });
+    }
+  }
 
   handlePress = value => () => {
     const { selected } = this.state;
@@ -51,6 +55,8 @@ class CheckBoxList extends React.Component {
         return { selected: [...state.selected, value] };
       },
       () => {
+        if ( this.props.onChangeValue ) this.props.onChangeValue( this.state.selected );
+
         console.warn(this.state); //eslint-disable-line
       }
     );
@@ -87,8 +93,6 @@ class CheckBoxList extends React.Component {
 No Items to Show
           </Text>
         )}
-
-        <Debug value={this.state} />
       </Box>
     );
   }

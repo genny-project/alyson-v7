@@ -7,32 +7,35 @@ class InputCheckbox extends Component {
   static defaultProps = {
     value: [],
     testID: 'input-checkbox',
-  }
+  };
 
   static propTypes = {
     items: array,
     value: array,
     onChangeValue: func,
     testID: string,
-  }
+  };
 
   state = {
     selected: this.props.value,
-  }
+  };
 
   handleChange = value => () => {
-    this.setState( state => {
-      if ( state.selected.includes( value )) {
-        return { selected: state.selected.filter( item => item !== value ) };
-      }
+    this.setState(
+      state => {
+        if ( state.selected.includes( value )) {
+          return { selected: state.selected.filter( item => item !== value ) };
+        }
 
-      return { selected: [...state.selected, value] };
-    }, () => {
-      if ( this.props.onChangeValue ) {
-        this.props.onChangeValue( this.state.selected );
+        return { selected: [...state.selected, value] };
+      },
+      () => {
+        if ( this.props.onChangeValue ) {
+          this.props.onChangeValue( this.state.selected );
+        }
       }
-    });
-  }
+    );
+  };
 
   render() {
     const { items, testID } = this.props;
@@ -59,16 +62,14 @@ class InputCheckbox extends Component {
                 />
               </Box>
 
-              <Text
-                size="md"
-              >
+              <Text size="md">
                 {item.label}
               </Text>
             </Box>
           ))
         ) : (
           <Text>
-            No items to show
+No items to show
           </Text>
         )}
       </Box>

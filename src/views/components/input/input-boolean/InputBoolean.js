@@ -1,5 +1,5 @@
 import React from 'react';
-import { oneOf } from 'prop-types';
+import { oneOf, func } from 'prop-types';
 import { Box, object, Text } from '../../index';
 import BaseCheckBox from '../base-checkbox/';
 
@@ -13,12 +13,23 @@ class InputCheckBoxNewNew extends React.Component {
   static propTypes = {
     value: oneOf( true, false, null ),
     question: object,
+    onChangeValue: func,
   };
 
   state = {
     value: this.props.value, // value is the incoming lists of SELS
     question: this.props.question,
   };
+
+  componentDidUpdate( prevProps ) {
+    if ( this.props.value !== prevProps.value || this.props.question !== prevProps.question ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        value: this.props.value,
+        question: this.props.question,
+      });
+    }
+  }
 
   handleChange = () => {
     console.warn('handle chagne in inp bool'); //eslint-disable-line
@@ -31,7 +42,7 @@ class InputCheckBoxNewNew extends React.Component {
         return { value: null };
       },
       () => {
-        console.warn( this.state, 'state from input boolean' ); // eslint console warn
+        if ( this.props.onChangeValue ) this.props.onChangeValue( this.state.value );
       }
     );
   };
@@ -44,17 +55,13 @@ class InputCheckBoxNewNew extends React.Component {
         flexDirection="row"
         flexWrap="wrap"
       >
-        {question && question.text ? (
-          <BaseCheckBox
-            onPress={this.handleChange}
-            checkBoxStatus={value}
-            iconName={value}
-            ID={question.text}
-            label={question.text}
-          />
-        ) : (
-          <Text text="No items to Show" />
-        )}
+        <BaseCheckBox
+          onPress={this.handleChange}
+          checkBoxStatus={value}
+          iconName={value}
+          ID={question.text}
+          label={question.name}
+        />
       </Box>
     );
   }
