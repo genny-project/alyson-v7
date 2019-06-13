@@ -466,7 +466,7 @@ class Form extends Component {
       value: finalValue,
     });
 
-    Bridge.sendAnswer( [{
+    Bridge.sendFormattedEvent( [{
       askId: ask.id,
       attributeCode: finalAttributeCode,
       sourceCode: ask.sourceCode,
