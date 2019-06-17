@@ -343,12 +343,8 @@ class InputTag extends Component {
                 onChangeValue={onInputValueChange}
                 testID={testID}
                 onFocusInput={() => {
-                  // console.log( 'focus', this.state.focusing );
-                  // if ( !this.state.focusing ) {
                   setHighlightedIndex( -1 );
                   handleOpenMenu();
-                  // }
-                  // this.handleInputFocus();
                 }}
                 onFocusTouchable={() => {
                   if ( this.inputs && this.inputs['input'] ) this.inputs['input'].focus();

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { func, number, object, array, string } from 'prop-types';
+import { func, number, object, array, string, oneOf } from 'prop-types';
 import debounce from 'lodash.debounce';
 import dlv from 'dlv';
-import { Input, GoogleConsumer } from '../../index';
+import { Input, GoogleConsumer, Touchable, Box, Icon, Text } from '../../index';
+import { isString } from '../../../../utils';
 
 class InputAddress extends Component {
   static defaultProps = {
-    debounceTimer: 300,
+    debounceTimer: 100,
     includeAddressFields: [
       'street_number',
       'route',
@@ -26,6 +27,7 @@ class InputAddress extends Component {
     },
     placeholder: 'Select an address...',
     getShortNameForAddressComponents: ['country'],
+    restrictCountry: 'au',
   }
 
   static propTypes = {
@@ -40,6 +42,9 @@ class InputAddress extends Component {
     injectCustomAddressComponents: object,
     getShortNameForAddressComponents: array,
     testID: string,
+    restrictCountry: oneOf( [
+      'au',
+    ] ),
   }
 
   constructor( props ) {
@@ -53,28 +58,47 @@ class InputAddress extends Component {
 
   state = {
     items: [],
-    error: null,
+    countryLock: true,
   }
 
   autocompleteAddress = async address => {
-    console.log( 'autocompleteAddress', address );
+    const { google, restrictCountry } = this.props;
 
-    const { google } = this.props;
+    const options = {
+      ...(
+        isString( restrictCountry, { ofMinLength: 1 }) &&
+        this.state.countryLock === true
+          ? {
+            componentRestrictions: {
+              country: restrictCountry,
+            },
+          }
+          : {}
+      ),
+    };
 
-    try {
-      const items = await google.autocompleteAddress( address );
+    if ( isString( address, { ofMinLength: 1 })) {
+      try {
+        const items = await google.autocompleteAddress(
+          address,
+          options
+        );
 
-      this.setState({ items });
+        this.setState({ items });
+      }
+      catch ( error ) {
+        // eslint-disable-next-line no-console
+        console.warn( error );
+
+        this.setState({ items: [] });
+      }
     }
-    catch ( error ) {
-      // eslint-disable-next-line no-console
-      console.warn( error );
+    else {
+      this.setState({ items: [] });
     }
   }
 
   geocodeAddress = async address => {
-    console.log( 'geocodeAddress', address );
-
     const { google } = this.props;
 
     try {
@@ -83,11 +107,13 @@ class InputAddress extends Component {
     catch ( error ) {
       // eslint-disable-next-line no-console
       console.warn( error );
+
+      this.setState({ items: [] });
     }
   }
 
   formatPlace( place ) {
-    console.log( 'formatPlace', place );
+    // console.log( 'formatPlace', place );
 
     try {
       const { injectCustomAddressComponents } = this.props;
@@ -190,7 +216,7 @@ class InputAddress extends Component {
   }
 
   handleChange = async item => {
-    console.log( 'handleChange', item );
+    // console.log( 'handleChange', item );
 
     const { google } = this.props;
     const { place_id } = item;
@@ -227,32 +253,67 @@ class InputAddress extends Component {
     }
   }
 
+  handleToggleCountryLock = () => {
+    this.setState( state => ({
+      countryLock: !state.countryLock,
+    }));
+  }
+
   handleType = text => {
-    console.log( 'handleType', text );
+    // console.log( 'handleType', text );
     this.autocompleteAddress( text );
   }
 
   render() {
     const { placeholder, testID, ...restProps } = this.props;
-    const { items } = this.state;
-
-    console.log( 'props', this.props );
+    const { items, countryLock } = this.state;
 
     return (
-      <Input
-        {...restProps}
-        type="autocomplete"
-        items={items}
-        borderBetweenItems
-        inputProps={{
-          placeholder,
-          flex: 1,
-        }}
-        onType={this.handleType}
-        itemStringKey="description"
-        onChange={this.handleChange}
-        testID={testID}
-      />
+      <Box
+        flexDirection="column"
+      >
+
+        <Box
+          alignItems="center"
+          paddingBottom={5}
+        >
+          <Text
+            text="Australian Addresses Only"
+            size="xs"
+          />
+          <Box
+            paddingLeft={5}
+          />
+          <Touchable
+            withFeedback
+            onPress={this.handleToggleCountryLock}
+          >
+            <Icon
+              name={countryLock ? 'check_box' : 'check_box_outline_blank'}
+              color="#999"
+              size="xs"
+              cursor="pointer"
+            />
+          </Touchable>
+
+        </Box>
+
+        <Input
+          {...restProps}
+          type="autocomplete"
+          items={items}
+          borderBetweenItems
+          inputProps={{
+            placeholder,
+            flex: 1,
+          }}
+          onType={this.handleType}
+          itemStringKey="description"
+          onChange={this.handleChange}
+          testID={testID}
+        />
+
+      </Box>
     );
   }
 }
