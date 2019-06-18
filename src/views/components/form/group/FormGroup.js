@@ -260,7 +260,7 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: placeholder || question.placeholder || question.name,
+      placeholder: placeholder || question.placeholder,
       index,
     };
 
