@@ -197,7 +197,6 @@ class FormGroup extends Component {
       touched,
       setFieldValue,
       setFieldTouched,
-      isFormValid,
     } = form;
     const {
       handleChange,
@@ -218,8 +217,6 @@ class FormGroup extends Component {
     const baseEntityDefinition = dataTypes[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
-    const isFormSubmit = isObject( contextList, { withProperty: 'isFormSubmit' }) ? contextList.isFormSubmit : false;
-
     const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
     const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
 
@@ -239,9 +236,7 @@ class FormGroup extends Component {
       onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
       question,
-      disabled: isFormSubmit
-        ? !isFormValid
-        : false,
+      // disabled:,
       editable: !readonly,
       ref: addRef,
       returnKeyType: (

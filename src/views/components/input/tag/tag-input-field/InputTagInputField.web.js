@@ -94,6 +94,7 @@ class InputTagInputField extends Component {
             }}
             testID={`input-tag ${testID}`}
             {...( nonTabable ? { tabIndex: '-1' } : null )}
+            blurOnSubmit={allowMultipleSelection ? false : true}
           />
           <Box
             position="absolute"
