@@ -34,6 +34,7 @@ class InputAutocomplete extends Component {
 
   state = {
     filterValue: '',
+    filteredItems: [],
   };
 
   componentDidUpdate( prevProps ) {
@@ -95,7 +96,6 @@ class InputAutocomplete extends Component {
   }
 
   handleChange = item => {
-    // console.log( 'handleChange', item );
     this.setState({
       filterValue: item.description,
     }, () => {
@@ -241,7 +241,10 @@ class InputAutocomplete extends Component {
                 updateValueWhenFocused
               />
 
-              {isOpen && inputValue.length > 0 (
+              {
+                isOpen &&
+                isString( inputValue, { ofMinLength: 1 }) &&
+                isArray( filteredItems ) && (
                 // autocomplete suggestion container
                 <Box
                   paddingY={5}
@@ -309,7 +312,7 @@ class InputAutocomplete extends Component {
                       </Box>
                     )}
                 </Box>
-              )}
+                )}
             </Box>
           );
         }}

@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import { func, number, object, array, string, oneOf } from 'prop-types';
 import debounce from 'lodash.debounce';
 import dlv from 'dlv';
-import { Input, GoogleConsumer, Touchable, Box, Icon, Text } from '../../index';
+import { flag /* code, name, countries */  } from 'country-emoji';
+import { Input, GoogleConsumer, Touchable, Box, Text } from '../../index';
 import { isString } from '../../../../utils';
+
+const iconInternational = String.fromCodePoint( 0x1F30E );
+const iconAU = flag( 'AU' );
 
 class InputAddress extends Component {
   static defaultProps = {
@@ -25,7 +29,7 @@ class InputAddress extends Component {
     injectCustomAddressComponents: {
       street_address: '{{street_number}} {{street_name}}',
     },
-    placeholder: 'Select an address...',
+    placeholder: 'Please enter an address...',
     getShortNameForAddressComponents: ['country'],
     restrictCountry: 'au',
   }
@@ -265,48 +269,38 @@ class InputAddress extends Component {
   }
 
   render() {
-    const { placeholder, testID, ...restProps } = this.props;
+    const { testID, ...restProps } = this.props;
     const { items, countryLock } = this.state;
+
+    // console.log( 'placeholder', this.props.placeholder );
 
     return (
       <Box
-        flexDirection="column"
+        flexDirection="row"
+        alignItems="center"
       >
-
-        <Box
-          alignItems="center"
-          paddingBottom={5}
+        {/*
+          This can be turned into a dropdown menu to allow any country to be selected.
+        */}
+        <Touchable
+          withFeedback
+          onPress={this.handleToggleCountryLock}
         >
           <Text
-            text="Australian Addresses Only"
-            size="xs"
+            text={countryLock ? iconAU : iconInternational}
+            size="sm"
           />
-          <Box
-            paddingLeft={5}
-          />
-          <Touchable
-            withFeedback
-            onPress={this.handleToggleCountryLock}
-          >
-            <Icon
-              name={countryLock ? 'check_box' : 'check_box_outline_blank'}
-              color="#999"
-              size="xs"
-              cursor="pointer"
-            />
-          </Touchable>
-
-        </Box>
+        </Touchable>
+        <Box
+          paddingLeft={5}
+        />
 
         <Input
           {...restProps}
           type="autocomplete"
           items={items}
+          placeholder={this.props.placeholder}
           borderBetweenItems
-          inputProps={{
-            placeholder,
-            flex: 1,
-          }}
           onType={this.handleType}
           itemStringKey="description"
           onChange={this.handleChange}
