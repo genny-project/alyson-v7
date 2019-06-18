@@ -667,8 +667,6 @@ class Form extends Component {
             validateField,
             validateForm,
             handleBlur,
-            submitForm,
-            handleSubmit,
 //             dirty: false
 //             error: undefined
 //             errors: {}
@@ -723,8 +721,6 @@ class Form extends Component {
                     isFormValid,
                     validateField,
                     validateForm,
-                    submitForm,
-                    handleSubmit,
                     onBlur: handleBlur,
                   }
                 );

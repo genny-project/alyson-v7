@@ -119,6 +119,7 @@ class Input extends Component {
             numberOfLines={2}
             {...inputProps}
             ref={input => this.input = input}
+            onChangeState={this.handleStateChange}
           />
         );
 

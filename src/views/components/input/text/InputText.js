@@ -264,8 +264,8 @@ class Input extends Component {
     // if ( this.props.onChangeText )
     //   this.props.onChangeText( this.state.value );
 
-    if ( this.props.onChangeValue )
-      this.props.onChangeValue( this.state.value );
+    // if ( this.props.onChangeValue )
+    //   this.props.onChangeValue( this.state.value );
 
     if ( this.props.onChangeState )
       this.props.onChangeState({ active: false });
@@ -280,8 +280,8 @@ class Input extends Component {
   }
 
   handleChangeValue = () => {
-    if ( this.props.onChangeValue )
-      this.props.onChangeValue( this.state.value );
+    // if ( this.props.onChangeValue )
+      // this.props.onChangeValue( this.state.value );
   }
 
   render() {
@@ -415,8 +415,6 @@ class Input extends Component {
 
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
-
-    // console.log( 'props', this.props );
 
     return (
       <Box
