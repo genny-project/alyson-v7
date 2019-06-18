@@ -1,6 +1,5 @@
 // import React from 'react';
 import * as Pages from '../../views/pages';
-import Checkbox from '../../views/components/input/checkbox-5';
 
 const routes = [
   {
@@ -27,11 +26,6 @@ const routes = [
     path: '/registration',
     exact: true,
     component: Pages.Register,
-  },
-  {
-    path: '/test',
-    exact: true,
-    component: Checkbox,
   },
   {
     path: '*',
