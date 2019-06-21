@@ -1,7 +1,6 @@
 // import React from 'react';
 import * as Pages from '../../views/pages';
 // import { Redirect } from '../../views/components';
-import DisplaySession from '../../views/components/display-session';
 
 const routes = [
   {
@@ -28,11 +27,6 @@ const routes = [
     path: '/registration',
     exact: true,
     component: Pages.Register,
-  },
-  {
-    path: '/session',
-    exact: true,
-    component: DisplaySession,
   },
   // {
   //   path: '/',
