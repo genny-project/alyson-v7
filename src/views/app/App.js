@@ -5,6 +5,7 @@ import AuthenticatedApp from './authenticated';
 import TestDisplay from './test-display';
 import Routing from '../routing';
 import { location } from '../../utils';
+import DisplaySession from '../components/display-session/DisplaySession';
 
 class App extends Component {
   constructor( props ) {
@@ -71,6 +72,7 @@ class App extends Component {
       <AuthenticatedApp>
         {debug && <TestDisplay />}
         <Routing />
+        <DisplaySession />
       </AuthenticatedApp>
     );
   }
