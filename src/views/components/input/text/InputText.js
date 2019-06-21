@@ -264,8 +264,8 @@ class Input extends Component {
     // if ( this.props.onChangeText )
     //   this.props.onChangeText( this.state.value );
 
-    // if ( this.props.onChangeValue )
-    //   this.props.onChangeValue( this.state.value );
+    if ( this.props.onChangeValue )
+      this.props.onChangeValue( this.state.value );
 
     if ( this.props.onChangeState )
       this.props.onChangeState({ active: false });

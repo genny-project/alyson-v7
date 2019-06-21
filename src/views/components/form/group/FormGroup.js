@@ -212,6 +212,7 @@ class FormGroup extends Component {
       contextList,
       readonly,
       placeholder,
+      disabled,
     } = ask;
 
     const baseEntityDefinition = dataTypes[attributeCode];
@@ -236,8 +237,8 @@ class FormGroup extends Component {
       onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
       question,
-      // disabled:,
       editable: !readonly,
+      // disabled: disabled,
       ref: addRef,
       returnKeyType: (
         inputRefs[questionGroupCode] &&

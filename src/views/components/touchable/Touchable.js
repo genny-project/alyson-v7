@@ -148,17 +148,27 @@ class Touchable extends Component {
   }
 
   handleMouseEnter = event => {
-    this.setState({ isHovering: true });
+    this.setState({
+      isHovering: true,
+    }, () => {
+      if ( this.props.onMouseEnter )
+        this.props.onMouseEnter( event );
 
-    if ( this.props.onMouseEnter )
-      this.props.onMouseEnter( event );
+      if ( this.props.onChangeState )
+        this.props.onChangeState({ hover: this.state.isHovering });
+    });
   }
 
   handleMouseLeave = () => {
-    this.setState({ isHovering: false });
+    this.setState({
+      isHovering: false,
+    }, () => {
+      if ( this.props.onMouseLeave )
+        this.props.onMouseLeave( event );
 
-    if ( this.props.onMouseLeave )
-      this.props.onMouseLeave( event );
+      if ( this.props.onChangeState )
+        this.props.onChangeState({ hover: this.state.isHovering });
+    });
   }
 
   handlePress = event => {

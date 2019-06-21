@@ -59,16 +59,33 @@ const themeBehaviourAttributes = {
 };
 
 const componentTypes = {
-  // VISUAL_CONTROL: 'visualControl',
-  WRAPPER: 'wrapper',
-  INPUT: 'input',
-  ICON: 'icon',
-  LABEL: 'label',
-  DESCRIPTION: 'description',
-  HINT: 'hint',
-  ERROR: 'error',
-  REQUIRED: 'required',
+  // form groups - simple
+  GROUP: 'group',
+  // form groups - complex
+  GROUP_WRAPPER: 'group-wrapper',
+  GROUP_CONTENT: 'group-content',
+  GROUP_ICON: 'group-icon',
+
   DELIMITER: 'delimiter',
+
+  // visual control
+  VCL_WRAPPER: 'vcl-wrapper',
+  VCL_ICON: 'vcl-icon',
+  VCL_LABEL: 'vcl-label',
+  VCL_DESCRIPTION: 'vcl-description',
+  VCL_HINT: 'vcl-hint',
+  VCL_ERROR: 'vcl-error',
+  VCL_REQUIRED: 'vcl-required',
+  // inputs - simple
+  INPUT: 'input',
+  // inputs - complex
+  INPUT_FIELD: 'input-field',
+  INPUT_WRAPPER: 'input-wrapper',
+  INPUT_ICON: 'input-icon',
+  INPUT_ITEM_WRAPPER: 'input-item-wrapper',
+  INPUT_ITEM: 'input-item',
+  INPUT_SELECTED_WRAPPER: 'input-selected-wrapper',
+  INPUT_SELECTED: 'input-selected',
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {

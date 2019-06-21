@@ -238,6 +238,7 @@ class InputAutocomplete extends Component {
                 width="100%"
                 testID={`${testID}`}
                 value={this.state.filterValue}
+                blurOnSubmit
                 updateValueWhenFocused
               />
 

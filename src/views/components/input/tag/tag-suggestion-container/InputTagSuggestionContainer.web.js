@@ -9,7 +9,7 @@ class InputTagBody extends Component {
   }
 
   render() {
-    const { children, isOpen } = this.props;
+    const { children, isOpen, ...restProps } = this.props;
 
     if ( !isOpen ) return null;
 
@@ -35,6 +35,7 @@ class InputTagBody extends Component {
           width: 0,
           height: 0,
         }}
+        {...restProps}
       >
         {children}
       </Box>

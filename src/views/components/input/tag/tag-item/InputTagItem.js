@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { object, string, func } from 'prop-types';
+import { isObject } from '../../../../../utils';
 import { Box, Touchable, Text, Icon } from '../../../index';
 
 class InputTagItem extends Component {
@@ -11,11 +12,45 @@ class InputTagItem extends Component {
     onPress: func,
   }
 
+  state = {
+    hover: false,
+    active: false,
+  }
+
+  handleChangeState = ( newState ) => {
+    this.setState( state => ({
+      ...state,
+      ...newState,
+    }));
+  }
+
   render() {
     const {
       itemString,
       touchableProps,
+      onPress,
+      editable,
+      stateBasedProps,
+      ...restProps
     } = this.props;
+
+    const { hover, active } = this.state;
+
+    const getPropsByState = () => {
+      return {
+        ...isObject( stateBasedProps, { withProperty: 'default' }) ? stateBasedProps['default'] : {},
+        ...isObject( stateBasedProps, { withProperty: 'hover' }) &&
+          hover
+          ? stateBasedProps['hover'] : {},
+        ...isObject( stateBasedProps, { withProperty: 'active' }) &&
+          active
+          ? stateBasedProps['active'] : {},
+        ...isObject( stateBasedProps, { withProperty: 'disabled' }) &&
+          ( this.props.editable === false || this.props.disabled )
+          ? stateBasedProps['disabled'] : {},
+        ...isObject( stateBasedProps, { withProperty: 'error' }) && this.props.error ? stateBasedProps['error'] : {},
+      };
+    };
 
     return (
       <Box
@@ -38,20 +73,25 @@ class InputTagItem extends Component {
             color="black"
             size="xs"
             text={itemString}
+            {...getPropsByState()}
           />
         </Box>
 
-        <Touchable
-          {...touchableProps}
-        >
-          <Icon
-            type="material-icons"
-            name="clear"
-            size="sm"
-            color="black"
-            cursor="pointer"
-          />
-        </Touchable>
+        {editable ? (
+          <Touchable
+            {...touchableProps}
+            onChangeState={this.handleChangeState}
+          >
+            <Icon
+              type="material-icons"
+              name="clear"
+              size="sm"
+              color="black"
+              cursor="pointer"
+              {...getPropsByState()}
+            />
+          </Touchable>
+        ) : null }
       </Box>
     );
   }

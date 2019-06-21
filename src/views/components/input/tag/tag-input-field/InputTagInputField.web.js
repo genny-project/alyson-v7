@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { object, func, bool, string, node, array } from 'prop-types';
+import { isObject } from '../../../../../utils';
 import { Box, Input, Icon, Touchable } from '../../../index';
 
 class InputTagInputField extends Component {
@@ -19,11 +20,14 @@ class InputTagInputField extends Component {
     testID: string,
     selectedItems: array,
     nonTabable: bool,
+    iconProps: object,
   }
 
   state = {
     // focused: false,
     focusing: false,
+    hover: false,
+    active: false,
   }
 
   handleKeyPress = ( event ) => {
@@ -44,10 +48,16 @@ class InputTagInputField extends Component {
     });
   }
 
+  handleChangeState = ( newState ) => {
+    this.setState( state => ({
+      ...state,
+      ...newState,
+    }));
+  }
+
   render() {
     const {
       onPress,
-      inputProps,
       getInputProps,
       // onChangeValue,
       inputValue,
@@ -59,9 +69,29 @@ class InputTagInputField extends Component {
       allowMultipleSelection,
       selectedItems,
       nonTabable,
+      iconProps,
+      stateBasedProps,
+      ...restProps
     } = this.props;
+    const { hover, active } = this.state;
 
     const selectedItem = selectedItems.map( item => item.label ).join();
+
+    const getPropsByState = ( propObject ) => {
+      return {
+        ...isObject( propObject, { withProperty: 'default' }) ? propObject['default'] : {},
+        ...isObject( propObject, { withProperty: 'hover' }) &&
+        hover
+          ? propObject['hover'] : {},
+        ...isObject( propObject, { withProperty: 'active' }) &&
+        active
+          ? propObject['active'] : {},
+        ...isObject( propObject, { withProperty: 'disabled' }) &&
+          ( this.props.editable === false || this.props.disabled )
+          ? propObject['disabled'] : {},
+        ...isObject( propObject, { withProperty: 'error' }) && this.props.error ? propObject['error'] : {},
+      };
+    };
 
     return (
       <Touchable
@@ -81,10 +111,11 @@ class InputTagInputField extends Component {
         >
           <Input
             {...getInputProps({
-              ...inputProps,
+              ...restProps,
               type: 'text',
               width: '100%',
               value: ( allowMultipleSelection ? inputValue : selectedItem ) || '',
+              ...getPropsByState( stateBasedProps ),
             })}
             updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
@@ -95,6 +126,7 @@ class InputTagInputField extends Component {
             testID={`input-tag ${testID}`}
             {...( nonTabable ? { tabIndex: '-1' } : null )}
             blurOnSubmit={allowMultipleSelection ? false : true}
+            onChangeState={this.handleChangeState}
           />
           <Box
             position="absolute"
@@ -107,6 +139,7 @@ class InputTagInputField extends Component {
               name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
               color="black"
               size="md"
+              {...getPropsByState( iconProps )}
             />
           </Box>
           {children}

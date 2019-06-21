@@ -25,6 +25,15 @@ const inputStates = [
   'disabled',
 ];
 */
+const subcomponents = [
+  'input-field',
+  'input-wrapper',
+  'input-icon',
+  'input-item-wrapper',
+  'input-item',
+  'input-selected-wrapper',
+  'input-selected',
+];
 
 class VisualControl extends Component {
   static propTypes = {
@@ -213,16 +222,43 @@ class VisualControl extends Component {
       const typeThemes = this.getStyling( type );
 
       return {
-        ...restProps,
         ...isObject( typeThemes, { withProperty: 'default' }) ? typeThemes['default'] : {},
-        ...isObject( typeThemes, { withProperty: 'hover' }) && this.state.hover ? typeThemes['hover'] : {},
-        ...isObject( typeThemes, { withProperty: 'active' }) && this.state.active ? typeThemes['active'] : {},
         ...isObject( typeThemes, { withProperty: 'disabled' }) &&
           ( this.props.editable === false || this.props.disabled )
           ? typeThemes['disabled'] : {},
         ...isObject( typeThemes, { withProperty: 'error' }) && this.props.error ? typeThemes['error'] : {},
         icon: this.getIcon(),
       };
+    };
+
+    const getSubcomponentPropsByType = ( type ) => {
+      const typeThemes = this.getStyling( type );
+
+      const icon = this.getIcon();
+
+      // console.log(  'typeThemes', type, typeThemes );
+
+      return {
+        // ,
+        ...isObject( typeThemes, { withProperty: 'default' }) ? { default: typeThemes['default'] } : {},
+        ...isObject( typeThemes, { withProperty: 'hover' }) ? { hover: typeThemes['hover'] } : {},
+        ...isObject( typeThemes, { withProperty: 'active' })  ? { active: typeThemes['active'] } : {},
+        ...isObject( typeThemes, { withProperty: 'disabled' }) &&
+          ( this.props.editable === false || this.props.disabled )
+          ? { disabled: typeThemes['disabled'] } : {},
+        ...isObject( typeThemes, { withProperty: 'error' }) && this.props.error ? { error: typeThemes['error'] } : {},
+        ...icon ? { icon } : {},
+      };
+    };
+
+    const getSubcomponentProps = () => {
+      const subcomponentThemes = {};
+
+      subcomponents.forEach( subcomponent => {
+        subcomponentThemes[subcomponent] = getSubcomponentPropsByType( subcomponent );
+      });
+
+      return subcomponentThemes;
     };
 
     return (
@@ -233,7 +269,7 @@ class VisualControl extends Component {
         justifyContent="center"
         zIndex={100 - index}
         // padding={5}
-        {...getPropsByType( 'wrapper' )}
+        {...getPropsByType( 'vcl-wrapper' )}
       >
 
         {(
@@ -245,13 +281,13 @@ class VisualControl extends Component {
 
             {/* LABEL */}
             <Box
-              {...getPropsByType( 'label' )}
+              {...getPropsByType( 'vcl-label' )}
             >
               <Text
                 size="xs"
                 text={this.props.question.name}
                 // decoration="underline"
-                {...getPropsByType( 'label' )}
+                {...getPropsByType( 'vcl-label' )}
               />
             </Box>
 
@@ -279,14 +315,14 @@ class VisualControl extends Component {
                 paddingLeft={5}
                 paddingRight={5}
                 cursor="pointer"
-                {...getPropsByType( 'hint' )}
+                {...getPropsByType( 'vcl-hint' )}
               >
                 <Icon
                   name="help"
                   size="xs"
                   color="grey"
                   cursor="help"
-                  {...getPropsByType( 'hint' )}
+                  {...getPropsByType( 'vcl-hint' )}
                 />
               </Box>
             )}
@@ -299,21 +335,23 @@ class VisualControl extends Component {
         ) && (
           <Box
             paddingBottom={5}
-            {...getPropsByType( 'description' )}
+            {...getPropsByType( 'vcl-description' )}
           >
             <Text
               size="xxs"
               text="Description text goes here"
-              {...getPropsByType( 'description' )}
+              {...getPropsByType( 'vcl-description' )}
             />
           </Box>
         )}
 
         {/* INPUT COMPONENT */}
         <FormInput
+          {...restProps}
           {...getPropsByType( 'input' )}
+          subcomponentProps={getSubcomponentProps()}
           onBlur={onBlur}
-          iconProps={properties.renderVisualControlIcon ? getPropsByType( 'icon' ) : null}
+          iconProps={properties.renderVisualControlIcon ? getPropsByType( 'vcl-icon' ) : null}
           iconOnly={(
             properties.renderVisualControlInput != null
               ? !properties.renderVisualControlInput
@@ -330,13 +368,13 @@ class VisualControl extends Component {
         ) && (
           <Box
             flexDirection="column"
-            {...getPropsByType( 'error' )}
+            {...getPropsByType( 'vcl-error' )}
           >
             <Text
               size="xxs"
               color="red"
               text={this.props.error}
-              {...getPropsByType( 'error' )}
+              {...getPropsByType( 'vcl-error' )}
             />
           </Box>
         )}
