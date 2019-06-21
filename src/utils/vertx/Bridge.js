@@ -14,8 +14,8 @@ class Bridge {
     this.log = prefixedLog( 'Bridge' );
   }
 
-  __getAccessToken() {
-    const { accessToken } = store.getState().keycloak;
+  async __getAccessToken() {
+    const accessToken = await Storage.get( 'accessToken' );
 
     return accessToken;
   }

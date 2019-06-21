@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactJson from 'react-json-view';
 import store from '../../../redux/store';
+import './index.css';
 
 export default function DisplaySession() {
   return (
