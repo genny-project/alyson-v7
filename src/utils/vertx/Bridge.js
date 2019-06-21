@@ -15,7 +15,7 @@ class Bridge {
   }
 
   async __getAccessToken() {
-    const accessToken = await Storage.get( 'accessToken' );
+    const accessToken = localStorage.getItem( 'accessToken' );
 
     return accessToken;
   }
