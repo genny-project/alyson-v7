@@ -49,7 +49,7 @@ class CheckBoxList extends React.Component {
         /* Dont allow to select more than one button/icon */
         if ( !multiSelect && selected.length >= 1 ) {
           /* if the selected value is more or equal to 1 dont allow to add the value */
-          return { selected: [...state.selected] };
+          return { selected: value };
         }
 
         return { selected: [...state.selected, value] };
