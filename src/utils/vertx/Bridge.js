@@ -14,8 +14,8 @@ class Bridge {
     this.log = prefixedLog( 'Bridge' );
   }
 
-  async __getAccessToken() {
-    const accessToken = localStorage.getItem( 'accessToken' );
+  __getAccessToken() {
+    const accessToken = store.getState().keycloak;
 
     return accessToken;
   }
