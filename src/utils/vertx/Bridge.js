@@ -33,17 +33,19 @@ class Bridge {
 
     const origin = window.location ? window.location.origin : 'http://localhost:3000';
 
-    axios.post( `${config.genny.host}/${config.genny.bridge.endpoints.events}/init?url=${origin}`, {
-      method: 'POST',
-      responseType: 'json',
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    Vertx.sendMessage( events.AUTH_INIT( token ));
+    axios
+      .post( `${config.genny.host}/${config.genny.bridge.endpoints.events}/init?url=${origin}`, {
+        method: 'POST',
+        responseType: 'json',
+        timeout: 30000,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        Vertx.sendMessage( events.AUTH_INIT( token ));
+      });
   }
 
   sendEvent({ event, eventType, data, sendWithToken }) {
