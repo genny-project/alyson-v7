@@ -87,6 +87,7 @@ class Vertx {
       const { session_state } = sessionData;
       const { eventBus } = this.state;
 
+      console.warn({ sessionData });
       eventBus.registerHandler( session_state, this.handleRegisterHandler );
 
       store.dispatch( actions.initVertxSuccess());
