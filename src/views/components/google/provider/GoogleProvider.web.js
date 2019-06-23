@@ -33,10 +33,12 @@ class GoogleProvider extends Component {
         );
       }
 
-      autocompleter.getPlacePredictions({
+      const data = {
         ...options,
         input: address,
-      }, ( results, status ) => {
+      };
+
+      autocompleter.getPlacePredictions( data, ( results, status ) => {
         if ( status === autocompleteOK )
           return resolve( results );
 

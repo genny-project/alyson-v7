@@ -3,13 +3,12 @@
 import React, { Component } from 'react';
 import { object, array, bool } from 'prop-types';
 import { Fragment, Frame, Text, Form, Box } from '../index';
-import { SublayoutLegacy } from '../../components-legacy';
 import { isArray, sort /* arrayAddDelimiter */ } from '../../../utils';
 
 class Recurser extends Component {
   static defaultProps = {
     delimiterProps: {},
-  }
+  };
 
   static propTypes = {
     themes: object,
@@ -17,10 +16,10 @@ class Recurser extends Component {
     isClosed: bool,
     delimiterProps: object,
     hasDelimiter: bool,
-  }
+  };
 
   render() {
-    const { content, themes, delimiterProps, /* hasDelimiter,*/  isClosed } = this.props;
+    const { content, themes, delimiterProps, /* hasDelimiter,*/ isClosed } = this.props;
 
     if ( !isArray( content, { ofMinLength: 1 })) {
       return null;
@@ -34,13 +33,13 @@ class Recurser extends Component {
       />
     );
 
-    const delimiterHandler = ( array ) => {
+    const delimiterHandler = array => {
       return /* hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : */ array;
     };
 
     return (
       <Fragment>
-        { delimiterHandler(
+        {delimiterHandler(
           sort( content, { paths: ['weight', 'created'], direction: 'desc' }).map( child => {
             const baseEntityCode = child.code;
             const linkType = child.type;
@@ -67,17 +66,6 @@ class Recurser extends Component {
               );
             }
 
-            if ( linkType === 'sublayout' ) {
-              return (
-                <SublayoutLegacy
-                  key={baseEntityCode}
-                  layoutName={baseEntityCode}
-                  layoutType="pages"
-                  identifier="INITIAL"
-                />
-              );
-            }
-
             return (
               <Text
                 {...themes}
@@ -89,7 +77,6 @@ class Recurser extends Component {
           delimiterComponent
         )}
       </Fragment>
-
     );
   }
 }

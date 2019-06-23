@@ -116,7 +116,8 @@ class Input extends Component {
             multiline
             numberOfLines={2}
             {...inputProps}
-            ref={input => ( this.input = input )}
+            ref={input => this.input = input}
+            onChangeState={this.handleStateChange}
           />
         );
 

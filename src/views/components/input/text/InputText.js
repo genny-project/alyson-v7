@@ -213,6 +213,9 @@ class Input extends Component {
       valueLength: newValue.length,
       value: newValue,
     });
+
+    if ( this.props.onChangeText )
+      this.props.onChangeText( newValue );
   }
 
   handleMouseOver = () => {
@@ -261,8 +264,8 @@ class Input extends Component {
     // if ( this.props.onChangeText )
     //   this.props.onChangeText( this.state.value );
 
-    if ( this.props.onChangeValue )
-      this.props.onChangeValue( this.state.value );
+    // if ( this.props.onChangeValue )
+    //   this.props.onChangeValue( this.state.value );
 
     if ( this.props.onChangeState )
       this.props.onChangeState({ active: false });
@@ -277,8 +280,8 @@ class Input extends Component {
   }
 
   handleChangeValue = () => {
-    if ( this.props.onChangeValue )
-      this.props.onChangeValue( this.state.value );
+    // if ( this.props.onChangeValue )
+      // this.props.onChangeValue( this.state.value );
   }
 
   render() {
@@ -454,6 +457,7 @@ class Input extends Component {
           numberOfLines={numberOfLines}
           onChange={this.handleChange}
           onChangeText={this.handleChangeText}
+          onChangeValue={this.handleChangeValue}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           onMouseOver={this.handleMouseOver}

@@ -23,9 +23,7 @@ class Bridge {
   initVertx( url, token ) {
     this.log( 'Opening Vertx...' );
 
-    Vertx.setIncomingMessageHandler(
-      this.messageHandler.onMessage
-    );
+    Vertx.setIncomingMessageHandler( this.messageHandler.onMessage );
 
     Vertx.init( url, token );
   }
@@ -45,17 +43,10 @@ class Bridge {
       },
     });
 
-    Vertx.sendMessage(
-      events.AUTH_INIT( token )
-    );
+    Vertx.sendMessage( events.AUTH_INIT( token ));
   }
 
-  sendEvent({
-    event,
-    eventType,
-    data,
-    sendWithToken,
-  }) {
+  sendEvent({ event, eventType, data, sendWithToken }) {
     const token = this.__getAccessToken();
     const eventObject = sendWithToken
       ? events[event]( eventType, data, token )
@@ -91,10 +82,7 @@ class Bridge {
     messageType = 'BTN',
     value,
   }) {
-    if (
-      isString( code, { ofMinLength: 1 }) &&
-      isString( parentCode, { ofMinLength: 1 })
-    ) {
+    if ( isString( code, { ofMinLength: 1 }) && isString( parentCode, { ofMinLength: 1 })) {
       this.sendEvent({
         event: messageType,
         sendWithToken: true,
@@ -110,56 +98,7 @@ class Bridge {
     }
   }
 
-  /* ----------------------------
-    legacy compatibility events
-  ------------------------------*/
-
-  sendAnswer( answer ) {
-    this.sendAnswers( [...answer] );
-  }
-
-  sendAnswers( answers ) {
-    this.sendEvent({
-      event: 'ANSWER',
-      sendWithToken: true,
-      data: answers,
-    });
-  }
-
-  sendButtonEvent( eventType, data ) {
-    this.sendEvent({
-      event: 'BTN',
-      sendWithToken: true,
-      eventType,
-      data,
-    });
-  }
-
-  sendCode( eventType, data ) {
-    this.sendEvent({
-      event: 'SEND_CODE',
-      sendWithToken: true,
-      eventType,
-      data,
-    });
-  }
-
-  sendTreeViewEvent( eventType, data ) {
-    this.sendEvent({
-      event: 'TV_EVENT',
-      sendWithToken: true,
-      eventType,
-      data,
-    });
-  }
-
-  /* --------------------------
-  --------------------------- */
-
-  checkStoreForCachedAction({
-    event,
-    data,
-  }) {
+  checkStoreForCachedAction({ event, data }) {
     const { actionCache } = store.getState().vertx;
 
     if ( isObject( data, { withProperties: ['code', 'parentCode'] })) {
@@ -167,9 +106,11 @@ class Bridge {
         key => key !== 'code' && key !== 'parentCode' && key !== 'rootCode'
       );
 
-      const dataString = dataKeys.map( key => {
-        return `:${key}=${data[key]}`;
-      }).join( '' );
+      const dataString = dataKeys
+        .map( key => {
+          return `:${key}=${data[key]}`;
+        })
+        .join( '' );
 
       const actionId = `${data.rootCode}:${data.parentCode}:${data.code}${dataString}`;
 
