@@ -1,7 +1,7 @@
 import React from 'react';
 import { array, bool, number, object, func } from 'prop-types';
 import { Box, Text } from '../../index';
-import { isArray } from '../../../../utils';
+import { isArray, isString } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
 
 class CheckBoxList extends React.Component {
@@ -42,14 +42,21 @@ class CheckBoxList extends React.Component {
 
     this.setState(
       state => {
-        if ( state.selected.includes( value )) {
-          return { selected: state.selected.filter( item => item !== value ) };
+        if (
+          !isArray( state.selected ) ||
+          !isString( value )
+        ) {
+          return { selected: [] };
         }
 
         /* Dont allow to select more than one button/icon */
         if ( !multiSelect && selected.length >= 1 ) {
           /* if the selected value is more or equal to 1 dont allow to add the value */
-          return { selected: value };
+          return { selected: [value] };
+        }
+
+        if ( state.selected.includes( value )) {
+          return { selected: state.selected.filter( item => item !== value ) };
         }
 
         return { selected: [...state.selected, value] };
