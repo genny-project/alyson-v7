@@ -43,6 +43,8 @@ class InputTagSuggestion extends Component {
     } = this.props;
 
     const getPropsByState = () => {
+      console.log( stateBasedProps );
+
       return {
         ...isObject( stateBasedProps, { withProperty: 'default' }) ? stateBasedProps['default'] : {},
         ...isObject( stateBasedProps, { withProperty: 'hover' }) &&

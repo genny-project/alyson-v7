@@ -26,6 +26,7 @@ const inputStates = [
 ];
 */
 const subcomponents = [
+  'input',
   'input-field',
   'input-wrapper',
   'input-icon',
@@ -243,6 +244,7 @@ class VisualControl extends Component {
         ...isObject( typeThemes, { withProperty: 'default' }) ? { default: typeThemes['default'] } : {},
         ...isObject( typeThemes, { withProperty: 'hover' }) ? { hover: typeThemes['hover'] } : {},
         ...isObject( typeThemes, { withProperty: 'active' })  ? { active: typeThemes['active'] } : {},
+        ...isObject( typeThemes, { withProperty: 'selected' }) ? { selected: typeThemes['selected'] } : {},
         ...isObject( typeThemes, { withProperty: 'disabled' }) &&
           ( this.props.editable === false || this.props.disabled )
           ? { disabled: typeThemes['disabled'] } : {},
@@ -348,7 +350,7 @@ class VisualControl extends Component {
         {/* INPUT COMPONENT */}
         <FormInput
           {...restProps}
-          {...getPropsByType( 'input' )}
+          {...getPropsByType( 'vcl-input' )}
           subcomponentProps={getSubcomponentProps()}
           onBlur={onBlur}
           iconProps={properties.renderVisualControlIcon ? getPropsByType( 'vcl-icon' ) : null}

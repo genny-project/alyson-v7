@@ -76,9 +76,9 @@ const componentTypes = {
   VCL_HINT: 'vcl-hint',
   VCL_ERROR: 'vcl-error',
   VCL_REQUIRED: 'vcl-required',
-  // inputs - simple
-  INPUT: 'input',
-  // inputs - complex
+  // higher level for each input
+  INPUT: 'vcl-input',
+  // input subcomponents
   INPUT_FIELD: 'input-field',
   INPUT_WRAPPER: 'input-wrapper',
   INPUT_ICON: 'input-icon',
@@ -193,6 +193,9 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
       : null ),
     ...( dlv( attributes, 'PRI_CONTENT_DISABLED.value' )
       ? { disabled: dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) }
+      : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_SELECTED.value' )
+      ? { selected: dlv( attributes, 'PRI_CONTENT_SELECTED.value' ) }
       : null ),
     ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' )
       ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) }

@@ -18,7 +18,7 @@ const filterOutUnspecifiedProps = props => {
   }, {});
 };
 
-class Input extends Component {
+class InputText extends Component {
   static defaultProps = {
     autoCapitalize: 'sentences',
     autoComplete: 'no',
@@ -505,4 +505,4 @@ class Input extends Component {
   }
 }
 
-export default Input;
+export default InputText;

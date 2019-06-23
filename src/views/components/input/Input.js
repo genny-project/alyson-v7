@@ -11,6 +11,7 @@ import InputFile from './file';
 import InputScroll from './scroll';
 import InputRating from './rating';
 import InputText from './text';
+import InputTextWithStateThemes from './text/InputTextWithStateThemes';
 import InputTextArea from './textarea';
 import Switch from './switch';
 import Passcode from './passcode';
@@ -85,7 +86,7 @@ class Input extends Component {
       case 'acn number':
       case 'double':
         return (
-          <InputText
+          <InputTextWithStateThemes
             {...inputProps}
             ref={input => this.input = input}
             onChangeState={this.handleStateChange}
