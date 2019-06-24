@@ -37,6 +37,7 @@ class DisplaySession extends React.Component {
         padding: 10,
         background: '##eef4ff',
         overflow: 'scroll', 
+        borderTop: "1px solid #e3e3e3"
       }}
         >
       
