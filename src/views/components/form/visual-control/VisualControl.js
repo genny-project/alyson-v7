@@ -5,6 +5,7 @@ import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
 import { Box, Text, Icon /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
+import StatefulThemeHandler from '../stateful-theme-handler';
 
 /*
 const linkValues = [
@@ -348,21 +349,35 @@ class VisualControl extends Component {
         )}
 
         {/* INPUT COMPONENT */}
-        <FormInput
-          {...restProps}
-          {...getPropsByType( 'vcl-input' )}
-          subcomponentProps={getSubcomponentProps()}
-          onBlur={onBlur}
-          iconProps={properties.renderVisualControlIcon ? getPropsByType( 'vcl-icon' ) : null}
-          iconOnly={(
-            properties.renderVisualControlInput != null
-              ? !properties.renderVisualControlInput
-              : false
-          )}
-          inheritedProps={this.getInhertiableThemes()}
-          padding={3}
+        <StatefulThemeHandler
           onChangeState={this.handleStateChange}
-        />
+          subcomponentProps={getSubcomponentProps()}
+        >
+          {({
+            themes,
+            onChangeState,
+            inputProps,
+          }) => {
+            return (
+              <FormInput
+                {...restProps}
+                {...inputProps}
+                {...getPropsByType( 'vcl-input' )}
+                subcomponentProps={getSubcomponentProps()}
+                onBlur={onBlur}
+                iconProps={properties.renderVisualControlIcon ? getPropsByType( 'vcl-icon' ) : null}
+                iconOnly={(
+                  properties.renderVisualControlInput != null
+                    ? !properties.renderVisualControlInput
+                    : false
+                )}
+                inheritedProps={this.getInhertiableThemes()}
+                padding={3}
+                onChangeState={onChangeState}
+              />
+            );
+          }}
+        </StatefulThemeHandler>
 
         {/* ERROR MESSAGE */}
         {(
