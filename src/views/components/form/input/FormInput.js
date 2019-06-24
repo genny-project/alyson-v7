@@ -82,9 +82,18 @@ class FormInput extends Component {
         return (
           <FormInputWithItems
             {...inputProps}
-            onChangeValue={this.handleChangeValueWithSendAndDebounce}
-            ref={input => ( this.input = input )}
-          />
+          >
+            {({ items }) => {
+              return (
+                <Input
+                  {...inputProps}
+                  onChangeValue={this.handleChangeValueWithSendAndDebounce}
+                  items={items}
+                  ref={input => ( this.input = input )}
+                />
+              );
+            }}
+          </FormInputWithItems>
         );
 
       case 'switch':
