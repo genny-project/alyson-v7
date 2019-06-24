@@ -5,7 +5,7 @@ import dlv from 'dlv';
 import { Input } from '../../../index';
 import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes } from '../../../../../utils';
 
-class FormInputDropdown extends Component {
+class FormInputWithItems extends Component {
   static propTypes = {
     question: object,
     baseEntities: object,
@@ -204,11 +204,11 @@ class FormInputDropdown extends Component {
   }
 }
 
-export { FormInputDropdown };
+export { FormInputWithItems };
 
 const mapStateToProps = state => ({
   themes: state.vertx.layouts.themes,
   baseEntities: state.vertx.baseEntities,
 });
 
-export default connect( mapStateToProps )( FormInputDropdown );
+export default connect( mapStateToProps )( FormInputWithItems );
