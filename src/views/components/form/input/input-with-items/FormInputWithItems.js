@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import { object, array } from 'prop-types';
+import { Component } from 'react';
+import { object, node } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Input } from '../../../index';
 import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes } from '../../../../../utils';
 
 class FormInputWithItems extends Component {
@@ -10,8 +9,9 @@ class FormInputWithItems extends Component {
     question: object,
     baseEntities: object,
     themes: object,
-    inheritedThemes: array,
+    // inheritedThemes: array,
     inheritedProps: object,
+    children: node,
   }
 
   state = {
@@ -189,18 +189,12 @@ class FormInputWithItems extends Component {
   }
 
   render() {
-    const { ...restProps } = this.props;
+    const { children } = this.props;
     const { items } = this.state;
 
     const itemsWithThemes = this.getThemesForItems( items );
 
-    return (
-      <Input
-        {...restProps}
-        items={itemsWithThemes}
-        ref={input => this.input = input}
-      />
-    );
+    return children({ items: itemsWithThemes });
   }
 }
 
