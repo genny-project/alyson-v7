@@ -3,7 +3,7 @@ import { string, object, func } from 'prop-types';
 import debounce from 'lodash.debounce';
 import { Field } from 'formik';
 import { Input } from '../../index';
-import FormInputDropdown from './dropdown';
+import FormInputWithItems from './input-with-items';
 
 /*
 1. This component handles higher level data and passes them to individual components
@@ -80,7 +80,7 @@ class FormInput extends Component {
       case 'checkboxmultiple':
       case 'radio':
         return (
-          <FormInputDropdown
+          <FormInputWithItems
             {...inputProps}
             onChangeValue={this.handleChangeValueWithSendAndDebounce}
             ref={input => ( this.input = input )}
