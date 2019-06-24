@@ -6,11 +6,11 @@ import store from '../../../redux/store';
 import './index.css';
 
 class DisplaySession extends React.Component {
-  state = { 
+  // state = { 
     
-    justReRender: false,
-    minimized: false
-   }; // eslint-disable-line
+  //   justReRender: false,
+  //   minimized: false
+  //  }; // eslint-disable-line
 
   handleClick = () => {
     this.setState({
@@ -30,8 +30,6 @@ class DisplaySession extends React.Component {
   render() {
     const token = JSON.stringify( store.getState().testReducer );
     const height = "100px";
-  
-
     return (
       <div style={{ 
         padding: 10,
@@ -54,13 +52,10 @@ From Redux store
           <h3> Session </h3>
           <ReactJson src={store.getState().testReducer} />
         </pre>
-
-
       </div>
     );
   }
 }
-export default connect(
-  null,
-  null
-)( DisplaySession );
+
+
+export default DisplaySession;
