@@ -5,3 +5,9 @@ export * from '../utils/layouts-dev/layouts-dev.actions';
 export * from '../views/components/dialog/dialog.actions';
 
 export * from '../views/app/test-display/testDisplay.actions';
+
+// Just for testing purposes
+export const sessionTest = data => ({
+  type: 'SESSION_TEST',
+  payload: data,
+});

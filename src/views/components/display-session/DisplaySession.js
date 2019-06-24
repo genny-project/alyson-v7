@@ -1,41 +1,65 @@
 import React from 'react';
 import ReactJson from 'react-json-view';
+import { connect } from 'react-redux';
+
 import store from '../../../redux/store';
 import './index.css';
 
-export default function DisplaySession() {
-  return (
-    <div style={{ padding: 10, background: '#e3e3e3', overflow: 'scroll' }}>
-      <pre style={{ width: '900px' }}>
-        <h1>
-          {' '}
-From Local Storage
-        </h1>
-        <span>
-kcSessionStateState:
-        </span>
-        <p style={{ color: 'green' }}>
-          {JSON.stringify( localStorage.getItem( 'kcSessionState' ))}
-        </p>
+class DisplaySession extends React.Component {
+  state = { 
+    
+    justReRender: false,
+    minimized: false
+   }; // eslint-disable-line
 
-        <p>
-kcAuth:
-        </p>
-        <p style={{ color: 'green' }}>
-          {JSON.stringify( localStorage.getItem( 'kcAuth' ))}
-        </p>
+  handleClick = () => {
+    this.setState({
+      justReRender: true, // eslint-disable-line
+    });
+  };
 
-        <div style={{ height: 300, overflow: 'scroll', overflowY: 'auto ' }}>
-          <h1>
-            {' '}
+  handleMinimize = () => {
+    console.log( 'Handle minimize Triggered' );
+    // this.setState({
+    //   minimized: true
+    // })
+
+    this.setState(state => {minimized: !state.minimized})
+  };
+
+  render() {
+    const token = JSON.stringify( store.getState().testReducer );
+    const height = "100px";
+  
+
+    return (
+      <div style={{ 
+        padding: 10,
+        background: '##eef4ff',
+        overflow: 'scroll', 
+      }}
+        >
+      
+        <pre style={{ width: '900px' }}>
+          <button onClick={this.handleClick}>
+Re-render the page
+          </button>
+          <div style={{ height: 300, overflow: 'scroll', overflowY: 'auto ' }}>
+            <h3>
 From Redux store
-          </h1>
-
-          <p>
+            </h3>
             <ReactJson src={store.getState().keycloak} />
-          </p>
-        </div>
-      </pre>
-    </div>
-  );
+          </div>
+          <h3> Session </h3>
+          <ReactJson src={store.getState().testReducer} />
+        </pre>
+
+
+      </div>
+    );
+  }
 }
+export default connect(
+  null,
+  null
+)( DisplaySession );
