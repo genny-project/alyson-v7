@@ -8,17 +8,17 @@ class DebugDisplay extends React.Component {
   state = {
     minimized: true,
     displayStore: false,
-  }; // eslint-disable-line
+  };
 
   handleClick = () => {
     this.setState({
-      justReRender: true, // eslint-disable-line
+      justReRender: true,
     });
   };
 
   handleMinimize = () => {
     this.setState( state => ({ minimized: !state.minimized }));
-    console.log( this.state, 'STATE' );
+    console.log(this.state, 'STATE'); //eslint-disable-line
   };
 
   handleDisplayStore = () => {
@@ -29,13 +29,16 @@ class DebugDisplay extends React.Component {
 
   render() {
     const { minimized, displayStore } = this.state;
+    const yolo = store.getState().gennyteerDisplay;
+
+    console.warn({ yolo });
 
     return (
       <Box
         padding={10}
         background="snow"
         overflow="scroll"
-        height={minimized ? '80px' : '600px'}
+        height={minimized ? '90px' : '600px'}
         position="relative"
         borderWidth="1px"
         borderColor="#e3e3e3"
@@ -69,7 +72,7 @@ class DebugDisplay extends React.Component {
           <Box flexDirection="column">
             <Text size="md">
               {' '}
-Expand to View Debug Mode
+Expand to View Debug Mode (🐞)
             </Text>
             <Box marginTop="10px">
               <Text
@@ -82,12 +85,34 @@ Expand to View Debug Mode
           </Box>
         ) : (
           <pre style={{ width: '900px' }}>
-            <button
-              onClick={this.handleClick}
-              style={{ height: 40 }}
-            >
-              Re-render the page
-            </button>
+            <Box flexDirection="column">
+              <Box
+                flexDirection="column"
+                marginTop={20}
+              >
+                <Text size="md">
+Session
+                </Text>
+              </Box>
+
+              {!minimized ? <ReactJson src={store.getState().testReducer} /> : null}
+            </Box>
+
+            <Box borderRadius={4}>
+              <Button
+                background="#e3e3e3"
+                height="30px"
+                color="#e3e3e3"
+                width="auto"
+                onPress={this.handleDisplayStore}
+                borderRadius={5}
+              >
+                <Text
+                  text="Re-render page"
+                  size="xs"
+                />
+              </Button>
+            </Box>
             <Box
               height={300}
               overflow="scroll"
@@ -100,16 +125,6 @@ Keycloak Session From Redux store
               </Text>
               <ReactJson src={store.getState().keycloak} />
             </Box>
-            <Box
-              flexDirection="column"
-              marginTop={20}
-            >
-              <Text size="md">
-Session
-              </Text>
-            </Box>
-
-            {!minimized ? <ReactJson src={store.getState().testReducer} /> : null}
 
             <Box
               flexDirection="column"
@@ -123,9 +138,9 @@ Redux Store
                 <Box marginTop={20}>
                   <Button
                     background="#e3e3e3"
-                    height="40px"
+                    height="30px"
                     color="#e3e3e3"
-                    width="200px"
+                    width="auto"
                     onPress={this.handleDisplayStore}
                   >
                     <Text text="Click to Display store" />
@@ -144,6 +159,20 @@ Hidden for performance reasons click above button to show
                   src={store.getState()}
                   collapsed={false}
                 />
+              ) : null}
+            </Box>
+            <Box
+              marginTop={20}
+              flexDirection="column"
+            >
+              {store.getState().gennyteerDisplay.data ? (
+                <Box flexDirection="column">
+                  <Text text="Text from Gennyteeer" />
+                  <Text
+                    size="xs"
+                    text={store.getState().gennyteerDisplay.data}
+                  />
+                </Box>
               ) : null}
             </Box>
           </pre>
