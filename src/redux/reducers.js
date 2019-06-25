@@ -24,6 +24,18 @@ const testReducer = ( state = initialState, { type, payload }) => {
   }
 };
 
+const gennyteerDisplay = ( state = '', action ) => {
+  switch ( action.type ) {
+    case 'DISPLAY_FROM_GENNYTEER':
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 const reducers = combineReducers({
   keycloak,
   vertx,
@@ -32,6 +44,7 @@ const reducers = combineReducers({
   dialog,
   testDisplay,
   testReducer,
+  gennyteerDisplay,
 });
 
 export default reducers;

@@ -4,6 +4,9 @@ import { Icon, Box, Text, Button } from '../../components';
 import store from '../../../redux/store';
 import './index.css';
 
+/* Dispatch Action from Gennyteer */
+/* store.dispatch(gennyteerDisplay("Hey This is a text!")); */
+
 class DebugDisplay extends React.Component {
   state = {
     minimized: true,
@@ -29,14 +32,11 @@ class DebugDisplay extends React.Component {
 
   render() {
     const { minimized, displayStore } = this.state;
-    const yolo = store.getState().gennyteerDisplay;
-
-    console.warn({ yolo });
 
     return (
       <Box
         padding={10}
-        background="snow"
+        backgroundColor="snow"
         overflow="scroll"
         height={minimized ? '90px' : '600px'}
         position="relative"
@@ -85,7 +85,30 @@ Expand to View Debug Mode (🐞)
           </Box>
         ) : (
           <pre style={{ width: '900px' }}>
-            <Box flexDirection="column">
+            <Box borderRadius={4}>
+              <Button
+                background="#db7093"
+                height="30px"
+                color="#db7093"
+                width="auto"
+                onPress={this.handleDisplayStore}
+                borderRadius={5}
+              >
+                <Text
+                  color="#fff"
+                  text="Re-render page"
+                  size="xs"
+                />
+              </Button>
+            </Box>
+
+            <Box
+              flexDirection="column"
+              color="#fff"
+              backgroundColor="#fff"
+              padding={10}
+              marginTop={10}
+            >
               <Box
                 flexDirection="column"
                 marginTop={20}
@@ -98,27 +121,14 @@ Session
               {!minimized ? <ReactJson src={store.getState().testReducer} /> : null}
             </Box>
 
-            <Box borderRadius={4}>
-              <Button
-                background="#e3e3e3"
-                height="30px"
-                color="#e3e3e3"
-                width="auto"
-                onPress={this.handleDisplayStore}
-                borderRadius={5}
-              >
-                <Text
-                  text="Re-render page"
-                  size="xs"
-                />
-              </Button>
-            </Box>
             <Box
               height={300}
               overflow="scroll"
               overflowY="auto"
               marginTop={10}
               flexDirection="column"
+              backgroundColor="#fff"
+              padding={10}
             >
               <Text size="md">
 Keycloak Session From Redux store
@@ -129,21 +139,29 @@ Keycloak Session From Redux store
             <Box
               flexDirection="column"
               marginTop={10}
+              backgroundColor="#fff"
+              padding={10}
             >
               <Text size="md">
 Redux Store
               </Text>
 
               <Box flexDirection="column">
-                <Box marginTop={20}>
+                <Box
+                  marginTop={20}
+                  borderRadius={5}
+                >
                   <Button
-                    background="#e3e3e3"
+                    background="#db7093"
                     height="30px"
-                    color="#e3e3e3"
+                    color="#db7093"
                     width="auto"
                     onPress={this.handleDisplayStore}
                   >
-                    <Text text="Click to Display store" />
+                    <Text
+                      text="Click to Display store"
+                      color="#fff"
+                    />
                   </Button>
                 </Box>
                 <Box marginTop={10}>
@@ -162,6 +180,8 @@ Hidden for performance reasons click above button to show
               ) : null}
             </Box>
             <Box
+              backgroundColor="#fff"
+              padding={10}
               marginTop={20}
               flexDirection="column"
             >

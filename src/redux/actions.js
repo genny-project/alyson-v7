@@ -11,3 +11,10 @@ export const sessionTest = data => ({
   type: 'SESSION_TEST',
   payload: data,
 });
+
+export const gennyteerDisplay = data => ({
+  type: 'DISPLAY_FROM_GENNYTEER',
+  payload: data,
+});
+
+global.gennyteerDisplay = gennyteerDisplay;
