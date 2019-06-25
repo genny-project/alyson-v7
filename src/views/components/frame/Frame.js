@@ -91,12 +91,15 @@ class Frame extends Component {
   }
 
   shouldComponentUpdate( nextProps, nextState ) {
+    if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( 'shouldComponentUpdate', this.props.rootCode );
     /* If rootCode is different, then a different base
     entity needs to be rendered inside the frame */
     if ( this.props.rootCode !== nextProps.rootCode ) return true;
 
+    if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( this.props.frames, nextProps.frames );
     /* Check if any of the links of the root base entity have changed */
     if ( isObject( dlv( nextProps, `frames.${nextProps.rootCode}` ))) {
+      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '1' );
       if (
         checkForNewLayoutLinks(
           /* Valid links are added to the state key that matches their
@@ -107,19 +110,30 @@ class Frame extends Component {
           nextProps
         )
       ) {
+        if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '2' );
+
         return true;
       }
     }
 
     /* Check if the inherited themes have changed */
-    if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps ))
-      return true;
+    if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps )) {
+      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '3' );
 
-    if ( this.props.isClosed !== nextProps.isClosed ) {
       return true;
     }
 
-    if ( !shallowCompare( this.state.panels, nextState.panels )) return true;
+    if ( this.props.isClosed !== nextProps.isClosed ) {
+      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '4' );
+
+      return true;
+    }
+
+    if ( !shallowCompare( this.state.panels, nextState.panels )) {
+      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '5' );
+
+      return true;
+    }
 
     return false;
   }
@@ -441,6 +455,7 @@ const mapStateToProps = state => ({
   asks: state.vertx.asks,
   themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
+  vertx: state.vertx.layouts,
 });
 
 export default connect( mapStateToProps )( Frame );

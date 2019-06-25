@@ -55,25 +55,28 @@ class BaseCheckBox extends Component {
     const { label } = this.props;
 
     return (
-      <Fragment>
-        <Touchable
-          withFeedback
-          onPress={this.props.onPress}
+      <Touchable
+        withFeedback
+        onPress={this.props.onPress}
+      >
+        <Box
+          alignItems="center"
         >
-          <Box width="30px">
-            <Icon
+          <Icon
               name={this.state.currentIcon} // eslint-disable-line
-              color="black"
-              size="md"
-              id={this.props.ID} // eslint-disable-line
-            />
-          </Box>
+            color="black"
+            size="md"
+            id={this.props.ID}
+          />
+          <Box
+            padding={2}
+          />
           <Text
             text={label}
             whiteSpace="normal"
           />
-        </Touchable>
-      </Fragment>
+        </Box>
+      </Touchable>
     );
   }
 }

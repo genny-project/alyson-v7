@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { func, string, number, oneOfType, array, bool } from 'prop-types';
+import { func, string, number, oneOfType, array, bool, object } from 'prop-types';
 import Downshift from 'downshift';
 import { Text, Box, Input, Touchable } from '../../index';
 import { isArray, isString, isObject, isInteger } from '../../../../utils';
@@ -30,6 +30,7 @@ class InputAutocomplete extends Component {
     onBlur: func,
     onType: func,
     testID: string,
+    subcomponentProps: object,
   }
 
   state = {
@@ -173,6 +174,7 @@ class InputAutocomplete extends Component {
       value, // eslint-disable-line no-unused-vars
       testID,
       onChange, // eslint-disable-line no-unused-vars
+      subcomponentProps,
       ...restProps
     } = this.props;
 
@@ -240,6 +242,11 @@ class InputAutocomplete extends Component {
                 value={this.state.filterValue}
                 blurOnSubmit
                 updateValueWhenFocused
+                onChangeState={( state ) => {
+                  console.log( 'state', state, this.props.onChangeState );
+                  this.props.onChangeState( state );
+                }}
+                {...subcomponentProps['input-field']}
               />
 
               {
@@ -291,11 +298,13 @@ class InputAutocomplete extends Component {
                                 index > 0
                               ) && {
                               }}
+                              {...subcomponentProps['input-item']}
                             >
                               <Text
                                 {...( selectedItem === idom ) && {
                                   fontWeight: 'bold',
                                 }}
+                                {...subcomponentProps['input-item']}
                               >
                                 {idom}
                               </Text>

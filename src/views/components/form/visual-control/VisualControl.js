@@ -5,20 +5,25 @@ import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
 import { Box, Text, Icon /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
-import StatefulThemeHandler from '../stateful-theme-handler';
+import { StatefulThemeHandler, StatelessThemeHandler } from '../theme-handlers';
+import VisualControlLabel from './visual-control-label';
+import VisualControlHint from './visual-control-hint';
+import VisualControlRequired from './visual-control-required';
+import VisualControlDescription from './visual-control-description';
+import VisualControlError from './visual-control-error';
 
-/*
-const linkValues = [
-  'wrapper',
-  'input',
-  'icon',
-  'label',
-  'description',
-  'hint',
-  'error',
-  'required',
+const components = [
+  'vcl-wrapper',
+  'vcl-input',
+  'vcl-icon',
+  'vcl-label',
+  'vcl-description',
+  'vcl-hint',
+  'vcl-error',
+  'vcl-required',
 ];
 
+/*
 const inputStates = [
   'default',
   'hover',
@@ -26,8 +31,9 @@ const inputStates = [
   'disabled',
 ];
 */
+
 const subcomponents = [
-  'input',
+  'input-main',
   'input-field',
   'input-wrapper',
   'input-icon',
@@ -148,7 +154,6 @@ class VisualControl extends Component {
   }
 
   getStyling = ( componentType ) => {
-    // filter links for panel
     const inheritedLinks = [
       ...filterThemes(
         this.props.inheritedThemes,
@@ -220,182 +225,118 @@ class VisualControl extends Component {
     checkThemeForProperties( inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
-    const getPropsByType = ( type ) => {
-      const typeThemes = this.getStyling( type );
-
-      return {
-        ...isObject( typeThemes, { withProperty: 'default' }) ? typeThemes['default'] : {},
-        ...isObject( typeThemes, { withProperty: 'disabled' }) &&
-          ( this.props.editable === false || this.props.disabled )
-          ? typeThemes['disabled'] : {},
-        ...isObject( typeThemes, { withProperty: 'error' }) && this.props.error ? typeThemes['error'] : {},
-        icon: this.getIcon(),
-      };
-    };
-
-    const getSubcomponentPropsByType = ( type ) => {
-      const typeThemes = this.getStyling( type );
-
-      const icon = this.getIcon();
-
-      // console.log(  'typeThemes', type, typeThemes );
-
-      return {
-        // ,
-        ...isObject( typeThemes, { withProperty: 'default' }) ? { default: typeThemes['default'] } : {},
-        ...isObject( typeThemes, { withProperty: 'hover' }) ? { hover: typeThemes['hover'] } : {},
-        ...isObject( typeThemes, { withProperty: 'active' })  ? { active: typeThemes['active'] } : {},
-        ...isObject( typeThemes, { withProperty: 'selected' }) ? { selected: typeThemes['selected'] } : {},
-        ...isObject( typeThemes, { withProperty: 'disabled' }) &&
-          ( this.props.editable === false || this.props.disabled )
-          ? { disabled: typeThemes['disabled'] } : {},
-        ...isObject( typeThemes, { withProperty: 'error' }) && this.props.error ? { error: typeThemes['error'] } : {},
-        ...icon ? { icon } : {},
-      };
-    };
-
-    const getSubcomponentProps = () => {
-      const subcomponentThemes = {};
-
-      subcomponents.forEach( subcomponent => {
-        subcomponentThemes[subcomponent] = getSubcomponentPropsByType( subcomponent );
-      });
-
-      return subcomponentThemes;
-    };
-
     return (
-      /* WRAPPER */
-      <Box
-        flexDirection="column"
-        flex={flexWrapper ? 1 : null}
-        justifyContent="center"
-        zIndex={100 - index}
-        // padding={5}
-        {...getPropsByType( 'vcl-wrapper' )}
+      <StatelessThemeHandler
+        getStyling={this.getStyling}
+        getIcon={this.getIcon}
+        componentTypes={components}
+        editable={this.props.editable}
+        disabled={this.props.disabled}
+        error={this.props.error}
       >
-
-        {(
-          properties.renderVisualControlLabel
-        ) && (
-          <Box
-            flexDirection="row"
-          >
-
-            {/* LABEL */}
+        {({
+          componentProps,
+        }) => {
+          return (
+            /* WRAPPER */
             <Box
-              {...getPropsByType( 'vcl-label' )}
+              flexDirection="column"
+              flex={flexWrapper ? 1 : null}
+              justifyContent="center"
+              zIndex={100 - index}
+            // padding={5}
+              {...componentProps['vcl-wrapper']}
             >
-              <Text
-                size="xs"
-                text={this.props.question.name}
-                // decoration="underline"
-                {...getPropsByType( 'vcl-label' )}
-              />
-            </Box>
-
-            {/* REQUIRED */}
-            {(
-              properties.renderVisualControlRequired &&
-              this.props.required
-            ) && (
+              {(
+                properties.renderVisualControlLabel
+              ) && (
               <Box
-                paddingLeft={5}
-                marginRight="auto"
+                flexDirection="row"
               >
-                <Text
-                  text="*"
-                  color="red"
+                <VisualControlLabel
+                  question={this.props.question}
+                  {...componentProps['vcl-label']}
                 />
-              </Box>
-            )}
 
-            {/* HINT */}
-            {(
-              properties.renderVisualControlHint
-            ) && (
-              <Box
-                paddingLeft={5}
-                paddingRight={5}
-                cursor="pointer"
-                {...getPropsByType( 'vcl-hint' )}
-              >
-                <Icon
-                  name="help"
-                  size="xs"
-                  color="grey"
-                  cursor="help"
-                  {...getPropsByType( 'vcl-hint' )}
-                />
-              </Box>
-            )}
-          </Box>
-        )}
-
-        {/* DESCRIPTION */}
-        {(
-          properties.renderVisualControlDescription
-        ) && (
-          <Box
-            paddingBottom={5}
-            {...getPropsByType( 'vcl-description' )}
-          >
-            <Text
-              size="xxs"
-              text="Description text goes here"
-              {...getPropsByType( 'vcl-description' )}
-            />
-          </Box>
-        )}
-
-        {/* INPUT COMPONENT */}
-        <StatefulThemeHandler
-          onChangeState={this.handleStateChange}
-          subcomponentProps={getSubcomponentProps()}
-        >
-          {({
-            themes,
-            onChangeState,
-            inputProps,
-          }) => {
-            return (
-              <FormInput
-                {...restProps}
-                {...inputProps}
-                {...getPropsByType( 'vcl-input' )}
-                subcomponentProps={getSubcomponentProps()}
-                onBlur={onBlur}
-                iconProps={properties.renderVisualControlIcon ? getPropsByType( 'vcl-icon' ) : null}
-                iconOnly={(
-                  properties.renderVisualControlInput != null
-                    ? !properties.renderVisualControlInput
-                    : false
+                {(
+                  properties.renderVisualControlRequired &&
+                  this.props.required
+                ) && (
+                  <VisualControlRequired
+                    {...componentProps['vcl-required']}
+                  />
                 )}
-                inheritedProps={this.getInhertiableThemes()}
-                padding={3}
-                onChangeState={onChangeState}
-              />
-            );
-          }}
-        </StatefulThemeHandler>
 
-        {/* ERROR MESSAGE */}
-        {(
-          isString( this.props.error )
-        ) && (
-          <Box
-            flexDirection="column"
-            {...getPropsByType( 'vcl-error' )}
-          >
-            <Text
-              size="xxs"
-              color="red"
-              text={this.props.error}
-              {...getPropsByType( 'vcl-error' )}
-            />
-          </Box>
-        )}
-      </Box>
+                {/* HINT */}
+                {(
+                  properties.renderVisualControlHint
+                ) && (
+                  <VisualControlHint
+                    {...componentProps['vcl-hint']}
+                  />
+                )}
+              </Box>
+              )}
+
+              {/* DESCRIPTION */}
+              {(
+                properties.renderVisualControlDescription
+              ) && (
+                <VisualControlDescription
+                  {...componentProps['vcl-description']}
+                />
+              )}
+
+              {/* INPUT COMPONENT */}
+              <StatefulThemeHandler
+                // onChangeState={this.handleStateChange}
+                getStyling={this.getStyling}
+                getIcon={this.getIcon}
+                subcomponentTypes={subcomponents}
+                editable={this.props.editable}
+                disabled={this.props.disabled}
+                error={this.props.error}
+                identifier={this.props.question.code}
+              >
+                {({
+                  onChangeState,
+                  inputProps,
+                  subcomponentProps,
+                }) => {
+                  return (
+                    <FormInput
+                      {...restProps}
+                      {...componentProps['vcl-input']}
+                      {...inputProps}
+                      subcomponentProps={subcomponentProps}
+                      onBlur={onBlur}
+                      iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
+                      iconOnly={(
+                      properties.renderVisualControlInput != null
+                        ? !properties.renderVisualControlInput
+                        : false
+                    )}
+                      inheritedProps={this.getInhertiableThemes()}
+                      padding={3}
+                      onChangeState={onChangeState}
+                    />
+                  );
+                }}
+              </StatefulThemeHandler>
+
+              {/* ERROR MESSAGE */}
+              {(
+                isString( this.props.error )
+              ) && (
+                <VisualControlError
+                  {...componentProps['vcl-error']}
+                />
+              )}
+            </Box>
+          );
+        }
+      }
+      </StatelessThemeHandler>
     );
   }
 }
