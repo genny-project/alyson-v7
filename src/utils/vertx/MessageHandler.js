@@ -94,7 +94,6 @@ class MessageHandler {
 
   onMessage = message => {
     if ( !message ) return;
-    console.warn({ message }); // channel name
 
     const { msg_type, data_type, messages } = message;
     const isValidMessage = this.validMessageTypes.includes( msg_type );

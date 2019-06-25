@@ -27,7 +27,6 @@ const codecFunc = cb =>
     const simple = new zstd.Simple();
 
     cb( simple );
-    // console.warn(decoded);
   });
 
 class Vertx {
@@ -86,8 +85,6 @@ class Vertx {
     if ( sessionData && sessionData.session_state ) {
       const { session_state } = sessionData;
       const { eventBus } = this.state;
-
-      console.warn( sessionData.session_state, 'SESSION STATE' );
 
       store.dispatch( actions.sessionTest( sessionData.session_state ));
 
