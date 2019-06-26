@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactJson from 'react-json-view';
 import { Icon, Box, Text, Button } from '../../components';
+import TestDisplay from '../../../views/app/test-display';
 import store from '../../../redux/store';
 import './index.css';
 
@@ -74,17 +75,13 @@ class DebugDisplay extends React.Component {
               {' '}
 Expand to View Debug Mode (🐞)
             </Text>
-            <Box marginTop="10px">
-              <Text
-                color="#e89131"
-                size="sm"
-              >
-                Note: Debug mode could be slow
-              </Text>
-            </Box>
+
+            <TestDisplay />
+            <Box marginTop="10px" />
           </Box>
         ) : (
           <pre style={{ width: '900px' }}>
+            <TestDisplay />
             <Box borderRadius={4}>
               <Button
                 background="#db7093"

@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
 import { BackHandler } from 'react-native';
-import dlv from 'dlv';
 import queryString from 'query-string';
 import AuthenticatedApp from './authenticated';
-import TestDisplay from './test-display';
 import Routing from '../routing';
 import { location } from '../../utils';
 import { DebugDisplay } from '../components';
-import { Storage } from '../../utils';
-
-console.log({ Storage });
 
 class App extends Component {
   constructor( props ) {
@@ -20,27 +15,8 @@ class App extends Component {
     }
   }
 
-  state = {
-    debug: false,
-  };
-
   componentDidMount() {
     if ( BackHandler ) BackHandler.addEventListener( 'hardwareBackPress', this.handleBackPress );
-  }
-
-  componentDidUpdate() {
-    const queryParams = location.getQueryParams();
-
-    if ( window ) {
-      window.originalQueryParams = {
-        ...( window.originalQueryParams ? window.originalQueryParams : {}),
-        ...queryParams,
-      };
-    }
-
-    if ( !this.state.debug && dlv( window, 'originalQueryParams.showcodes' )) {
-      this.showDebugView();
-    }
   }
 
   componentWillUnmount() {
@@ -75,10 +51,6 @@ class App extends Component {
     return null;
   }
 
-  showDebugView() {
-    this.setState({ debug: true });
-  }
-
   handleBackPress = () => {
     const currentLocation = location.getBasePath();
 
@@ -98,13 +70,9 @@ class App extends Component {
   };
 
   render() {
-    const { debug } = this.state;
-
     return (
       <AuthenticatedApp>
-        {debug && <TestDisplay />}
         <Routing />
-
         {this.getDisplayDevMode()}
       </AuthenticatedApp>
     );
