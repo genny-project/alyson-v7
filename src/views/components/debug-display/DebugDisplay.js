@@ -170,7 +170,12 @@ Hidden for performance reasons click above button to show
                   ) : null}
                 </Box>
               </Box>
-              {displayStore ? <ReactJson src={store.getState()} /> : null}
+              {displayStore ? (
+                <ReactJson
+                  src={store.getState()}
+                  collapsed
+                />
+              ) : null}
             </Box>
             <Box
               backgroundColor="#fff"
