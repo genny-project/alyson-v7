@@ -60,7 +60,7 @@ class InputTagSuggestion extends Component {
       };
     };
 
-    console.log( 'render InputTagSuggestion', stateBasedProps );
+    console.log( 'render InputTagSuggestion', this.props );
 
     return (
       <Box

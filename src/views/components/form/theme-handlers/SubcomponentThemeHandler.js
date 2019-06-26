@@ -17,13 +17,22 @@ class SubcomponentThemeHandler extends Component {
   }
 
   handleChangeState = ( subcomponent, id ) => ( newState ) => {
+    console.log( 'handleChangeState', subcomponent, newState );
     this.setState( state => ({
       subcomponents: {
         ...state.subcomponents,
         [subcomponent]: {
-          ...state[subcomponent],
+          ...state.subcomponents[subcomponent],
           ...newState,
-          itemId: id,
+          // ...( isString( id )
+          //   ? {
+          //     [id]: {
+          //       ...state.subcomponents[subcomponent][id],
+          //       ...newState,
+          //     },
+          //   }
+          //   : newState
+          // ),
         },
       },
     }));
@@ -64,6 +73,8 @@ class SubcomponentThemeHandler extends Component {
         componentProps[type] = getPropsByType( type );
       }
     });
+
+    console.log( 'componentProps', componentProps );
 
     return children({
       componentProps,

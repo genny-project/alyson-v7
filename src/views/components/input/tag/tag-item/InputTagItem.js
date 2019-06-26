@@ -12,17 +12,17 @@ class InputTagItem extends Component {
     onPress: func,
   }
 
-  state = {
-    hover: false,
-    active: false,
-  }
+  // state = {
+  //   hover: false,
+  //   active: false,
+  // }
 
-  handleChangeState = ( newState ) => {
-    this.setState( state => ({
-      ...state,
-      ...newState,
-    }));
-  }
+  // handleChangeState = ( newState ) => {
+  //   this.setState( state => ({
+  //     ...state,
+  //     ...newState,
+  //   }));
+  // }
 
   render() {
     const {
@@ -34,25 +34,7 @@ class InputTagItem extends Component {
       ...restProps
     } = this.props;
 
-    const { hover, active } = this.state;
-
-    const getPropsByState = () => {
-      return {
-        ...isObject( stateBasedProps, { withProperty: 'default' }) ? stateBasedProps['default'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'hover' }) &&
-          hover
-          ? stateBasedProps['hover'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'active' }) &&
-          active
-          ? stateBasedProps['active'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'disabled' }) &&
-          ( this.props.editable === false || this.props.disabled )
-          ? stateBasedProps['disabled'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'error' }) && this.props.error ? stateBasedProps['error'] : {},
-      };
-    };
-
-    console.log( 'render InputTagItem' );
+    console.log( 'render InputTagItem', stateBasedProps );
 
     return (
       <Box
@@ -75,14 +57,14 @@ class InputTagItem extends Component {
             color="black"
             size="xs"
             text={itemString}
-            {...getPropsByState()}
+            {...stateBasedProps}
           />
         </Box>
 
         {editable ? (
           <Touchable
             {...touchableProps}
-            onChangeState={this.handleChangeState}
+            onChangeState={this.props.onChangeState}
           >
             <Icon
               type="material-icons"
@@ -90,7 +72,7 @@ class InputTagItem extends Component {
               size="sm"
               color="black"
               cursor="pointer"
-              {...getPropsByState()}
+              {...stateBasedProps}
             />
           </Touchable>
         ) : null }

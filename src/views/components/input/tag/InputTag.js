@@ -359,7 +359,8 @@ class InputTag extends Component {
                                     })}
                                     onPress={onPress}
                                     testID={testID}
-                                    stateBasedProps={subcomponentProps['input-selected']}
+                                    stateBasedProps={componentProps['input-selected']}
+                                    onChangeState={onChangeState( 'input-selected', itemId )}
                                   />
                                 );
                               })
@@ -471,7 +472,7 @@ class InputTag extends Component {
                                         onMouseEnter={() => {
                                           setHighlightedIndex( index );
                                         }}
-                                        onChangeState={onChangeState( 'input-item', itemId )}
+                                        onChangeState={onChangeState( 'input-item' )}
                                         stateBasedProps={subcomponentProps['input-item']}
                                       />
                                     );
