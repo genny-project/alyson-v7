@@ -81,6 +81,10 @@ Expand to View Debug Mode (🐞)
           </Box>
         ) : (
           <pre style={{ width: '900px' }}>
+            {/* This component is only being renderd in web,
+                also we need pre for code formatting 
+                Box does'nt do that Job of formatting unicode and strings.
+            */}
             <TestDisplay />
             <Box borderRadius={4}>
               <Button
@@ -88,7 +92,7 @@ Expand to View Debug Mode (🐞)
                 height="30px"
                 color="#db7093"
                 width="auto"
-                onPress={this.handleDisplayStore}
+                onPress={this.handleClick}
                 borderRadius={5}
               >
                 <Text
@@ -98,7 +102,6 @@ Expand to View Debug Mode (🐞)
                 />
               </Button>
             </Box>
-
             <Box
               flexDirection="column"
               color="#fff"
@@ -117,7 +120,6 @@ Session
 
               {!minimized ? <ReactJson src={store.getState().testReducer} /> : null}
             </Box>
-
             <Box
               height={300}
               overflow="scroll"
@@ -132,7 +134,6 @@ Keycloak Session From Redux store
               </Text>
               <ReactJson src={store.getState().keycloak} />
             </Box>
-
             <Box
               flexDirection="column"
               marginTop={10}
@@ -169,12 +170,7 @@ Hidden for performance reasons click above button to show
                   ) : null}
                 </Box>
               </Box>
-              {displayStore ? (
-                <ReactJson
-                  src={store.getState()}
-                  collapsed={false}
-                />
-              ) : null}
+              {displayStore ? <ReactJson src={store.getState()} /> : null}
             </Box>
             <Box
               backgroundColor="#fff"
