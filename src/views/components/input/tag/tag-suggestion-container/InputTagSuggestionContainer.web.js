@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { node, bool } from 'prop-types';
 import { Box } from '../../../index';
 
-class InputTagBody extends Component {
+class InputTagSuggestionContainer extends Component {
   static propTypes = {
     children: node,
     isOpen: bool,
@@ -12,6 +12,8 @@ class InputTagBody extends Component {
     const { children, isOpen, ...restProps } = this.props;
 
     if ( !isOpen ) return null;
+
+    console.log( 'render InputTagSuggestionContainer' );
 
     return (
       <Box
@@ -43,4 +45,4 @@ class InputTagBody extends Component {
   }
 }
 
-export default InputTagBody;
+export default InputTagSuggestionContainer;

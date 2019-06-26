@@ -296,7 +296,6 @@ class VisualControl extends Component {
                 editable={this.props.editable}
                 disabled={this.props.disabled}
                 error={this.props.error}
-                identifier={this.props.question.code}
               >
                 {({
                   onChangeState,

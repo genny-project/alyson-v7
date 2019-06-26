@@ -8,7 +8,7 @@ import InputTagInputField from './tag-input-field';
 import InputTagItem from './tag-item';
 import InputTagSuggestion from './tag-suggestion';
 import InputTagSuggestionContainer from './tag-suggestion-container';
-import { StatelessThemeHandler } from '../../form/theme-handlers';
+import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 class InputTag extends Component {
   static defaultProps = {
@@ -82,19 +82,6 @@ class InputTag extends Component {
         preSelected: preSelected.filter( i => i[itemValueKey] !== item[itemValueKey] ),
       })
     );
-  }
-
-  handleChangeState = ( subcomponent, id ) => ( newState ) => {
-    this.setState( state => ({
-      subcomponents: {
-        ...state.subcomponents,
-        [subcomponent]: {
-          ...state[subcomponent],
-          ...newState,
-          itemId: id,
-        },
-      },
-    }));
   }
 
   handleRef = ( ref, id ) => {
@@ -237,16 +224,18 @@ class InputTag extends Component {
 
     return (
        // STATE HOLDER
-      <StatelessThemeHandler
-        getStyling={( type ) => subcomponentProps && subcomponentProps[type]}
-        componentTypes={['input-item-wrapper']}
+      <SubcomponentThemeHandler
+        subcomponentProps={subcomponentProps}
         editable={this.props.editable}
         disabled={this.props.disabled}
         error={this.props.error}
       >
         {({
           componentProps,
+          onChangeState,
         }) => {
+          console.log( componentProps );
+
           return (
             <MultiDownshift
               allowMultipleSelection={allowMultipleSelection}
@@ -326,7 +315,7 @@ class InputTag extends Component {
                     bodyProps={{
                       ...getRootProps( undefined, { suppressRefError: true }),
                       flexDirection: 'column',
-                      ...getPropsByState( 'input-wrapper' ),
+                      ...componentProps['input-wrapper'],
                     }}
                     isOpen={isOpen}
                     handleToggleMenu={handleToggleMenu}
@@ -338,7 +327,7 @@ class InputTag extends Component {
                           <Box
                             flexWrap="wrap"
                             // marginTop={10}
-                            {...getPropsByState( 'input-selected-wrapper' )}
+                            {...componentProps['input-selected-wrapper']}
                           >
                             {selectedItems.length > 0 && (
                               selectedItems.map( item => {
@@ -417,8 +406,9 @@ class InputTag extends Component {
                             });
                           }}
                           nonTabable={nonTabable}
-                          iconProps={subcomponentProps['input-icon']}
-                          stateBasedProps={subcomponentProps['input-field']}
+                          iconProps={componentProps['input-icon']}
+                          stateBasedProps={componentProps['input-field']}
+                          onChangeState={onChangeState( 'input-field' )}
                         >
 
                           {/* SUGGESTIONS CONTAINER */ }
@@ -481,7 +471,7 @@ class InputTag extends Component {
                                         onMouseEnter={() => {
                                           setHighlightedIndex( index );
                                         }}
-                                        onChangeState={this.handleChangeState( 'input-item', itemId )}
+                                        onChangeState={onChangeState( 'input-item', itemId )}
                                         stateBasedProps={subcomponentProps['input-item']}
                                       />
                                     );
@@ -517,7 +507,7 @@ class InputTag extends Component {
           );
         }
       }
-      </StatelessThemeHandler>
+      </SubcomponentThemeHandler>
     );
   }
 }

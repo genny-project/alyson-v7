@@ -55,8 +55,6 @@ class StatefulThemeHandler extends Component {
 
       const icon = getIcon();
 
-      if ( this.props.identifier === 'QUE_TEXT' ) console.log( getObjectFromKey( 'hover', { returnWithKey: true }));
-
       return {
         // ,
         ...getObjectFromKey( 'default', { returnWithKey: true }),

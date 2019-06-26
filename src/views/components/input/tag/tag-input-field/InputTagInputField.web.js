@@ -77,21 +77,7 @@ class InputTagInputField extends Component {
 
     const selectedItem = selectedItems.map( item => item.label ).join();
 
-    const getPropsByState = ( propObject ) => {
-      return {
-        ...isObject( propObject, { withProperty: 'default' }) ? propObject['default'] : {},
-        ...isObject( propObject, { withProperty: 'hover' }) &&
-        hover
-          ? propObject['hover'] : {},
-        ...isObject( propObject, { withProperty: 'active' }) &&
-        active
-          ? propObject['active'] : {},
-        ...isObject( propObject, { withProperty: 'disabled' }) &&
-          ( this.props.editable === false || this.props.disabled )
-          ? propObject['disabled'] : {},
-        ...isObject( propObject, { withProperty: 'error' }) && this.props.error ? propObject['error'] : {},
-      };
-    };
+    console.log( 'render InputTagInputField' );
 
     return (
       <Touchable
@@ -115,7 +101,7 @@ class InputTagInputField extends Component {
               type: 'text',
               width: '100%',
               value: ( allowMultipleSelection ? inputValue : selectedItem ) || '',
-              ...getPropsByState( stateBasedProps ),
+              ...stateBasedProps,
             })}
             updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
@@ -126,7 +112,7 @@ class InputTagInputField extends Component {
             testID={`input-tag ${testID}`}
             {...( nonTabable ? { tabIndex: '-1' } : null )}
             blurOnSubmit={allowMultipleSelection ? false : true}
-            onChangeState={this.handleChangeState}
+            onChangeState={this.props.onChangeState}
           />
           <Box
             position="absolute"
@@ -139,7 +125,7 @@ class InputTagInputField extends Component {
               name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
               color="black"
               size="md"
-              {...getPropsByState( iconProps )}
+              {...iconProps}
             />
           </Box>
           {children}

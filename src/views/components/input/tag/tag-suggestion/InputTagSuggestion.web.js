@@ -60,6 +60,8 @@ class InputTagSuggestion extends Component {
       };
     };
 
+    console.log( 'render InputTagSuggestion', stateBasedProps );
+
     return (
       <Box
         padding={5}

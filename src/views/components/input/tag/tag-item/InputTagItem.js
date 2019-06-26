@@ -52,6 +52,8 @@ class InputTagItem extends Component {
       };
     };
 
+    console.log( 'render InputTagItem' );
+
     return (
       <Box
         alignItems="center"
