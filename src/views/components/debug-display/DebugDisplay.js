@@ -83,7 +83,7 @@ Expand to View Debug Mode (🐞)
           <pre style={{ width: '900px' }}>
             {/* This component is only being renderd in web,
                 also we need pre for code formatting 
-                Box does'nt do that Job of formatting unicode and strings.
+                Box does'nt do the Job of formatting unicode and strings.
             */}
             <TestDisplay />
             <Box borderRadius={4}>
