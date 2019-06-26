@@ -5,3 +5,16 @@ export * from '../utils/layouts-dev/layouts-dev.actions';
 export * from '../views/components/dialog/dialog.actions';
 
 export * from '../views/app/test-display/testDisplay.actions';
+
+// Just for testing purposes
+export const rawSession = data => ({
+  type: 'SESSION_TEST',
+  payload: data,
+});
+
+export const gennyteerDisplay = data => ({
+  type: 'DISPLAY_FROM_GENNYTEER',
+  payload: data,
+});
+
+global.gennyteerDisplay = gennyteerDisplay;

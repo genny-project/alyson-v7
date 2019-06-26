@@ -1,5 +1,6 @@
 import React, { Component, isValidElement } from 'react';
 import { string, integer, node } from 'prop-types';
+import queryString from 'query-string';
 import { store } from '../../../redux';
 import * as actions from '../../../redux/actions';
 
@@ -18,15 +19,16 @@ class TestIdHandler extends Component {
     timer: integer,
   }
 
-  handleMouseOverDebounced = () => {
-    window.clearTimeout( timeoutMouseOutID );
+  // Check if devMode is supplied as a query string in the URL
+  isDebugMode() {
+    if ( window ) {
+      const paramsFromWindow = window.location.search;
+      const values = queryString.parse( paramsFromWindow );
 
-    timeoutMouseOverID = window.setTimeout(
-      () => {
-        this.handleMouseOver();
-      },
-      this.props.timer,
-    );
+      if ( values && values.devMode === 'true' ) {
+        store.dispatch( actions.setTestId({ id: this.props.testID }));
+      }
+    }
   }
 
   handleMouseOutDebounced = () => {
@@ -40,16 +42,23 @@ class TestIdHandler extends Component {
     );
   }
 
+  handleMouseOverDebounced = () => {
+    window.clearTimeout( timeoutMouseOutID );
+
+    timeoutMouseOverID = window.setTimeout(
+      () => {
+        this.handleMouseOver();
+      },
+      this.props.timer,
+    );
+  }
+
   handleMouseOver = () => {
-    if ( window.originalQueryParams.showcodes ) {
-      store.dispatch( actions.setTestId({ id: this.props.testID }));
-    }
+    this.isDebugMode ? store.dispatch( actions.setTestId({ id: this.props.testID })) : null;
   }
 
   handleMouseOut = () => {
-    if ( window.originalQueryParams.showcodes ) {
-      store.dispatch( actions.removeTestId());
-    }
+    this.isDebugMode ? store.dispatch( actions.removeTestId()) : null;
   }
 
   render() {
