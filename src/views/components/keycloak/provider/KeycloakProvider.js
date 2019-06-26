@@ -402,7 +402,6 @@ class KeycloakProvider extends Component {
     const redirectUri = keycloakUtils.getValidRedirectUri({ excludePathname: true });
     const sessionState = uuid();
 
-    console.warn({ sessionState }, 'keycloak provider Method' );
     const sessionNonce = uuid();
 
     const {
