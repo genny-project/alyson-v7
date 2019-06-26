@@ -7,7 +7,7 @@ export * from '../views/components/dialog/dialog.actions';
 export * from '../views/app/test-display/testDisplay.actions';
 
 // Just for testing purposes
-export const sessionTest = data => ({
+export const rawSession = data => ({
   type: 'SESSION_TEST',
   payload: data,
 });

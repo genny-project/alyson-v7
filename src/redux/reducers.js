@@ -11,7 +11,7 @@ const initialState = {
   session: '',
 };
 
-const testReducer = ( state = initialState, { type, payload }) => {
+const rawSession = ( state = initialState, { type, payload }) => {
   switch ( type ) {
     case 'SESSION_TEST':
       return {
@@ -43,7 +43,7 @@ const reducers = combineReducers({
   navigation,
   dialog,
   testDisplay,
-  testReducer,
+  rawSession,
   gennyteerDisplay,
 });
 

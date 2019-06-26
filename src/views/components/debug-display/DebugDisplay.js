@@ -118,7 +118,7 @@ Session
                 </Text>
               </Box>
 
-              {!minimized ? <ReactJson src={store.getState().testReducer} /> : null}
+              {!minimized ? <ReactJson src={store.getState().rawSession} /> : null}
             </Box>
             <Box
               height={300}
