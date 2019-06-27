@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { string, func, array, bool, object, shape } from 'prop-types';
-import dlv from 'dlv';
 import { isString, isArray, isObject, isInteger } from '../../../../utils';
 import { Box, MultiDownshift, Text } from '../../index';
 import InputTagBody from './tag-body';
@@ -42,6 +41,9 @@ class InputTag extends Component {
       'input-selected-wrapper': object,
       'input-selected': object,
     }),
+    editable: bool,
+    disabled: bool,
+    error: string,
   }
 
   inputs = {};
@@ -209,19 +211,6 @@ class InputTag extends Component {
       ...restProps
     } = this.props;
 
-    const getPropsByState = ( type ) => {
-      const typeProps = subcomponentProps && subcomponentProps[type];
-
-      return {
-        // ,
-        ...isObject( typeProps, { withProperty: 'default' }) ? typeProps['default'] : {},
-        ...isObject( typeProps, { withProperty: 'disabled' }) &&
-          ( this.props.editable === false || this.props.disabled )
-          ? typeProps['disabled'] : {},
-        ...isObject( typeProps, { withProperty: 'error' }) && this.props.error ? typeProps['error'] : {},
-      };
-    };
-
     return (
        // STATE HOLDER
       <SubcomponentThemeHandler
@@ -232,10 +221,9 @@ class InputTag extends Component {
       >
         {({
           componentProps,
-          onChangeState,
+          updateState,
+          filterComponentProps,
         }) => {
-          console.log( componentProps );
-
           return (
             <MultiDownshift
               allowMultipleSelection={allowMultipleSelection}
@@ -359,8 +347,9 @@ class InputTag extends Component {
                                     })}
                                     onPress={onPress}
                                     testID={testID}
-                                    stateBasedProps={componentProps['input-selected']}
-                                    onChangeState={onChangeState( 'input-selected', itemId )}
+                                    stateBasedProps={
+                                      ({ active, hover }) => filterComponentProps( 'input-selected', { active, hover })
+                                    }
                                   />
                                 );
                               })
@@ -409,7 +398,7 @@ class InputTag extends Component {
                           nonTabable={nonTabable}
                           iconProps={componentProps['input-icon']}
                           stateBasedProps={componentProps['input-field']}
-                          onChangeState={onChangeState( 'input-field' )}
+                          onChangeState={updateState( 'input-field' )}
                         >
 
                           {/* SUGGESTIONS CONTAINER */ }
@@ -424,8 +413,12 @@ class InputTag extends Component {
                             ) ? (
                                 filteredItems
                                   .map(( item, index ) => {
-                                    const itemString = isObject( item ) ? item[itemStringKey] : item;
-                                    const itemId = isObject( item ) ? item[itemValueKey] : item;
+                                    const itemString = isObject( item )
+                                      ? item[itemStringKey]
+                                      : item;
+                                    const itemId = isObject( item )
+                                      ? item[itemValueKey]
+                                      : item;
                                     const itemObject = isObject( item )
                                       ? item
                                       : {
@@ -472,8 +465,10 @@ class InputTag extends Component {
                                         onMouseEnter={() => {
                                           setHighlightedIndex( index );
                                         }}
-                                        onChangeState={onChangeState( 'input-item' )}
-                                        stateBasedProps={subcomponentProps['input-item']}
+                                        // onChangeState={updateState( 'input-item' )}
+                                        stateBasedProps={
+                                          filterComponentProps( 'input-item', { selected: isSelected, hover: highlightedIndex === index })
+                                        }
                                       />
                                     );
                                   })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { string, object, bool, number, func } from 'prop-types';
+import { object } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
-import { Box, Text, Icon, Touchable } from '../../../../components';
+import { Box, Text } from '../../../../components';
 
 class VisualControlLabel extends Component {
   static propTypes = {

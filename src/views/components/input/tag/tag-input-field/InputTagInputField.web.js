@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { object, func, bool, string, node, array } from 'prop-types';
-import { isObject } from '../../../../../utils';
+// import { isObject } from '../../../../../utils';
 import { Box, Input, Icon, Touchable } from '../../../index';
 
 class InputTagInputField extends Component {
@@ -21,13 +21,13 @@ class InputTagInputField extends Component {
     selectedItems: array,
     nonTabable: bool,
     iconProps: object,
+    stateBasedProps: object,
+    onChangeState: func,
   }
 
   state = {
     // focused: false,
     focusing: false,
-    hover: false,
-    active: false,
   }
 
   handleKeyPress = ( event ) => {
@@ -73,11 +73,7 @@ class InputTagInputField extends Component {
       stateBasedProps,
       ...restProps
     } = this.props;
-    const { hover, active } = this.state;
-
     const selectedItem = selectedItems.map( item => item.label ).join();
-
-    console.log( 'render InputTagInputField' );
 
     return (
       <Touchable

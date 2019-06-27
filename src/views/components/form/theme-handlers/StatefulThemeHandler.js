@@ -100,8 +100,6 @@ class StatefulThemeHandler extends Component {
 
     const inputProps = getProps();
 
-    if ( this.props.identifier === 'QUE_TEXT' ) console.log( 'inputProps', inputProps, subcomponentThemes );
-
     return children({
       subcomponentProps: subcomponentThemes,
       inputProps: inputProps,

@@ -88,7 +88,6 @@ class Input extends Component {
             {...inputProps}
             ref={input => ( this.input = input )}
             onChangeState={this.handleStateChange}
-            // {...this.props.subcomponentProps && this.props.subcomponentProps['input-field'] ? { ...this.props.subcomponentProps['input-field'] } : {}}
           />
         );
 

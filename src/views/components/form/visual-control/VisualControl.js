@@ -3,7 +3,7 @@ import { string, object, bool, number, func } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
-import { Box, Text, Icon /* Tooltip */ } from '../../../components';
+import { Box /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
 import { StatefulThemeHandler, StatelessThemeHandler } from '../theme-handlers';
 import VisualControlLabel from './visual-control-label';

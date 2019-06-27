@@ -91,15 +91,12 @@ class Frame extends Component {
   }
 
   shouldComponentUpdate( nextProps, nextState ) {
-    if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( 'shouldComponentUpdate', this.props.rootCode );
     /* If rootCode is different, then a different base
     entity needs to be rendered inside the frame */
     if ( this.props.rootCode !== nextProps.rootCode ) return true;
 
-    if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( this.props.frames, nextProps.frames );
     /* Check if any of the links of the root base entity have changed */
     if ( isObject( dlv( nextProps, `frames.${nextProps.rootCode}` ))) {
-      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '1' );
       if (
         checkForNewLayoutLinks(
           /* Valid links are added to the state key that matches their
@@ -110,28 +107,20 @@ class Frame extends Component {
           nextProps
         )
       ) {
-        if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '2' );
-
         return true;
       }
     }
 
     /* Check if the inherited themes have changed */
     if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps )) {
-      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '3' );
-
       return true;
     }
 
     if ( this.props.isClosed !== nextProps.isClosed ) {
-      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '4' );
-
       return true;
     }
 
     if ( !shallowCompare( this.state.panels, nextState.panels )) {
-      if ( this.props.rootCode === 'FRM_CENTRE' ) console.log( '5' );
-
       return true;
     }
 

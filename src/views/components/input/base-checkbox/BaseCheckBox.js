@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { string, oneOf, object, func } from 'prop-types';
 import { Box, Text, Icon, Touchable } from '../../index';
 
@@ -22,6 +22,8 @@ class BaseCheckBox extends Component {
     label: string,
     onPress: func,
     icons: object,
+    stateBasedProps: object,
+    id: string,
   };
 
   state = {
@@ -61,12 +63,14 @@ class BaseCheckBox extends Component {
       >
         <Box
           alignItems="center"
+          {...this.props.stateBasedProps}
         >
           <Icon
               name={this.state.currentIcon} // eslint-disable-line
             color="black"
             size="md"
-            id={this.props.ID}
+            id={this.props.id}
+            {...this.props.stateBasedProps}
           />
           <Box
             padding={2}
@@ -74,6 +78,7 @@ class BaseCheckBox extends Component {
           <Text
             text={label}
             whiteSpace="normal"
+            {...this.props.stateBasedProps}
           />
         </Box>
       </Touchable>

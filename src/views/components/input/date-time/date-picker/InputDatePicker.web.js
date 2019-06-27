@@ -45,6 +45,7 @@ class InputDatePicker extends PureComponent {
       value,
       testID,
       onChangeValue, // eslint-disable-line no-unused-vars
+      editable,
       ...restProps
     } = this.props;
 
@@ -145,7 +146,7 @@ class InputDatePicker extends PureComponent {
                           DIALOG
               ------------------------------*/}
 
-              {isOpen ? (
+              {isOpen && editable ? (
                 <Box
                   flexDirection="column"
                   marginTop="0.5rem"
@@ -225,6 +226,7 @@ class InputDatePicker extends PureComponent {
                         cursor="pointer"
                         testID={`input-date-picker-month ${testID}`}
                         nonTabable
+                        editable
                       />
                     </Box>
 
@@ -251,6 +253,7 @@ class InputDatePicker extends PureComponent {
                         cursor="pointer"
                         testID={`input-date-picker-year ${testID}`}
                         nonTabable
+                        editable
                       />
                     </Box>
 

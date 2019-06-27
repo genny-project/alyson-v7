@@ -3,6 +3,7 @@ import { func, string, number, oneOfType, array, bool, object } from 'prop-types
 import Downshift from 'downshift';
 import { Text, Box, Input, Touchable } from '../../index';
 import { isArray, isString, isObject, isInteger } from '../../../../utils';
+import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 class InputAutocomplete extends Component {
   static defaultProps = {
@@ -27,10 +28,14 @@ class InputAutocomplete extends Component {
     borderBetweenItems: bool,
     onChange: func,
     onChangeValue: func,
+    onChangeState: func,
     onBlur: func,
     onType: func,
     testID: string,
     subcomponentProps: object,
+    editable: bool,
+    disabled: bool,
+    error: string,
   }
 
   state = {
@@ -174,7 +179,6 @@ class InputAutocomplete extends Component {
       value, // eslint-disable-line no-unused-vars
       testID,
       onChange, // eslint-disable-line no-unused-vars
-      subcomponentProps,
       ...restProps
     } = this.props;
 
@@ -185,148 +189,166 @@ class InputAutocomplete extends Component {
     // console.log( 'props', this.props, restProps );
 
     return (
-      <Downshift
-        defaultInputValue={(
-          this.props.value ||
-          this.props.defaultValue
-        )}
-        itemToString={item => (
-          item == null ? ''
-          : typeof item === 'string' ? item
-          : item[itemStringKey]
-        )}
-        onChange={this.handleChange}
+      <SubcomponentThemeHandler
+        subcomponentProps={this.props.subcomponentProps}
+        editable={this.props.editable}
+        disabled={this.props.disabled}
+        error={this.props.error}
       >
         {({
-          getRootProps,
-          getItemProps,
-          getInputProps,
-          isOpen,
-          selectedItem,
-          inputValue,
-          highlightedIndex,
-          setHighlightedIndex,
-          selectItem,
-          openMenu,
+          componentProps,
+          updateState,
+          filterComponentProps,
         }) => {
           return (
-            <Box
-              {...getRootProps( undefined, { suppressRefError: true })}
-              position="relative"
-              flex={1}
-              testID={`input-autocomplete ${testID}`}
+            <Downshift
+              defaultInputValue={(
+                this.props.value ||
+                this.props.defaultValue
+              )}
+              itemToString={item => (
+                item == null ? ''
+                : typeof item === 'string' ? item
+                : item[itemStringKey]
+              )}
+              onChange={this.handleChange}
             >
-              {/* autocomplete input field */}
+              {({
+                getRootProps,
+                getItemProps,
+                getInputProps,
+                isOpen,
+                selectedItem,
+                inputValue,
+                highlightedIndex,
+                setHighlightedIndex,
+                selectItem,
+                openMenu,
+              }) => {
+                return (
+                  <Box
+                    {...getRootProps( undefined, { suppressRefError: true })}
+                    position="relative"
+                    flex={1}
+                    testID={`input-autocomplete ${testID}`}
+                    {...componentProps['input-wrapper']}
+                  >
+                    {/* autocomplete input field */}
 
-              <Input
-                {...getInputProps( restProps )}
-                type={inputType}
-                clearButtonMode="while-editing"
-                onChangeText={this.handleType}
-                onBlur={onBlur}
-                onKeyPress={( event ) => this.handleKeyPress({
-                  event,
-                  setHighlightedIndex,
-                  highlightedIndex,
-                  maxIndex: isArray( filteredItems, { ofMinLength: 1 })
-                    ? filteredItems.length : null,
-                  item: isInteger( highlightedIndex )
-                    ? filteredItems[highlightedIndex]
-                    : null,
-                  selectItem,
-                  isOpen,
-                  openMenu,
-                })} // pass functions to update selected value and highlighted value
-                width="100%"
-                testID={`${testID}`}
-                value={this.state.filterValue}
-                blurOnSubmit
-                updateValueWhenFocused
-                onChangeState={( state ) => {
-                  console.log( 'state', state, this.props.onChangeState );
-                  this.props.onChangeState( state );
-                }}
-                {...subcomponentProps['input-field']}
-              />
+                    <Input
+                      {...getInputProps( restProps )}
+                      type={inputType}
+                      clearButtonMode="while-editing"
+                      onChangeText={this.handleType}
+                      onBlur={onBlur}
+                      onKeyPress={( event ) => this.handleKeyPress({
+                        event,
+                        setHighlightedIndex,
+                        highlightedIndex,
+                        maxIndex: isArray( filteredItems, { ofMinLength: 1 })
+                          ? filteredItems.length : null,
+                        item: isInteger( highlightedIndex )
+                          ? filteredItems[highlightedIndex]
+                          : null,
+                        selectItem,
+                        isOpen,
+                        openMenu,
+                      })} // pass functions to update selected value and highlighted value
+                      width="100%"
+                      testID={`${testID}`}
+                      value={this.state.filterValue}
+                      blurOnSubmit
+                      updateValueWhenFocused
+                      onChangeState={( state ) => {
+                        this.props.onChangeState( state );
+                        updateState( 'input-field' );
+                      }}
+                      stateBasedProps={componentProps['input-field']}
+                    />
 
-              {
-                isOpen &&
-                isString( inputValue, { ofMinLength: 1 }) &&
-                isArray( filteredItems ) && (
-                // autocomplete suggestion container
-                <Box
-                  paddingY={5}
-                  flexDirection="column"
-                  position="absolute"
-                  top="100%"
-                  left={0}
-                  width="100%"
-                  backgroundColor="white"
-                  borderRightWidth={2}
-                  borderBottomWidth={2}
-                  borderLeftWidth={2}
-                  borderColor="#DDD"
-                  borderStyle="solid"
-                  zIndex={5}
-                >
-                  {(
-                    isArray( filteredItems, { ofMinLength: 1 })
-                  ) ? (
-                      filteredItems.map(( item, index ) => {
-                        const idom = typeof item === 'string'
-                          ? item
-                          : item[itemStringKey];
+                    {
+                      isOpen &&
+                      isString( inputValue, { ofMinLength: 1 }) &&
+                      isArray( filteredItems ) && (
+                      // autocomplete suggestion container
+                      <Box
+                        paddingY={5}
+                        flexDirection="column"
+                        position="absolute"
+                        top="100%"
+                        left={0}
+                        width="100%"
+                        backgroundColor="white"
+                        borderRightWidth={2}
+                        borderBottomWidth={2}
+                        borderLeftWidth={2}
+                        borderColor="#DDD"
+                        borderStyle="solid"
+                        zIndex={5}
+                        {...componentProps['input-item-wrapper']}
+                      >
+                        {(
+                          isArray( filteredItems, { ofMinLength: 1 })
+                        ) ? (
+                            filteredItems.map(( item, index ) => {
+                              const idom = typeof item === 'string'
+                                ? item
+                                : item[itemStringKey];
 
-                        // autocomplete suggestion item
-                        return (
-                          <Touchable
-                            {...getItemProps({ item: idom })}
-                            key={idom}
-                            onPress={() => selectItem( item )}
-                            withFeedback
-                            width="100%"
-                            testID={`input-autocomplete-item ${testID}`}
-                          >
+                              // autocomplete suggestion item
+                              return (
+                                <Touchable
+                                  {...getItemProps({ item: idom })}
+                                  key={idom}
+                                  onPress={() => selectItem( item )}
+                                  withFeedback
+                                  width="100%"
+                                  testID={`input-autocomplete-item ${testID}`}
+                                >
+                                  <Box
+                                    {...( highlightedIndex === index ) && {
+                                      backgroundColor: '#DDD',
+                                    }}
+                                    padding={5}
+                                    width="100%"
+                                    {...(
+                                      borderBetweenItems &&
+                                      index > 0
+                                    ) && {
+                                    }}
+                                    {...filterComponentProps( 'input-item', { hover: highlightedIndex === index })}
+                                  >
+                                    <Text
+                                      {...( selectedItem === idom ) && {
+                                        fontWeight: 'bold',
+                                      }}
+                                      {...filterComponentProps( 'input-item', { hover: highlightedIndex === index })}
+                                    >
+                                      {idom}
+                                    </Text>
+                                  </Box>
+                                </Touchable>
+                              );
+                            })
+                          ) : (
                             <Box
-                              {...( highlightedIndex === index ) && {
-                                backgroundColor: '#DDD',
-                              }}
                               padding={5}
-                              width="100%"
-                              {...(
-                                borderBetweenItems &&
-                                index > 0
-                              ) && {
-                              }}
-                              {...subcomponentProps['input-item']}
                             >
-                              <Text
-                                {...( selectedItem === idom ) && {
-                                  fontWeight: 'bold',
-                                }}
-                                {...subcomponentProps['input-item']}
-                              >
-                                {idom}
+                              <Text>
+                                No results
                               </Text>
                             </Box>
-                          </Touchable>
-                        );
-                      })
-                    ) : (
-                      <Box
-                        padding={5}
-                      >
-                        <Text>
-                          No results
-                        </Text>
+                          )}
                       </Box>
-                    )}
-                </Box>
-                )}
-            </Box>
+                      )}
+                  </Box>
+                );
+              }}
+            </Downshift>
           );
-        }}
-      </Downshift>
+        }
+      }
+      </SubcomponentThemeHandler>
     );
   }
 }

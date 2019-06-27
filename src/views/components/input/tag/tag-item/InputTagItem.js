@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { object, string, func } from 'prop-types';
-import { isObject } from '../../../../../utils';
+import { object, string, func, bool } from 'prop-types';
+// import { isObject } from '../../../../../utils';
 import { Box, Touchable, Text, Icon } from '../../../index';
 
 class InputTagItem extends Component {
@@ -10,31 +10,31 @@ class InputTagItem extends Component {
     itemString: string,
     touchableProps: object,
     onPress: func,
+    editable: bool,
+    stateBasedProps: object,
   }
 
-  // state = {
-  //   hover: false,
-  //   active: false,
-  // }
+  state = {
+    hover: false,
+    active: false,
+  }
 
-  // handleChangeState = ( newState ) => {
-  //   this.setState( state => ({
-  //     ...state,
-  //     ...newState,
-  //   }));
-  // }
+  handleChangeState = ( newState ) => {
+    this.setState( state => ({
+      ...state,
+      ...newState,
+    }));
+  }
 
   render() {
     const {
       itemString,
       touchableProps,
-      onPress,
+      // onPress,
       editable,
       stateBasedProps,
-      ...restProps
+      // ...restProps
     } = this.props;
-
-    console.log( 'render InputTagItem', stateBasedProps );
 
     return (
       <Box
@@ -57,14 +57,14 @@ class InputTagItem extends Component {
             color="black"
             size="xs"
             text={itemString}
-            {...stateBasedProps}
+            {...stateBasedProps({})}
           />
         </Box>
 
         {editable ? (
           <Touchable
             {...touchableProps}
-            onChangeState={this.props.onChangeState}
+            onChangeState={this.handleChangeState}
           >
             <Icon
               type="material-icons"
@@ -72,7 +72,7 @@ class InputTagItem extends Component {
               size="sm"
               color="black"
               cursor="pointer"
-              {...stateBasedProps}
+              {...stateBasedProps( this.state )}
             />
           </Touchable>
         ) : null }

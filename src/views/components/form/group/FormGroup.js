@@ -212,7 +212,7 @@ class FormGroup extends Component {
       contextList,
       readonly,
       placeholder,
-      disabled,
+      // disabled,
     } = ask;
 
     const baseEntityDefinition = dataTypes[attributeCode];

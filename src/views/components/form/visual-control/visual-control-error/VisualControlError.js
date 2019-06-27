@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { string, object, bool, number, func } from 'prop-types';
+import { string } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
-import { Box, Text, Icon, Touchable } from '../../../../components';
+import { Box, Text } from '../../../../components';
 
 class VisualControlError extends Component {
   static propTypes = {

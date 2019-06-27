@@ -13,8 +13,6 @@ class InputTagSuggestionContainer extends Component {
 
     if ( !isOpen ) return null;
 
-    console.log( 'render InputTagSuggestionContainer' );
-
     return (
       <Box
         flexDirection="column"

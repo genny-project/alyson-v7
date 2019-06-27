@@ -13,8 +13,6 @@ class InputTagBody extends Component {
   render() {
     const { children, bodyProps, isOpen, handleToggleMenu } = this.props;
 
-    console.log( 'render InputTagBody' );
-
     return (
       <Box
         zIndex={1}

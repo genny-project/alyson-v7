@@ -59,7 +59,7 @@ class InputCheckBoxNewNew extends React.Component {
           onPress={this.handleChange}
           checkBoxStatus={value}
           iconName={value}
-          ID={question.text}
+          id={question.text}
           label={question.name}
         />
       </Box>

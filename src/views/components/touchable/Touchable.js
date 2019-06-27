@@ -91,6 +91,7 @@ class Touchable extends Component {
     onLayout: func,
     onPress: func,
     onFocus: func,
+    onChangeState: func,
     accessible: bool,
     accessibilityRole: string,
     accessibilityLabel: string,

@@ -1,8 +1,9 @@
 import React from 'react';
-import { array, bool, number, object, func } from 'prop-types';
+import { array, bool, number, object, func, string } from 'prop-types';
 import { Box, Text } from '../../index';
 import { isArray, isString } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
+import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 class CheckBoxList extends React.Component {
   static defaultProps = {
@@ -19,6 +20,10 @@ class CheckBoxList extends React.Component {
     multiSelect: bool,
     icons: object,
     onChangeValue: func,
+    subcomponentProps: object,
+    editable: bool,
+    disabled: bool,
+    error: string,
   };
 
   state = {
@@ -75,32 +80,50 @@ class CheckBoxList extends React.Component {
     const { data } = this.state;
 
     return (
-      <Box
-        flexDirection="row"
-        flexWrap="wrap"
+      <SubcomponentThemeHandler
+        subcomponentProps={this.props.subcomponentProps}
+        editable={this.props.editable}
+        disabled={this.props.disabled}
+        error={this.props.error}
       >
-        {isArray( data, { ofMinLength: 1 }) ? (
-          data.map( item => (
+        {({
+          filterComponentProps,
+        }) => {
+          return (
             <Box
-              width={`${100 / numberOfColumns}%`}
-              key={item.value}
+              flexDirection="row"
+              flexWrap="wrap"
             >
-              <BaseCheckBox
-                icons={icons}
-                onPress={this.handlePress( item.value )}
-                key={item.value}
-                checkBoxStatus={this.state.selected.includes( item.value ) ? true : false}
-                ID={item.value}
-                label={item.label}
-              />
+              {isArray( data, { ofMinLength: 1 }) ? (
+                data.map( item => (
+                  <Box
+                    width={`${100 / numberOfColumns}%`}
+                    key={item.value}
+                  >
+                    <BaseCheckBox
+                      icons={icons}
+                      onPress={this.handlePress( item.value )}
+                      key={item.value}
+                      checkBoxStatus={this.state.selected.includes( item.value ) ? true : false}
+                      id={item.value}
+                      label={item.label}
+                      stateBasedProps={
+                        filterComponentProps( 'input-item', { selected: this.state.selected.includes( item.value ) })
+                      }
+                    />
+                  </Box>
+                ))
+              ) : (
+                <Text
+                  text="No Items to Show"
+                />
+              )}
             </Box>
-          ))
-        ) : (
-          <Text>
-No Items to Show
-          </Text>
-        )}
-      </Box>
+          );
+        }
+    }
+      </SubcomponentThemeHandler>
+
     );
   }
 }

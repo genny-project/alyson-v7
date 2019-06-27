@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { string, object, bool, number, func } from 'prop-types';
+// import { string, object, bool, number, func } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
-import { Box, Text, Icon, Touchable } from '../../../../components';
+import { Box, Icon } from '../../../../components';
 
 class VisualControlHint extends Component {
   static propTypes = {

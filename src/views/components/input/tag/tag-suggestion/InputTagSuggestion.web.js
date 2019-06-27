@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { bool, object, string, func } from 'prop-types';
-import { isObject } from '../../../../../utils';
+// import { isObject } from '../../../../../utils';
 import { Box, Touchable, Text, Icon } from '../../../index';
 
 class InputTagSuggestion extends Component {
@@ -16,6 +16,7 @@ class InputTagSuggestion extends Component {
     onBlur: func,
     onPress: func,
     onMouseEnter: func,
+    stateBasedProps: object,
   }
 
   handleFocus = () => {
@@ -39,28 +40,8 @@ class InputTagSuggestion extends Component {
       onPress,
       onMouseEnter,
       stateBasedProps,
-      ...restProps
+      // ...restProps
     } = this.props;
-
-    const getPropsByState = () => {
-      console.log( stateBasedProps );
-
-      return {
-        ...isObject( stateBasedProps, { withProperty: 'default' }) ? stateBasedProps['default'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'hover' }) &&
-          isHighlighted
-          ? stateBasedProps['hover'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'selected' }) &&
-          isSelected
-          ? stateBasedProps['selected'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'disabled' }) &&
-          ( this.props.editable === false || this.props.disabled )
-          ? stateBasedProps['disabled'] : {},
-        ...isObject( stateBasedProps, { withProperty: 'error' }) && this.props.error ? stateBasedProps['error'] : {},
-      };
-    };
-
-    console.log( 'render InputTagSuggestion', this.props );
 
     return (
       <Box
@@ -68,6 +49,7 @@ class InputTagSuggestion extends Component {
         alignItems="center"
         backgroundColor={isHighlighted ? '#DDD' : 'white'}
         width="100%"
+        {...stateBasedProps}
       >
         <Touchable
           withFeedback
@@ -93,7 +75,7 @@ class InputTagSuggestion extends Component {
             size="sm"
             color="black"
             cursor="pointer"
-            {...getPropsByState()}
+            {...stateBasedProps}
           />
           <Box
             padding={5}
@@ -101,7 +83,7 @@ class InputTagSuggestion extends Component {
           <Text
             color={isHighlighted ? 'black' : 'black'}
             fontWeight={isSelected ? 'bold' : 'normal'}
-            {...getPropsByState()}
+            {...stateBasedProps}
           >
             {itemString}
           </Text>
