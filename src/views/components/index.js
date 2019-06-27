@@ -72,6 +72,7 @@ export { default as Portal } from './portal';
 export { default as Area } from './area';
 export { default as Boundary } from './boundary';
 export { default as Debug } from './debug';
+export { default as DebugDisplay } from './debug-display';
 
 export * from './keycloak';
 export * from './vertx';
