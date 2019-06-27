@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { TouchableWithoutFeedback, TouchableOpacity, Platform } from 'react-native';
 import { node, bool, object, func, oneOf, oneOfType, string, number, array, shape, any } from 'prop-types';
 import { store } from '../../../redux';
-import { TestIdHandler } from '../../components';
+import { isDevMode } from '../../../utils';
+import { TestIdHandler, Fragment } from '../../components';
 
 class Touchable extends Component {
   static defaultProps = {
@@ -325,8 +326,10 @@ class Touchable extends Component {
         : TouchableOpacity
     );
 
+    const WrapperElement = isDevMode ? TestIdHandler : Fragment;
+
     return (
-      <TestIdHandler
+      <WrapperElement
         testID={this.props.testID}
       >
         <Element
@@ -347,7 +350,7 @@ class Touchable extends Component {
         >
           {children}
         </Element>
-      </TestIdHandler>
+      </WrapperElement>
     );
   }
 }
