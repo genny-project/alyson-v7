@@ -1,8 +1,8 @@
 import React, { Component, isValidElement } from 'react';
 import { string, integer, node } from 'prop-types';
-import queryString from 'query-string';
 import { store } from '../../../redux';
 import * as actions from '../../../redux/actions';
+import { isDevMode } from '../../../utils';
 
 var timeoutMouseOverID;
 var timeoutMouseOutID;
@@ -17,18 +17,6 @@ class TestIdHandler extends Component {
     children: node,
     testID: string,
     timer: integer,
-  }
-
-  // Check if devMode is supplied as a query string in the URL
-  isDebugMode() {
-    if ( window ) {
-      const paramsFromWindow = window.location.search;
-      const values = queryString.parse( paramsFromWindow );
-
-      if ( values && values.devMode === 'true' ) {
-        store.dispatch( actions.setTestId({ id: this.props.testID }));
-      }
-    }
   }
 
   handleMouseOutDebounced = () => {
@@ -54,17 +42,21 @@ class TestIdHandler extends Component {
   }
 
   handleMouseOver = () => {
-    this.isDebugMode ? store.dispatch( actions.setTestId({ id: this.props.testID })) : null;
+    store.dispatch( actions.setTestId({ id: this.props.testID }));
   }
 
   handleMouseOut = () => {
-    this.isDebugMode ? store.dispatch( actions.removeTestId()) : null;
+    store.dispatch( actions.removeTestId());
   }
 
   render() {
     const {
       children,
     } = this.props;
+
+    if ( !isDevMode()) {
+      return children;
+    }
 
     return (
       React.Children.map( children, child => (

@@ -27,16 +27,15 @@ class App extends Component {
 
   getDisplayDevMode() {
     /* check for query String Values */
-
     if ( window ) {
       const paramsFromWindow = window.location.search;
       const values = queryString.parse( paramsFromWindow );
 
-      if ( values && values.devMode === 'true' ) {
+      if ( values && ( values.debug === 'true' || values.devmode === 'true' || values.devMode === 'true' )) {
         localStorage.setItem( 'DEV_MODE', true ); // sync the values with local storage
       }
 
-      if ( values && values.devMode === 'false' ) {
+      if ( values && (( !values.debug && !values.devmode && !values.devMode ) || values.debug === 'false' || values.devMode === 'false' || values.devMode === 'false' )) {
         localStorage.setItem( 'DEV_MODE', false ); // sync the values with local storage
       }
       console.warn({ values }); // eslint-disable-line

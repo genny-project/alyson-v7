@@ -112,14 +112,17 @@ class Frame extends Component {
     }
 
     /* Check if the inherited themes have changed */
-    if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps ))
+    if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps )) {
       return true;
+    }
 
     if ( this.props.isClosed !== nextProps.isClosed ) {
       return true;
     }
 
-    if ( !shallowCompare( this.state.panels, nextState.panels )) return true;
+    if ( !shallowCompare( this.state.panels, nextState.panels )) {
+      return true;
+    }
 
     return false;
   }
@@ -441,6 +444,7 @@ const mapStateToProps = state => ({
   asks: state.vertx.asks,
   themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
+  vertx: state.vertx.layouts,
 });
 
 export default connect( mapStateToProps )( Frame );

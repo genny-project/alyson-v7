@@ -16,7 +16,6 @@ class InputTextArea extends Component {
     onBlur: func,
     onChange: func,
     onChangeValue: func,
-    onChangeText: func,
     onChangeState: func,
     onFocus: func,
     onKeyPress: func,
@@ -35,6 +34,8 @@ class InputTextArea extends Component {
 
   state = {
     rows: null,
+    // isFocused: false,
+    // isHovering: false,
   }
 
   componentDidMount() {
@@ -77,21 +78,25 @@ class InputTextArea extends Component {
 
     const {
       rows,
+      isFocused, // eslint-disable-line no-unused-vars
+      isHovering, // eslint-disable-line no-unused-vars
     } = this.state;
 
     return (
       <Input
+        blurOnSubmit={false}
         {...restProps}
         multiline={multiline}
         numberOfLines={rows}
         onKeyPress={this.handleKeyPress}
         onLayout={this.handleLayout}
+        onMouseOver={this.handleMouseOver}
+        onMouseOut={this.handleMouseOut}
         overflow="hidden"
-        // textSize="md"
         onChange={this.handleChange}
         type="text"
         ref={input => this.input = input}
-        onChangeState={this.handleStateChange}
+        onChangeState={this.props.onChangeState}
       />
     );
   }

@@ -3,21 +3,27 @@ import { string, object, bool, number, func } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
-import { Box, Text, Icon /* Tooltip */ } from '../../../components';
+import { Box /* Tooltip */ } from '../../../components';
 import FormInput from '../input';
+import { StatefulThemeHandler, StatelessThemeHandler } from '../theme-handlers';
+import VisualControlLabel from './visual-control-label';
+import VisualControlHint from './visual-control-hint';
+import VisualControlRequired from './visual-control-required';
+import VisualControlDescription from './visual-control-description';
+import VisualControlError from './visual-control-error';
 
-/*
-const linkValues = [
-  'wrapper',
-  'input',
-  'icon',
-  'label',
-  'description',
-  'hint',
-  'error',
-  'required',
+const components = [
+  'vcl-wrapper',
+  'vcl-input',
+  'vcl-icon',
+  'vcl-label',
+  'vcl-description',
+  'vcl-hint',
+  'vcl-error',
+  'vcl-required',
 ];
 
+/*
 const inputStates = [
   'default',
   'hover',
@@ -25,6 +31,17 @@ const inputStates = [
   'disabled',
 ];
 */
+
+const subcomponents = [
+  'input-main',
+  'input-field',
+  'input-wrapper',
+  'input-icon',
+  'input-item-wrapper',
+  'input-item',
+  'input-selected-wrapper',
+  'input-selected',
+];
 
 class VisualControl extends Component {
   static propTypes = {
@@ -44,6 +61,9 @@ class VisualControl extends Component {
     flexWrapper: bool,
     index: number,
     onBlur: func,
+    onFocus: func,
+    onChange: func,
+    onChangeValue: func,
   }
 
   state = {
@@ -134,7 +154,6 @@ class VisualControl extends Component {
   }
 
   getStyling = ( componentType ) => {
-    // filter links for panel
     const inheritedLinks = [
       ...filterThemes(
         this.props.inheritedThemes,
@@ -206,138 +225,117 @@ class VisualControl extends Component {
     checkThemeForProperties( inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
-    const getPropsByType = ( type ) => {
-      const typeThemes = this.getStyling( type );
-
-      return {
-        ...restProps,
-        ...isObject( typeThemes, { withProperty: 'default' }) ? typeThemes['default'] : {},
-        ...isObject( typeThemes, { withProperty: 'hover' }) && this.state.hover ? typeThemes['hover'] : {},
-        ...isObject( typeThemes, { withProperty: 'active' }) && this.state.active ? typeThemes['active'] : {},
-        ...isObject( typeThemes, { withProperty: 'disabled' }) &&
-          ( this.props.editable === false || this.props.disabled )
-          ? typeThemes['disabled'] : {},
-        ...isObject( typeThemes, { withProperty: 'error' }) && this.props.error ? typeThemes['error'] : {},
-        icon: this.getIcon(),
-      };
-    };
-
     return (
-      /* WRAPPER */
-      <Box
-        flexDirection="column"
-        flex={flexWrapper ? 1 : null}
-        justifyContent="center"
-        zIndex={100 - index}
-        // padding={5}
-        {...getPropsByType( 'wrapper' )}
+      <StatelessThemeHandler
+        getStyling={this.getStyling}
+        getIcon={this.getIcon}
+        componentTypes={components}
+        editable={this.props.editable}
+        disabled={this.props.disabled}
+        error={this.props.error}
       >
-
-        {(
-          properties.renderVisualControlLabel
-        ) && (
-          <Box
-            flexDirection="row"
-          >
-
-            {/* LABEL */}
+        {({
+          componentProps,
+        }) => {
+          return (
+            /* WRAPPER */
             <Box
-              {...getPropsByType( 'label' )}
+              flexDirection="column"
+              flex={flexWrapper ? 1 : null}
+              justifyContent="center"
+              zIndex={100 - index}
+            // padding={5}
+              {...componentProps['vcl-wrapper']}
             >
-              <Text
-                size="xs"
-                text={this.props.question.name}
-                // decoration="underline"
-                {...getPropsByType( 'label' )}
-              />
+              {(
+                properties.renderVisualControlLabel
+              ) && (
+              <Box
+                flexDirection="row"
+              >
+                <VisualControlLabel
+                  question={this.props.question}
+                  {...componentProps['vcl-label']}
+                />
+
+                {(
+                  properties.renderVisualControlRequired &&
+                  this.props.required
+                ) && (
+                  <VisualControlRequired
+                    {...componentProps['vcl-required']}
+                  />
+                )}
+
+                {/* HINT */}
+                {(
+                  properties.renderVisualControlHint
+                ) && (
+                  <VisualControlHint
+                    {...componentProps['vcl-hint']}
+                  />
+                )}
+              </Box>
+              )}
+
+              {/* DESCRIPTION */}
+              {(
+                properties.renderVisualControlDescription
+              ) && (
+                <VisualControlDescription
+                  {...componentProps['vcl-description']}
+                />
+              )}
+
+              {/* INPUT COMPONENT */}
+              <StatefulThemeHandler
+                // onChangeState={this.handleStateChange}
+                getStyling={this.getStyling}
+                getIcon={this.getIcon}
+                subcomponentTypes={subcomponents}
+                editable={this.props.editable}
+                disabled={this.props.disabled}
+                error={this.props.error}
+              >
+                {({
+                  onChangeState,
+                  inputProps,
+                  subcomponentProps,
+                }) => {
+                  return (
+                    <FormInput
+                      {...restProps}
+                      {...componentProps['vcl-input']}
+                      {...inputProps}
+                      subcomponentProps={subcomponentProps}
+                      onBlur={onBlur}
+                      iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
+                      iconOnly={(
+                      properties.renderVisualControlInput != null
+                        ? !properties.renderVisualControlInput
+                        : false
+                    )}
+                      inheritedProps={this.getInhertiableThemes()}
+                      padding={3}
+                      onChangeState={onChangeState}
+                    />
+                  );
+                }}
+              </StatefulThemeHandler>
+
+              {/* ERROR MESSAGE */}
+              {(
+                isString( this.props.error )
+              ) && (
+                <VisualControlError
+                  {...componentProps['vcl-error']}
+                />
+              )}
             </Box>
-
-            {/* REQUIRED */}
-            {(
-              properties.renderVisualControlRequired &&
-              this.props.required
-            ) && (
-              <Box
-                paddingLeft={5}
-                marginRight="auto"
-              >
-                <Text
-                  text="*"
-                  color="red"
-                />
-              </Box>
-            )}
-
-            {/* HINT */}
-            {(
-              properties.renderVisualControlHint
-            ) && (
-              <Box
-                paddingLeft={5}
-                paddingRight={5}
-                cursor="pointer"
-                {...getPropsByType( 'hint' )}
-              >
-                <Icon
-                  name="help"
-                  size="xs"
-                  color="grey"
-                  cursor="help"
-                  {...getPropsByType( 'hint' )}
-                />
-              </Box>
-            )}
-          </Box>
-        )}
-
-        {/* DESCRIPTION */}
-        {(
-          properties.renderVisualControlDescription
-        ) && (
-          <Box
-            paddingBottom={5}
-            {...getPropsByType( 'description' )}
-          >
-            <Text
-              size="xxs"
-              text="Description text goes here"
-              {...getPropsByType( 'description' )}
-            />
-          </Box>
-        )}
-
-        {/* INPUT COMPONENT */}
-        <FormInput
-          {...getPropsByType( 'input' )}
-          onBlur={onBlur}
-          iconProps={properties.renderVisualControlIcon ? getPropsByType( 'icon' ) : null}
-          iconOnly={(
-            properties.renderVisualControlInput != null
-              ? !properties.renderVisualControlInput
-              : false
-          )}
-          inheritedProps={this.getInhertiableThemes()}
-          padding={3}
-          onChangeState={this.handleStateChange}
-        />
-
-        {/* ERROR MESSAGE */}
-        {(
-          isString( this.props.error )
-        ) && (
-          <Box
-            flexDirection="column"
-            {...getPropsByType( 'error' )}
-          >
-            <Text
-              size="xxs"
-              color="red"
-              text={this.props.error}
-              {...getPropsByType( 'error' )}
-            />
-          </Box>
-        )}
-      </Box>
+          );
+        }
+      }
+      </StatelessThemeHandler>
     );
   }
 }

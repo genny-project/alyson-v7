@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { object, array } from 'prop-types';
+import { Component } from 'react';
+import { object, node } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Input } from '../../../index';
 import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes } from '../../../../../utils';
 
-class FormInputDropdown extends Component {
+class FormInputWithItems extends Component {
   static propTypes = {
     question: object,
     baseEntities: object,
     themes: object,
-    inheritedThemes: array,
+    // inheritedThemes: array,
     inheritedProps: object,
+    children: node,
   }
 
   state = {
@@ -189,26 +189,20 @@ class FormInputDropdown extends Component {
   }
 
   render() {
-    const { ...restProps } = this.props;
+    const { children } = this.props;
     const { items } = this.state;
 
     const itemsWithThemes = this.getThemesForItems( items );
 
-    return (
-      <Input
-        {...restProps}
-        items={itemsWithThemes}
-        ref={input => this.input = input}
-      />
-    );
+    return children({ items: itemsWithThemes });
   }
 }
 
-export { FormInputDropdown };
+export { FormInputWithItems };
 
 const mapStateToProps = state => ({
   themes: state.vertx.layouts.themes,
   baseEntities: state.vertx.baseEntities,
 });
 
-export default connect( mapStateToProps )( FormInputDropdown );
+export default connect( mapStateToProps )( FormInputWithItems );

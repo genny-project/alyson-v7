@@ -31,6 +31,7 @@ class FormGroup extends Component {
     asks: object,
     isClosed: bool,
     indexNumber: number,
+    groupPath: string,
   }
 
   state = {
@@ -196,15 +197,11 @@ class FormGroup extends Component {
       touched,
       setFieldValue,
       setFieldTouched,
-      isSubmitting,
-      submitForm,
-      isFormValid,
     } = form;
     const {
       handleChange,
-      handleFocusNextInput,
+      // handleFocusNextInput,
       handleBlur,
-      handleKeyPress,
       addRef,
     } = functions;
     const {
@@ -215,42 +212,40 @@ class FormGroup extends Component {
       contextList,
       readonly,
       placeholder,
+      // disabled,
     } = ask;
 
     const baseEntityDefinition = dataTypes[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
-    const isFormSubmit = isObject( contextList, { withProperty: 'isFormSubmit' }) ? contextList.isFormSubmit : false;
-
     const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
     const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
 
+    const valuePath = `${this.props.groupPath}.${questionCode}`;
+
     const inputProps = {
-      onChangeValue: handleChange( questionCode, setFieldValue, setFieldTouched, ask ), // functions
-      value: values && values[questionCode],
+      onChangeValue: handleChange(
+        questionCode,
+        setFieldValue,
+        setFieldTouched,
+        ask,
+        valuePath,
+      ),
+      value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
-      error: touched[questionCode] && errors[questionCode],
-      onBlur: handleBlur( ask, values, errors ), // functions
+      error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
+      onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
       question,
-      disabled: isFormSubmit
-        ? !isFormValid
-        : isSubmitting,
       editable: !readonly,
-      onSubmitEditing: handleFocusNextInput( questionGroupCode, index ), // functions
-      blurOnSubmit: (
-        !inputRefs[questionGroupCode] ||
-        !inputRefs[questionGroupCode][index + 1] // refs
-      ),
-      ref: input => addRef( questionGroupCode, index, input ),
+      // disabled: disabled,
+      ref: addRef,
       returnKeyType: (
         inputRefs[questionGroupCode] &&
         inputRefs[questionGroupCode][index + 1] // refs
       )
         ? 'next'
         : 'default',
-      onKeyPress: handleKeyPress( submitForm, index, questionGroupCode ), // functions
-      // onPress: () => submitForm(),
       testID: `${questionGroupCode}:${questionCode}` || '',
       ...contextList,
       parentGroupCode: questionGroupCode,
@@ -261,7 +256,7 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: placeholder || question.placeholder || question.name,
+      placeholder: placeholder || question.placeholder,
       index,
     };
 
@@ -292,6 +287,7 @@ class FormGroup extends Component {
           asks: this.props.asks,
           themes: this.props.themes,
           isClosed: this.props.isClosed,
+          groupPath: `${this.props.groupPath}.${ask.questionCode}`,
         },
       )
     );
@@ -434,9 +430,6 @@ class FormGroup extends Component {
         </EventTouchable>
       );
     }
-
-    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' )
-    // console.log( 'style', this.getStyling());
 
     return (
       <Fragment>

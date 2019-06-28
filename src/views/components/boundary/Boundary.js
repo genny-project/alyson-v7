@@ -46,7 +46,7 @@ class Boundary extends Component {
     if ( area.right > screenRight ) rightOffset = area.right - screenRight;
 
     if ( area.top < screenTop ) topOffset = screenTop - area.top;
-    if ( area.bottom > screenBottom ) bottomOffset = area.bottom - screenRight;
+    if ( area.bottom > screenBottom ) bottomOffset = area.bottom - screenBottom;
 
     const boundaryAdjustedLeft = isInteger( leftOffset ) || isInteger( rightOffset )
       ? area.left + leftOffset - rightOffset : null;

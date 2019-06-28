@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { TouchableWithoutFeedback, TouchableOpacity, Platform } from 'react-native';
 import { node, bool, object, func, oneOf, oneOfType, string, number, array, shape, any } from 'prop-types';
 import { store } from '../../../redux';
-import { TestIdHandler } from '../../components';
+import { isDevMode } from '../../../utils';
+import { TestIdHandler, Fragment } from '../../components';
 
 class Touchable extends Component {
   static defaultProps = {
@@ -90,6 +91,8 @@ class Touchable extends Component {
     opacity: number,
     onLayout: func,
     onPress: func,
+    onFocus: func,
+    onChangeState: func,
     accessible: bool,
     accessibilityRole: string,
     accessibilityLabel: string,
@@ -132,18 +135,42 @@ class Touchable extends Component {
     }, {});
   }
 
-  handleMouseEnter = event => {
-    this.setState({ isHovering: true });
+  focus() {
+    if ( this.input )
+      this.input.focus();
+  }
 
-    if ( this.props.onMouseEnter )
-      this.props.onMouseEnter( event );
+  blur() {
+    if ( this.input )
+      this.input.blur();
+  }
+
+  handleRef = input => {
+    this.input = input;
+  }
+
+  handleMouseEnter = event => {
+    this.setState({
+      isHovering: true,
+    }, () => {
+      if ( this.props.onMouseEnter )
+        this.props.onMouseEnter( event );
+
+      if ( this.props.onChangeState )
+        this.props.onChangeState({ hover: this.state.isHovering });
+    });
   }
 
   handleMouseLeave = () => {
-    this.setState({ isHovering: false });
+    this.setState({
+      isHovering: false,
+    }, () => {
+      if ( this.props.onMouseLeave )
+        this.props.onMouseLeave( event );
 
-    if ( this.props.onMouseLeave )
-      this.props.onMouseLeave( event );
+      if ( this.props.onChangeState )
+        this.props.onChangeState({ hover: this.state.isHovering });
+    });
   }
 
   handlePress = event => {
@@ -154,6 +181,10 @@ class Touchable extends Component {
 
     if ( this.props.onPress )
       this.props.onPress( event );
+  }
+
+  handleFocus = event => {
+    if ( this.props.onFocus ) this.props.onFocus( event );
   }
 
   render() {
@@ -216,7 +247,6 @@ class Touchable extends Component {
       overflowX,
       overflowY,
       display,
-      onRef,
       ...restProps
     } = this.props;
 
@@ -296,8 +326,10 @@ class Touchable extends Component {
         : TouchableOpacity
     );
 
+    const WrapperElement = isDevMode ? TestIdHandler : Fragment;
+
     return (
-      <TestIdHandler
+      <WrapperElement
         testID={this.props.testID}
       >
         <Element
@@ -311,11 +343,14 @@ class Touchable extends Component {
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
           onPress={this.handlePress}
-          ref={onRef}
+          onFocus={this.handleFocus}
+          onKeyPress={this.handleKeyPress}
+          onKeyDown={this.handleKeyPress}
+          ref={this.handleRef}
         >
           {children}
         </Element>
-      </TestIdHandler>
+      </WrapperElement>
     );
   }
 }
