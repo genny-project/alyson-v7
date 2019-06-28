@@ -7,7 +7,9 @@ const getLayoutLinksOfType = ( baseEntityCodes, layoutData, linkType ) => {
   if ( !isArray( baseEntityCodes, { ofMinLength: 1 })) return [];
 
   return baseEntityCodes.filter(
-    link => link.type === linkType && dlv( layoutData, `${link.type}s.${link.code}` ) != null
+    link => {
+      return link.type === linkType && dlv( layoutData, `${link.type}s.${link.code}` ) != null;
+    }
   );
 };
 
