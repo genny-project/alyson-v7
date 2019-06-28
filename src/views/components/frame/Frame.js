@@ -104,7 +104,9 @@ class Frame extends Component {
 
           this.state.frames.concat( this.state.asks, this.state.themes ),
           dlv( nextProps, `frames.${nextProps.rootCode}.links` ),
-          nextProps
+          nextProps,
+          {},
+          this.props.rootCode === 'FRM_MAIN'
         )
       ) {
         return true;
@@ -124,6 +126,8 @@ class Frame extends Component {
       return true;
     }
 
+    // console.log( '7' );
+    // console.log( '-----------------------------' );
     return false;
   }
 
@@ -141,7 +145,7 @@ class Frame extends Component {
 
     /* filter each of the links based on their type */
     const linkedFrames = getLayoutLinksOfType( rootFrame.links, this.props, 'frame' );
-    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask' );
+    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask', this.props.rootCode === 'FRM_SIDEBAR' );
     const linkedThemes = getLayoutLinksOfType( rootFrame.links, this.props, 'theme' );
 
     /* update the state  */
@@ -236,8 +240,6 @@ class Frame extends Component {
     const { rootCode, frames, isRootFrame, isClosed } = this.props;
 
     const rootFrame = frames[rootCode];
-
-    // console.log( this.state.panels );
 
     if ( !rootFrame ) {
       return (

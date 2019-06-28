@@ -124,7 +124,31 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
             return !item.links.some( newLink => newLink.link.targetCode === existingLink.code );
           })
           : [] ),
-        ...item.links.map( link => {
+        ...item.links
+        .filter(( v, i, a ) => {
+          const sameTargets = a.filter( t => (
+            t.link.targetCode === v.link.targetCode &&
+            t.link.linkValue === v.link.linkValue
+          ));
+
+          if ( sameTargets.length === 1 ) {
+            return true;
+          }
+          
+          if ( sameTargets.length > 1 ) {
+            const firstIndex = a.findIndex( x => (
+              x.link.targetCode === v.link.targetCode &&
+              x.link.linkValue === v.link.linkValue
+            ));
+
+            if ( firstIndex === i ) {
+              return true;
+            }
+          }
+          
+          return false;
+        })
+        .map( link => {
           const linkTypes = {
             LNK_THEME: 'theme',
             LNK_FRAME: 'frame',
