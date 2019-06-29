@@ -106,80 +106,87 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
   }
 
   if ( state.frames ) {
-    state.frames[item.code] = {
-      name: item.name,
-      code: item.code,
-      links: [
-        ...( isObject( state.frames[item.code], { withProperty: 'links' }) &&
-        isArray( state.frames[item.code].links )
-          ? state.frames[item.code].links.filter( existingLink => {
-            if ( item.code === 'FRM_CONTENT' ) {
-              const hasNewNonLegacyLink = item.links.filter(
-                x => x.type !== 'sublayout' && x.type !== 'theme'
-              );
+    return {
+      ...state,
+      frames: {
+        ...state.frames,
+        [item.code]: {
+          ...state.frames[item.code],
+          name: item.name,
+          code: item.code,
+          links: [
+            ...( isObject( state.frames[item.code], { withProperty: 'links' }) &&
+            isArray( state.frames[item.code].links )
+              ? state.frames[item.code].links.filter( existingLink => {
+                if ( item.code === 'FRM_CONTENT' ) {
+                  const hasNewNonLegacyLink = item.links.filter(
+                    x => x.type !== 'sublayout' && x.type !== 'theme'
+                  );
 
-              if ( existingLink.type === 'sublayout' && hasNewNonLegacyLink ) return false;
-            }
+                  if ( existingLink.type === 'sublayout' && hasNewNonLegacyLink ) return false;
+                }
 
-            return !item.links.some( newLink => newLink.link.targetCode === existingLink.code );
-          })
-          : [] ),
-        ...item.links
-        .filter(( v, i, a ) => {
-          const sameTargets = a.filter( t => (
-            t.link.targetCode === v.link.targetCode &&
-            t.link.linkValue === v.link.linkValue
-          ));
+                return !item.links.some( newLink => newLink.link.targetCode === existingLink.code );
+              })
+              : [] ),
+            ...item.links
+            .filter(( v, i, a ) => {
+              const sameTargets = a.filter( t => (
+                t.link.targetCode === v.link.targetCode &&
+                t.link.linkValue === v.link.linkValue
+              ));
 
-          if ( sameTargets.length === 1 ) {
-            return true;
-          }
+              if ( sameTargets.length === 1 ) {
+                return true;
+              }
 
-          if ( sameTargets.length > 1 ) {
-            const firstIndex = a.findIndex( x => (
-              x.link.targetCode === v.link.targetCode &&
-              x.link.linkValue === v.link.linkValue
-            ));
+              if ( sameTargets.length > 1 ) {
+                const firstIndex = a.findIndex( x => (
+                  x.link.targetCode === v.link.targetCode &&
+                  x.link.linkValue === v.link.linkValue
+                ));
 
-            if ( firstIndex === i ) {
-              return true;
-            }
-          }
+                if ( firstIndex === i ) {
+                  return true;
+                }
+              }
 
-          return false;
-        })
-        .map( link => {
-          const linkTypes = {
-            LNK_THEME: 'theme',
-            LNK_FRAME: 'frame',
-            LNK_ASK: 'ask',
-            LNK_LAYOUT: 'sublayout',
-          };
+              return false;
+            })
+            .map( link => {
+              const linkTypes = {
+                LNK_THEME: 'theme',
+                LNK_FRAME: 'frame',
+                LNK_ASK: 'ask',
+                LNK_LAYOUT: 'sublayout',
+              };
 
-          const panelTypes = {
-            NORTH: 'NORTH',
-            SOUTH: 'SOUTH',
-            EAST: 'EAST',
-            WEST: 'WEST',
-            CENTRE: 'CENTRE',
-            FRAME: 'FRAME',
-          };
+              const panelTypes = {
+                NORTH: 'NORTH',
+                SOUTH: 'SOUTH',
+                EAST: 'EAST',
+                WEST: 'WEST',
+                CENTRE: 'CENTRE',
+                FRAME: 'FRAME',
+              };
 
-          return {
-            code: link.link.targetCode,
-            weight: link.link.weight,
-            panel: panelTypes[link.link.linkValue] ? panelTypes[link.link.linkValue] : null,
-            type: linkTypes[link.link.attributeCode] ? linkTypes[link.link.attributeCode] : 'none',
-            created: link.created,
-            component: componentTypes[link.visualControlType]
-              ? componentTypes[link.visualControlType]
-              : componentTypes[link.hint]
-                ? componentTypes[link.hint]
-                : null,
-          };
-        }),
-      ],
-      created: item.created,
+              return {
+                code: link.link.targetCode,
+                weight: link.link.weight,
+                panel: panelTypes[link.link.linkValue] ? panelTypes[link.link.linkValue] : 'FRAME',
+                type: linkTypes[link.link.attributeCode] ? linkTypes[link.link.attributeCode] : 'none',
+                created: link.created,
+                component: componentTypes[link.visualControlType]
+                  ? componentTypes[link.visualControlType]
+                  : componentTypes[link.hint]
+                    ? componentTypes[link.hint]
+                    : null,
+              };
+            }),
+          ],
+          created: item.created,
+        },
+      },
     };
   }
 };
@@ -239,32 +246,43 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
   /* alter the state */
 
   if ( state.themes ) {
-    state.themes[item.code] = {
-      name: item.name,
-      code: item.code,
-      data: isObject( themeData ) ? themeData : {},
-      properties: layoutProperties,
-      created: item.created,
+    return {
+      ...state,
+      themes: {
+        ...state.themes,
+        [item.code]: {
+          ...state.themes[item.code],
+          name: item.name,
+          code: item.code,
+          data: isObject( themeData ) ? themeData : {},
+          properties: layoutProperties,
+          created: item.created,
+        },
+      },
     };
   }
 };
 
-const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
-  // console.log( 'injectAskIntoState', item, state, state.asks );
-  /* alter the state */
+const reduceAsks = ({ item, state }) => {
+  let childAsks = {};
 
-  // TODO - shouldDeleteLinkedBaseEntities
+  if ( isArray( item.childAsks )) {
+    /* recursively check child groups and questions */
 
-  if ( shouldReplaceEntity === true ) {
-    if ( state.frames[item.questionCode] ) {
-      delete state.frames[item.questionCode];
-    }
+    item.childAsks.forEach( childItem => {
+      if ( isString( childItem.questionCode, { startsWith: 'QUE_' })) {
+        childAsks = {
+          ...childAsks,
+          ...reduceAsks({ item: childItem, state }),
+        };
+      }
+    });
   }
 
-  // need to add childAsks here so pathing is easier
-
-  if ( state.asks ) {
-    state.asks[item.questionCode] = {
+  return {
+    ...childAsks,
+    ...state.asks[item.questionCode],
+    [item.questionCode]: {
       name: item.name,
       code: item.questionCode,
       ...( isArray( item.childAsks )
@@ -314,17 +332,30 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
         }
         : {}),
       created: item.created,
-    };
+    },
+  };
+};
 
-    if ( isArray( item.childAsks )) {
-      /* recursively check child groups and questions */
+const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
+  // console.log( 'injectAskIntoState', item, state, state.asks );
+  /* alter the state */
 
-      item.childAsks.forEach( childItem => {
-        if ( isString( childItem.questionCode, { startsWith: 'QUE_' })) {
-          injectAskIntoState({ item: childItem, state });
-        }
-      });
+  // TODO - shouldDeleteLinkedBaseEntities
+
+  if ( shouldReplaceEntity === true ) {
+    if ( state.asks[item.questionCode] ) {
+      delete state.asks[item.questionCode];
     }
+  }
+
+  if ( state.asks ) {
+    return {
+      ...state,
+      asks: {
+        ...state.asks,
+        ...reduceAsks({ item, state }),
+      },
+    };
   }
 };
 
@@ -344,12 +375,12 @@ const reducer = ( state = initialState, { type, payload }) => {
           // console.log( newState );
           try {
             if ( isString( item.code, { startsWith: 'FRM_' })) {
-              injectFrameIntoState({ item, state: newState, shouldReplaceEntity });
-            } else if ( isString( item.code, { startsWith: 'THM_' })) {
-              injectThemeIntoState({ item, state: newState, shouldReplaceEntity });
-            } else {
-              return state;
+              return injectFrameIntoState({ item, state: newState, shouldReplaceEntity });
+            } if ( isString( item.code, { startsWith: 'THM_' })) {
+              return injectThemeIntoState({ item, state: newState, shouldReplaceEntity });
             }
+
+            return newState;
           } catch ( error ) {
             // eslint-disable-next-line no-console
             console.warn( 'Unable to add layout to reducer state', error, item.code, item );
@@ -373,10 +404,10 @@ const reducer = ( state = initialState, { type, payload }) => {
           // console.log( newState );
           try {
             if ( isString( item.questionCode, { startsWith: 'QUE_' })) {
-              injectAskIntoState({ item, state: newState, shouldReplaceEntity });
-            } else {
-              return state;
+              return injectAskIntoState({ item, state: newState, shouldReplaceEntity });
             }
+
+            return newState;
           } catch ( error ) {
             // eslint-disable-next-line no-console
             console.warn( 'Unable to add layout to reducer state', error, item.code, item );
