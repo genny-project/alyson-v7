@@ -61,7 +61,7 @@ const defaultStyle = {
 
 class Frame extends Component {
   static defaultProps = {
-    panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE', 'WRAPPER'],
+    panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE', 'FRAME'],
     linkTypes: ['asks', 'frames', 'themes'],
     inheritedProps: {},
   };
@@ -104,7 +104,9 @@ class Frame extends Component {
 
           this.state.frames.concat( this.state.asks, this.state.themes ),
           dlv( nextProps, `frames.${nextProps.rootCode}.links` ),
-          nextProps
+          nextProps,
+          {},
+          this.props.rootCode === 'FRM_MAIN'
         )
       ) {
         return true;
@@ -124,6 +126,8 @@ class Frame extends Component {
       return true;
     }
 
+    // console.log( '7' );
+    // console.log( '-----------------------------' );
     return false;
   }
 
@@ -141,7 +145,7 @@ class Frame extends Component {
 
     /* filter each of the links based on their type */
     const linkedFrames = getLayoutLinksOfType( rootFrame.links, this.props, 'frame' );
-    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask' );
+    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask', this.props.rootCode === 'FRM_SIDEBAR' );
     const linkedThemes = getLayoutLinksOfType( rootFrame.links, this.props, 'theme' );
 
     /* update the state  */
@@ -237,8 +241,6 @@ class Frame extends Component {
 
     const rootFrame = frames[rootCode];
 
-    // console.log( this.state.panels );
-
     if ( !rootFrame ) {
       return (
         <Box
@@ -274,7 +276,7 @@ class Frame extends Component {
           case 'west':
             return hasContent( 'CENTRE' ) ? {} : { flex: 1 };
           case 'centre':
-          case 'wrapper':
+          case 'frame':
           default:
             return {};
         }
@@ -301,8 +303,6 @@ class Frame extends Component {
         }),
       ];
 
-      console.log( this.state.themes, panel, panelLinks );
-
       // get props from theme links
       const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
       const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
@@ -327,15 +327,13 @@ class Frame extends Component {
 
     const RowComponent = shouldUseSwipeable ? Swipeable : Box;
 
-    console.log( 'wrapper style', getStylingByPanel( 'wrapper' ), getStyling( 'wrapper' ));
-
     return (
       <Box
         id="wrapper"
         text
         // onLayout={this.handleOnLayout}
         {...defaultStyle.wrapper}
-        {...getStyling( 'wrapper' )['default']}
+        {...getStyling( 'frame' )['default']}
       >
         {hasContent( 'NORTH' ) ? (
           <Panel
