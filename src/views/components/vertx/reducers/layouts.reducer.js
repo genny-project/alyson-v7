@@ -134,7 +134,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
           if ( sameTargets.length === 1 ) {
             return true;
           }
-          
+
           if ( sameTargets.length > 1 ) {
             const firstIndex = a.findIndex( x => (
               x.link.targetCode === v.link.targetCode &&
@@ -145,7 +145,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
               return true;
             }
           }
-          
+
           return false;
         })
         .map( link => {
@@ -162,6 +162,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
             EAST: 'EAST',
             WEST: 'WEST',
             CENTRE: 'CENTRE',
+            FRAME: 'FRAME',
           };
 
           return {

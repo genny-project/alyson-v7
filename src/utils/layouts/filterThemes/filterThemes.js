@@ -19,7 +19,7 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     return {};
 
   sort( themeLinks, { paths: ['weight', 'created'], direction: 'asc' }).forEach( theme => {
-    if ( isString( panel ) && theme.panel !== panel ) return;
+    if ( isString( panel ) && ( theme.panel !== panel && theme.panel !== 'FRAME' )) return;
 
     if ( isString( panel ) && ( !isString( component ) && theme.component )) return;
 

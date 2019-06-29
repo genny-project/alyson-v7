@@ -61,7 +61,7 @@ const defaultStyle = {
 
 class Frame extends Component {
   static defaultProps = {
-    panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE'],
+    panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE', 'FRAME'],
     linkTypes: ['asks', 'frames', 'themes'],
     inheritedProps: {},
   };
@@ -276,6 +276,7 @@ class Frame extends Component {
           case 'west':
             return hasContent( 'CENTRE' ) ? {} : { flex: 1 };
           case 'centre':
+          case 'frame':
           default:
             return {};
         }
@@ -332,6 +333,7 @@ class Frame extends Component {
         text
         // onLayout={this.handleOnLayout}
         {...defaultStyle.wrapper}
+        {...getStyling( 'frame' )['default']}
       >
         {hasContent( 'NORTH' ) ? (
           <Panel
