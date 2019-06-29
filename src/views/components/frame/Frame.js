@@ -61,7 +61,7 @@ const defaultStyle = {
 
 class Frame extends Component {
   static defaultProps = {
-    panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE'],
+    panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE', 'WRAPPER'],
     linkTypes: ['asks', 'frames', 'themes'],
     inheritedProps: {},
   };
@@ -274,6 +274,7 @@ class Frame extends Component {
           case 'west':
             return hasContent( 'CENTRE' ) ? {} : { flex: 1 };
           case 'centre':
+          case 'wrapper':
           default:
             return {};
         }
@@ -300,6 +301,8 @@ class Frame extends Component {
         }),
       ];
 
+      console.log( this.state.themes, panel, panelLinks );
+
       // get props from theme links
       const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
       const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
@@ -324,12 +327,15 @@ class Frame extends Component {
 
     const RowComponent = shouldUseSwipeable ? Swipeable : Box;
 
+    console.log( 'wrapper style', getStylingByPanel( 'wrapper' ), getStyling( 'wrapper' ));
+
     return (
       <Box
         id="wrapper"
         text
         // onLayout={this.handleOnLayout}
         {...defaultStyle.wrapper}
+        {...getStyling( 'wrapper' )['default']}
       >
         {hasContent( 'NORTH' ) ? (
           <Panel
