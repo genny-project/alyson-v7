@@ -442,7 +442,7 @@ class FormGroup extends Component {
         >
           {
             (
-              hasTitle &&
+              hasTitle ||
               hasDescription
             ) ? (
               <Box
