@@ -77,9 +77,34 @@ class Login extends Component {
 
     if ( error )
       return (
-        <Text>
-          An error has occurred!
-        </Text>
+        <Box
+          justifyContent="center"
+          alignItems="center"
+          flex={1}
+          flexDirection="column"
+          testID="page-login"
+        >
+          <Box
+            justifyContent="center"
+            alignItems="center"
+            backgroundColor="#fce8e6"
+            padding={10}
+            flexDirection="column"
+            width="calc(100% - 20px)"
+          >
+            <Text
+              color="red"
+              text="An error has occurred:"
+            />
+            <Box
+              padding={5}
+            />
+            <Text
+              color="red"
+              text={error}
+            />
+          </Box>
+        </Box>
       );
 
     return (

@@ -39,6 +39,21 @@ class KeycloakProvider extends Component {
       return;
     }
 
+    if ( LoginUrl.getUrl().startsWith( 'undefined' )) {
+      const error = `Invalid redirect URL: ${LoginUrl.getUrl()}`;
+
+      // eslint-disable-next-line no-console
+      console.warn( error );
+
+      if ( !this.state.error || !this.state.error.startsWith( 'Invalid redirect URL: undefined' )) {
+        this.setState({
+          error: error,
+        });
+      }
+
+      return;
+    }
+
     this.setState({
       isAuthenticating: true,
       error: null,
