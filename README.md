@@ -9,7 +9,8 @@ Alyson v7 is the updated Frontend for the Genny system.
 - [Frames](#Frames)
 - [Themes](#Themes)
 - [Question Sets](#Question-Sets)
-- [Legacy Layouts](#Legacy-Layouts)
+- [Visual Control](#Visual-Control)
+- [Input Subcomponents](#Input-Subcomponents)
 - [Links](#Links)
 - [Creating a Layout](#Creating-a-Layout)
 
@@ -176,13 +177,6 @@ Any Themes which are attached to a **Question** via the **Context List** will be
 
 Themes which have a visualControlType specified can still be passed through other Question Groups and Questions. If you want to apply a Theme for a Visual Control to every input in a Question Set, you can attach that Theme to the root Question Group of the Question Set, and it will be propagated to all of the child Questions.
 
-## Legacy Layouts
-( prefix: LAY_ )
-
-The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries. They are rendered using the Sublayout component.
-
-Unlike other aspects of layouts, the Backend is not handling the linking of **Legacy Layouts**. Layout Base Entities are given a randomised Code as an identifier, which means that for backend to fetch the layout they would have to search all Legacy Layouts using the URI, get the Base Entity, add the link, then send it to front end. Because **Legacy Layouts** are only a temporary feature to bridge the development gap, it was decided that Frontend would handle the linking instead.
-
 ### Route Changes
 Each **Legacy Layouts** is a page that has a URI that corresponds to a **Route**. Because only one page needs to be displayed per route, all we need to do is determine which layout we need, and which **Frame** it needs to be linked to. The default **Frame** for this purpose is `FRM_CONTENT`.
 
@@ -197,7 +191,6 @@ The type of link is defined by the `attributeCode` field. The valid types of lin
 - LNK_FRAME: Indicates that the child is a **Frame** base entity.
 - LNK_THEME: Indicates that the child is a **Theme** base entity.
 - LNK_ASK: Indicates that the child is an **Question Sets**.
-- **LNK_LAYOUT**: Indicates the child is a **Legacy Layout**. This allows backwards compatibility with the previous layouts.
 
 ***Important:*** *While Themes are linked to Frames, they aren't actually applied to Frames directy, but instead are applied to a specific Panel based on the value of the Link.*
 
@@ -225,7 +218,7 @@ If **FRAME** is  supplied, the Theme will be applied to the Frame itself, not an
 
 The Context List is used to connect **Themes** to **Questions** and **Question Groups**. Context List is used instead of Themes because Links must connect two Base Entities, which Question Sets aren't.
 
-The field `visualControlType` can be used to specify a **Visual Control cComponent** or **Input Subcomponent** to apply the Theme to.
+The field `visualControlType` can be used to specify a **Visual Control Component** or **Input Subcomponent** to apply the Theme to.
 
 #### Link Structure
 ```
