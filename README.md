@@ -9,13 +9,14 @@ Alyson v7 is the updated Frontend for the Genny system.
 - [Frames](#Frames)
 - [Themes](#Themes)
 - [Question Sets](#Question-Sets)
-- [Legacy Layouts](#Legacy-Layouts)
+- [Visual Control](#Visual-Control)
+- [Input Subcomponents](#Input-Subcomponents)
 - [Links](#Links)
 - [Creating a Layout](#Creating-a-Layout)
 
 ## Overview
 ### What Has Changed
-The previous version used json files called 'layouts' to describe component structures, which were then converted to React Element trees. 
+The previous version used json files called 'layouts' to describe component structures, which were then converted to React Element trees.
 
 This version aims to removes the dependance on a predefined layout. The Backend sends **Base Entities**, **Question Sets**, and **Links** to the Frontend, then, starting from one root Base Entity, it recursively renders the entire component tree.
 
@@ -55,19 +56,19 @@ Each **Panel** has predefined default behaviour that allows content within it to
   - Will only be rendered if it has content, ie: if there is a **Link** to an existing **Base Entity** in the Redux Store.
 - North Panel
   - Will fit its content, *unless* there are no **East**, **West**, or **Centre Panels**, in which case it will expand to fill the space available.
-  - Content will be positioned against the **top** of the panel. Override with `alignItems`.  
+  - Content will be positioned against the **top** of the panel. Override with `alignItems`.
 - South Panel
   - Will fit its content, *unless* there are no **East**, **West**, or **Centre Panels**, in which case it will expand to fill the space available.
-  - Content will be positioned against the **bottom** of the panel. Override with `alignItems`.  
+  - Content will be positioned against the **bottom** of the panel. Override with `alignItems`.
 - Centre Panel
   - Will always expand to fill the space available.
-  - Content positioned in the **middle** of the panel by default. Override with `alignItems` and `justifyContent`.     
+  - Content positioned in the **middle** of the panel by default. Override with `alignItems` and `justifyContent`.
 - East Panel
   - Will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available.
-  - Content will be positioned against the **right side** of the panel. Override with `justifyContent`.     
+  - Content will be positioned against the **right side** of the panel. Override with `justifyContent`.
 - West Panel
   - Will fit its content, *unless* there is no **Centre Panel**, in which case it will expand to fill the space available.
-  - Content will be positioned against the **left side** of the panel. Override with `justifyContent`.     
+  - Content will be positioned against the **left side** of the panel. Override with `justifyContent`.
 
 ## Themes
 ( prefix: THM_ )
@@ -99,6 +100,7 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_CONTENT_ACTIVE | Object | { "color": "red" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently active. |
 | PRI_CONTENT_DISABLED | Object | { "color": "grey" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is disabled. |
 | PRI_CONTENT_CLOSED | Object | { "width": 50 } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component or any of it's parents are closed. |
+| PRI_CONTENT_SELECTED | Object | { "color": "blue" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently selected. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
@@ -107,7 +109,8 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_HAS_HINT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
 | PRI_HAS_DESCRIPTION | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Description. |
 | PRI_HAS_ICON | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Icon. |
-
+| PRI_HAS_QUESTION_GRP_TITLE | Boolean | true | false | If the connected entity is a **Question Group**, then it will render the `name` field of the question as a title.
+| PRI_HAS_QUESTION_GRP_DESCRIPTION | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render the `description` field of the question as a subtitle.
 ## Question Sets
 ( prefix: QUE_ )
 
@@ -125,7 +128,7 @@ The Question Group is a container form a group of Questions and/or Question Grou
 A Question Group can also have a `question` field, but by default it is not rendered.
 
 ### Difference Between a Question Group and a Question?
-A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two? 
+A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two?
 
 The answer is that if the object has `childAsks`, then it is rendered as a Question Group.  If not, then it is rendered as a Question.
 
@@ -136,7 +139,7 @@ The answer is that if the object has `childAsks`, then it is rendered as a Quest
 *explain with images why question group inputs are neccessary*
 *Collapsible*
 
-## Visual Control 
+## Visual Control
 
 A **Visual Control** is the group of components that are render as part of a **Question**.
 
@@ -144,26 +147,35 @@ The basic components of a Visual Control are as follows:
 
 ![Visual Control Layout](https://i.imgur.com/ZUh3Fdo.png)
 
-- Input: input or display component that will be rendered
-- Wrapper: box containing all the other componennts of the visual control
-- Label: text displaying the question name
-- Required: symbol indicating if a question is mandatory
-- Hint: icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input
-- Description: additional text to provide for information or context
-- Icon: icon rendered as part of the input
-- Error: text render if answer is invalid or an error occurs
+| Name | visualControlType Code | Description |
+| ------ | ---------- | ----------- |
+| Input | `INPUT` | input or display component that will be rendered |
+| Wrapper | `VCL_WRAPPER` | box containing all the other components of the visual control |
+| Label | `VCL_LABEL` | text displaying the question name |
+| Required | `VCL_REQUIRED` | symbol indicating if a question is mandatory |
+| Hint | `VCL_HINT` | icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input |
+| Description | `VCL_DESCRIPTION` | additional text to provide for information or context |
+| Icon | `VCL_ICON` | icon rendered as part of the input |
+| Error | `VCL_ERROR` | text render if answer is invalid or an error occurs |
+
+## Input Subcomponents
+
+An **Input** that is part of a **Visual Control** might be a single element, such as a Text Field. However, in many cases it is more complex, and contains additional subcomponents. The currently supported subcomponents are as follows:
+
+| Name | visualControlType Code | Description |
+| ------ | ---------- | ----------- |
+| Input Field | `INPUT_FIELD` | the main input field that is interactable |
+| Input Wrapper | `INPUT_WRAPPER` | box containing all the other components of the input |
+| Icon | `INPUT_ICON` | icon rendered as part of the input field |
+| Item Wrapper | `INPUT_ITEM_WRAPPER` | box containing all the items that are available as options to select |
+| Item | `INPUT_ITEM` | an element selectable by the user |
+| Selected Element Wrapper | `INPUT_SELECTED_WRAPPER` | box containing all the elements that have been selected |
+| Selected Element | `INPUT_SELECTED` | a selected element |
 
 ### Applying Themes.
 Any Themes which are attached to a **Question** via the **Context List** will be passed to all elements of the **Visual Control**. A Theme can be directed to only be applied to a specific component of the **Visual Control** by using the field `visualControlType` (set the value to any of the above types, written in ALL CAPS eg `"visualControlType": "INPUT"`).
 
 Themes which have a visualControlType specified can still be passed through other Question Groups and Questions. If you want to apply a Theme for a Visual Control to every input in a Question Set, you can attach that Theme to the root Question Group of the Question Set, and it will be propagated to all of the child Questions.
-
-## Legacy Layouts
-( prefix: LAY_ )
-
-The **Legacy Layouts** are base entities created using the previous layouts system, using Json files and Data Queries. They are rendered using the Sublayout component. 
-
-Unlike other aspects of layouts, the Backend is not handling the linking of **Legacy Layouts**. Layout Base Entities are given a randomised Code as an identifier, which means that for backend to fetch the layout they would have to search all Legacy Layouts using the URI, get the Base Entity, add the link, then send it to front end. Because **Legacy Layouts** are only a temporary feature to bridge the development gap, it was decided that Frontend would handle the linking instead.
 
 ### Route Changes
 Each **Legacy Layouts** is a page that has a URI that corresponds to a **Route**. Because only one page needs to be displayed per route, all we need to do is determine which layout we need, and which **Frame** it needs to be linked to. The default **Frame** for this purpose is `FRM_CONTENT`.
@@ -179,11 +191,12 @@ The type of link is defined by the `attributeCode` field. The valid types of lin
 - LNK_FRAME: Indicates that the child is a **Frame** base entity.
 - LNK_THEME: Indicates that the child is a **Theme** base entity.
 - LNK_ASK: Indicates that the child is an **Question Sets**.
-- **LNK_LAYOUT**: Indicates the child is a **Legacy Layout**. This allows backwards compatibility with the previous layouts.
 
 ***Important:*** *While Themes are linked to Frames, they aren't actually applied to Frames directy, but instead are applied to a specific Panel based on the value of the Link.*
 
-The **Panel** the child will be linked to is defined by the `linkValue` field. The valid values are **NORTH**, **SOUTH**, **EAST**, **WEST**, and **CENTRE**.
+The **Panel** the child will be linked to is defined by the `linkValue` field. The valid values are **NORTH**, **SOUTH**, **EAST**, **WEST**, **CENTRE**, and **FRAME**.
+
+If **FRAME** is  supplied, the Theme will be applied to the Frame itself, not any of it's **Panels**.
 
 #### Link Structure
 ```
@@ -205,7 +218,7 @@ The **Panel** the child will be linked to is defined by the `linkValue` field. T
 
 The Context List is used to connect **Themes** to **Questions** and **Question Groups**. Context List is used instead of Themes because Links must connect two Base Entities, which Question Sets aren't.
 
-The field `visualControlType` can be used to specify a Visual Control component to apply the Theme to.
+The field `visualControlType` can be used to specify a **Visual Control Component** or **Input Subcomponent** to apply the Theme to.
 
 #### Link Structure
 ```
@@ -227,3 +240,10 @@ The field `visualControlType` can be used to specify a Visual Control component 
 The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** that need to be applied through the whole app such as text color or background color should be linked to `FRM_ROOT`.
 
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
+
+## New Changes
+
+* Updated Panel types to include **FRAME**.
+* Added description of the **FRAME** Panel type.
+* Updated Visual Control section to include the `visualControlType` needed to assign a Theme to a specific Visual Control Element.
+* Added section on Input Subcomponents.
