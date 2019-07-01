@@ -80,7 +80,7 @@ Styling information is determined by the value of the attribute `PRI_CONTENT`. T
 
 Most CSS fields are acceptable as parameters, but given that the information is passed as props to React Components, each component has it's own list of props that it accepts. All others are ignored. All keys must be denoted in camelCase
 
-*Click here to see a list of components and accepted props.*
+[Click here to see a list accepted props.](./docs/PROPS.md)
 
 ### Behavioural Attributes
 Where most styling changes can simply be passed to components as props, some desired behaviour from components requires more complex changes to how the element tree is constructed. They might require a component to keep track of a state and then pass that to child elements, or change the order components are rendered, or use different components to the default ones.
