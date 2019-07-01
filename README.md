@@ -149,7 +149,7 @@ The basic components of a Visual Control are as follows:
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
-| Input | `INPUT` | input or display component that will be rendered |
+| Input | `VCL_INPUT` | input or display component that will be rendered |
 | Wrapper | `VCL_WRAPPER` | box containing all the other components of the visual control |
 | Label | `VCL_LABEL` | text displaying the question name |
 | Required | `VCL_REQUIRED` | symbol indicating if a question is mandatory |

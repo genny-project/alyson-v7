@@ -100,6 +100,7 @@ class Login extends Component {
               padding={5}
             />
             <Text
+              width="100%"
               color="red"
               text={error}
             />
