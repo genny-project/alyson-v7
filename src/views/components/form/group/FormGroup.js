@@ -184,6 +184,7 @@ class FormGroup extends Component {
     index,
     form,
     additionalProps,
+    noQuestionGroup,
   ) => {
     const {
       dataTypes,
@@ -221,7 +222,7 @@ class FormGroup extends Component {
     const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
     const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
 
-    const valuePath = `${this.props.groupPath}.${questionCode}`;
+    const valuePath = `${noQuestionGroup ? '' : `${this.props.groupPath}.`}${questionCode}`;
 
     const inputProps = {
       onChangeValue: handleChange(
@@ -348,6 +349,8 @@ class FormGroup extends Component {
         questionCode,
         index,
         form,
+        {},
+        true,
       );
     }
 
