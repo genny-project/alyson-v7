@@ -341,6 +341,17 @@ class FormGroup extends Component {
     };
 
     if (
+      !isArray( childAsks, { ofMinLength: 1 })
+    ) {
+      return this.renderInput(
+        questionGroup,
+        questionCode,
+        index,
+        form,
+      );
+    }
+
+    if (
       properties.expandable
     ) {
       return (
