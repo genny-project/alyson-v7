@@ -178,13 +178,14 @@ class FormGroup extends Component {
     };
   }
 
-  renderInput = (
+  renderInput = ({
     ask,
     questionGroupCode,
     index,
     form,
-    additionalProps,
-  ) => {
+    additionalProps = {},
+    options = {},
+  }) => {
     const {
       dataTypes,
       functions,
@@ -220,8 +221,8 @@ class FormGroup extends Component {
 
     const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
     const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
-
-    const valuePath = `${this.props.groupPath}.${questionCode}`;
+    const { questionOnly } = options;
+    const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
 
     const inputProps = {
       onChangeValue: handleChange(
@@ -341,6 +342,20 @@ class FormGroup extends Component {
     };
 
     if (
+      !isArray( childAsks, { ofMinLength: 1 })
+    ) {
+      return this.renderInput({
+        ask: questionGroup,
+        questionGroupCode: questionCode,
+        index,
+        form,
+        options: {
+          questionOnly: true,
+        },
+      });
+    }
+
+    if (
       properties.expandable
     ) {
       return (
@@ -351,15 +366,15 @@ class FormGroup extends Component {
             question &&
             properties.renderQuestionGroupInput
           ) ? (
-              this.renderInput(
-                questionGroup,
-                parentGroupCode,
+              this.renderInput({
+                ask: questionGroup,
+                questionGroupCode: parentGroupCode,
                 index,
                 form,
-                {
+                additionalProps: {
                   flexWrapper: true,
-                }
-              )
+                },
+              })
             ) : null
           }
           headerIconProps={this.getStyling()['default']}
@@ -381,12 +396,12 @@ class FormGroup extends Component {
                   );
                 }
 
-                return this.renderInput(
-                  childAsk,
-                  questionCode,
+                return this.renderInput({
+                  ask: childAsk,
+                  questionGroupCode: questionCode,
                   index,
                   form,
-                );
+                });
               })
             )}
           </Box>
@@ -420,12 +435,12 @@ class FormGroup extends Component {
               );
             }
 
-            return this.renderInput(
-              ask,
-              questionCode,
+            return this.renderInput({
+              ask: ask,
+              questionGroupCode: questionCode,
               index,
               form,
-            );
+            });
           })}
         </EventTouchable>
       );
@@ -481,12 +496,13 @@ class FormGroup extends Component {
             question &&
             properties.renderQuestionGroupInput
           ) ? (
-              this.renderInput(
-                questionGroup,
-                parentGroupCode,
+              this.renderInput({
+                ask: questionGroup,
+                questionGroupCode: parentGroupCode,
                 index,
                 form,
-              )) : null
+              })
+            ) : null
           }
           {delimiterHandler(
             sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
@@ -498,12 +514,12 @@ class FormGroup extends Component {
                 );
               }
 
-              return this.renderInput(
-                ask,
-                questionCode,
+              return this.renderInput({
+                ask: ask,
+                questionGroupCode: questionCode,
                 index,
                 form,
-              );
+              });
             })
           )}
         </Box>
