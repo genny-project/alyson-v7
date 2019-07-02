@@ -40,7 +40,11 @@ class MessageHandler {
   };
 
   drainMessageBatch = () => {
+    // console.log( 'this.beBatch ', this.beBatch.length, JSON.stringify({ batch: this.beBatch }));
+
     const message = this.beBatch.reduce( this.handleReduceMessageBatch, this.beBatch[0] );
+
+    // console.log( 'drain message', message );
 
     store.dispatch( message );
 
