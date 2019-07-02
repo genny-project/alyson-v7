@@ -472,7 +472,7 @@ class Form extends Component {
       finalValue = JSON.stringify( finalValue );
     }
     // eslint-disable-next-line no-console
-    console.warn( 'sending answer...', {
+    console.warn( 'form attempting to send answer:', {
       askId: ask.id,
       attributeCode: finalAttributeCode,
       sourceCode: ask.sourceCode,
@@ -484,7 +484,7 @@ class Form extends Component {
       value: finalValue,
     });
 
-    Bridge.sendFormattedEvent( [{
+    Bridge.sendFormattedAnswer({
       askId: ask.id,
       attributeCode: finalAttributeCode,
       sourceCode: ask.sourceCode,
@@ -494,7 +494,7 @@ class Form extends Component {
       identifier: ask.questionCode,
       weight: ask.weight,
       value: finalValue,
-    }] );
+    });
   }
 
   handleChange = (
@@ -705,7 +705,7 @@ class Form extends Component {
           this.errors = errors;
 
           const isFormValid = shallowCompare( this.doValidate( values ), {});
-  
+
           return (
             <Fragment>
               {questionGroups.map(( questionGroup, index ) => {
