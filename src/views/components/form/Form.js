@@ -705,7 +705,7 @@ class Form extends Component {
           this.errors = errors;
 
           const isFormValid = shallowCompare( this.doValidate( values ), {});
-
+  
           return (
             <Fragment>
               {questionGroups.map(( questionGroup, index ) => {

@@ -77,7 +77,7 @@ const componentTypes = {
   VCL_ERROR: 'vcl-error',
   VCL_REQUIRED: 'vcl-required',
   // higher level for each input
-  INPUT: 'vcl-input',
+  VCL_INPUT: 'vcl-input',
   // input subcomponents
   INPUT_FIELD: 'input-field',
   INPUT_WRAPPER: 'input-wrapper',
