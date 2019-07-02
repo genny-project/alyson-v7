@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { object, node } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes } from '../../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes, isString, isInteger } from '../../../../../utils';
 
 class FormInputWithItems extends Component {
   static propTypes = {
@@ -37,42 +37,60 @@ class FormInputWithItems extends Component {
     const { validationList } = this.props.question.attribute.dataType;
     const items = [];
 
-    if ( !isArray( validationList, { ofMinLength: 1 }))
-      return items;
+    if ( isArray( validationList, { ofMinLength: 1 })) {
+      validationList.forEach( validation => {
+        const { selectionBaseEntityGroupList, options } = validation;
 
-    validationList.forEach( validation => {
-      if (
-        validation.selectionBaseEntityGroupList &&
-        validation.selectionBaseEntityGroupList instanceof Array &&
-        validation.selectionBaseEntityGroupList.length > 0
-      ) {
-        validation.selectionBaseEntityGroupList.forEach( baseEntity => {
-          const linkGroup = links[baseEntity];
+        if (
+          isArray( selectionBaseEntityGroupList, { ofMinLength: 0 })
+        ) {
+          validation.selectionBaseEntityGroupList.forEach( baseEntity => {
+            const linkGroup = links[baseEntity];
 
-          if (
-            isObject( linkGroup )
-          ) {
-            const linkValues = Object.keys( linkGroup ).map( x => x );
+            if (
+              isObject( linkGroup )
+            ) {
+              const linkValues = Object.keys( linkGroup ).map( x => x );
 
-            linkValues.forEach( linkValue => {
-              if ( isArray( linkGroup[linkValue] )) {
-                linkGroup[linkValue].forEach( link => {
-                  const baseEntity = dlv( data, link.link.targetCode );
+              linkValues.forEach( linkValue => {
+                if ( isArray( linkGroup[linkValue] )) {
+                  linkGroup[linkValue].forEach( link => {
+                    const baseEntity = dlv( data, link.link.targetCode );
 
-                  if ( isObject( baseEntity )) {
-                    items.push({
-                      label: baseEntity.name,
-                      value: baseEntity.code,
-                      weight: link.weight || 1,
-                    });
-                  }
-                });
-              }
-            });
-          }
-        });
-      }
-    });
+                    if ( isObject( baseEntity )) {
+                      items.push({
+                        label: baseEntity.name,
+                        value: baseEntity.code,
+                        weight: link.weight || 1,
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+
+        if ( isArray( options, { ofMinLength: 1 })) {
+          options.forEach(( option, index ) => {
+            if ( isString( option ) || isInteger( option )) {
+              items.push({
+                label: option,
+                value: option,
+                weight: index + 1 || 1,
+              });
+            }
+            else if ( isObject( option )) {
+              items.push({
+                label: option.name,
+                value: option.code,
+                weight: index + 1 || 1,
+              });
+            }
+          });
+        }
+      });
+    }
 
     return items;
   }
@@ -85,7 +103,7 @@ class FormInputWithItems extends Component {
         const baseEntity = dlv( data, item.value );
         // get all links, check for themes for this base entity
 
-        if ( !isObject( baseEntity )) return;
+        if ( !isObject( baseEntity )) return item;
 
         const linkedThemes = isArray( baseEntity.links )
           ? getLayoutLinksOfType( baseEntity.links.map( link => ({ type: 'theme', code: link.link.targetCode })), this.props, 'theme' )
