@@ -33,7 +33,6 @@ const inputStates = [
 */
 
 const subcomponents = [
-  'input-main',
   'input-field',
   'input-wrapper',
   'input-icon',
