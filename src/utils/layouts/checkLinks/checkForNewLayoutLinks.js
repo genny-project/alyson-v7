@@ -51,7 +51,7 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
   // const toRemove = currentLinks.filter( item => !newLinks.includes( item ));
   const toRemove = currentArray.filter( ci =>
     updatedArray.filter( ni => ni.code === ci.code && ni.panel === ci.panel ).length < 1 );
-  
+
   // if ( showLog ) console.log( 'tos', toAdd, toRemove );
 
   const toChangePanel = [];
@@ -64,7 +64,7 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
     const newBe = newArray.filter( link => link.code === newLinkCode )[0];
 
     const isPanelMatch = shallowCompare( oldBe, newBe );
-    
+
     if ( !isPanelMatch ) toChangePanel.push( newLinkCode );
   });
   */

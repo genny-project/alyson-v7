@@ -95,6 +95,8 @@ class Frame extends Component {
   }
 
   shouldComponentUpdate( nextProps, nextState ) {
+    // console.log( 'should update', nextProps.rootCode );
+
     /* If rootCode is different, then a different base
     entity needs to be rendered inside the frame */
     if ( this.props.rootCode !== nextProps.rootCode ) return true;
@@ -130,13 +132,73 @@ class Frame extends Component {
       return true;
     }
 
+    // console.log( 'check theme properties' );
+
+    if ( this.checkThemeProperties( nextState.themes, this.props.themes, nextProps.themes )) {
+      // console.log( 'new properties found' );
+
+      return true;
+    }
+
     // console.log( '7' );
     // console.log( '-----------------------------' );
+    // console.log( 'no updates' );
+
     return false;
   }
 
   componentDidUpdate() {
     this.getChildLayouts();
+  }
+
+  checkThemeProperties = ( linkedThemes, currentThemes, nextThemes ) => {
+    if ( !isArray( linkedThemes )) {
+      return false;
+    }
+
+    const hasUpdatedTheme = linkedThemes.some( theme => {
+      // console.log( 'theme', theme, currentThemes, nextThemes );
+
+      const currentThemeData =  dlv( currentThemes, `${theme.code}` );
+      const nextThemeData =  dlv( nextThemes, `${theme.code}` );
+
+      // console.log( 'themeData', currentThemeData, nextThemeData );
+
+      if (
+        !isObject( currentThemeData ) ||
+        !isObject( nextThemeData )
+      ) {
+        return true;
+      }
+
+      if ( isObject( nextThemeData, { withProperty: 'data' })) {
+        const currentThemePropKeys = Object.keys( currentThemeData.data );
+        const newThemePropKeys = Object.keys( nextThemeData.data );
+
+        if ( currentThemePropKeys.length !== newThemePropKeys.length ) {
+          return true;
+        }
+
+        const hasUpdatedProperties = newThemePropKeys.some( propKey => {
+          const currentPropObject = currentThemeData.data[propKey];
+          const nextPropObject = nextThemeData.data[propKey];
+
+          // console.log( 'compare', currentPropObject, nextPropObject ) );
+
+          if ( !shallowCompare( currentPropObject, nextPropObject )) {
+            return true;
+          }
+
+          return false;
+        });
+
+        return hasUpdatedProperties;
+      }
+
+      return false;
+    });
+
+    return hasUpdatedTheme;
   }
 
   getChildLayouts = () => {
