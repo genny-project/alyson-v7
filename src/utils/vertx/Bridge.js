@@ -73,6 +73,38 @@ class Bridge {
 
       Vertx.sendMessage( eventObject );
     }
+
+    if ( event === 'ANSWER' ) {
+      // console.log( 'ANSWER FOUND, UPDATE STORE' );
+
+      const updatedAttributeMessage = {
+        data_type: 'BaseEntity',
+        delete: false,
+        items: data.map( item => {
+          // console.log( 'item', item );
+
+          return {
+            baseEntityAttributes: [
+              {
+                attributeCode: item.attributeCode,
+                baseEntityCode: item.targetCode,
+                valueString: item.value,
+              },
+            ],
+            code: item.targetCode,
+            delete: false,
+            replace: false,
+            totalCount: 1,
+            updated: '2019-02-06T04:24:10',
+          };
+        }),
+        msg_type: 'DATA_MSG',
+        replace: false,
+      };
+
+      // console.log( 'fake message', updatedAttributeMessage );
+      Vertx.handleIncomingMessage( updatedAttributeMessage, null, true );
+    }
   }
 
   sendFormattedEvent({

@@ -34,6 +34,7 @@ class Form extends Component {
   inputRefs = {}
   errors = {}
   values = {}
+  randId = Math.floor( Math.random() * Math.floor( 1000 ));
 
   state = {
     validationList: {},
@@ -315,9 +316,6 @@ class Form extends Component {
       // const path = `${currentPath}.${ask.questionCode}`;
 
       const initialValue = dlv( initialValues, `${currentPath}.${ask.questionCode}` );
-
-      // console.log( 'compare', currentPath,
-      //  ask.questionCode, path, initialValues, initialValue,  );
 
       const isMatch = (
         initialValue == null &&

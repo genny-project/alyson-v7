@@ -119,11 +119,15 @@ class Vertx {
     if ( error ) this.log( error, 'error' );
   };
 
-  handleIncomingMessage = ( message, isCachedMessage ) => {
+  handleIncomingMessage = ( message, isCachedMessage, isAnswerMessage ) => {
     const { incomingMessageHandler } = this.state;
 
     if ( isCachedMessage ) {
       message['is_cached_message'] = true;
+    }
+
+    if ( isAnswerMessage ) {
+      message['is_answer_message'] = true;
     }
 
     if ( message.cmd_type && message.cmd_type === 'ROUTE_CHANGE' ) {
@@ -131,6 +135,8 @@ class Vertx {
     }
 
     // this.log( 'Receiving a message' );
+
+    // if ( isAnswerMessage ) console.log( 'message', JSON.stringify({ message }));
     if ( incomingMessageHandler ) incomingMessageHandler( message );
   };
 
