@@ -165,14 +165,19 @@ class Frame extends Component {
       // console.log( 'themeData', currentThemeData, nextThemeData );
 
       if (
-        !isObject( currentThemeData ) &&
-        isObject( nextThemeData )
+        !isObject( currentThemeData ) ||
+        !isObject( nextThemeData )
       ) {
         return true;
       }
 
       if ( isObject( nextThemeData, { withProperty: 'data' })) {
+        const currentThemePropKeys = Object.keys( currentThemeData.data );
         const newThemePropKeys = Object.keys( nextThemeData.data );
+
+        if ( currentThemePropKeys.length !== newThemePropKeys ) {
+          return true;
+        }
 
         const hasUpdatedProperties = newThemePropKeys.some( propKey => {
           const currentPropObject = currentThemeData.data[propKey];
