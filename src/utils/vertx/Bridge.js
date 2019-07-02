@@ -15,7 +15,7 @@ class Bridge {
   }
 
   __getAccessToken() {
-    const accessToken = store.getState().keycloak;
+    const accessToken = store.getState().keycloak.accessToken;
 
     return accessToken;
   }
@@ -100,7 +100,33 @@ class Bridge {
     }
   }
 
-  checkStoreForCachedAction({ event, data }) {
+  sendFormattedAnswer({
+    targetCode,
+    sourceCode,
+    eventType = 'BTN_CLICK',
+    messageType = 'ANSWER',
+    value,
+    ...restProps
+  }) {
+    if (
+      isString( sourceCode, { ofMinLength: 1 }) &&
+      isString( targetCode, { ofMinLength: 1 })
+    ) {
+      this.sendEvent({
+        event: messageType,
+        sendWithToken: true,
+        eventType,
+        data: [{
+          targetCode,
+          sourceCode,
+          value,
+          ...restProps,
+        }],
+      });
+    }
+  }
+
+  checkStoreForCachedAction({ /* event, */ data }) {
     const { actionCache } = store.getState().vertx;
 
     if ( isObject( data, { withProperties: ['code', 'parentCode'] })) {
@@ -131,7 +157,7 @@ class Bridge {
       return false;
     }
     // eslint-disable-next-line no-console
-    console.warn( 'event has no code or value keys', event );
+    // console.warn( 'event has no code or value keys', event );
 
     return false;
   }
