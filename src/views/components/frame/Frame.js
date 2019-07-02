@@ -175,7 +175,7 @@ class Frame extends Component {
         const currentThemePropKeys = Object.keys( currentThemeData.data );
         const newThemePropKeys = Object.keys( nextThemeData.data );
 
-        if ( currentThemePropKeys.length !== newThemePropKeys ) {
+        if ( currentThemePropKeys.length !== newThemePropKeys.length ) {
           return true;
         }
 
@@ -183,7 +183,7 @@ class Frame extends Component {
           const currentPropObject = currentThemeData.data[propKey];
           const nextPropObject = nextThemeData.data[propKey];
 
-          // console.log( 'compare', currentPropObject, nextPropObject );
+          // console.log( 'compare', currentPropObject, nextPropObject ) );
 
           if ( !shallowCompare( currentPropObject, nextPropObject )) {
             return true;
