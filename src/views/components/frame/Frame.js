@@ -37,25 +37,29 @@ const defaultStyle = {
     height: '100%',
   },
   panel: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   north: {
     width: '100%',
-    alignItems: 'flex-start',
+    flexDirection: 'column',
   },
   south: {
     width: '100%',
-    alignItems: 'flex-end',
+    flexDirection: 'column-reverse',
+
   },
   east: {
-    justifyContent: 'flex-end',
+    flexDirection: 'row-reverse',
   },
   west: {
-    justifyContent: 'flex-start',
+    flexDirection: 'row',
   },
   centre: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 };
 
