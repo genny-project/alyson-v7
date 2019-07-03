@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array, string, oneOfType, number } from 'prop-types';
-import { isString, isArray, isObject, bool } from '../../../../utils';
-import { Image, Box, Touchable, Input, Icon } from '../../index';
+import { isString, isObject, bool } from '../../../../utils';
+import { Image, Box } from '../../index';
 
 class InputImage extends Component {
   static defaultProps = {
@@ -45,8 +45,8 @@ class InputImage extends Component {
       value,
       height,
       width,
-      editable,
-      ...restProps
+      // editable,
+      // ...restProps
     } = this.props;
     const { isHover } = this.state; // eslint-disable-line no-unused-vars
 
@@ -80,7 +80,10 @@ class InputImage extends Component {
           {...this.props.isClosed ? closedStyle : {}}
           position="relative"
         >
-          <Input
+          <Image
+            source={getValue( value )}
+          />
+          {/* <Input
             {...restProps}
             type="file"
             imageOnly
@@ -135,7 +138,7 @@ class InputImage extends Component {
                 </Box>
               );
             }}
-          />
+          /> */}
         </Box>
       </Box>
     );
