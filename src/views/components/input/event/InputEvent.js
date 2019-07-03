@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
 import { Text, EventTouchable, Icon, Box } from '../../index';
 import { isString, isObject } from '../../../../utils';
+import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 class InputEvent extends Component {
   static defaultProps = {
@@ -21,6 +22,10 @@ class InputEvent extends Component {
     isClosed: bool,
     onChangeState: func,
     iconOnly: bool,
+    subcomponentProps: object,
+    editable: bool,
+    error: string,
+    disabled: bool,
   }
 
   state = {
@@ -69,57 +74,71 @@ class InputEvent extends Component {
     // get eventType from somewhere in the question
 
     return (
-      <EventTouchable
-        {...restProps}
-        withFeedback
-        eventType={messageType}
-        code={question.code}
-        parentCode={parentGroupCode}
-        rootCode={rootQuestionGroupCode}
-        targetCode={ask.targetCode}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-
+      <SubcomponentThemeHandler
+        subcomponentProps={this.props.subcomponentProps}
+        editable={this.props.editable}
+        disabled={this.props.disabled}
+        error={this.props.error}
       >
-        <Box
-          // {...restProps}
-          flexDirection="row"
-          alignItems="center"
-          flex={1}
-          justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
-        >
-          { hasIcon
-            ? (
-              <Icon
-                name={icon}
-                color="black"
-                {...iconProps}
-              />
-            ) : null
-          }
-          { hasIcon &&
-            hasText
-            ? (
+        {({
+          componentProps,
+        }) => {
+          return (
+            <EventTouchable
+              {...restProps}
+              withFeedback
+              eventType={messageType}
+              code={question.code}
+              parentCode={parentGroupCode}
+              rootCode={rootQuestionGroupCode}
+              targetCode={ask.targetCode}
+              onMouseEnter={this.handleMouseEnter}
+              onMouseLeave={this.handleMouseLeave}
+
+            >
               <Box
-                paddingRight={5}
-              />
-            ) : null
-          }
-          {
-            hasText && !(
-              this.props.isClosed &&
-              hasIcon
-            )
-              ? (
-                <Text
-                  color={color}
-                  whiteSpace="nowrap"
-                  text={question.name}
-                />
-              ) : null
-          }
-        </Box>
-      </EventTouchable>
+                flexDirection="row"
+                alignItems="center"
+                flex={1}
+                justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
+                {...componentProps['input-wrapper']}
+              >
+                { hasIcon
+                  ? (
+                    <Icon
+                      name={icon}
+                      color="black"
+                      {...iconProps}
+                    />
+                  ) : null
+                }
+                { hasIcon &&
+                  hasText
+                  ? (
+                    <Box
+                      paddingRight={5}
+                    />
+                  ) : null
+                }
+                {
+                  hasText && !(
+                    this.props.isClosed &&
+                    hasIcon
+                  )
+                    ? (
+                      <Text
+                        color={color}
+                        whiteSpace="nowrap"
+                        text={question.name}
+                      />
+                    ) : null
+                }
+              </Box>
+            </EventTouchable>
+          );
+        }
+        }
+      </SubcomponentThemeHandler>
     );
   }
 }
