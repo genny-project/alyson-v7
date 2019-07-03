@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { bool } from 'prop-types';
-import { Box, Text, Touchable, Icon } from '../../../components';
+import { bool, array, func } from 'prop-types';
+import axios from 'axios';
+import { Box, Text, Touchable, Icon,EventTouchable } from '../../../components';
 import Preview from './Preview';
 import { isArray } from '../../../../utils';
+import store from '../../../../redux/store';
 
 /* These are commented out to be revisited later */
 // import Camera from './Camera';
@@ -11,10 +13,15 @@ import { isArray } from '../../../../utils';
 class FileInput extends Component {
   static defaultProps = {
     multiple: true,
+    imageOnly: false,
+    accept: [],
   };
 
   static propTypes = {
     multiple: bool,
+    imageOnly: bool,
+    accept: array,
+    onChangeValue: func,
   };
 
   constructor( props ) {
@@ -30,6 +37,7 @@ class FileInput extends Component {
   };
 
   getAllFiles = () => {
+    console.warn( this.inputFileNew, 'INPUTFILE NEW *************' );
     const input = this.inputFileNew.current;
     const { files } = input;
 
@@ -38,28 +46,32 @@ class FileInput extends Component {
 
   // To be visited later for getting data from camera
   // Calculates the size of a selected file to be uploaded in MB
-  // CalculateFileSize( number ) {
-  //   if ( number < 1024 ) {
-  //     return `${number}bytes`;
-  //   }
-  //   if ( number >= 1024 && number < 1048576 ) {
-  //     return `${( number / 1024 ).toFixed( 1 )}KB`;
-  //   }
-  //   if ( number >= 1048576 ) {
-  //     return `${( number / 1048576 ).toFixed( 1 )}MB`;
-  //   }
-  // }
+  CalculateFileSize( number ) {
+    if ( number < 1024 ) {
+      return `${number}bytes`;
+    }
+    if ( number >= 1024 && number < 1048576 ) {
+      return `${( number / 1024 ).toFixed( 1 )}KB`;
+    }
+    if ( number >= 1048576 ) {
+      return `${( number / 1048576 ).toFixed( 1 )}MB`;
+    }
+  }
 
   // Check if the incoming value type is correct
-  // validFileType( file ) {
-  //   for ( var i = 0; i < fileTypes.length; i++ ) {
-  //     if ( file.type === fileTypes[i] ) {
-  //       return true;
-  //     }
-  //   }
+  validFileType( file ) {
+    for ( var i = 0; i < fileTypes.length; i++ ) {
+      if ( file.type === fileTypes[i] ) {
+        return true;
+      }
+    }
 
-  //   return false;
-  // }
+    return false;
+  }
+
+  checkFileTypes( files ) {
+    
+  }
 
   sendFilesToBackend() {
     console.log('This method will send files to the backend'); //eslint-disable-line
@@ -82,6 +94,8 @@ class FileInput extends Component {
           numberOfFilesSelected: state.selectedFiles.filter( item => item.name !== file.name ).length,
         };
       }, console.warn(this.state, 'state in handle close')); //eslint-disable-line
+
+      this.uploadFile();
     };
 
     return (
@@ -112,21 +126,63 @@ class FileInput extends Component {
     );
   };
 
+  uploadFile( formData ) {
+    const tt = store.getState().keycloak;
+
+    const token = store.getState().keycloak.accessToken;
+
+    axios({
+      method: 'post',
+      url: 'http://192.168.17.190:8180/api/documents',
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data','Authorization': `bearer ${token}` } ,
+    })
+    .then(( response ) => {
+      // handle success
+        console.log(  "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
+      console.warn({ response });
+      if ( this.props.onChangeValue ) 
+        this.props.onChangeValue( response.data.URL ); // send the URl to Genny system
+    })
+      .catch(( response ) => {
+          // handle error
+        console.log( response, "FILE_UPLOAD_FAILURE" ); // eslint-disable-line
+      });
+  }
+
   handleClickOnHiddenButton = () => {
     this.inputFileNew.current.click();
   };
 
-  handleChange = () => {
+  handleChange = ( e ) => {
+    console.warn( e.target.result , 'E>TARGET>RESULT' );
+
     const allFiles = this.getAllFiles();
     const allFilesArray = Array.from( allFiles );
 
     console.warn({ allFilesArray }); //eslint-disable-line
     const numberOfFilesSelected = allFilesArray.length;
 
+    const newFilesArryFromFormData = this.inputFileNew.current.files;
+    
     this.setState({
       numberOfFilesSelected,
       selectedFiles: allFilesArray,
     });
+
+    const formData = new FormData();
+
+    for ( const pair of newFilesArryFromFormData ) {
+      formData.append( 'file', pair );    
+    } 
+
+    console.warn( formData, 'FORM _DATA' );
+
+    // const token = store.getState().keycloak.accessToken;
+
+    // console.log({ token }); //eslint-disable-line
+
+    this.uploadFile( formData );
   };
 
   // Please donot remove
@@ -194,6 +250,7 @@ class FileInput extends Component {
         </Box>
 
         {this.generatePreview()}
+
         {/* Please DONOT REMOVE*/}
         {/* See the comments above */}
 
@@ -204,7 +261,8 @@ class FileInput extends Component {
           <Text text=" Camera" />
         </EventTouchable> */}
         {/* Commented out because we are not using this for now */}
-        {/* {requestCamera ? <Camera /> : null} */}
+        {/* <Camera /> */}
+
       </Box>
     );
   }

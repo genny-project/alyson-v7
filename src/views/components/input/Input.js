@@ -219,25 +219,24 @@ class Input extends Component {
             ref={input => this.input = input}
           />
         );
+      // case 'file':
+      // case 'upload':
+      //   return (
+      //     <InputFile
+      //       {...inputProps}
+      //       ref={input => this.input = input}
+      //     />
+      //   );
 
-      case 'file':
-      case 'upload':
-        return (
-          <InputFile
-            {...inputProps}
-            ref={input => this.input = input}
-          />
-        );
-
-      case 'filemultiple':
-      case 'uploadmultiple':
-        return (
-          <InputFile
-            {...inputProps}
-            multiple
-            ref={input => this.input = input}
-          />
-        );
+      // case 'filemultiple':
+      // case 'uploadmultiple':
+      //   return (
+      //     <InputFile
+      //       {...inputProps}
+      //       multiple
+      //       ref={input => this.input = input}
+      //     />
+      //   );
 
       case 'image':
       case 'Image':
