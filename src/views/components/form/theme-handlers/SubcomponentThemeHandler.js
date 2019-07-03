@@ -81,9 +81,9 @@ class SubcomponentThemeHandler extends Component {
     };
 
     return children({
-      componentProps,
-      updateState: this.updateState,
-      filterComponentProps: filterComponentProps,
+      componentProps, // object containing the theme data filtered by state
+      updateState: this.updateState, // function to update the state of this component
+      filterComponentProps: filterComponentProps, // function to update the theme object, and RETURNS the object
     });
   }
 }
