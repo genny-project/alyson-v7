@@ -52,6 +52,19 @@ class InputEvent extends Component {
       this.props.onChangeState({ hover: false });
   }
 
+  applyStyleForNextAndCancel= () => {
+    return this.props.question && this.props.question.attributeCode ? 
+      ({ 
+        backgroundColor: '#dddddd',
+        height: '40px',
+        width: '200px',
+        color: 'green',
+        borderWidth: '1px',
+        broderColor: 'black',
+        borderStyle: 'solid',
+      }) : null;
+  }
+
   render() {
     const {
       question,
@@ -94,6 +107,7 @@ class InputEvent extends Component {
               targetCode={ask.targetCode}
               onMouseEnter={this.handleMouseEnter}
               onMouseLeave={this.handleMouseLeave}
+              {...this.applyStyleForNextAndCancel()}
 
             >
               <Box

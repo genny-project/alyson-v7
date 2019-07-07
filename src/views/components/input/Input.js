@@ -222,20 +222,12 @@ class Input extends Component {
       case 'checkbox':
       case 'checkboxmultiple':
         return (
-          <CheckBoxList
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
+          <InputEvent {...inputProps} />
         );
 
       case 'radio':
         return (
-          <CheckBoxList
-            {...inputProps}
-            multiSelect={false}
-            icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: '' }}
-            ref={input => ( this.input = input )}
-          />
+          <InputEvent {...inputProps} />
         );
 
       case 'file':
