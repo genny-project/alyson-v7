@@ -222,13 +222,20 @@ class Input extends Component {
       case 'checkbox':
       case 'checkboxmultiple':
         return (
-          <InputEvent {...inputProps} />
+          <CheckBoxList 
+            {...inputProps} 
+            ref={input => ( this.input = input )}
+          />
         );
 
       case 'radio':
         return (
-          <InputEvent {...inputProps} />
-        );
+          <CheckBoxList 
+            {...inputProps} 
+            multiSelect={false}
+            icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: '' }}
+            ref={input => ( this.input = input )}
+          />        );
 
       case 'file':
       case 'upload':
@@ -376,6 +383,7 @@ class Input extends Component {
         return <RichTextEditor {...inputProps} />;
 
       case 'event':
+      case 'buttonevent':
         return <InputEvent {...inputProps} />;
 
       case 'menu':
