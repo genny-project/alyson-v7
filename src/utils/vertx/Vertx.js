@@ -134,6 +134,10 @@ class Vertx {
       NProgress.done();
     }
 
+    if ( message.cmd_type === 'LOGOUT' ) {
+      store.dispatch( actions.userLogout());
+    }
+
     // this.log( 'Receiving a message' );
 
     // if ( isAnswerMessage ) console.log( 'message', JSON.stringify({ message }));
