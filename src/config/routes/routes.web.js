@@ -28,6 +28,11 @@ const routes = [
     component: Pages.Register,
   },
   {
+    path: '/version',
+    exact: true,
+    component: Pages.Version,
+  },
+  {
     path: '*',
     component: Pages.Generic,
   },
