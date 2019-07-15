@@ -356,12 +356,14 @@ class FormGroup extends Component {
     }
 
     if (
-      properties.expandable
+      properties.expandable ||
+      properties.dropdown
     ) {
       return (
         <Collapsible
           isClosed={this.props.isClosed}
           testID={`${parentGroupCode}:${questionCode}:COLLAPSIBLE`}
+          inline={!properties.dropdown}
           renderHeader={(
             question &&
             properties.renderQuestionGroupInput

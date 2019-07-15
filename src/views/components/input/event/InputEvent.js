@@ -32,29 +32,9 @@ class InputEvent extends Component {
     isHovering: false,
   }
 
-  handleMouseEnter = ( event ) => {
-    this.setState({
-      isHovering: true,
-    });
-
-    if ( this.props.onChangeState )
-      this.props.onChangeState({ hover: true });
-
-    event.stopPropagation();
-  }
-
-  handleMouseLeave = () => {
-    this.setState({
-      isHovering: false,
-    });
-
-    if ( this.props.onChangeState )
-      this.props.onChangeState({ hover: false });
-  }
-
   applyStyleForNextAndCancel= () => {
-    return this.props.question && this.props.question.attributeCode ? 
-      ({ 
+    return this.props.question && this.props.question.attributeCode ?
+      ({
         backgroundColor: '#dddddd',
         height: '40px',
         width: '200px',
@@ -63,6 +43,28 @@ class InputEvent extends Component {
         broderColor: 'black',
         borderStyle: 'solid',
       }) : null;
+  }
+
+  handleMouseEnter = () => {
+    this.setState({
+      isHovering: true,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({ hover: true });
+
+    // event.stopPropagation();
+  }
+
+  handleMouseLeave = () => {
+    this.setState({
+      isHovering: false,
+    });
+
+    if ( this.props.onChangeState )
+      this.props.onChangeState({
+        hover: false,
+      });
   }
 
   render() {
@@ -108,7 +110,6 @@ class InputEvent extends Component {
               onMouseEnter={this.handleMouseEnter}
               onMouseLeave={this.handleMouseLeave}
               {...this.applyStyleForNextAndCancel()}
-
             >
               <Box
                 flexDirection="row"

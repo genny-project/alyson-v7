@@ -12,6 +12,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'expandable',
   },
+  PRI_IS_DROPDOWN: {
+    default: false,
+    label: 'dropdown',
+  },
   PRI_IS_INHERITABLE: {
     default: true,
     label: 'inheritable',
