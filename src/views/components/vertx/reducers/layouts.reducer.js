@@ -171,6 +171,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
                 EAST: 'EAST',
                 WEST: 'WEST',
                 CENTRE: 'CENTRE',
+                WRAPPER: 'WRAPPER',
                 FRAME: 'FRAME',
               };
 

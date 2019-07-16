@@ -399,7 +399,7 @@ class Frame extends Component {
         text
         // onLayout={this.handleOnLayout}
         {...defaultStyle.wrapper}
-        {...getStyling( 'frame' )['default']}
+        {...getStyling( 'wrapper' )['default']}
       >
         {hasContent( 'NORTH' ) ? (
           <Panel
