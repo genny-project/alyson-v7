@@ -1,6 +1,7 @@
 import EventBus from 'vertx3-eventbus-client';
 import decodeToken from 'jwt-decode';
 import NProgress from 'nprogress';
+import { push } from 'react-router-redux';
 import { prefixedLog } from '../../utils';
 import { store } from '../../redux';
 import * as actions from '../../redux/actions';
@@ -119,6 +120,26 @@ class Vertx {
     if ( error ) this.log( error, 'error' );
   };
 
+  handleLogoutOnLogoutEvent = async () => {
+    const promises = [
+      Storage.remove( 'kcSessionState' ),
+      Storage.remove( 'kcSessionNonce' ),
+      Storage.remove( 'kcAuth' ),
+      this.asyncSetState({
+        isAuthenticated: false,
+        accessToken: null,
+        refreshToken: null,
+        sessionState: null,
+        sessionNonce: null,
+        error: null,
+        user: {},
+        consecutiveTokenFails: 0,
+      }),
+    ];
+
+    await Promise.all( promises );
+  }
+
   handleIncomingMessage = ( message, isCachedMessage, isAnswerMessage ) => {
     const { incomingMessageHandler } = this.state;
 
@@ -132,6 +153,12 @@ class Vertx {
 
     if ( message.cmd_type && message.cmd_type === 'ROUTE_CHANGE' ) {
       NProgress.done();
+    }
+
+    if ( message.cmd_type === 'LOGOUT' ) {
+      store.dispatch( actions.userLogout());
+      this.handleLogoutOnLogoutEvent();
+      store.dispatch( push( '/logout' ));
     }
 
     // this.log( 'Receiving a message' );
