@@ -103,6 +103,7 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_CONTENT_SELECTED | Object | { "color": "blue" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently selected. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
+| PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in a floating dropdown component. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
 | PRI_HAS_LABEL | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Label. |
 | PRI_HAS_REQUIRED | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a symbol to indicate the field is mandatory. |
@@ -242,6 +243,10 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 ## New Changes
+
+* Added PRI_IS_DROPDOWN to accepted attributes.
+
+----
 
 * Updated Panel types to include **FRAME**.
 * Added description of the **FRAME** Panel type.

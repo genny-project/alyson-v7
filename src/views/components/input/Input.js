@@ -21,7 +21,6 @@ import InputPayment from './payment';
 import AudioRecord from './audio-record';
 import SegmentedControl from './segmented-control';
 import InputTag from './tag';
-import InputMenu from './menu';
 import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
@@ -402,14 +401,6 @@ class Input extends Component {
           />
         );
 
-      case 'menu':
-        return (
-          <InputMenu
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
       case 'sort':
         return <InputSort {...inputProps} />;
 
@@ -419,6 +410,16 @@ class Input extends Component {
             {...inputProps}
             text={this.props.question.name}
           />
+        );
+
+      /* DEPRECATED DATATYPES */
+      case 'menu':
+        return (
+          <Text>
+            Datatype `
+            {type}
+            ` has been deprecated.
+          </Text>
         );
 
       default:

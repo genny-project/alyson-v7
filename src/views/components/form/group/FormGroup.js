@@ -3,7 +3,7 @@ import { string, object, number, bool, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge, arrayAddDelimiter } from '../../../../utils';
-import { Box, Collapsible, EventTouchable, Fragment, Text } from '../../index';
+import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
 import VisualControl from '../visual-control';
 
 const defaultStyle = {
@@ -359,11 +359,12 @@ class FormGroup extends Component {
       properties.expandable ||
       properties.dropdown
     ) {
+      const WrapperElement = properties.dropdown ? Dropdown : Collapsible;
+
       return (
-        <Collapsible
+        <WrapperElement
           isClosed={this.props.isClosed}
-          testID={`${parentGroupCode}:${questionCode}:COLLAPSIBLE`}
-          inline={!properties.dropdown}
+          testID={`${parentGroupCode}:${questionCode}:WrapperElement`}
           renderHeader={(
             question &&
             properties.renderQuestionGroupInput
@@ -407,7 +408,7 @@ class FormGroup extends Component {
               })
             )}
           </Box>
-        </Collapsible>
+        </WrapperElement>
       );
     }
 
