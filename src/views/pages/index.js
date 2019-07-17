@@ -4,3 +4,4 @@ export { default as Logout } from './logout';
 export { default as Loading } from './loading';
 export { default as Generic } from './generic';
 export { default as Public } from './public';
+export { default as Version } from './version';

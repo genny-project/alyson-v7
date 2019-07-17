@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactJson from 'react-json-view';
 import { Icon, Box, Text, Button } from '../../components';
+import { Version } from '../../pages';
 import TestDisplay from '../../../views/app/test-display';
 import store from '../../../redux/store';
 import './index.css';
@@ -82,7 +83,7 @@ Expand to View Debug Mode (🐞)
         ) : (
           <pre style={{ width: '900px' }}>
             {/* This component is only being renderd in web,
-                also we need pre for code formatting 
+                also we need pre for code formatting
                 Box does'nt do the Job of formatting unicode and strings.
             */}
             <TestDisplay />
@@ -102,6 +103,17 @@ Expand to View Debug Mode (🐞)
                 />
               </Button>
             </Box>
+
+            <Box
+              flexDirection="column"
+              color="#fff"
+              backgroundColor="#fff"
+              padding={10}
+              marginTop={10}
+            >
+              <Version />
+            </Box>
+
             <Box
               flexDirection="column"
               color="#fff"
