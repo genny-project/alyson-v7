@@ -257,7 +257,7 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       useAttributeNameAsValue: useAttributeNameAsValue,
       useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: placeholder || question.placeholder,
+      placeholder: placeholder || question.placeholder ||  question.name,
       index,
     };
 
@@ -328,7 +328,7 @@ class FormGroup extends Component {
     const hasTitle = name && properties.renderQuestionGroupTitle;
     const hasDescription = description && properties.renderQuestionGroupDescription;
     const hasDelimiter = properties.renderDelimiter;
-
+    
     const delimiterComponent = (
       <Box
         // delimiter props
@@ -366,20 +366,62 @@ class FormGroup extends Component {
           isClosed={this.props.isClosed}
           testID={`${parentGroupCode}:${questionCode}:WrapperElement`}
           renderHeader={(
-            question &&
-            properties.renderQuestionGroupInput
-          ) ? (
-              this.renderInput({
-                ask: questionGroup,
-                questionGroupCode: parentGroupCode,
-                index,
-                form,
-                additionalProps: {
-                  flexWrapper: true,
-                },
-              })
-            ) : null
-          }
+            <Fragment>
+              {
+              (
+                hasTitle ||
+                hasDescription
+              ) ? (
+                <Box
+                  marginBottom={10}
+                  padding={10}
+                  flexDirection="column"
+                >
+                  {
+                    hasTitle ? (
+                      <Box
+                        // justifyContent="center"
+                        marginBottom={10}
+                      >
+                        <Text
+                          size="xl"
+                          text={name}
+                          bold
+                        />
+                      </Box>
+                    ) : null
+                  }
+                  {
+                    hasDescription ? (
+                      <Box>
+                        <Text
+                          size="sm"
+                          text={description}
+                        />
+                      </Box>
+                    ) : null
+                  }
+                </Box>
+                ) : null
+            }
+              {
+              (
+                question &&
+                properties.renderQuestionGroupInput
+              ) ? (
+                  this.renderInput({
+                    ask: questionGroup,
+                    questionGroupCode: parentGroupCode,
+                    index,
+                    form,
+                    additionalProps: {
+                      flexWrapper: true,
+                    },
+                  })
+                ) : null
+            }
+            </Fragment>
+)}
           headerIconProps={this.getStyling()['default']}
         >
           <Box
