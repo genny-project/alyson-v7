@@ -39,6 +39,7 @@ class Input extends Component {
     question: object,
     theme: object,
     onChangeState: func,
+    inputFieldProps: object,
   };
 
   state = {
@@ -71,7 +72,7 @@ class Input extends Component {
   };
 
   render() {
-    const { type, ...restProps } = this.props;
+    const { type, inputFieldProps, ...restProps } = this.props;
 
     const inputProps = {
       ...restProps,
@@ -86,6 +87,7 @@ class Input extends Component {
         return (
           <InputText
             {...inputProps}
+            {...inputFieldProps}
             ref={input => ( this.input = input )}
             onChangeState={this.handleStateChange}
           />
@@ -95,6 +97,7 @@ class Input extends Component {
         return (
           <InputText
             {...inputProps}
+            {...inputFieldProps}
             type="text"
             secureTextEntry
             ref={input => ( this.input = input )}
@@ -106,6 +109,7 @@ class Input extends Component {
           <InputText
             keyboardType="email-address"
             {...inputProps}
+            {...inputFieldProps}
             ref={input => ( this.input = input )}
             onChangeState={this.handleStateChange}
           />
@@ -117,6 +121,7 @@ class Input extends Component {
             multiline
             numberOfLines={2}
             {...inputProps}
+            {...inputFieldProps}
             ref={input => this.input = input}
             onChangeState={this.handleStateChange}
           />
@@ -133,6 +138,7 @@ class Input extends Component {
           <InputText
             keyboardType="phone-pad"
             {...inputProps}
+            {...inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -192,6 +198,7 @@ class Input extends Component {
         return (
           <InputAutocomplete
             {...inputProps}
+            // inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -200,6 +207,7 @@ class Input extends Component {
         return (
           <InputAddress
             {...inputProps}
+            // inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -222,16 +230,16 @@ class Input extends Component {
       case 'checkbox':
       case 'checkboxmultiple':
         return (
-          <CheckBoxList 
-            {...inputProps} 
+          <CheckBoxList
+            {...inputProps}
             ref={input => ( this.input = input )}
           />
         );
 
       case 'radio':
         return (
-          <CheckBoxList 
-            {...inputProps} 
+          <CheckBoxList
+            {...inputProps}
             multiSelect={false}
             icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: '' }}
             ref={input => ( this.input = input )}
@@ -282,6 +290,7 @@ class Input extends Component {
         return (
           <InputDatePicker
             {...inputProps}
+            inputFieldProps={inputFieldProps}
             date
             ref={input => ( this.input = input )}
           />
@@ -291,6 +300,7 @@ class Input extends Component {
         return (
           <InputTimePicker
             {...inputProps}
+            inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -300,6 +310,7 @@ class Input extends Component {
         return (
           <InputDateTimePicker
             {...inputProps}
+            inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -384,7 +395,12 @@ class Input extends Component {
 
       case 'event':
       case 'buttonevent':
-        return <InputEvent {...inputProps} />;
+        return (
+          <InputEvent
+            {...inputProps}
+            {...inputFieldProps}
+          />
+        );
 
       case 'menu':
         return (

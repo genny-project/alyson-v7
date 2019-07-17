@@ -261,9 +261,9 @@ class InputAutocomplete extends Component {
                       updateValueWhenFocused
                       onChangeState={( state ) => {
                         this.props.onChangeState( state );
-                        updateState( 'input-field' );
+                        updateState( 'input-field' )( state );
                       }}
-                      stateBasedProps={componentProps['input-field']}
+                      {...componentProps['input-field']}
                     />
 
                     {

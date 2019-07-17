@@ -272,8 +272,6 @@ class InputAddress extends Component {
     const { testID, ...restProps } = this.props;
     const { items, countryLock } = this.state;
 
-    // console.log( 'placeholder', this.props.placeholder );
-
     return (
       <Box
         flexDirection="row"

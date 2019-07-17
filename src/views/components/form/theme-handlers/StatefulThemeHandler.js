@@ -98,11 +98,9 @@ class StatefulThemeHandler extends Component {
       };
     };
 
-    const inputProps = getProps();
-
     return children({
       subcomponentProps: subcomponentThemes,
-      inputProps: inputProps,
+      inputProps: getProps(),
       onChangeState: this.handleChangeState,
     });
   }

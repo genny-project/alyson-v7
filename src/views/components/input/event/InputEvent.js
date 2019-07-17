@@ -28,45 +28,6 @@ class InputEvent extends Component {
     disabled: bool,
   }
 
-  state = {
-    isHovering: false,
-  }
-
-  applyStyleForNextAndCancel= () => {
-    return this.props.question && this.props.question.attributeCode ?
-      ({
-        backgroundColor: '#dddddd',
-        height: '40px',
-        width: '200px',
-        color: 'green',
-        borderWidth: '1px',
-        broderColor: 'black',
-        borderStyle: 'solid',
-      }) : null;
-  }
-
-  handleMouseEnter = () => {
-    this.setState({
-      isHovering: true,
-    });
-
-    if ( this.props.onChangeState )
-      this.props.onChangeState({ hover: true });
-
-    // event.stopPropagation();
-  }
-
-  handleMouseLeave = () => {
-    this.setState({
-      isHovering: false,
-    });
-
-    if ( this.props.onChangeState )
-      this.props.onChangeState({
-        hover: false,
-      });
-  }
-
   render() {
     const {
       question,
@@ -77,11 +38,11 @@ class InputEvent extends Component {
       icon,
       iconProps,
       onPress, // eslint-disable-line no-unused-vars
+      onChangeState,
       color,
       iconOnly,
       ...restProps
     } = this.props;
-    const { isHovering } = this.state; // eslint-disable-line no-unused-vars
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
     const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
@@ -97,6 +58,7 @@ class InputEvent extends Component {
       >
         {({
           componentProps,
+          updateState,
         }) => {
           return (
             <EventTouchable
@@ -107,35 +69,42 @@ class InputEvent extends Component {
               parentCode={parentGroupCode}
               rootCode={rootQuestionGroupCode}
               targetCode={ask.targetCode}
-              onMouseEnter={this.handleMouseEnter}
-              onMouseLeave={this.handleMouseLeave}
-              {...this.applyStyleForNextAndCancel()}
+              // onMouseEnter={this.handleMouseEnter}
+              // onMouseLeave={this.handleMouseLeave}
+              onChangeState={( state ) => {
+                updateState( 'input-wrapper' )( state );
+                if ( onChangeState )  {
+                  onChangeState( state );
+                }
+              }}
+              alignItems="center"
+              flex={1}
+              justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
+              flexDirection="row"
+              {...componentProps['input-wrapper']}
             >
-              <Box
-                flexDirection="row"
-                alignItems="center"
-                flex={1}
-                justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
-                {...componentProps['input-wrapper']}
-              >
-                { hasIcon
-                  ? (
-                    <Icon
-                      name={icon}
-                      color="black"
-                      {...iconProps}
-                    />
-                  ) : null
+              {/* <Box
+
+              > */}
+              { hasIcon
+                ? (
+                  <Icon
+                    name={icon}
+                    color="black"
+                    {...restProps}
+                    {...iconProps}
+                  />
+                ) : null
                 }
-                { hasIcon &&
+              { hasIcon &&
                   hasText
-                  ? (
-                    <Box
-                      paddingRight={5}
-                    />
-                  ) : null
+                ? (
+                  <Box
+                    paddingRight={5}
+                  />
+                ) : null
                 }
-                {
+              {
                   hasText && !(
                     this.props.isClosed &&
                     hasIcon
@@ -145,10 +114,11 @@ class InputEvent extends Component {
                         color={color}
                         whiteSpace="nowrap"
                         text={question.name}
+                        {...restProps}
                       />
                     ) : null
                 }
-              </Box>
+              {/* </Box> */}
             </EventTouchable>
           );
         }

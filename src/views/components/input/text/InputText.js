@@ -383,7 +383,7 @@ class InputText extends Component {
       paddingTop: paddingTop,
       paddingRight: paddingRight,
       paddingBottom,
-      paddingLeft: paddingLeft || hasIcon ? 30 : null,
+      paddingLeft: paddingLeft ? paddingLeft : hasIcon ? 30 : null,
       fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,

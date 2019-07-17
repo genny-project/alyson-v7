@@ -305,7 +305,7 @@ class VisualControl extends Component {
                     <FormInput
                       {...restProps}
                       {...componentProps['vcl-input']}
-                      {...inputProps}
+                      inputFieldProps={inputProps}
                       subcomponentProps={subcomponentProps}
                       onBlur={onBlur}
                       iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}

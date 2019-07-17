@@ -89,6 +89,7 @@ class InputDatePicker extends PureComponent {
                 onSelectionChange={onSelectionChange}
                 testID={`input-date-picker ${testID}`}
                 paddingRight={20}
+                {...this.props.inputFieldProps}// eslint-disable-line
               />
               {/* <Touchable
                 withFeedback
