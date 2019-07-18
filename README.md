@@ -146,7 +146,7 @@ A **Visual Control** is the group of components that are render as part of a **Q
 
 The basic components of a Visual Control are as follows:
 
-![Visual Control Layout](https://i.imgur.com/ZUh3Fdo.png)
+![Visual Control Structure](https://i.imgur.com/8sHNoPu.png)
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
@@ -162,6 +162,8 @@ The basic components of a Visual Control are as follows:
 ## Input Subcomponents
 
 An **Input** that is part of a **Visual Control** might be a single element, such as a Text Field. However, in many cases it is more complex, and contains additional subcomponents. The currently supported subcomponents are as follows:
+
+![Input Subcomponent Structure](https://i.imgur.com/ijdxdia.png)
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
