@@ -123,10 +123,23 @@ Unlike Base Entities, **Themes** are connected to Question Sets using the **Cont
 ### Questions
 A Question is connected to an Ask, which has an Attribute. It is displayed as a **Visual Control** (see below). The data for the Visual Control is used from the `question` field.
 
+
 ### Question Groups
 The Question Group is a container form a group of Questions and/or Question Groups. It can be used to pass inheritable Theme data to all of the children, and also can told to render in a different way if there are any Behavioural Attributes attached to the Theme.
 
 A Question Group can also have a `question` field, but by default it is not rendered.
+
+![Question Group Structure](https://i.imgur.com/WXlQMzF.png)
+
+| Name | visualControlType Code | Description |
+| ------ | ---------- | ----------- |
+| Wrapper | `GROUP_WRAPPER` |  box containing all the other components of the visual control |
+| Label | `GROUP_LABEL` | text displaying the question name |
+| Description | `GROUP_DESCRIPTION` | additional text to provide for information or context |
+| Input | `GROUP_INPUT` | input or display component that will be rendered |
+| Header Wrapper | `GROUP_HEADER_WRAPPER` | interactable component that toggles whether the Content Wrapper is rendered or not |
+| Icon | `GROUP_ICON` | icon rendered as part of the header |
+| Content Wrapper | `GROUP_CONTENT_WRAPPER` | component container that renders any children within it |
 
 ### Difference Between a Question Group and a Question?
 A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two?
@@ -139,6 +152,7 @@ The answer is that if the object has `childAsks`, then it is rendered as a Quest
 *explain attributes*
 *explain with images why question group inputs are neccessary*
 *Collapsible*
+*Dropdown*
 
 ## Visual Control
 

@@ -53,7 +53,7 @@ class StatefulThemeHandler extends Component {
         return themeProps;
       };
 
-      const icon = getIcon();
+      const icon = getIcon ? getIcon() : null;
 
       return {
         // ,

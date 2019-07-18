@@ -63,14 +63,16 @@ const themeBehaviourAttributes = {
 };
 
 const componentTypes = {
-  // form groups - simple
-  GROUP: 'group',
-  // form groups - complex
+  // form groups
   GROUP_WRAPPER: 'group-wrapper',
-  GROUP_CONTENT: 'group-content',
+  GROUP_LABEL: 'group-label',
+  GROUP_DESCRIPTION: 'group-description',
+  GROUP_INPUT: 'group-input',
+  GROUP_HEADER_WRAPPER: 'group-header-wrapper',
   GROUP_ICON: 'group-icon',
-
-  DELIMITER: 'delimiter',
+  GROUP_CONTENT_WRAPPER: 'group-content-wrapper',
+  // no supported yet
+  GROUP_DELIMITER: 'group--delimiter',
 
   // visual control
   VCL_WRAPPER: 'vcl-wrapper',
