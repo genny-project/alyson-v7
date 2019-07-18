@@ -180,11 +180,6 @@ Any Themes which are attached to a **Question** via the **Context List** will be
 
 Themes which have a visualControlType specified can still be passed through other Question Groups and Questions. If you want to apply a Theme for a Visual Control to every input in a Question Set, you can attach that Theme to the root Question Group of the Question Set, and it will be propagated to all of the child Questions.
 
-### Route Changes
-Each **Legacy Layouts** is a page that has a URI that corresponds to a **Route**. Because only one page needs to be displayed per route, all we need to do is determine which layout we need, and which **Frame** it needs to be linked to. The default **Frame** for this purpose is `FRM_CONTENT`.
-
-The Frontend listens for **Route Change** events, and when it receives one, gets the URI from the URL, and creates a fake **Link** to the **FRAME** `FRM_CONTENT`. If there URI is empty, then the **Link** defaults to `home`.
-
 ## Links
 ( prefix: LNK_ )
 
@@ -245,6 +240,11 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 ## New Changes
+
+* Add image for Input Subcomponents.
+* Updated image for Visual Control.
+
+----
 
 * Added PRI_IS_DROPDOWN to accepted attributes.
 
