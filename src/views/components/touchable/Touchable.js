@@ -11,6 +11,7 @@ class Touchable extends Component {
     display: 'flex',
     __dangerouslySetStyle: {},
     hoverProps: {},
+    disabled: false,
   }
 
   static propTypes = {
@@ -117,6 +118,7 @@ class Touchable extends Component {
     }),
     testID: string,
     onRef: func,
+    disabled: bool,
   }
 
   state = {
@@ -247,6 +249,7 @@ class Touchable extends Component {
       overflowX,
       overflowY,
       display,
+      disabled,
       ...restProps
     } = this.props;
 
@@ -333,6 +336,7 @@ class Touchable extends Component {
         testID={this.props.testID}
       >
         <Element
+          disabled={disabled}
           {...restProps}
           {...isHovering ? hoverProps : {}}
           style={[

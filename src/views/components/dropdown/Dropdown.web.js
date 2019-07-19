@@ -4,7 +4,6 @@ import { Box, Icon, Menu, MenuButton, MenuContent, Fragment }  from '../../compo
 
 class Dropdown extends Component {
   static defaultProps = {
-    showHeader: true,
     testID: 'collapsible',
     wrapperProps: {},
     headerWrapperProps: {},
@@ -14,7 +13,6 @@ class Dropdown extends Component {
 
   static propTypes = {
     children: any,
-    showHeader: bool,
     // open: bool,
     onToggle: func,
     testID: string,
@@ -29,12 +27,12 @@ class Dropdown extends Component {
     disabled: bool,
     color: string,
     backgroundColor: string,
+    subcomponentProps: object,
   }
 
   render() {
     const {
       children,
-      showHeader,
       testID,
       headerWrapperProps,
       headerIconProps,
@@ -44,7 +42,10 @@ class Dropdown extends Component {
       disabled,
       color,
       backgroundColor,
+      subcomponentProps,
     } = this.props;
+
+    console.log( 'subcomponentProps', subcomponentProps );
 
     return (
       <Menu
@@ -53,62 +54,64 @@ class Dropdown extends Component {
         {({ isOpen }) => {
           return (
             <Fragment>
-              <MenuButton
-                disabled={disabled}
-                style={{
-                  color,
-                }}
-                data-testid={testID}
-                testID={testID}
+              <Box
+                justifyContent="center"
+                flexDirection="column"
+                {...subcomponentProps['group-header-wrapper']}
               >
-                {showHeader
-                  ? (
-                    <Box
-                      flex={1}
-                      justifyContent="space-between"
-                      flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
-                    >
-                      {/* header alt goes here */}
-                      {renderHeader}
-                      {
-                        !isClosed
-                          ? (
-                            <Box
-                              justifyContent="center"
-                              alignItems="center"
-                              {...headerWrapperProps}
-                            >
-                              <Box
-                                transform={[
-                                  { rotate: isOpen ? '0deg' : '270deg' },
-                                ]}
-                                {...headerWrapperProps}
-                              >
-                                <Icon
-                                  name="keyboard_arrow_down"
-                                  color="black"
-                                  cursor="pointer"
-                                  {...headerIconProps}
-                                />
-                              </Box>
-                            </Box>
-                          ) : null
-                        }
-                    </Box>
-                  ) : null
-                }
-              </MenuButton>
+                {/* header alt goes here */}
+                <Box
+                  // header wrapper styling here?
+                  flex={1}
+                  justifyContent="space-between"
+                  flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
+                >
+                  {/* {renderHeader} */}
+                  {!isClosed
+                    ? (
+                      <MenuButton
+                        disabled={disabled}
+                        style={{
+                          color,
+                        }}
+                        data-testid={testID}
+                        testID={testID}
+                      >
+                        {renderHeader}
+                        <Box
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Box
+                            transform={[
+                              { rotate: isOpen ? '0deg' : '270deg' },
+                            ]}
+                            {...subcomponentProps['group-icon']}
+                          >
+                            <Icon
+                              name="keyboard_arrow_down"
+                              color="black"
+                              cursor="pointer"
+                              {...subcomponentProps['group-icon']}
+                            />
+                          </Box>
+                        </Box>
+                      </MenuButton>
+                    ) : null }
+                </Box>
+              </Box>
 
               {(
                 <MenuContent
                   style={{
                     ...{
                       color,
-                      backgroundColor,
+                      backgroundColor: 'white',
                     },
                   }}
                   ref={input => this.input = input}
                   identifier={testID}
+                  {...subcomponentProps['group-content-wrapper']}
                 >
                   {(
                     React.Children.map( children, child => (

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge, arrayAddDelimiter } from '../../../../utils';
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
-import { StatefulThemeHandler } from '../theme-handlers';
+import { StatefulThemeHandler, StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
 
 const components = [
@@ -374,9 +374,60 @@ class FormGroup extends Component {
       >
         <Text
           size="sm"
-          text={description}
+          // text={description}
+          text="This is question group"
           {...props}
         />
+      </Box>
+    );
+
+    const headerWrapperComponent = ({ subcomponentProps }) => {
+      if ( !hasLabel && !hasDescription ) return;
+
+      return (
+        <Box
+          {...defaultStyle.group}
+          {...subcomponentProps['group-header-wrapper']}
+        >
+          { hasLabel ? labelComponent( subcomponentProps['group-label'] ) : null }
+          { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
+          {(
+            question &&
+            properties.renderQuestionGroupInput
+          ) ? (
+              this.renderInput({
+                ask: questionGroup,
+                questionGroupCode: parentGroupCode,
+                index,
+                form,
+              })
+            ) : null
+          }
+        </Box>
+      );
+    };
+
+    const contentWrapperComponent = ( subcomponentProps ) => (
+      <Box
+        {...defaultStyle.group}
+        {...subcomponentProps['group-content-wrapper']}
+      >
+        { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+          if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+            return this.renderQuestionGroup(
+              ask,
+              index,
+              form
+            );
+          }
+
+          return this.renderInput({
+            ask: ask,
+            questionGroupCode: questionCode,
+            index,
+            form,
+          });
+        })}
       </Box>
     );
 
@@ -395,17 +446,19 @@ class FormGroup extends Component {
     }
 
     return (
-      <StatefulThemeHandler
+      <StatelessThemeHandler
         getStyling={this.getStyling}
-        subcomponentTypes={components}
+        componentTypes={components}
       >
         {({
           // onChangeState,
           // inputProps,
-          subcomponentProps,
+          componentProps,
         }) => {
+          const subcomponentProps = componentProps;
+
           // console.log( this.props.rootCode );
-          // console.log( 'FORMGROUP COMPONENT PROPS', subcomponentProps );
+          if ( questionCode === 'QUE_DROPDOWN_GROUP' )console.log( 'FORMGROUP COMPONENT PROPS', subcomponentProps );
           // console.log( 'form styles', this.getStyling( 'group-wrapper' ));
 
           if (
@@ -415,59 +468,42 @@ class FormGroup extends Component {
             const WrapperElement = properties.dropdown ? Dropdown : Collapsible;
 
             return (
-              <WrapperElement
+              <Box
+                justifyContent="center"
+                flexDirection="column"
                 {...subcomponentProps['group-wrapper']}
-                isClosed={this.props.isClosed}
-                testID={`${parentGroupCode}:${questionCode}:${WrapperElement}`}
-                renderHeader={(
-                  <Fragment>
-                    { hasLabel ? labelComponent( subcomponentProps['group-label'] ) : null }
-                    { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
-                    {(
-                      question &&
-                      properties.renderQuestionGroupInput
-                    ) ? (
-                        this.renderInput({
-                          ask: questionGroup,
-                          questionGroupCode: parentGroupCode,
-                          index,
-                          form,
-                          additionalProps: {
-                            flexWrapper: true,
-                          },
-                        })
-                      ) : null }
-                  </Fragment>
-                )}
-                headerIconProps={this.getStyling()['default']}
               >
-                <Box
-                  key={name}
-                  // zIndex={20 - index}
-                  {...defaultStyle.group}
-                  {...this.getStyling()['default']}
-                >
-                  {hasDelimiter && delimiterComponent}
-                  {delimiterHandler(
-                    sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
-                      if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
-                        return this.renderQuestionGroup(
-                          childAsk,
-                          index,
-                          form
-                        );
-                      }
+                { hasLabel || true ? labelComponent( subcomponentProps['group-label'] ) : null }
+                { hasDescription || true ? descriptionComponent( subcomponentProps['group-description'] ) : null }
 
-                      return this.renderInput({
-                        ask: childAsk,
-                        questionGroupCode: questionCode,
-                        index,
-                        form,
-                      });
-                    })
+                <WrapperElement
+                  subcomponentProps={subcomponentProps}
+                  isClosed={this.props.isClosed}
+                  testID={`${parentGroupCode}:${questionCode}:${WrapperElement}`}
+                  renderHeader={(
+                    <Fragment>
+                      { hasLabel || true ? labelComponent( subcomponentProps['group-label'] ) : null }
+                      {(
+                        question &&
+                        properties.renderQuestionGroupInput
+                      ) ? (
+                          this.renderInput({
+                            ask: questionGroup,
+                            questionGroupCode: parentGroupCode,
+                            index,
+                            form,
+                            additionalProps: {
+                              flexWrapper: true,
+                            },
+                          })
+                        ) : null }
+                    </Fragment>
                   )}
-                </Box>
-              </WrapperElement>
+                >
+                  {/* CONTENT WRAPPER ELEMENT */}
+                  {contentWrapperComponent( subcomponentProps )}
+                </WrapperElement>
+              </Box>
             );
           }
 
@@ -488,29 +524,16 @@ class FormGroup extends Component {
                 {...this.getStyling()['default']}
                 {...this.state.hover ? this.getStyling()['hover'] : {}}
               >
-                { hasLabel ? labelComponent( subcomponentProps['group-label'] ) : null }
-                { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
-                {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-                  if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                    return this.renderQuestionGroup(
-                      ask,
-                      index,
-                      form
-                    );
-                  }
-
-                  return this.renderInput({
-                    ask: ask,
-                    questionGroupCode: questionCode,
-                    index,
-                    form,
-                  });
-                })}
+                {/* HEADER WRAPPER ELEMENT */}
+                {headerWrapperComponent( subcomponentProps )}
+                {/* CONTENT WRAPPER ELEMENT */}
+                {contentWrapperComponent( subcomponentProps )}
               </EventTouchable>
             );
           }
 
           return (
+            // WRAPPER ELEMENT
             <Box
               key={name}
               zIndex={50 - index}
@@ -518,43 +541,15 @@ class FormGroup extends Component {
               // padding={10}
               {...this.getStyling()['default']}
             >
-              { hasLabel ? labelComponent( subcomponentProps['group-label'] ) : null }
-              { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
-              {(
-                question &&
-                properties.renderQuestionGroupInput
-              ) ? (
-                  this.renderInput({
-                    ask: questionGroup,
-                    questionGroupCode: parentGroupCode,
-                    index,
-                    form,
-                  })
-                ) : null
-              }
-              {delimiterHandler(
-                sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-                  if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                    return this.renderQuestionGroup(
-                      ask,
-                      index,
-                      form
-                    );
-                  }
-
-                  return this.renderInput({
-                    ask: ask,
-                    questionGroupCode: questionCode,
-                    index,
-                    form,
-                  });
-                })
-              )}
+              {/* HEADER WRAPPER ELEMENT */}
+              {headerWrapperComponent({ subcomponentProps })}
+              {/* CONTENT WRAPPER ELEMENT */}
+              {contentWrapperComponent( subcomponentProps )}
             </Box>
           );
         }
       }
-      </StatefulThemeHandler>
+      </StatelessThemeHandler>
     );
   }
 }

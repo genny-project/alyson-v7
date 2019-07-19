@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 import { any, bool, func, string, object, node, oneOf } from 'prop-types';
-import { Box, Icon, Touchable }  from '../../components';
+import { Box, Icon, Touchable, Fragment }  from '../../components';
 
 class Collapsible extends Component {
   static defaultProps = {
-    showHeader: true,
     testID: 'collapsible',
     wrapperProps: {},
     headerWrapperProps: {},
     headerIconProps: {},
     iconPlacement: 'right',
-    inline: true,
   }
 
   static propTypes = {
     children: any,
-    showHeader: bool,
     // open: bool,
     onToggle: func,
     testID: string,
@@ -27,10 +24,10 @@ class Collapsible extends Component {
     iconPlacement: oneOf(
       ['left', 'right']
     ),
-    inline: bool,
     disabled: bool,
     color: string,
     backgroundColor: string,
+    subcomponentProps: object,
   }
 
   state = {
@@ -44,7 +41,6 @@ class Collapsible extends Component {
   render() {
     const {
       children,
-      showHeader,
       testID,
       wrapperProps,
       headerWrapperProps,
@@ -52,68 +48,67 @@ class Collapsible extends Component {
       renderHeader,
       isClosed,
       iconPlacement,
+      subcomponentProps,
     } = this.props;
 
     const { isOpen } = this.state;
 
     return (
-      <Box
-        justifyContent="center"
-        flexDirection="column"
-        {...wrapperProps}
-      >
-        {showHeader
-          ? (
-            <Box
-              // header wrapper styling here?
-              flex={1}
-              justifyContent="space-between"
-              flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
-            >
-              {/* header alt goes here */}
-              {renderHeader}
-              {
-                !isClosed
-                  ? (
-                    <Touchable
-                      withFeedback
-                      onPress={this.handlePress}
-                      testID={testID}
+      <Fragment>
+        <Box
+          // header wrapper styling here?
+          flex={1}
+          justifyContent="space-between"
+          flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
+          {...subcomponentProps['group-header-wrapper']}
+        >
+          {/* header alt goes here */}
+          {/* {renderHeader} */}
+          {
+            !isClosed
+              ? (
+                <Touchable
+                  withFeedback
+                  onPress={this.handlePress}
+                  testID={testID}
+                >
+                  {renderHeader}
+                  <Box
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Box
+                      transform={[
+                        { rotate: isOpen ? '0deg' : '270deg' },
+                      ]}
+                      {...subcomponentProps['group-icon']}
                     >
-                      <Box
-                        justifyContent="center"
-                        alignItems="center"
-                        {...headerWrapperProps}
-                      >
-                        <Box
-                          transform={[
-                            { rotate: isOpen ? '0deg' : '270deg' },
-                          ]}
-                          {...headerWrapperProps}
-                        >
-                          <Icon
-                            name="keyboard_arrow_down"
-                            color="black"
-                            cursor="pointer"
-                            {...headerIconProps}
-                          />
-                        </Box>
-                      </Box>
-                    </Touchable>
-                  ) : null
-                }
-            </Box>
-          ) : null
-        }
-        {isOpen && !isClosed ? (
-          React.Children.map( children, child => (
-            React.cloneElement( child, {
-              ...child.props,
-              isOpen: isOpen,
-            })
-          ))
-        ) : null}
-      </Box>
+                      <Icon
+                        name="keyboard_arrow_down"
+                        color="black"
+                        cursor="pointer"
+                        {...subcomponentProps['group-icon']}
+                      />
+                    </Box>
+                  </Box>
+                </Touchable>
+              ) : null
+            }
+        </Box>
+
+        <Box
+          {...subcomponentProps['group-content-wrapper']}
+        >
+          {isOpen && !isClosed ? (
+            React.Children.map( children, child => (
+              React.cloneElement( child, {
+                ...child.props,
+                isOpen: isOpen,
+              })
+            ))
+          ) : null}
+        </Box>
+      </Fragment>
     );
   }
 }
