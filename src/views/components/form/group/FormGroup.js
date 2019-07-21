@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { string, object, number, bool, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge, arrayAddDelimiter } from '../../../../utils';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
-import { StatefulThemeHandler, StatelessThemeHandler } from '../theme-handlers';
+import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
 
 const components = [
@@ -13,6 +13,7 @@ const components = [
   'group-description',
   'group-input',
   'group-header-wrapper',
+  'group-clickable-wrapper',
   'group-icon',
   'group-content-wrapper',
 ];
@@ -336,21 +337,21 @@ class FormGroup extends Component {
     checkThemeForProperties( this.props.inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
-    const hasLabel = name && properties.renderQuestionGroupTitle; // change to renderQuestionGroupLabel
+    const hasLabel = name && properties.renderQuestionGroupLabel;
     const hasDescription = description && properties.renderQuestionGroupDescription;
-    const hasDelimiter = properties.renderDelimiter;
+    // const hasDelimiter = properties.renderDelimiter;
 
-    const delimiterComponent = (
-      <Box
-        // delimiter props
-        padding={5}
-        {...this.getDelimiterStyling()['default']}
-      />
-    );
+    // const delimiterComponent = (
+    //   <Box
+    //     // delimiter props
+    //     padding={5}
+    //     {...this.getDelimiterStyling()['default']}
+    //   />
+    // );
 
-    const delimiterHandler = ( array ) => {
-      return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
-    };
+    // const delimiterHandler = ( array ) => {
+    //   return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
+    // };
 
     const labelComponent = ( props ) => (
       <Box
@@ -457,10 +458,6 @@ class FormGroup extends Component {
         }) => {
           const subcomponentProps = componentProps;
 
-          // console.log( this.props.rootCode );
-          if ( questionCode === 'QUE_DROPDOWN_GROUP' )console.log( 'FORMGROUP COMPONENT PROPS', subcomponentProps );
-          // console.log( 'form styles', this.getStyling( 'group-wrapper' ));
-
           if (
             properties.expandable ||
             properties.dropdown
@@ -473,16 +470,16 @@ class FormGroup extends Component {
                 flexDirection="column"
                 {...subcomponentProps['group-wrapper']}
               >
-                { hasLabel || true ? labelComponent( subcomponentProps['group-label'] ) : null }
-                { hasDescription || true ? descriptionComponent( subcomponentProps['group-description'] ) : null }
+                { hasLabel && !properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
+                { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
 
                 <WrapperElement
                   subcomponentProps={subcomponentProps}
                   isClosed={this.props.isClosed}
-                  testID={`${parentGroupCode}:${questionCode}:${WrapperElement}`}
+                  testID={`${parentGroupCode}:${questionCode}`}
                   renderHeader={(
                     <Fragment>
-                      { hasLabel || true ? labelComponent( subcomponentProps['group-label'] ) : null }
+                      { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
                       {(
                         question &&
                         properties.renderQuestionGroupInput
@@ -521,7 +518,7 @@ class FormGroup extends Component {
                 onMouseEnter={() => this.handleHover( true )}
                 onMouseLeave={() => this.handleHover( false )}
                 {...defaultStyle.group}
-                {...this.getStyling()['default']}
+                {...subcomponentProps['group-wrapper']}
                 {...this.state.hover ? this.getStyling()['hover'] : {}}
               >
                 {/* HEADER WRAPPER ELEMENT */}
@@ -539,7 +536,7 @@ class FormGroup extends Component {
               zIndex={50 - index}
               {...defaultStyle.group}
               // padding={10}
-              {...this.getStyling()['default']}
+              {...subcomponentProps['group-wrapper']}
             >
               {/* HEADER WRAPPER ELEMENT */}
               {headerWrapperComponent({ subcomponentProps })}

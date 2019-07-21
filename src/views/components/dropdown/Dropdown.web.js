@@ -34,18 +34,14 @@ class Dropdown extends Component {
     const {
       children,
       testID,
-      headerWrapperProps,
-      headerIconProps,
       renderHeader,
       isClosed,
       iconPlacement,
       disabled,
       color,
-      backgroundColor,
+      // backgroundColor,
       subcomponentProps,
     } = this.props;
-
-    console.log( 'subcomponentProps', subcomponentProps );
 
     return (
       <Menu
@@ -73,6 +69,8 @@ class Dropdown extends Component {
                         disabled={disabled}
                         style={{
                           color,
+                          flexDirection: 'row',
+                          ...subcomponentProps['group-clickable-wrapper'],
                         }}
                         data-testid={testID}
                         testID={testID}

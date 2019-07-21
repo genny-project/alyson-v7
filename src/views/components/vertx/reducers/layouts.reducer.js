@@ -24,13 +24,17 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderQuestionGroupInput',
   },
-  PRI_HAS_QUESTION_GRP_TITLE: {
+  PRI_HAS_QUESTION_GRP_LABEL: {
     default: false,
-    label: 'renderQuestionGroupTitle',
+    label: 'renderQuestionGroupLabel',
   },
   PRI_HAS_QUESTION_GRP_DESCRIPTION: {
     default: false,
     label: 'renderQuestionGroupDescription',
+  },
+  PRI_IS_QUESTION_GRP_LABEL_CLICKABLE: {
+    default: false,
+    label: 'renderQuestionGroupLabelInsideClickable',
   },
   PRI_HAS_LABEL: {
     default: true,
@@ -69,8 +73,10 @@ const componentTypes = {
   GROUP_DESCRIPTION: 'group-description',
   GROUP_INPUT: 'group-input',
   GROUP_HEADER_WRAPPER: 'group-header-wrapper',
+  GROUP_CLICKABLE_WRAPPER: 'group-clickable-wrapper',
   GROUP_ICON: 'group-icon',
   GROUP_CONTENT_WRAPPER: 'group-content-wrapper',
+
   // no supported yet
   GROUP_DELIMITER: 'group--delimiter',
 

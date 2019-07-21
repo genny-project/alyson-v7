@@ -42,9 +42,6 @@ class Collapsible extends Component {
     const {
       children,
       testID,
-      wrapperProps,
-      headerWrapperProps,
-      headerIconProps,
       renderHeader,
       isClosed,
       iconPlacement,
@@ -71,6 +68,7 @@ class Collapsible extends Component {
                   withFeedback
                   onPress={this.handlePress}
                   testID={testID}
+                  {...subcomponentProps['group-clickable-wrapper']}
                 >
                   {renderHeader}
                   <Box
