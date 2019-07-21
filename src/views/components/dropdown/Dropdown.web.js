@@ -69,11 +69,10 @@ class Dropdown extends Component {
                         disabled={disabled}
                         style={{
                           color,
-                          flexDirection: 'row',
-                          ...subcomponentProps['group-clickable-wrapper'],
                         }}
                         data-testid={testID}
                         testID={testID}
+                        {...subcomponentProps['group-clickable-wrapper']}
                       >
                         {renderHeader}
                         <Box

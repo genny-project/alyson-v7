@@ -35,9 +35,8 @@ class MenuButton extends Component {
                       style={{
                         display: 'flex',
                       }}
-                    >
-                      {children}
-                    </span>
+                    />
+                    {children}
                   </Touchable>
                 );
               }}
