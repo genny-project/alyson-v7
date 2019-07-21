@@ -129,7 +129,7 @@ The Question Group is a container form a group of Questions and/or Question Grou
 
 A Question Group can also have a `question` field, but by default it is not rendered.
 
-![Question Group Structure](https://i.imgur.com/WXlQMzF.png)
+![Question Group Structure](https://i.imgur.com/3x0hsXo.png)
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
@@ -137,7 +137,8 @@ A Question Group can also have a `question` field, but by default it is not rend
 | Label | `GROUP_LABEL` | text displaying the question name |
 | Description | `GROUP_DESCRIPTION` | additional text to provide for information or context |
 | Input | `GROUP_INPUT` | input or display component that will be rendered |
-| Header Wrapper | `GROUP_HEADER_WRAPPER` | interactable component that toggles whether the Content Wrapper is rendered or not |
+| Header Wrapper | `GROUP_HEADER_WRAPPER` | container element for components in the header of a complex group component |
+| Clickable Wrapper | `GROUP_CLICKABLE_WRAPPER` | interactable component that toggles whether the Content Wrapper is rendered or not |
 | Icon | `GROUP_ICON` | icon rendered as part of the header |
 | Content Wrapper | `GROUP_CONTENT_WRAPPER` | component container that renders any children within it |
 
