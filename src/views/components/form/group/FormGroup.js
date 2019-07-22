@@ -472,7 +472,21 @@ class FormGroup extends Component {
               >
                 { hasLabel && !properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
                 { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
-
+                {(
+                  question &&
+                  properties.renderQuestionGroupInput &&
+                  !properties.renderQuestionGroupInputInsideClickable
+                ) ? (
+                    this.renderInput({
+                      ask: questionGroup,
+                      questionGroupCode: parentGroupCode,
+                      index,
+                      form,
+                      additionalProps: {
+                        flexWrapper: true,
+                      },
+                    })
+                  ) : null }
                 <WrapperElement
                   subcomponentProps={subcomponentProps}
                   isClosed={this.props.isClosed}
@@ -482,7 +496,8 @@ class FormGroup extends Component {
                       { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
                       {(
                         question &&
-                        properties.renderQuestionGroupInput
+                        properties.renderQuestionGroupInput &&
+                        properties.renderQuestionGroupInputInsideClickable
                       ) ? (
                           this.renderInput({
                             ask: questionGroup,

@@ -36,6 +36,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderQuestionGroupLabelInsideClickable',
   },
+  PRI_IS_QUESTION_GRP_INPUT_CLICKABLE: {
+    default: false,
+    label: 'renderQuestionGroupInputInsideClickable',
+  },
   PRI_HAS_LABEL: {
     default: true,
     label: 'renderVisualControlLabel',
