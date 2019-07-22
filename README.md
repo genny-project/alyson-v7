@@ -110,8 +110,10 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_HAS_HINT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
 | PRI_HAS_DESCRIPTION | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Description. |
 | PRI_HAS_ICON | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Icon. |
-| PRI_HAS_QUESTION_GRP_TITLE | Boolean | true | false | If the connected entity is a **Question Group**, then it will render the `name` field of the question as a title.
+| PRI_HAS_QUESTION_GRP_LABEL | Boolean | true | false | If the connected entity is a **Question Group**, then it will render the `name` field of the question as a title.
 | PRI_HAS_QUESTION_GRP_DESCRIPTION | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render the `description` field of the question as a subtitle.
+| PRI_IS_QUESTION_GRP_LABEL_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Label be rendered as part of the clickable area.
+| PRI_IS_QUESTION_GRP_INPUT_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Input be rendered as part of the clickable area.
 ## Question Sets
 ( prefix: QUE_ )
 
