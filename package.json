@@ -3,9 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "git-info-branch": "git rev-parse --abbrev-ref HEAD > src/static/git-info-branch.txt",
-    "git-info-commit": "git rev-parse HEAD > src/static/git-info-commit.txt",
-    "git-info-date": "git log -1 --format=%cd > src/static/git-info-date.txt",
+    "get-git-info": "git rev-parse --abbrev-ref HEAD > src/static/git-info-branch.txt; git rev-parse HEAD > src/static/git-info-commit.txt; git log -1 --format=%cd > src/static/git-info-date.txt",
     "start:native": "node node_modules/react-native/local-cli/cli.js start",
     "start:web": "npm run git-info-branch && npm run git-info-commit && npm run git-info-date && ./node_modules/.bin/webpack-dev-server -d --config ./webpack.dev.js --inline --hot --colors",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/alysonv3/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
@@ -15,7 +13,8 @@
     "setup-images": "app-icon generate -i $IMAGE",
     "serve:web": "node server.js",
     "clear-cache:web": "rm -rf ./node_modules/.cache/babel-loader/*",
-    "lint": "eslint --fix ."
+    "lint": "eslint --fix .",
+    "setup-env": "node generate-env.js"
   },
   "dependencies": {
     "@reach/dialog": "^0.1.2",
