@@ -27,16 +27,36 @@ const getVariablesFromUrl = ( url ) => {
   const projectStringEnd = url.indexOf( '-' );
   const environmentStringEnd = url.indexOf( '.' );
 
-  const project = url.slice( projectStringStart, projectStringEnd );
-  const environment = url.slice( projectStringEnd + 1, environmentStringEnd );
+  const project = url.slice(
+    projectStringStart,
+    projectStringEnd < environmentStringEnd ? projectStringEnd : environmentStringEnd
+  );
+  const environment = url.slice(
+    projectStringEnd + 1,
+    projectStringEnd < environmentStringEnd ? environmentStringEnd : projectStringEnd + 1
+  );
 
   return { project, environment };
 };
 
 const variablesFromUrl = getVariablesFromUrl( url );
 
-const targetEnv = ( default_env !== 'true' && variablesFromUrl.project && variablesFromUrl.environment )
-  ? `.env.${variablesFromUrl.project}.${variablesFromUrl.environment}`
+if ( !variablesFromUrl.project || !variablesFromUrl.environment ) {
+  if ( !variablesFromUrl.project ) {
+  // eslint-disable-next-line no-console
+    console.log( `Error: project not detected from variable ${url}` );
+  }
+
+  if ( !variablesFromUrl.environment ) {
+  // eslint-disable-next-line no-console
+    console.log( `Error: environment not detected from variable ${url}` );
+  }
+
+  if ( force !== 'true' )
+    return;
+}
+const targetEnv = ( default_env !== 'true' && variablesFromUrl.project )
+  ? `.env.${variablesFromUrl.project}${variablesFromUrl.environment ? `.${variablesFromUrl.environment}` : ''}`
   : '.env';
 
 const parseURL = ( url ) => {
