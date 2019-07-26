@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, func } from 'prop-types';
+import { string, object, func, bool } from 'prop-types';
 import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
@@ -12,6 +12,7 @@ import InputRating from './rating';
 import InputText from './text';
 // import InputTextWithStateThemes from './text/InputTextWithStateThemes';
 import InputTextArea from './textarea';
+import InputFitText from './fit-text';
 import Switch from './switch';
 import Passcode from './passcode';
 import InputRead from './read';
@@ -39,6 +40,7 @@ class Input extends Component {
     theme: object,
     onChangeState: func,
     inputFieldProps: object,
+    dynamicWidth: bool,
   };
 
   state = {
@@ -71,12 +73,15 @@ class Input extends Component {
   };
 
   render() {
-    const { type, inputFieldProps, ...restProps } = this.props;
+    const { type, dynamicWidth, inputFieldProps, ...restProps } = this.props;
 
     const inputProps = {
       ...restProps,
       type,
+      dynamicWidth,
     };
+
+    const TextInputElement = dynamicWidth ? InputFitText : InputText;
 
     switch ( type ) {
       case 'text':
@@ -84,10 +89,20 @@ class Input extends Component {
       case 'acn number':
       case 'double':
         return (
-          <InputText
+          <TextInputElement
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
+            onChangeState={this.handleStateChange}
+          />
+        );
+
+      case 'fittext':
+        return (
+          <InputFitText
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => this.input = input}
             onChangeState={this.handleStateChange}
           />
         );

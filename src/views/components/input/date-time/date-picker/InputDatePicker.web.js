@@ -95,7 +95,7 @@ class InputDatePicker extends PureComponent {
           return (
             <Fragment>
               <Box
-                // width="100%"
+                width="100%"
                 zIndex={10}
                 position="relative"
               >
@@ -108,6 +108,7 @@ class InputDatePicker extends PureComponent {
                     value: inputValue || displayFormat,
                   // placeholder,
                     onRef: onRef,
+                    dynamicWidth: true,
                   })}
                   onChange={null}
                   onFocus={close}
@@ -117,7 +118,6 @@ class InputDatePicker extends PureComponent {
                   onSelectionChange={onSelectionChange}
                   testID={`input-date-picker ${testID}`}
                   paddingRight={20}
-                  notFullWidth
                   {...this.props.inputFieldProps} // eslint-disable-line
                 />
                 <Touchable

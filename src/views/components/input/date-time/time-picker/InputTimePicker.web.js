@@ -81,6 +81,7 @@ class InputDatePicker extends PureComponent {
                   value: inputValue || displayFormat,
                 // placeholder,
                   onRef: onRef,
+                  dynamicWidth: true,
                 })}
                 onChange={null}
                 onFocus={close}
@@ -89,7 +90,7 @@ class InputDatePicker extends PureComponent {
                 selection={selection}
                 onSelectionChange={onSelectionChange}
                 testID={`input-date-picker ${testID}`}
-                paddingRight={20}
+                showLogs
                 identifier="timepicker"
                 {...this.props.inputFieldProps} // eslint-disable-line
               />

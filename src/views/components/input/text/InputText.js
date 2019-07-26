@@ -104,6 +104,9 @@ class InputText extends Component {
     width: oneOfType(
       [string, number]
     ),
+    maxWidth: oneOfType(
+      [string, number]
+    ),
     editable: bool,
     backgroundColor: string,
     borderWidth: number,
@@ -322,6 +325,7 @@ class InputText extends Component {
       paddingLeft,
       // value,
       width,
+      maxWidth,
       textSize,
       textAlign,
       height,
@@ -389,6 +393,7 @@ class InputText extends Component {
       height,
       // ...this.props.notFullWidth ? {} : { width: '100%' }, // Always be 100% of the parent width
       width: '100%',
+      maxWidth,
       backgroundColor: backgroundColor === 'none' ? null : backgroundColor,
       borderWidth,
       borderTopWidth,
@@ -421,6 +426,7 @@ class InputText extends Component {
         position="relative"
         flex={1}
         width={width}
+        maxWidth={maxWidth}
       >
         { hasIcon
           ? (
@@ -438,58 +444,115 @@ class InputText extends Component {
             </Box>
           ) : null
         }
-        <TextInput
-          testID={`input-text ${testID}`}
-          autoCapitalize={autoCapitalize}
-          autoComplete={autoComplete}
-          autoCorrect={autoCorrect}
-          autoFocus={autoFocus}
-          blurOnSubmit={blurOnSubmit}
-          clearTextOnFocus={clearTextOnFocus}
-          defaultValue={defaultValue}
-          editable={(
+        {
+          !editable ? (
+            <Text
+              testID={`input-text ${testID}`}
+              autoCapitalize={autoCapitalize}
+              autoComplete={autoComplete}
+              autoCorrect={autoCorrect}
+              autoFocus={autoFocus}
+              blurOnSubmit={blurOnSubmit}
+              clearTextOnFocus={clearTextOnFocus}
+              defaultValue={defaultValue}
+              editable={(
+                editable == null ? disabled : editable
+              )}
+              keyboardType={keyboardType}
+              maxLength={maxLength}
+              name={this.props.name}
+              multiline={multiline}
+              numberOfLines={numberOfLines}
+              onChange={this.handleChange}
+              onChangeText={this.handleChangeText}
+              onChangeValue={this.handleChangeValue}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              onMouseOver={this.handleMouseOver}
+              onMouseOut={this.handleMouseOut}
+              onKeyPress={onKeyPress}
+              onPress={onPress}
+              onSelectionChange={onSelectionChange}
+              onSubmitEditing={onSubmitEditing}
+              placeholder={placeholder}
+              placeholderTextColor={placeholderColor || color}
+              returnKeyLabel={!multiline ? returnKeyLabel : null}
+              returnKeyType={!multiline ? returnKeyType : null}
+              secureTextEntry={secureTextEntry}
+              selection={selection}
+              selectTextOnFocus={selectTextOnFocus}
+              spellCheck={spellCheck}
+              style={[
+                inputStyle,
+              ]}
+              text={useAttributeNameAsValue
+                ? attributeName
+                : useQuestionNameAsValue
+                  ? questionName
+                  : value}
+              underlineColorAndroid="transparent"
+              {...Platform.select({
+                ios: nativeProps,
+                android: nativeProps,
+              })}
+              ref={this.handleRef}
+              {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
+            />
+          ) : (
+            <TextInput
+              testID={`input-text ${testID}`}
+              autoCapitalize={autoCapitalize}
+              autoComplete={autoComplete}
+              autoCorrect={autoCorrect}
+              autoFocus={autoFocus}
+              blurOnSubmit={blurOnSubmit}
+              clearTextOnFocus={clearTextOnFocus}
+              defaultValue={defaultValue}
+              editable={(
             editable == null ? disabled : editable
           )}
-          keyboardType={keyboardType}
-          maxLength={maxLength}
-          name={this.props.name}
-          multiline={multiline}
-          numberOfLines={numberOfLines}
-          onChange={this.handleChange}
-          onChangeText={this.handleChangeText}
-          onChangeValue={this.handleChangeValue}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          onMouseOver={this.handleMouseOver}
-          onMouseOut={this.handleMouseOut}
-          onKeyPress={onKeyPress}
-          onPress={onPress}
-          onSelectionChange={onSelectionChange}
-          onSubmitEditing={onSubmitEditing}
-          placeholder={placeholder}
-          placeholderTextColor={placeholderColor || color}
-          returnKeyLabel={!multiline ? returnKeyLabel : null}
-          returnKeyType={!multiline ? returnKeyType : null}
-          secureTextEntry={secureTextEntry}
-          selection={selection}
-          selectTextOnFocus={selectTextOnFocus}
-          spellCheck={spellCheck}
-          style={[
-            inputStyle,
-          ]}
-          value={useAttributeNameAsValue
-            ? attributeName
-            : useQuestionNameAsValue
-              ? questionName
-              : value}
-          underlineColorAndroid="transparent"
-          {...Platform.select({
-            ios: nativeProps,
-            android: nativeProps,
-          })}
-          ref={this.handleRef}
-          {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
-        />
+              keyboardType={keyboardType}
+              maxLength={maxLength}
+              name={this.props.name}
+              multiline={multiline}
+              numberOfLines={numberOfLines}
+              onChange={this.handleChange}
+              onChangeText={this.handleChangeText}
+              onChangeValue={this.handleChangeValue}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              onMouseOver={this.handleMouseOver}
+              onMouseOut={this.handleMouseOut}
+              onKeyPress={onKeyPress}
+              onPress={onPress}
+              onSelectionChange={onSelectionChange}
+              onSubmitEditing={onSubmitEditing}
+              placeholder={placeholder}
+              placeholderTextColor={placeholderColor || color}
+              returnKeyLabel={!multiline ? returnKeyLabel : null}
+              returnKeyType={!multiline ? returnKeyType : null}
+              secureTextEntry={secureTextEntry}
+              selection={selection}
+              selectTextOnFocus={selectTextOnFocus}
+              spellCheck={spellCheck}
+              style={[
+                inputStyle,
+              ]}
+              value={useAttributeNameAsValue
+                ? attributeName
+                : useQuestionNameAsValue
+                  ? questionName
+                  : value}
+              underlineColorAndroid="transparent"
+              {...Platform.select({
+                ios: nativeProps,
+                android: nativeProps,
+              })}
+              ref={this.handleRef}
+              {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
+            />
+          )
+        }
 
         {!showCharacterCount ? null : (
           <Box {...characterCountWrapperProps}>
