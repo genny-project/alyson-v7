@@ -5,7 +5,7 @@ import { TEXT_SIZES } from '../../../../constants';
 import { isString, isInteger } from '../../../../utils';
 import { Input, Fragment } from '../..';
 
-class InputFitText extends Component {
+class InputTextWithDynamicWidth extends Component {
   static defaultProps = {
     textSize: 'xs',
   }
@@ -168,4 +168,4 @@ class InputFitText extends Component {
   }
 }
 
-export default InputFitText;
+export default InputTextWithDynamicWidth;

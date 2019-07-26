@@ -12,7 +12,7 @@ import InputRating from './rating';
 import InputText from './text';
 // import InputTextWithStateThemes from './text/InputTextWithStateThemes';
 import InputTextArea from './textarea';
-import InputFitText from './fit-text';
+import InputTextWithDynamicWidth from './text-with-dynamic-width';
 import Switch from './switch';
 import Passcode from './passcode';
 import InputRead from './read';
@@ -81,7 +81,7 @@ class Input extends Component {
       dynamicWidth,
     };
 
-    const TextInputElement = dynamicWidth ? InputFitText : InputText;
+    const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
     switch ( type ) {
       case 'text':
@@ -93,16 +93,6 @@ class Input extends Component {
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
-            onChangeState={this.handleStateChange}
-          />
-        );
-
-      case 'fittext':
-        return (
-          <InputFitText
-            {...inputProps}
-            {...inputFieldProps}
-            ref={input => this.input = input}
             onChangeState={this.handleStateChange}
           />
         );
@@ -234,7 +224,6 @@ class Input extends Component {
           // />
           <InputTag
             {...inputProps}
-            placeholder="Please select..."
             allowMultipleSelection={false}
             allowNewTags={false}
             ref={input => ( this.input = input )}
@@ -384,7 +373,6 @@ class Input extends Component {
         return (
           <InputTag
             {...inputProps}
-            placeholder="Please select..."
             allowMultipleSelection
             allowNewTags={false}
             ref={input => ( this.input = input )}

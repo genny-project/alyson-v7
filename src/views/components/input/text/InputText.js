@@ -384,10 +384,10 @@ class InputText extends Component {
       // padding,
       paddingHorizontal: paddingX,
       paddingVertical: paddingY,
-      paddingTop: paddingTop,
-      paddingRight: paddingRight,
+      paddingTop,
+      paddingRight,
       paddingBottom,
-      paddingLeft: paddingLeft ? paddingLeft : hasIcon ? 30 : null,
+      paddingLeft,
       fontSize: TEXT_SIZES[textSize],
       textAlign: textAlign,
       height,
@@ -432,9 +432,11 @@ class InputText extends Component {
           ? (
             <Box
               position="absolute"
-              top={0}
+              top="50%"
+              transform="translateY( -50% )"
               left={0}
               pointerEvents="none"
+              {...iconProps}
             >
               <Icon
                 name={icon}
