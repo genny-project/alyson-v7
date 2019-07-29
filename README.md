@@ -135,6 +135,7 @@ A Question Group can also have a `question` field, but by default it is not rend
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
+| - | `GROUP` |  will apply theme to all elements of the form group |
 | Wrapper | `GROUP_WRAPPER` |  box containing all the other components of the visual control |
 | Label | `GROUP_LABEL` | text displaying the question name |
 | Description | `GROUP_DESCRIPTION` | additional text to provide for information or context |
@@ -167,6 +168,7 @@ The basic components of a Visual Control are as follows:
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
+| - | `VCL` | will apply theme to all elements of the visual control |
 | Input | `VCL_INPUT` | input or display component that will be rendered |
 | Wrapper | `VCL_WRAPPER` | box containing all the other components of the visual control |
 | Label | `VCL_LABEL` | text displaying the question name |
@@ -257,6 +259,10 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 ## New Changes
+
+* Added visualControlTypes `group` and `vcl` to allow Themes to be applied to the entire Group or Visual Control respectively.
+
+----
 
 * Add image for Input Subcomponents.
 * Updated image for Visual Control.

@@ -102,8 +102,8 @@ class Dropdown extends Component {
                 <MenuContent
                   style={{
                     ...{
-                      color,
-                      backgroundColor: 'white',
+                      // color,
+                      // backgroundColor: 'white',
                     },
                   }}
                   ref={input => this.input = input}

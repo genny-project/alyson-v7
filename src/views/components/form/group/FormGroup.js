@@ -125,9 +125,10 @@ class FormGroup extends Component {
       ...filterThemes(
         this.props.inheritedThemes,
         this.props.themes,
-        componentType
-          ? { component: componentType }
-          : { formGroup: true },
+        {
+          component: componentType,
+          acceptTypes: ['group'],
+        },
       ),
     ];
 
@@ -135,9 +136,10 @@ class FormGroup extends Component {
       ...filterThemes(
         this.state.themes,
         this.props.themes,
-        componentType
-          ? { component: componentType }
-          : { formGroup: true },
+        {
+          component: componentType,
+          acceptTypes: ['group'],
+        },
       ),
     ];
 

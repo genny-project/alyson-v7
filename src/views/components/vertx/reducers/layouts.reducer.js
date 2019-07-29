@@ -72,6 +72,7 @@ const themeBehaviourAttributes = {
 
 const componentTypes = {
   // form groups
+  GROUP: 'group',
   GROUP_WRAPPER: 'group-wrapper',
   GROUP_LABEL: 'group-label',
   GROUP_DESCRIPTION: 'group-description',
@@ -85,6 +86,7 @@ const componentTypes = {
   GROUP_DELIMITER: 'group--delimiter',
 
   // visual control
+  VCL: 'vcl',
   VCL_WRAPPER: 'vcl-wrapper',
   VCL_ICON: 'vcl-icon',
   VCL_LABEL: 'vcl-label',

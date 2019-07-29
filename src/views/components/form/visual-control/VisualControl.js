@@ -159,6 +159,7 @@ class VisualControl extends Component {
         this.props.themes,
         {
           component: componentType,
+          acceptTypes: ['vcl', 'group'],
         }
       ),
     ];
@@ -169,6 +170,7 @@ class VisualControl extends Component {
         this.props.themes,
         {
           component: componentType,
+          acceptTypes: ['vcl', 'group'],
         }
       ),
     ];
