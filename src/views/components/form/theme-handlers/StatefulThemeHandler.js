@@ -53,7 +53,7 @@ class StatefulThemeHandler extends Component {
         return themeProps;
       };
 
-      const icon = getIcon();
+      const icon = getIcon ? getIcon() : null;
 
       return {
         // ,
@@ -98,11 +98,9 @@ class StatefulThemeHandler extends Component {
       };
     };
 
-    const inputProps = getProps();
-
     return children({
       subcomponentProps: subcomponentThemes,
-      inputProps: inputProps,
+      inputProps: getProps(),
       onChangeState: this.handleChangeState,
     });
   }

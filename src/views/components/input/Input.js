@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, func } from 'prop-types';
+import { string, object, func, bool } from 'prop-types';
 import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
@@ -12,6 +12,7 @@ import InputRating from './rating';
 import InputText from './text';
 // import InputTextWithStateThemes from './text/InputTextWithStateThemes';
 import InputTextArea from './textarea';
+import InputTextWithDynamicWidth from './text-with-dynamic-width';
 import Switch from './switch';
 import Passcode from './passcode';
 import InputRead from './read';
@@ -21,7 +22,6 @@ import InputPayment from './payment';
 import AudioRecord from './audio-record';
 import SegmentedControl from './segmented-control';
 import InputTag from './tag';
-import InputMenu from './menu';
 import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
@@ -39,6 +39,8 @@ class Input extends Component {
     question: object,
     theme: object,
     onChangeState: func,
+    inputFieldProps: object,
+    dynamicWidth: bool,
   };
 
   state = {
@@ -71,12 +73,15 @@ class Input extends Component {
   };
 
   render() {
-    const { type, ...restProps } = this.props;
+    const { type, dynamicWidth, inputFieldProps, ...restProps } = this.props;
 
     const inputProps = {
       ...restProps,
       type,
+      dynamicWidth,
     };
+
+    const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
     switch ( type ) {
       case 'text':
@@ -84,8 +89,9 @@ class Input extends Component {
       case 'acn number':
       case 'double':
         return (
-          <InputText
+          <TextInputElement
             {...inputProps}
+            {...inputFieldProps}
             ref={input => ( this.input = input )}
             onChangeState={this.handleStateChange}
           />
@@ -95,6 +101,7 @@ class Input extends Component {
         return (
           <InputText
             {...inputProps}
+            {...inputFieldProps}
             type="text"
             secureTextEntry
             ref={input => ( this.input = input )}
@@ -106,6 +113,7 @@ class Input extends Component {
           <InputText
             keyboardType="email-address"
             {...inputProps}
+            {...inputFieldProps}
             ref={input => ( this.input = input )}
             onChangeState={this.handleStateChange}
           />
@@ -117,6 +125,7 @@ class Input extends Component {
             multiline
             numberOfLines={2}
             {...inputProps}
+            {...inputFieldProps}
             ref={input => this.input = input}
             onChangeState={this.handleStateChange}
           />
@@ -133,6 +142,7 @@ class Input extends Component {
           <InputText
             keyboardType="phone-pad"
             {...inputProps}
+            {...inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -192,6 +202,7 @@ class Input extends Component {
         return (
           <InputAutocomplete
             {...inputProps}
+            // inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -200,6 +211,7 @@ class Input extends Component {
         return (
           <InputAddress
             {...inputProps}
+            // inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -212,7 +224,6 @@ class Input extends Component {
           // />
           <InputTag
             {...inputProps}
-            placeholder="Please select..."
             allowMultipleSelection={false}
             allowNewTags={false}
             ref={input => ( this.input = input )}
@@ -235,8 +246,7 @@ class Input extends Component {
             multiSelect={false}
             icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: '' }}
             ref={input => ( this.input = input )}
-          />
-        );
+          />        );
 
       case 'file':
       case 'upload':
@@ -283,6 +293,7 @@ class Input extends Component {
         return (
           <InputDatePicker
             {...inputProps}
+            inputFieldProps={inputFieldProps}
             date
             ref={input => ( this.input = input )}
           />
@@ -292,6 +303,7 @@ class Input extends Component {
         return (
           <InputTimePicker
             {...inputProps}
+            inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -301,6 +313,7 @@ class Input extends Component {
         return (
           <InputDateTimePicker
             {...inputProps}
+            inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );
@@ -360,7 +373,6 @@ class Input extends Component {
         return (
           <InputTag
             {...inputProps}
-            placeholder="Please select..."
             allowMultipleSelection
             allowNewTags={false}
             ref={input => ( this.input = input )}
@@ -384,13 +396,11 @@ class Input extends Component {
         return <RichTextEditor {...inputProps} />;
 
       case 'event':
-        return <InputEvent {...inputProps} />;
-
-      case 'menu':
+      case 'buttonevent':
         return (
-          <InputMenu
+          <InputEvent
             {...inputProps}
-            ref={input => ( this.input = input )}
+            {...inputFieldProps}
           />
         );
 
@@ -403,6 +413,16 @@ class Input extends Component {
             {...inputProps}
             text={this.props.question.name}
           />
+        );
+
+      /* DEPRECATED DATATYPES */
+      case 'menu':
+        return (
+          <Text>
+            Datatype `
+            {type}
+            ` has been deprecated.
+          </Text>
         );
 
       default:

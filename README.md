@@ -103,14 +103,17 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_CONTENT_SELECTED | Object | { "color": "blue" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently selected. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
+| PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in a floating dropdown component. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
 | PRI_HAS_LABEL | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Label. |
 | PRI_HAS_REQUIRED | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a symbol to indicate the field is mandatory. |
 | PRI_HAS_HINT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
 | PRI_HAS_DESCRIPTION | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Description. |
 | PRI_HAS_ICON | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Icon. |
-| PRI_HAS_QUESTION_GRP_TITLE | Boolean | true | false | If the connected entity is a **Question Group**, then it will render the `name` field of the question as a title.
+| PRI_HAS_QUESTION_GRP_LABEL | Boolean | true | false | If the connected entity is a **Question Group**, then it will render the `name` field of the question as a title.
 | PRI_HAS_QUESTION_GRP_DESCRIPTION | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render the `description` field of the question as a subtitle.
+| PRI_IS_QUESTION_GRP_LABEL_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Label be rendered as part of the clickable area.
+| PRI_IS_QUESTION_GRP_INPUT_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Input be rendered as part of the clickable area.
 ## Question Sets
 ( prefix: QUE_ )
 
@@ -122,10 +125,25 @@ Unlike Base Entities, **Themes** are connected to Question Sets using the **Cont
 ### Questions
 A Question is connected to an Ask, which has an Attribute. It is displayed as a **Visual Control** (see below). The data for the Visual Control is used from the `question` field.
 
+
 ### Question Groups
 The Question Group is a container form a group of Questions and/or Question Groups. It can be used to pass inheritable Theme data to all of the children, and also can told to render in a different way if there are any Behavioural Attributes attached to the Theme.
 
 A Question Group can also have a `question` field, but by default it is not rendered.
+
+![Question Group Structure](https://i.imgur.com/3x0hsXo.png)
+
+| Name | visualControlType Code | Description |
+| ------ | ---------- | ----------- |
+| - | `GROUP` |  will apply theme to all elements of the form group |
+| Wrapper | `GROUP_WRAPPER` |  box containing all the other components of the visual control |
+| Label | `GROUP_LABEL` | text displaying the question name |
+| Description | `GROUP_DESCRIPTION` | additional text to provide for information or context |
+| Input | `GROUP_INPUT` | input or display component that will be rendered |
+| Header Wrapper | `GROUP_HEADER_WRAPPER` | container element for components in the header of a complex group component |
+| Clickable Wrapper | `GROUP_CLICKABLE_WRAPPER` | interactable component that toggles whether the Content Wrapper is rendered or not |
+| Icon | `GROUP_ICON` | icon rendered as part of the header |
+| Content Wrapper | `GROUP_CONTENT_WRAPPER` | component container that renders any children within it |
 
 ### Difference Between a Question Group and a Question?
 A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two?
@@ -138,6 +156,7 @@ The answer is that if the object has `childAsks`, then it is rendered as a Quest
 *explain attributes*
 *explain with images why question group inputs are neccessary*
 *Collapsible*
+*Dropdown*
 
 ## Visual Control
 
@@ -145,10 +164,11 @@ A **Visual Control** is the group of components that are render as part of a **Q
 
 The basic components of a Visual Control are as follows:
 
-![Visual Control Layout](https://i.imgur.com/ZUh3Fdo.png)
+![Visual Control Structure](https://i.imgur.com/8sHNoPu.png)
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
+| - | `VCL` | will apply theme to all elements of the visual control |
 | Input | `VCL_INPUT` | input or display component that will be rendered |
 | Wrapper | `VCL_WRAPPER` | box containing all the other components of the visual control |
 | Label | `VCL_LABEL` | text displaying the question name |
@@ -161,6 +181,8 @@ The basic components of a Visual Control are as follows:
 ## Input Subcomponents
 
 An **Input** that is part of a **Visual Control** might be a single element, such as a Text Field. However, in many cases it is more complex, and contains additional subcomponents. The currently supported subcomponents are as follows:
+
+![Input Subcomponent Structure](https://i.imgur.com/ijdxdia.png)
 
 | Name | visualControlType Code | Description |
 | ------ | ---------- | ----------- |
@@ -176,11 +198,6 @@ An **Input** that is part of a **Visual Control** might be a single element, suc
 Any Themes which are attached to a **Question** via the **Context List** will be passed to all elements of the **Visual Control**. A Theme can be directed to only be applied to a specific component of the **Visual Control** by using the field `visualControlType` (set the value to any of the above types, written in ALL CAPS eg `"visualControlType": "INPUT"`).
 
 Themes which have a visualControlType specified can still be passed through other Question Groups and Questions. If you want to apply a Theme for a Visual Control to every input in a Question Set, you can attach that Theme to the root Question Group of the Question Set, and it will be propagated to all of the child Questions.
-
-### Route Changes
-Each **Legacy Layouts** is a page that has a URI that corresponds to a **Route**. Because only one page needs to be displayed per route, all we need to do is determine which layout we need, and which **Frame** it needs to be linked to. The default **Frame** for this purpose is `FRM_CONTENT`.
-
-The Frontend listens for **Route Change** events, and when it receives one, gets the URI from the URL, and creates a fake **Link** to the **FRAME** `FRM_CONTENT`. If there URI is empty, then the **Link** defaults to `home`.
 
 ## Links
 ( prefix: LNK_ )
@@ -242,6 +259,19 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 ## New Changes
+
+* Added visualControlTypes `group` and `vcl` to allow Themes to be applied to the entire Group or Visual Control respectively.
+
+----
+
+* Add image for Input Subcomponents.
+* Updated image for Visual Control.
+
+----
+
+* Added PRI_IS_DROPDOWN to accepted attributes.
+
+----
 
 * Updated Panel types to include **FRAME**.
 * Added description of the **FRAME** Panel type.

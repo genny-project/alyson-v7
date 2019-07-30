@@ -12,6 +12,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'expandable',
   },
+  PRI_IS_DROPDOWN: {
+    default: false,
+    label: 'dropdown',
+  },
   PRI_IS_INHERITABLE: {
     default: true,
     label: 'inheritable',
@@ -20,13 +24,21 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderQuestionGroupInput',
   },
-  PRI_HAS_QUESTION_GRP_TITLE: {
+  PRI_HAS_QUESTION_GRP_LABEL: {
     default: false,
-    label: 'renderQuestionGroupTitle',
+    label: 'renderQuestionGroupLabel',
   },
   PRI_HAS_QUESTION_GRP_DESCRIPTION: {
     default: false,
     label: 'renderQuestionGroupDescription',
+  },
+  PRI_IS_QUESTION_GRP_LABEL_CLICKABLE: {
+    default: false,
+    label: 'renderQuestionGroupLabelInsideClickable',
+  },
+  PRI_IS_QUESTION_GRP_INPUT_CLICKABLE: {
+    default: false,
+    label: 'renderQuestionGroupInputInsideClickable',
   },
   PRI_HAS_LABEL: {
     default: true,
@@ -59,16 +71,22 @@ const themeBehaviourAttributes = {
 };
 
 const componentTypes = {
-  // form groups - simple
+  // form groups
   GROUP: 'group',
-  // form groups - complex
   GROUP_WRAPPER: 'group-wrapper',
-  GROUP_CONTENT: 'group-content',
+  GROUP_LABEL: 'group-label',
+  GROUP_DESCRIPTION: 'group-description',
+  GROUP_INPUT: 'group-input',
+  GROUP_HEADER_WRAPPER: 'group-header-wrapper',
+  GROUP_CLICKABLE_WRAPPER: 'group-clickable-wrapper',
   GROUP_ICON: 'group-icon',
+  GROUP_CONTENT_WRAPPER: 'group-content-wrapper',
 
-  DELIMITER: 'delimiter',
+  // no supported yet
+  GROUP_DELIMITER: 'group--delimiter',
 
   // visual control
+  VCL: 'vcl',
   VCL_WRAPPER: 'vcl-wrapper',
   VCL_ICON: 'vcl-icon',
   VCL_LABEL: 'vcl-label',
@@ -167,6 +185,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
                 EAST: 'EAST',
                 WEST: 'WEST',
                 CENTRE: 'CENTRE',
+                WRAPPER: 'WRAPPER',
                 FRAME: 'FRAME',
               };
 
