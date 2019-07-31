@@ -100,12 +100,6 @@ class Dropdown extends Component {
 
               {(
                 <MenuContent
-                  style={{
-                    ...{
-                      // color,
-                      // backgroundColor: 'white',
-                    },
-                  }}
                   ref={input => this.input = input}
                   identifier={testID}
                   {...subcomponentProps['group-content-wrapper']}
