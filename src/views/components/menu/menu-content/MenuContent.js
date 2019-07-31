@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { node, string, object } from 'prop-types';
+import { node, string } from 'prop-types';
 import { isObject } from '../../../../utils';
 import { Box, Portal, Boundary, Area } from '../../index';
 import MenuConsumer from '../consumer';
@@ -8,7 +8,6 @@ class MenuContent extends Component {
   static propTypes = {
     children: node.isRequired,
     testID: string,
-    style: object,
   }
 
   focus() {
@@ -27,7 +26,7 @@ class MenuContent extends Component {
   }
 
   render() {
-    const { children, testID, style } = this.props;
+    const { children, testID, ...restProps } = this.props;
 
     // console.log( this.input );
 
@@ -75,7 +74,7 @@ class MenuContent extends Component {
                                 flexDirection="column"
                                 onLayout={this.handleLayout}
                                 identifier="MENU"
-                                {...style}
+                                {...restProps}
                               >
                                 {children}
                               </Box>
