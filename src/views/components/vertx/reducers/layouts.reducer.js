@@ -68,6 +68,14 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderDelimiter',
   },
+  PRI_USE_ATTRIBUTE_NAME_AS_VALUE: {
+    default: false,
+    label: 'useAttributeNameAsValue',
+  },
+  PRI_USE_QUESTION_NAME_AS_VALUE: {
+    default: false,
+    label: 'useQuestionNameAsValue',
+  },
 };
 
 const componentTypes = {

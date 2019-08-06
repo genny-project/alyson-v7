@@ -233,8 +233,6 @@ class FormGroup extends Component {
     const baseEntityDefinition = dataTypes[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
-    const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
-    const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
     const { questionOnly } = options;
     const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
 
@@ -269,8 +267,6 @@ class FormGroup extends Component {
       inheritedThemes: this.getInhertiableThemes(),
       ask,
       isClosed: this.props.isClosed,
-      useAttributeNameAsValue: useAttributeNameAsValue,
-      useQuestionNameAsValue: useQuestionNameAsValue,
       placeholder: placeholder || question.placeholder || question.name,
       index,
     };
