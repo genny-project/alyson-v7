@@ -412,7 +412,10 @@ class FormGroup extends Component {
         {...subcomponentProps['group-content-wrapper']}
       >
         { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-          if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+          if (
+            isArray( ask.childAsks, { ofMinLength: 1 }) &&
+            properties.renderChildAsks !== false
+          ) {
             return this.renderQuestionGroup(
               ask,
               index,

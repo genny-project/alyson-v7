@@ -76,6 +76,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'useQuestionNameAsValue',
   },
+  PRI_HAS_CHILD_ASKS: {
+    default: true,
+    label: 'renderChildAsks',
+  },
 };
 
 const componentTypes = {
