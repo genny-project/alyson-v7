@@ -390,6 +390,12 @@ class Form extends Component {
       // newState[field] = error;
       // newState[field] = errors;
         validationArray.every( validation => {
+          if ( !isObject( validation, { withProperty: 'regex' })) {
+            console.warn( 'Warning: object "validation" does not contain a regex field', validation ); // eslint-disable-line
+
+            return true;
+          }
+
           const doesPass = new RegExp( validation.regex ).test( String( value ));
 
           // console.log( 'doesPass', doesPass );
