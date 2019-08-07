@@ -397,6 +397,10 @@ class Input extends Component {
 
       case 'event':
       case 'buttonevent':
+      case 'form previous submit':
+      case 'form cancel next':
+      case 'form submit':
+      case 'form submit cancel':
         return (
           <InputEvent
             {...inputProps}

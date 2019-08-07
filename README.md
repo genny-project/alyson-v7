@@ -105,6 +105,7 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
 | PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in a floating dropdown component. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
+| PRI_HAS_INPUT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Input. Default is `true` |
 | PRI_HAS_LABEL | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Label. |
 | PRI_HAS_REQUIRED | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a symbol to indicate the field is mandatory. |
 | PRI_HAS_HINT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
@@ -114,6 +115,9 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_HAS_QUESTION_GRP_DESCRIPTION | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render the `description` field of the question as a subtitle.
 | PRI_IS_QUESTION_GRP_LABEL_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Label be rendered as part of the clickable area.
 | PRI_IS_QUESTION_GRP_INPUT_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Input be rendered as part of the clickable area.
+| PRI_USE_ATTRIBUTE_NAME_AS_VALUE | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** Input Component will use the Attribute name as the value. |
+| PRI_USE_QUESTION_NAME_AS_VALUE | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** Input Component will use the Question name as the value. |
+
 ## Question Sets
 ( prefix: QUE_ )
 

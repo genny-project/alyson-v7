@@ -289,40 +289,46 @@ class VisualControl extends Component {
               )}
 
               {/* INPUT COMPONENT */}
-              <StatefulThemeHandler
-                // onChangeState={this.handleStateChange}
-                getStyling={this.getStyling}
-                getIcon={this.getIcon}
-                subcomponentTypes={subcomponents}
-                editable={this.props.editable}
-                disabled={this.props.disabled}
-                error={this.props.error}
-              >
-                {({
-                  onChangeState,
-                  inputProps,
-                  subcomponentProps,
-                }) => {
-                  return (
-                    <FormInput
-                      {...restProps}
-                      {...componentProps['vcl-input']}
-                      inputFieldProps={inputProps}
-                      subcomponentProps={subcomponentProps}
-                      onBlur={onBlur}
-                      iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
-                      iconOnly={(
-                      properties.renderVisualControlInput != null
-                        ? !properties.renderVisualControlInput
-                        : false
-                    )}
-                      inheritedProps={this.getInhertiableThemes()}
-                      padding={3}
-                      onChangeState={onChangeState}
-                    />
-                  );
-                }}
-              </StatefulThemeHandler>
+              {(
+                properties.renderVisualControlInput !== false
+              ) && (
+                <StatefulThemeHandler
+                  // onChangeState={this.handleStateChange}
+                  getStyling={this.getStyling}
+                  getIcon={this.getIcon}
+                  subcomponentTypes={subcomponents}
+                  editable={this.props.editable}
+                  disabled={this.props.disabled}
+                  error={this.props.error}
+                >
+                  {({
+                    onChangeState,
+                    inputProps,
+                    subcomponentProps,
+                  }) => {
+                    return (
+                      <FormInput
+                        {...restProps}
+                        {...componentProps['vcl-input']}
+                        inputFieldProps={inputProps}
+                        subcomponentProps={subcomponentProps}
+                        onBlur={onBlur}
+                        iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
+                        iconOnly={(
+                        properties.renderVisualControlInput != null
+                          ? !properties.renderVisualControlInput
+                          : false
+                      )}
+                        useAttributeNameAsValue={isObject( properties, { withProperty: 'useAttributeNameAsValue' }) ? properties.useAttributeNameAsValue : null}
+                        useQuestionNameAsValue={isObject( properties, { withProperty: 'useQuestionNameAsValue' }) ? properties.useQuestionNameAsValue : null}
+                        inheritedProps={this.getInhertiableThemes()}
+                        padding={3}
+                        onChangeState={onChangeState}
+                      />
+                    );
+                  }}
+                </StatefulThemeHandler>
+              )}
 
               {/* ERROR MESSAGE */}
               {(
