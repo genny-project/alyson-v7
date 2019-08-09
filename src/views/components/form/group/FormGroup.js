@@ -491,7 +491,7 @@ class FormGroup extends Component {
                 <WrapperElement
                   subcomponentProps={subcomponentProps}
                   isClosed={this.props.isClosed}
-                  testID={`${parentGroupCode}:${questionCode}`}
+                  testID={`${parentGroupCode || questionCode}:${questionCode}`}
                   renderHeader={(
                     <Fragment>
                       { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
