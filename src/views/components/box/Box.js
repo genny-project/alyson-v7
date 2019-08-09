@@ -89,6 +89,7 @@ function Box({
   overscrollBehaviorY,
   onLayout,
   onBlur,
+  boxSizing,
   ...restProps
 }) {
   const boxStyle = filterOutUnspecifiedProps({
@@ -160,6 +161,7 @@ function Box({
     overscrollBehavior,
     overscrollBehaviorX,
     overscrollBehaviorY,
+    boxSizing,
     ...__dangerouslySetStyle,
   });
 
@@ -327,6 +329,9 @@ Box.propTypes = {
       [string, number]
     ),
   }),
+  boxSizing: oneOf(
+    ['content-box', 'border-box']
+  ),
 };
 
 export default Box;

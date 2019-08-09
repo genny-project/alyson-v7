@@ -46,7 +46,7 @@ class InputImage extends Component {
       height,
       width,
       // editable,
-      // ...restProps
+      ...restProps
     } = this.props;
     const { isHover } = this.state; // eslint-disable-line no-unused-vars
 
@@ -81,6 +81,7 @@ class InputImage extends Component {
           position="relative"
         >
           <Image
+            {...restProps}
             source={getValue( value )}
           />
           {/* <Input

@@ -126,6 +126,7 @@ class InputDatePicker extends PureComponent {
                   onPress={this.props.editable ? toggle : null}
                   onFocus={open}
                   accessibilityRole="link"
+                  testID={`input-date-picker ${testID}`}
                 >
                   <Box
                     position="absolute"
