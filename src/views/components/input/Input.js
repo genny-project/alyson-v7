@@ -139,7 +139,7 @@ class Input extends Component {
       case 'mobile':
       case 'landline':
         return (
-          <InputText
+          <TextInputElement
             keyboardType="phone-pad"
             {...inputProps}
             {...inputFieldProps}

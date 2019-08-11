@@ -424,7 +424,7 @@ class InputText extends Component {
     return (
       <Box
         position="relative"
-        flex={1}
+        // flex={1}
         width={width}
         maxWidth={maxWidth}
       >
