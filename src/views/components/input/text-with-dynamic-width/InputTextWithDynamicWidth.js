@@ -82,7 +82,10 @@ class InputTextWithDynamicWidth extends Component {
 
     const tempElementStyle = `position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; font-size: ${TEXT_SIZES[this.props.textSize]}px; white-space: pre-wrap;` ;
 
-    this.tempElement.innerHTML = isString( text, { ofMinLength: 1 }) ? text : placeholder;
+    this.tempElement.innerHTML = (
+      isString( text, { ofMinLength: 1 }) ||
+      isInteger( text, { ofMinLength: 1 })
+    ) ? text : placeholder;
     this.tempElement.setAttribute( 'style', `${tempElementStyle}` );
     const contentWidth = this.tempElement.clientWidth;
 
