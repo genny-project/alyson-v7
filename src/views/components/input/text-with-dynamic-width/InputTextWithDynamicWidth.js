@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { number, string, func, oneOf, bool } from 'prop-types';
+import { number, string, func, oneOf, oneOfType, bool } from 'prop-types';
 import dlv from 'dlv';
 import { TEXT_SIZES } from '../../../../constants';
 import { isString, isInteger } from '../../../../utils';
@@ -23,6 +23,9 @@ class InputTextWithDynamicWidth extends Component {
       ['xs','sm','md','lg','xl']
     ),
     dynamicWidth: bool,
+    width: oneOfType(
+      [string, number]
+    ),
     placeholder: string,
     value: string,
     margin: number,
@@ -41,7 +44,7 @@ class InputTextWithDynamicWidth extends Component {
   }
 
   state = {
-    width: null,
+    calculatedWidth: null,
   }
 
   componentDidMount() {
@@ -128,9 +131,9 @@ class InputTextWithDynamicWidth extends Component {
         offsetMarginLeft + offsetMarginRight + offsetPaddingLeft + offsetPaddingRight
       : null;
 
-    if ( calculatedWidth !== this.state.width ) {
+    if ( calculatedWidth !== this.state.calculatedWidth ) {
       this.setState({
-        width: calculatedWidth,
+        calculatedWidth: calculatedWidth,
       });
     }
   };
@@ -144,18 +147,19 @@ class InputTextWithDynamicWidth extends Component {
   render() {
     const {
       dynamicWidth, // eslint-disable-line no-unused-vars
+      width, // eslint-disable-line no-unused-vars
       ...restProps
     } = this.props;
 
     const {
-      width,
+      calculatedWidth,
     } = this.state;
 
     return (
       <Fragment>
         <Input
           blurOnSubmit={false}
-          width={width}
+          width={calculatedWidth}
           maxWidth="100%"
           {...restProps}
           // wordWrap="break-word"

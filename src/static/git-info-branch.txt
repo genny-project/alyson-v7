@@ -1,1 +1,1 @@
-19-08-09-fix-image-props
+v3.0.0

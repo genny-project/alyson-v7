@@ -28,6 +28,7 @@ class InputDatePicker extends PureComponent {
     testID: string,
     editable: bool,
     placeholder: string,
+    subcomponentProps: object,
   }
 
   selectionValues = {};
@@ -46,6 +47,7 @@ class InputDatePicker extends PureComponent {
       testID,
       onChangeValue, // eslint-disable-line no-unused-vars
       editable,
+      subcomponentProps,
       ...restProps
     } = this.props;
 
@@ -54,6 +56,7 @@ class InputDatePicker extends PureComponent {
         value={value}
         displayFormat={displayFormat}
         onChangeValue={onChangeValue}
+        subcomponentProp={subcomponentProps}
       >
         {({
           getItemProps,
@@ -81,6 +84,9 @@ class InputDatePicker extends PureComponent {
           selectDay,
           selectMonth,
           selectYear,
+          componentProps,
+          updateState,
+          filterComponentProps,
         }) => {
           const weeksInCurrentMonth = getWeeksInMonth();
           const isDisabled = dateValue => !isSameMonth( date, dateValue );
@@ -118,7 +124,10 @@ class InputDatePicker extends PureComponent {
                   onSelectionChange={onSelectionChange}
                   testID={`input-date-picker ${testID}`}
                   paddingRight={20}
-                  {...this.props.inputFieldProps} // eslint-disable-line
+                  iconProps={componentProps['input-icon']}
+                  {...componentProps['input-field']}
+                  onChangeState={updateState( 'input-field' )}
+                  // {...this.props.inputFieldProps} // eslint-disable-line
                 />
                 <Touchable
                   withFeedback

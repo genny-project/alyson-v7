@@ -20,6 +20,7 @@ import {
 } from 'date-fns';
 import { isArray, isString } from '../../../../../utils';
 import { Box, Touchable } from '../../../../components';
+import { SubcomponentThemeHandler } from '../../../form/theme-handlers';
 
 const NUMBER_OF_DOB_YEARS = 125;
 const separatorRegex = /(,|\s|\/|-|_|:)/g;
@@ -64,8 +65,11 @@ class DateTimeBase extends PureComponent {
     value: oneOfType( [string, object] ),
     testID: string,
     editable: bool,
+    disabled: bool,
+    error: string,
     placeholder: string,
     children: func,
+    subcomponentProps: object,
   }
 
   selectionValues = {};
@@ -661,108 +665,121 @@ class DateTimeBase extends PureComponent {
       // testID,
       onChangeValue, // eslint-disable-line no-unused-vars
       children,
+      subcomponentProps,
     } = this.props;
 
     const { isCalendarOpen } = this.state;
 
     return (
-      <Downshift
-        defaultInputValue={value}
-        onChange={this.handleChange}
-        itemToString={date => {
-          return date ? format( date, displayFormat ) : '';
-        }}
-        isOpen={isCalendarOpen}
-        selectedItem={this.state.value}
+      // STATE HOLDER
+      <SubcomponentThemeHandler
+        subcomponentProps={subcomponentProps}
+        editable={this.props.editable}
+        disabled={this.props.disabled}
+        error={this.props.error}
       >
         {({
-          getInputProps,
-          getItemProps,
-          getRootProps,
-          isOpen,
-          selectedItem,
-          inputValue,
-          selectItem,
+          componentProps,
+          updateState,
+          filterComponentProps,
         }) => {
           return (
-            <Box
-              flex={1}
-              {...getRootProps( undefined, { suppressRefError: true })}
+            <Downshift
+              defaultInputValue={value}
+              onChange={this.handleChange}
+              itemToString={date => {
+                return date ? format( date, displayFormat ) : '';
+              }}
+              isOpen={isCalendarOpen}
+              selectedItem={this.state.value}
             >
-              <Box>
-                {isOpen ? (
-                  <Touchable
-                    withFeedback
-                    accessibilityRole="link"
-                    onPress={this.handleCalendarToggle}
+              {({
+                getInputProps,
+                getItemProps,
+                getRootProps,
+                isOpen,
+                selectedItem,
+                inputValue,
+                selectItem,
+              }) => {
+                return (
+                  <Box
+                    {...getRootProps( undefined, { suppressRefError: true })}
+                    {...componentProps['input-wrapper']}
                   >
-                    <Box
-                      position="fixed"
-                      top={0}
-                      left={0}
-                      width="100%"
-                      height="100%"
-                    />
-                  </Touchable>
-                ) : null}
-              </Box>
+                    {isOpen ? (
+                      <Touchable
+                        withFeedback
+                        accessibilityRole="link"
+                        onPress={this.handleCalendarToggle}
+                      >
+                        <Box
+                          position="fixed"
+                          top={0}
+                          left={0}
+                          width="100%"
+                          height="100%"
+                        />
+                      </Touchable>
+                    ) : null}
 
-              <Box
-                position="relative"
-                // width="100%"
-              >
-                <Kalendaryo
-                  startCurrentDateAt={selectedItem}
-                  selectedItem={selectedItem}
-                  getItemProps={getItemProps}
-                  selectItem={selectItem}
-                  render={({
-                    // getFormattedDate,
-                    getWeeksInMonth,
-                    getDatePrevMonth,
-                    getDateNextMonth,
-                    setDate,
-                    getItemProps,
-                    selectedItem,
-                    date,
-                    selectItem,
-                  }) => {
-                    return children({
-                      getRootProps,
-                      getItemProps,
-                      getInputProps,
-                      getWeeksInMonth,
-                      getDatePrevMonth,
-                      getDateNextMonth,
-                      inputValue,
-                      date,
-                      selectedItem,
-                      selectItem,
-                      isOpen,
-                      setDate,
-                      currentYear,
-                      daysOfTheWeek,
-                      months,
-                      years,
-                      selection: this.selectionValues[this.state.currentInputSection],
-                      onRef: this.handleRef,
-                      close: this.handleCalendarClose,
-                      open: this.handleCalendarOpen,
-                      toggle: this.handleCalendarToggle,
-                      onBlur: this.handleBlur,
-                      onKeyPress: this.handleKeyPress,
-                      onSelectionChange: this.handleSelectionChange,
-                      selectDay: this.handleSelectDay,
-                      selectMonth: this.handleSelectMonth,
-                      selectYear: this.handleSelectYear,
-                    });
-                  }}
-                />
-              </Box>
-            </Box>
+                    <Kalendaryo
+                      startCurrentDateAt={selectedItem}
+                      selectedItem={selectedItem}
+                      getItemProps={getItemProps}
+                      selectItem={selectItem}
+                      render={({
+                          // getFormattedDate,
+                        getWeeksInMonth,
+                        getDatePrevMonth,
+                        getDateNextMonth,
+                        setDate,
+                        getItemProps,
+                        selectedItem,
+                        date,
+                        selectItem,
+                      }) => {
+                        return children({
+                          getRootProps,
+                          getItemProps,
+                          getInputProps,
+                          getWeeksInMonth,
+                          getDatePrevMonth,
+                          getDateNextMonth,
+                          inputValue,
+                          date,
+                          selectedItem,
+                          selectItem,
+                          isOpen,
+                          setDate,
+                          currentYear,
+                          daysOfTheWeek,
+                          months,
+                          years,
+                          selection: this.selectionValues[this.state.currentInputSection],
+                          onRef: this.handleRef,
+                          close: this.handleCalendarClose,
+                          open: this.handleCalendarOpen,
+                          toggle: this.handleCalendarToggle,
+                          onBlur: this.handleBlur,
+                          onKeyPress: this.handleKeyPress,
+                          onSelectionChange: this.handleSelectionChange,
+                          selectDay: this.handleSelectDay,
+                          selectMonth: this.handleSelectMonth,
+                          selectYear: this.handleSelectYear,
+                          componentProps,
+                          updateState,
+                          filterComponentProps,
+                        });
+                      }}
+                    />
+                  </Box>
+                );
+              }}
+            </Downshift>
           );
         }}
-      </Downshift>
+      </SubcomponentThemeHandler>
     );
   }
 }
