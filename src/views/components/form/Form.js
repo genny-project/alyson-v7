@@ -401,8 +401,16 @@ class Form extends Component {
           // console.log( 'doesPass', doesPass );
 
           if ( !doesPass ) {
-          // errors.push( validation.errorMessage );
-            error = validation.errorMessage;
+            // errors.push( validation.errorMessage );
+            const hasErrorMessage = isString( validation.errorMessage, { ofMinLength: 1 });
+
+            if ( hasErrorMessage ) {
+              error = validation.errorMessage;
+            }
+            else {
+                console.warn( 'Warning: object "validation" does not contain an errorMessage field', validation ); // eslint-disable-line
+              error = 'Error: Answer Invalid';
+            }
           }
 
           return doesPass;

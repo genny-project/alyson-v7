@@ -335,6 +335,7 @@ class VisualControl extends Component {
                 isString( this.props.error )
               ) && (
                 <VisualControlError
+                  error={this.props.error}
                   {...componentProps['vcl-error']}
                 />
               )}
