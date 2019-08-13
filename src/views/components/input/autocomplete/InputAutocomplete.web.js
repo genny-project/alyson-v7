@@ -319,7 +319,10 @@ class InputAutocomplete extends Component {
                                     {...filterComponentProps( 'input-item', { hover: highlightedIndex === index })}
                                   >
                                     <Text
-                                      {...( selectedItem === idom ) && {
+                                      {...(
+                                        selectedItem === idom ||
+                                        highlightedIndex === index
+                                      ) && {
                                         fontWeight: 'bold',
                                       }}
                                       {...filterComponentProps( 'input-item', { hover: highlightedIndex === index })}
