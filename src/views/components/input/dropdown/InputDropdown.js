@@ -66,7 +66,7 @@ class InputDropdown extends Component {
     paddingRight: number,
     paddingBottom: number,
     paddingLeft: number,
-    textSize: oneOf(
+    size: oneOf(
       ['xs','sm','md','lg','xl']
     ),
     textAlign: oneOf(
@@ -157,7 +157,7 @@ class InputDropdown extends Component {
       paddingRight,
       paddingBottom,
       paddingLeft,
-      textSize,
+      size,
       textAlign,
       height,
       backgroundColor,
@@ -194,7 +194,7 @@ class InputDropdown extends Component {
       paddingRight: paddingRight,
       paddingBottom,
       paddingLeft,
-      fontSize: TEXT_SIZES[textSize],
+      fontSize: TEXT_SIZES[size],
       textAlign: textAlign,
       height,
       // width: '100%', // Always be 100% of the parent width

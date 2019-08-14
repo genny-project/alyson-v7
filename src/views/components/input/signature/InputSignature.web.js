@@ -160,7 +160,7 @@ class InputSignature extends Component {
             <InputText
               type="text"
               size="lg"
-              textSize="sm"
+              size="sm"
               padding={10}
               backgroundColor="#f1f1f1"
               borderSize={1}
