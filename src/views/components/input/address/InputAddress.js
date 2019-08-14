@@ -269,7 +269,7 @@ class InputAddress extends Component {
   }
 
   render() {
-    const { testID, ...restProps } = this.props;
+    const { testID, onChangeValue, ...restProps } = this.props; // eslint-disable-line
     const { items, countryLock } = this.state;
 
     return (

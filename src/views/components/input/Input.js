@@ -211,7 +211,6 @@ class Input extends Component {
         return (
           <InputAddress
             {...inputProps}
-            // inputFieldProps={inputFieldProps}
             ref={input => ( this.input = input )}
           />
         );

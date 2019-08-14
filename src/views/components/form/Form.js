@@ -7,7 +7,6 @@ import dlv from 'dlv';
 import dset from 'dset';
 import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
-import shallowCompare from '../../../utils/shallow-compare';
 import { Box, Text, Fragment } from '../index';
 import FormGroup from './group';
 
@@ -299,14 +298,16 @@ class Form extends Component {
 
   checkForUpdatedAttributeValues = ( newProps ) => {
     /* identify the attributes for each question */
-
     const { initialValues } = this.state;
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
 
+    // let currentPath = newProps.questionGroupCode;
     const rootPath = newProps.questionGroupCode;
 
     const compareAttributeValues = ( ask, path ) => {
-      if ( !ask.question ) return false;
+      if ( !ask.question ) {
+        return false;
+      }
 
       const questionCode = ask.questionCode;
       const target = ask.targetCode;
@@ -323,7 +324,9 @@ class Form extends Component {
       ) ||
       initialValue === baseEntityAttributeValue;
 
-      if ( isMatch ) return false;
+      if ( isMatch ) {
+        return false;
+      }
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
         const currentPath = `${path}.${questionCode}`;
@@ -391,7 +394,7 @@ class Form extends Component {
       // newState[field] = errors;
         validationArray.every( validation => {
           if ( !isObject( validation, { withProperty: 'regex' })) {
-            console.warn( 'Warning: object "validation" does not contain a regex field', validation ); // eslint-disable-line
+            console.warn( 'Warning: validation does not contain regex field', validation, validationArray ); // eslint-disable-line
 
             return true;
           }
@@ -401,8 +404,16 @@ class Form extends Component {
           // console.log( 'doesPass', doesPass );
 
           if ( !doesPass ) {
-          // errors.push( validation.errorMessage );
-            error = validation.errorMessage;
+            // errors.push( validation.errorMessage );
+            const hasErrorMessage = isString( validation.errorMessage, { ofMinLength: 1 });
+
+            if ( hasErrorMessage ) {
+              error = validation.errorMessage;
+            }
+            else {
+                // console.warn( 'Warning: object "validation" does not contain an errorMessage field', validation ); // eslint-disable-line
+              error = 'Error: Answer Invalid';
+            }
           }
 
           return doesPass;
@@ -449,8 +460,6 @@ class Form extends Component {
 
       errorList[valueKey] = validate( values[valueKey], validationList[valueKey] );
     });
-
-    // console.log( 'errorList', errorList );
 
     this.errors = errorList;
 
@@ -708,7 +717,7 @@ class Form extends Component {
 
           this.errors = errors;
 
-          const isFormValid = shallowCompare( this.doValidate( values ), {});
+          // const isFormValid = shallowCompare( this.doValidate( values ), {});
 
           return (
             <Fragment>
@@ -722,7 +731,7 @@ class Form extends Component {
                     touched,
                     setFieldValue,
                     setFieldTouched,
-                    isFormValid,
+                    // isFormValid,
                     validateField,
                     validateForm,
                     onBlur: handleBlur,
