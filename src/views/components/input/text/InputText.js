@@ -484,9 +484,6 @@ class InputText extends Component {
               selection={selection}
               selectTextOnFocus={selectTextOnFocus}
               spellCheck={spellCheck}
-              style={[
-                inputStyle,
-              ]}
               text={useAttributeNameAsValue
                 ? attributeName
                 : useQuestionNameAsValue
@@ -499,6 +496,7 @@ class InputText extends Component {
               })}
               ref={this.handleRef}
               {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
+              {...inputStyle}
             />
           ) : (
             <TextInput
