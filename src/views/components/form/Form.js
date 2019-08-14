@@ -303,9 +303,9 @@ class Form extends Component {
     const { initialValues } = this.state;
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
 
-    let currentPath = newProps.questionGroupCode;
+    const rootPath = newProps.questionGroupCode;
 
-    const compareAttributeValues = ( ask ) => {
+    const compareAttributeValues = ( ask, path ) => {
       if ( !ask.question ) return false;
 
       const questionCode = ask.questionCode;
@@ -315,7 +315,7 @@ class Form extends Component {
 
       // const path = `${currentPath}.${ask.questionCode}`;
 
-      const initialValue = dlv( initialValues, `${currentPath}.${ask.questionCode}` );
+      const initialValue = dlv( initialValues, `${path}.${ask.questionCode}` );
 
       const isMatch = (
         initialValue == null &&
@@ -326,10 +326,10 @@ class Form extends Component {
       if ( isMatch ) return false;
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-        currentPath = `${currentPath}.${questionCode}`;
+        const currentPath = `${path}.${questionCode}`;
 
         const isChildMatch = ask.childAsks.some(
-          childAsk => compareAttributeValues( childAsk )
+          childAsk => compareAttributeValues( childAsk, currentPath )
         );
 
         return isChildMatch;
@@ -339,7 +339,7 @@ class Form extends Component {
     };
 
     const isDifference = newQuestionGroup.childAsks.some(
-      childAsk => compareAttributeValues( childAsk )
+      childAsk => compareAttributeValues( childAsk, rootPath )
     );
 
     return isDifference;

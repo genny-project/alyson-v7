@@ -293,7 +293,7 @@ class Input extends Component {
         return (
           <InputDatePicker
             {...inputProps}
-            inputFieldProps={inputFieldProps}
+            // inputFieldProps={inputFieldProps}
             date
             ref={input => ( this.input = input )}
           />

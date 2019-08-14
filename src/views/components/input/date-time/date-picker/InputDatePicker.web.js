@@ -3,7 +3,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { string, func, oneOfType, object, bool } from 'prop-types';
+import { string, func, oneOfType, object, bool, shape } from 'prop-types';
 import { format, isSameMonth, isToday, getMonth, getYear } from 'date-fns';
 import { getDeviceSize } from '../../../../../utils';
 import { Input, Box, Text, Touchable, Icon, Fragment } from '../../../../components';
@@ -28,7 +28,15 @@ class InputDatePicker extends PureComponent {
     testID: string,
     editable: bool,
     placeholder: string,
-    subcomponentProps: object,
+    subcomponentProps: shape({
+      'input-field': object,
+      'input-wrapper': object,
+      'input-icon': object,
+      'input-item-wrapper': object,
+      'input-item': object,
+      'input-selected-wrapper': object,
+      'input-selected': object,
+    }),
   }
 
   selectionValues = {};
@@ -56,7 +64,7 @@ class InputDatePicker extends PureComponent {
         value={value}
         displayFormat={displayFormat}
         onChangeValue={onChangeValue}
-        subcomponentProp={subcomponentProps}
+        subcomponentProps={subcomponentProps}
       >
         {({
           getItemProps,
@@ -68,6 +76,8 @@ class InputDatePicker extends PureComponent {
           date,
           selectedItem,
           selectItem,
+          setHighlightedIndex,
+          highlightedIndex,
           isOpen,
           setDate,
           daysOfTheWeek,
@@ -98,6 +108,8 @@ class InputDatePicker extends PureComponent {
           const monthValue = [months[getMonth( date )]];
           const yearValue = [years[years.findIndex( year => year === getYear( date ))]];
 
+          // console.log( 'input-field', componentProps['input-field'] );
+
           return (
             <Fragment>
               <Box
@@ -115,6 +127,7 @@ class InputDatePicker extends PureComponent {
                   // placeholder,
                     onRef: onRef,
                     dynamicWidth: true,
+                    ...componentProps['input-field'],
                   })}
                   onChange={null}
                   onFocus={close}
@@ -125,7 +138,6 @@ class InputDatePicker extends PureComponent {
                   testID={`input-date-picker ${testID}`}
                   paddingRight={20}
                   iconProps={componentProps['input-icon']}
-                  {...componentProps['input-field']}
                   onChangeState={updateState( 'input-field' )}
                   // {...this.props.inputFieldProps} // eslint-disable-line
                 />
@@ -172,18 +184,19 @@ class InputDatePicker extends PureComponent {
                   overflow="hidden"
                   backgroundColor="#FFF"
                   position="absolute"
+                  paddingY={5}
                   zIndex={20}
                   top="100%"
                   {...( getDeviceSize() === 'sm' ? { width: '100%' } : null )}
                   onPress={event => {
                     event.stopPropagation();
                   }}
+                  {...componentProps['input-item-wrapper']}
                 >
                   <Box
                     justifyContent="space-between"
                     alignItems="center"
-                    paddingX={10}
-                    paddingY={15}
+                    padding={5}
                     onPress={event => {
                       event.stopPropagation();
                     }}
@@ -328,61 +341,63 @@ class InputDatePicker extends PureComponent {
                         // eslint-disable-next-line
                         key={weekIndex}
                       >
-                        {week.map(( day, dayIndex ) => (
+                        {week.map(( day, dayIndex ) => {
                           // ---------------
                           //   DAY BUTTON
                           // ---------------
-                          <Touchable
-                            accessibilityRole="link"
-                            testID={`input-date-picker-option input-date-picker-day ${testID}`}
-                            key={day.label}
-                            {...getItemProps({
-                              item: day.dateValue,
-                              disabled: isDisabled( day.dateValue ),
-                              width: 'calc(100% / 7)',
-                              paddingY: 15,
-                              paddingX: 10,
-                              backgroundColor: (
-                                isSelectedDay( day.dateValue )
-                                  ? 'red'
-                                  : '#FFFFFF'
-                              ),
-                              ...dayIndex > 0 && {
-                              // borderLeftWidth: 1,
-                              // borderStyle: 'solid',
-                              // borderColor: '#efefef',
-                              },
-                              ...isDisabled( day.dateValue ) && {
-                                cursor: 'not-allowed',
-                              },
-                              justifyContent: 'center',
-                              withFeedback: true,
-                              onPress: event => {
-                                if ( isDisabled( day.dateValue ))
-                                  event.stopPropagation();
-                                else {
-                                  selectDay(
-                                    toggle,
-                                    selectItem,
-                                    day,
-                                  );
-                                }
-                              },
-                            })}
-                          >
-                            <Text
-                              align="center"
-                              color={(
-                            isSelectedDay( day.dateValue ) ? 'black'
-                            : isDisabled( day.dateValue ) ? '#dedede'
-                            : isToday( day.dateValue ) ? 'crimson'
-                            : '#000000'
-                          )}
+
+                          const monthIndex = ( weekIndex * 7 ) + dayIndex;
+                          const isSelected = isSelectedDay( day.dateValue );
+                          const disabled = isDisabled( day.dateValue );
+                          const today = isToday( day.dateValue );
+                          const isHighlighted = highlightedIndex === monthIndex;
+                          const itemProps = filterComponentProps( 'input-item', { selected: isSelected, hover: isHighlighted });
+
+                          return (
+
+                            <Touchable
+                              accessibilityRole="link"
+                              testID={`input-date-picker-option input-date-picker-day ${testID}`}
+                              key={day.label}
+                              {...getItemProps({
+                                item: day.dateValue,
+                                disabled: disabled,
+                                width: 'calc(100% / 7)',
+                                paddingY: 5,
+                                backgroundColor: isHighlighted ? '#DDD' : today ? '#BBB' : 'white',
+                                ...disabled && {
+                                  cursor: 'not-allowed',
+                                },
+                                justifyContent: 'center',
+                                withFeedback: true,
+                                onPress: event => {
+                                  if ( disabled )
+                                    event.stopPropagation();
+                                  else {
+                                    selectDay(
+                                      toggle,
+                                      selectItem,
+                                      day,
+                                    );
+                                  }
+                                },
+                                onMouseEnter: () => {
+                                  setHighlightedIndex( monthIndex );
+                                },
+                                ...itemProps,
+                              })}
                             >
-                              {day.label}
-                            </Text>
-                          </Touchable>
-                        ))}
+                              <Text
+                                align="center"
+                                color={disabled ? '#dedede' : '#000000'}
+                                fontWeight={isSelected ? 'bold' : 'normal'}
+                                {...itemProps}
+                              >
+                                {day.label}
+                              </Text>
+                            </Touchable>
+                          );
+                        })}
                       </Box>
                     ))}
                   </Box>

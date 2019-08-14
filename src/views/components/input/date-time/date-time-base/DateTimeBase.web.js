@@ -701,6 +701,8 @@ class DateTimeBase extends PureComponent {
                 selectedItem,
                 inputValue,
                 selectItem,
+                setHighlightedIndex,
+                highlightedIndex,
               }) => {
                 return (
                   <Box
@@ -746,10 +748,13 @@ class DateTimeBase extends PureComponent {
                           getWeeksInMonth,
                           getDatePrevMonth,
                           getDateNextMonth,
+                          getDate,
                           inputValue,
                           date,
                           selectedItem,
                           selectItem,
+                          setHighlightedIndex,
+                          highlightedIndex,
                           isOpen,
                           setDate,
                           currentYear,
