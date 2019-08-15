@@ -37,6 +37,7 @@ class InputText extends Component {
     editable: true,
     outline: 'none',
     updateValueWhenFocused: false,
+    alignSelf: 'center',
   }
 
   static propTypes = {
@@ -97,6 +98,9 @@ class InputText extends Component {
     ),
     textAlign: oneOf(
       ['left', 'center','right']
+    ),
+    alignSelf: oneOf(
+      ['normal', 'auto', 'center', 'flex-start', 'flex-end']
     ),
     height: oneOfType(
       [string, number]
@@ -328,6 +332,7 @@ class InputText extends Component {
       maxWidth,
       size,
       textAlign,
+      alignSelf,
       height,
       editable,
       backgroundColor,
@@ -437,6 +442,7 @@ class InputText extends Component {
       color,
       outline,
       overflow,
+      alignSelf,
       // ...editable === false ? { cursor: 'default' } : {},
     });
 
