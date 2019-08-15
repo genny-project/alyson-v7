@@ -1,7 +1,7 @@
 import React from 'react';
 import { string, oneOf, oneOfType, number } from 'prop-types';
 import { Box, Icon } from '../../components';
-import { isString, isInteger } from '../../../utils';
+import { isString } from '../../../utils';
 
 const style = {
   contain: {
@@ -39,12 +39,10 @@ const Image = ({
     source !== 'undefined'
   ) {
     return (
-      isScaledImage && (
-        isInteger( width ) ||
-        isInteger( height )
-      )
+      isScaledImage
         ? (
           <div
+            id="1"
             style={{
               ...style[fit],
               height,
@@ -57,6 +55,7 @@ const Image = ({
         )
         : (
           <img
+            id="2"
             style={cssstyle}
             src={source}
           />

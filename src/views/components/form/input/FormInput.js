@@ -131,6 +131,7 @@ class FormInput extends Component {
       case 'Imagemultiple':
       case 'images':
       case 'signature':
+      case 'address':
         return (
           <Input
             {...inputProps}
