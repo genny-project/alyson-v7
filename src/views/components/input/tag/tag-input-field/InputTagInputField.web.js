@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { object, func, bool, string, node, array } from 'prop-types';
-// import { isObject } from '../../../../../utils';
+import { isString } from '../../../../../utils';
 import { Box, Input, Icon, Touchable } from '../../../index';
 
 class InputTagInputField extends Component {
@@ -75,6 +75,8 @@ class InputTagInputField extends Component {
     } = this.props;
     const selectedItem = selectedItems.map( item => item.label ).join();
 
+    console.log( 'sleectedItem', selectedItem );
+
     return (
       <Touchable
         onPress={() => {
@@ -96,9 +98,11 @@ class InputTagInputField extends Component {
               ...restProps,
               type: 'text',
               width: '100%',
-              value: ( allowMultipleSelection ? inputValue : selectedItem ) || '',
+              value: ( allowMultipleSelection ? inputValue : isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || '',
               ...stateBasedProps,
             })}
+            disabled={!allowMultipleSelection}
+            cursor={allowMultipleSelection ? 'cursor' : 'pointer'}
             updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
             onFocus={() => {

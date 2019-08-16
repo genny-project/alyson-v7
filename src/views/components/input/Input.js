@@ -217,10 +217,6 @@ class Input extends Component {
 
       case 'dropdown':
         return (
-          // <InputDropdown
-          //   {...inputProps}
-          //   ref={input => this.input = input}
-          // />
           <InputTag
             {...inputProps}
             allowMultipleSelection={false}
