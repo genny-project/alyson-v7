@@ -17,6 +17,9 @@ import {
   getDeviceSize,
   shallowCompare,
   objectMerge,
+  storeQuery,
+  setTitle,
+  isString,
 } from '../../../utils';
 
 const defaultStyle = {
@@ -307,8 +310,13 @@ class Frame extends Component {
 
     const rootFrame = frames[rootCode];
 
+    const projectAttributes = storeQuery.getProjectAttributes();
+    const projectName = dlv( projectAttributes, 'PRI_NAME.value' );
+
     if ( !rootFrame ) {
       console.warn( 'waiting for Root Frame...' ); // eslint-disable-line
+
+      setTitle( `${isString( projectName ) ? `${projectName}` : 'GENNY'} | Loading...` );
 
       return (
         <Box
@@ -326,6 +334,8 @@ class Frame extends Component {
         </Box>
       );
     }
+
+    setTitle( `${isString( projectName ) ? `${projectName}` : 'GENNY'} | Home` );
 
     const filterByPanel = ( array, panel ) => {
       return array.filter( item => item.panel === panel );

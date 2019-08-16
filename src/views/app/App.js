@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import AuthenticatedApp from './authenticated';
 import Routing from '../routing';
 import { location } from '../../utils';
-import { DebugDisplay } from '../components';
+import { DebugDisplay, Favicon } from '../components';
 
 class App extends Component {
   constructor( props ) {
@@ -72,6 +72,7 @@ class App extends Component {
     return (
       <AuthenticatedApp>
         <Routing />
+        <Favicon />
         {this.getDisplayDevMode()}
       </AuthenticatedApp>
     );
