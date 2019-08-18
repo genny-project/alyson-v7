@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { object, array, string, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Box, Text, Recurser, Swipeable } from '../index';
+import { Box, Text, Recurser, Swipeable, ActivityIndicator } from '../../components';
 import Panel from './panel';
 import {
   isArray,
@@ -308,13 +308,21 @@ class Frame extends Component {
     const rootFrame = frames[rootCode];
 
     if ( !rootFrame ) {
+      console.warn( 'waiting for Root Frame...' ); // eslint-disable-line
+
       return (
         <Box
           justifyContent="center"
           alignItems="center"
           flex={1}
+          flexDirection="column"
         >
-          <Text text="No Base Entity Found" />
+          <ActivityIndicator size="large" />
+          <Box height={20} />
+          <Text
+            text="Loading..."
+            align="center"
+          />
         </Box>
       );
     }

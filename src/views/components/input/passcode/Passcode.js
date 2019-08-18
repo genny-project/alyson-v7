@@ -179,7 +179,7 @@ class Passcode extends Component {
                   width="100%"
                   type="text"
                   value={currentValues[i] || ''}
-                  textSize={size}
+                  size={size}
                   padding={inputPadding[size]}
                   textAlign="center"
                   placeholder="-"

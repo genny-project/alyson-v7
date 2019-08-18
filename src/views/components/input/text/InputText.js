@@ -32,11 +32,12 @@ class InputText extends Component {
     secureTextEntry: false,
     selectTextOnFocus: false,
     spellCheck: true,
-    textSize: 'xs',
+    size: 'xs',
     textAlign: 'left',
     editable: true,
     outline: 'none',
     updateValueWhenFocused: false,
+    alignSelf: 'center',
   }
 
   static propTypes = {
@@ -92,11 +93,14 @@ class InputText extends Component {
     paddingRight: number,
     paddingBottom: number,
     paddingLeft: number,
-    textSize: oneOf(
+    size: oneOf(
       ['xs','sm','md','lg','xl']
     ),
     textAlign: oneOf(
       ['left', 'center','right']
+    ),
+    alignSelf: oneOf(
+      ['normal', 'auto', 'center', 'flex-start', 'flex-end']
     ),
     height: oneOfType(
       [string, number]
@@ -326,8 +330,9 @@ class InputText extends Component {
       // value,
       width,
       maxWidth,
-      textSize,
+      size,
       textAlign,
+      alignSelf,
       height,
       editable,
       backgroundColor,
@@ -388,7 +393,7 @@ class InputText extends Component {
       paddingRight,
       paddingBottom,
       paddingLeft,
-      fontSize: TEXT_SIZES[textSize],
+      fontSize: TEXT_SIZES[size],
       textAlign: textAlign,
       height,
       // ...this.props.notFullWidth ? {} : { width: '100%' }, // Always be 100% of the parent width
@@ -412,6 +417,33 @@ class InputText extends Component {
       outline,
       overflow,
       ...editable === false ? { cursor: 'default' } : {},
+    });
+
+    const textStyle = filterOutUnspecifiedProps({
+      size,
+      textAlign,
+      height,
+      // width: '100%',
+      maxWidth,
+      backgroundColor: backgroundColor === 'none' ? null : backgroundColor,
+      borderWidth,
+      borderTopWidth,
+      borderRightWidth,
+      borderBottomWidth,
+      borderLeftWidth,
+      borderColor,
+      borderRadius,
+      borderSize,
+      borderStyle,
+      borderBottomLeftRadius,
+      borderBottomRightRadius,
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      color,
+      outline,
+      overflow,
+      alignSelf,
+      // ...editable === false ? { cursor: 'default' } : {},
     });
 
     const nativeProps = {
@@ -450,43 +482,9 @@ class InputText extends Component {
           !editable ? (
             <Text
               testID={`input-text ${testID}`}
-              autoCapitalize={autoCapitalize}
-              autoComplete={autoComplete}
-              autoCorrect={autoCorrect}
-              autoFocus={autoFocus}
-              blurOnSubmit={blurOnSubmit}
-              clearTextOnFocus={clearTextOnFocus}
               defaultValue={defaultValue}
-              editable={(
-                editable == null ? disabled : editable
-              )}
-              keyboardType={keyboardType}
-              maxLength={maxLength}
-              name={this.props.name}
-              multiline={multiline}
-              numberOfLines={numberOfLines}
-              onChange={this.handleChange}
-              onChangeText={this.handleChangeText}
-              onChangeValue={this.handleChangeValue}
-              onFocus={this.handleFocus}
-              onBlur={this.handleBlur}
-              onMouseOver={this.handleMouseOver}
-              onMouseOut={this.handleMouseOut}
-              onKeyPress={onKeyPress}
-              onPress={onPress}
-              onSelectionChange={onSelectionChange}
-              onSubmitEditing={onSubmitEditing}
               placeholder={placeholder}
               placeholderTextColor={placeholderColor || color}
-              returnKeyLabel={!multiline ? returnKeyLabel : null}
-              returnKeyType={!multiline ? returnKeyType : null}
-              secureTextEntry={secureTextEntry}
-              selection={selection}
-              selectTextOnFocus={selectTextOnFocus}
-              spellCheck={spellCheck}
-              style={[
-                inputStyle,
-              ]}
               text={useAttributeNameAsValue
                 ? attributeName
                 : useQuestionNameAsValue
@@ -499,6 +497,7 @@ class InputText extends Component {
               })}
               ref={this.handleRef}
               {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
+              {...textStyle}
             />
           ) : (
             <TextInput

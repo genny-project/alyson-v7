@@ -15,7 +15,7 @@ class Checkbox extends Component {
   static defaultProps = {
     testID: 'input-segmented-control',
     color: 'grey',
-    textSize: 'xs',
+    size: 'xs',
   }
 
   static propTypes = {
@@ -24,7 +24,7 @@ class Checkbox extends Component {
     onChangeValue: func,
     testID: string,
     color: string,
-    textSize: oneOf(
+    size: oneOf(
       ['xs','sm','md','lg','xl']
     ),
     borderRadius: number,
@@ -127,7 +127,7 @@ class Checkbox extends Component {
       color,
       testID,
       borderRadius,
-      textSize,
+      size,
       activeStyling,
       wrapperProps,
       ...restProps
@@ -170,7 +170,7 @@ class Checkbox extends Component {
 
                 const textStyle = objectClean({
                   color: isSelected && activeStyling.color || color,
-                  size: textSizes[isSelected && activeStyling.textSize || textSize],
+                  size: textSizes[isSelected && activeStyling.textSize || size],
                 });
 
                 return (

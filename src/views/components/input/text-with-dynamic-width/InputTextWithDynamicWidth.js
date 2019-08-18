@@ -7,7 +7,7 @@ import { Input, Fragment } from '../..';
 
 class InputTextWithDynamicWidth extends Component {
   static defaultProps = {
-    textSize: 'xs',
+    size: 'xs',
   }
 
   static propTypes = {
@@ -19,7 +19,7 @@ class InputTextWithDynamicWidth extends Component {
     onKeyPress: func,
     onSelectionChange: func,
     onSubmitEditing: func,
-    textSize: oneOf(
+    size: oneOf(
       ['xs','sm','md','lg','xl']
     ),
     dynamicWidth: bool,
@@ -83,7 +83,7 @@ class InputTextWithDynamicWidth extends Component {
       placeholder,
     } = this.props;
 
-    const tempElementStyle = `position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; font-size: ${TEXT_SIZES[this.props.textSize]}px; white-space: pre-wrap;` ;
+    const tempElementStyle = `position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; font-size: ${TEXT_SIZES[this.props.size]}px; white-space: pre-wrap;` ;
 
     this.tempElement.innerHTML = (
       isString( text, { ofMinLength: 1 }) ||

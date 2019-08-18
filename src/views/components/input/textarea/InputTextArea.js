@@ -7,7 +7,7 @@ import { Input } from '../..';
 
 class InputTextArea extends Component {
   static defaultProps = {
-    textSize: 'xs',
+    size: 'xs',
   }
 
   static propTypes = {
@@ -22,7 +22,7 @@ class InputTextArea extends Component {
     onLayout: func,
     onSelectionChange: func,
     onSubmitEditing: func,
-    textSize: oneOf(
+    size: oneOf(
       ['xs','sm','md','lg','xl']
     ),
   }
@@ -60,7 +60,7 @@ class InputTextArea extends Component {
     this.tempElement.innerHTML = isString( text ) ? text : null;
     this.tempElement.setAttribute( 'style', `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} ${tempElementStyle}` );
 
-    const rowHeight = 3 + ( TEXT_SIZES[this.props.textSize] || 14 );
+    const rowHeight = 3 + ( TEXT_SIZES[this.props.size] || 14 );
     const minRows = this.props.numberOfLines;
     const contentHeight = this.tempElement.clientHeight;
     const totalRows = Math.ceil( contentHeight / rowHeight ) + numberOfNewLines;

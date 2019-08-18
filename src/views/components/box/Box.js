@@ -204,7 +204,9 @@ Box.propTypes = {
   alignItems: oneOf(
     ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
   ),
-  alignSelf: string,
+  alignSelf: oneOf(
+    ['normal', 'auto', 'center', 'flex-start', 'flex-end']
+  ),
   height: oneOfType(
     [string, number]
   ),
