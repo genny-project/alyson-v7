@@ -241,6 +241,8 @@ The Context List is used to connect **Themes** to **Questions** and **Question G
 
 The field `visualControlType` can be used to specify a **Visual Control Component** or **Input Subcomponent** to apply the Theme to.
 
+The field `dataType` can be used to specify a **Question Data Type** to apply the Theme to.
+
 #### Link Structure
 ```
 "contextList": {
@@ -250,6 +252,7 @@ The field `visualControlType` can be used to specify a **Visual Control Componen
       "created": "2019-02-06T04:24:58",
       "name": "THEME",
       "visualControlType": "LABEL",
+      "dataType": "text",
       "realm": "genny",
       "weight": 1
     }
@@ -263,6 +266,10 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 ## New Changes
+
+* Added dataType field to Contexts.
+
+----
 
 * Added visualControlTypes `group` and `vcl` to allow Themes to be applied to the entire Group or Visual Control respectively.
 
