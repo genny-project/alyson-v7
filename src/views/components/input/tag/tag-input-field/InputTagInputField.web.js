@@ -23,6 +23,7 @@ class InputTagInputField extends Component {
     iconProps: object,
     stateBasedProps: object,
     onChangeState: func,
+    placeholder: string,
   }
 
   state = {
@@ -74,8 +75,6 @@ class InputTagInputField extends Component {
       ...restProps
     } = this.props;
     const selectedItem = selectedItems.map( item => item.label ).join();
-
-    console.log( 'sleectedItem', selectedItem );
 
     return (
       <Touchable

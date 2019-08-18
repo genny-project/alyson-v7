@@ -274,12 +274,6 @@ class InputTag extends Component {
                 selectMultipleItems,
                 setHighlightedIndex,
               }) => {
-                console.log( '==============================' );
-                console.log( 'code', this.props.ask.attributeCode );
-                console.log( 'inputValue', inputValue );
-                console.log( 'selectedItems', selectedItems );
-                console.log( '==============================' );
-
                 const userCreatedTags = [];
 
                 selectedItems.forEach( selectedItem => {
