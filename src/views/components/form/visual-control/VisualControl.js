@@ -63,6 +63,7 @@ class VisualControl extends Component {
     onFocus: func,
     onChange: func,
     onChangeValue: func,
+    type: string,
   }
 
   state = {
@@ -160,6 +161,7 @@ class VisualControl extends Component {
         {
           component: componentType,
           acceptTypes: ['vcl', 'group'],
+          dataType: this.props.type,
         }
       ),
     ];
@@ -171,6 +173,7 @@ class VisualControl extends Component {
         {
           component: componentType,
           acceptTypes: ['vcl', 'group'],
+          dataType: this.props.type,
         }
       ),
     ];
@@ -208,8 +211,18 @@ class VisualControl extends Component {
 
     let properties = {};
 
-    const checkThemeForProperties = ( linkedThemes ) => {
-      if ( !isArray( linkedThemes )) return;
+    const checkThemeForProperties = ( themeArray ) => {
+      if ( !isArray( themeArray )) return;
+
+      const linkedThemes = [
+        ...filterThemes(
+          themeArray,
+          this.props.themes,
+          {
+            dataType: this.props.type,
+          }
+        ),
+      ];
 
       linkedThemes.forEach( linkedTheme => {
         const themeProperties = dlv( themes, `${linkedTheme.code}.properties` );

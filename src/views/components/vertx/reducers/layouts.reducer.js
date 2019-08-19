@@ -355,6 +355,9 @@ const reduceAsks = ({ item, state }) => {
                     : componentTypes[link.hint]
                       ? componentTypes[link.hint]
                       : null,
+                  dataType: isString( link.dataType )
+                    ? link.dataType
+                    : null,
                   created: link.created,
                 };
               })
