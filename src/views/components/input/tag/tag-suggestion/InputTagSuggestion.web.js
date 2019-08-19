@@ -82,7 +82,7 @@ class InputTagSuggestion extends Component {
           />
           <Text
             color={isHighlighted ? 'black' : 'black'}
-            fontWeight={isSelected ? 'bold' : 'normal'}
+            fontWeight={isSelected || isHighlighted ? 'bold' : 'normal'}
             {...stateBasedProps}
           >
             {itemString}

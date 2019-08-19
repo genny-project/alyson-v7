@@ -366,6 +366,7 @@ class InputText extends Component {
       overflow,
       onPress,
       tabIndex,
+      cursor,
     } = this.props;
 
     const {
@@ -417,6 +418,7 @@ class InputText extends Component {
       outline,
       overflow,
       ...editable === false ? { cursor: 'default' } : {},
+      cursor,
     });
 
     const textStyle = filterOutUnspecifiedProps({
@@ -443,6 +445,7 @@ class InputText extends Component {
       outline,
       overflow,
       alignSelf,
+      cursor,
       // ...editable === false ? { cursor: 'default' } : {},
     });
 
@@ -509,9 +512,10 @@ class InputText extends Component {
               blurOnSubmit={blurOnSubmit}
               clearTextOnFocus={clearTextOnFocus}
               defaultValue={defaultValue}
-              editable={(
-            editable == null ? disabled : editable
-          )}
+              editable={!disabled}
+              // editable={(
+              //   editable == null ? disabled : editable
+          // )}
               keyboardType={keyboardType}
               maxLength={maxLength}
               name={this.props.name}
