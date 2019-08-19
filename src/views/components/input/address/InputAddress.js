@@ -136,8 +136,8 @@ class InputAddress extends Component {
       return {
         ...components,
         full_address: formatted_address,
-        latitude: geometry.location.lat,
-        longitude: geometry.location.lng,
+        latitude: geometry.location.lat(),
+        longitude: geometry.location.lng(),
         ...customComponents,
       };
     }
