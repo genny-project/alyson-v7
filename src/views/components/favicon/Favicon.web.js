@@ -18,11 +18,9 @@ class ProjectFavicon extends Component {
     const projectAttributes = storeQuery.getProjectAttributes();
     const projectFavicon = dlv( projectAttributes, 'PRI_FAVICON.value' );
 
-    // console.log( 'projectFavicon', projectFavicon );
-
     return (
       <Favicon
-        url={projectFavicon || '../genny-favicon.ico'}
+        url={projectFavicon}
       />
     );
   }
