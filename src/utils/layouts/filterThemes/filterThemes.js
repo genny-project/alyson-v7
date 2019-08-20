@@ -8,6 +8,7 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     onlyInheritableThemes,
     acceptTypes,
     onlyComponentThemes,
+    dataType,
   } = options;
 
   const themes = [];
@@ -48,6 +49,14 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
         theme.component === component ||
         theme.component == null ||
         acceptTypes.includes( theme.component )
+      ))
+      return;
+
+    if (
+      isString( dataType ) &&
+      !(
+        theme.dataType === dataType ||
+        theme.dataType == null
       ))
       return;
 

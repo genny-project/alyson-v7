@@ -33,6 +33,7 @@ class Form extends Component {
   inputRefs = {}
   errors = {}
   values = {}
+  lastSentValues = {}
   randId = Math.floor( Math.random() * Math.floor( 1000 ));
 
   state = {
@@ -175,7 +176,10 @@ class Form extends Component {
     });
 
     if ( Object.keys( initialValues ).length > 0 && this.props.shouldSetInitialValues ) {
-      this.setState({ initialValues });
+      this.setState({
+        initialValues,
+      });
+      this.values = JSON.parse( JSON.stringify( initialValues ));
     }
   }
 
@@ -466,8 +470,24 @@ class Form extends Component {
     return errorList;
   }
 
-  sendAnswer = ( ask, newValue ) => {
-    let finalValue = newValue;
+  shouldSendAnswer = ({ value, valuePath }) => {
+    const initialValue = dlv( this.state.initialValues, valuePath );
+    const lastSentValue = dlv( this.lastSentValue, valuePath );
+
+    if ( lastSentValue != null ) {
+      if ( lastSentValue !== value ) {
+        return true;
+      }
+    }
+    else if ( initialValue !== value ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  sendAnswer = ({ ask, value, valuePath }) => {
+    let finalValue = value;
     let finalAttributeCode = ask.attributeCode;
 
     if ( ask.attributeCode.indexOf( 'ADDRESS_FULL' ) !== -1 ) {
@@ -484,6 +504,9 @@ class Form extends Component {
     ) {
       finalValue = JSON.stringify( finalValue );
     }
+
+    dset( this.lastSentValues, valuePath, value );
+
     // eslint-disable-next-line no-console
     console.warn( 'form attempting to send answer:', {
       askId: ask.id,
@@ -530,8 +553,8 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    if ( sendOnChange )
-      this.sendAnswer( ask, value );
+    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath }))
+      this.sendAnswer({ ask, value, valuePath });
   }
 
   handleFocusNextInput = ( questionGroupCode, currentFocusedIndex ) => () => {
@@ -561,10 +584,11 @@ class Form extends Component {
           value &&
           (
             !this.errors ||
-            !dlv( this.errors, valuePath )
+            !dlv( this.errors, valuePath ) &&
+            this.shouldSendAnswer({ value, valuePath })
           )
         ) {
-          this.sendAnswer( ask, value );
+          this.sendAnswer({ ask, value, valuePath });
         }
       }
     }
