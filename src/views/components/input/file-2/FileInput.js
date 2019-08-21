@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
-import { bool, array, func } from 'prop-types';
+import { bool, func } from 'prop-types';
 import axios from 'axios';
-import { Box, Text, Touchable, Icon,EventTouchable } from '../../../components';
+import { Box, Text, Touchable, Icon } from '../../../components';
 import Preview from './Preview';
 import { isArray } from '../../../../utils';
 import store from '../../../../redux/store';
 
 /* These are commented out to be revisited later */
 // import Camera from './Camera';
-// const fileTypes = ['image/jpeg', 'image/pjpeg', 'image/png'];
+const fileTypes = ['image/jpeg', 'image/pjpeg', 'image/png'];
 
 class FileInput extends Component {
   static defaultProps = {
     multiple: true,
-    imageOnly: false,
-    accept: [],
+    // imageOnly: false,
+    // accept: [],
   };
 
   static propTypes = {
     multiple: bool,
-    imageOnly: bool,
-    accept: array,
+    // imageOnly: bool,
+    // accept: array,
     onChangeValue: func,
   };
 
@@ -36,8 +36,13 @@ class FileInput extends Component {
     requestCamera: false,
   };
 
+  componentDidMount() {
+    const URL = process.env.ENV_FILE_UPLOAD_URL;
+
+    console.log( URL ); //eslint-disable-line
+  }
+
   getAllFiles = () => {
-    console.warn( this.inputFileNew, 'INPUTFILE NEW *************' );
     const input = this.inputFileNew.current;
     const { files } = input;
 
@@ -67,10 +72,6 @@ class FileInput extends Component {
     }
 
     return false;
-  }
-
-  checkFileTypes( files ) {
-    
   }
 
   sendFilesToBackend() {
@@ -127,21 +128,20 @@ class FileInput extends Component {
   };
 
   uploadFile( formData ) {
-    const tt = store.getState().keycloak;
-
     const token = store.getState().keycloak.accessToken;
+    const URL = process.env.ENV_FILE_UPLOAD_URL;
 
     axios({
       method: 'post',
-      url: 'http://192.168.17.190:8180/api/documents',
+      url: URL,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data','Authorization': `bearer ${token}` } ,
     })
     .then(( response ) => {
       // handle success
-        console.log(  "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
-      console.warn({ response });
-      if ( this.props.onChangeValue ) 
+      console.log(  "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
+      console.warn({ response }); // eslint-disable-line
+      if ( this.props.onChangeValue )
         this.props.onChangeValue( response.data.URL ); // send the URl to Genny system
     })
       .catch(( response ) => {
@@ -154,9 +154,7 @@ class FileInput extends Component {
     this.inputFileNew.current.click();
   };
 
-  handleChange = ( e ) => {
-    console.warn( e.target.result , 'E>TARGET>RESULT' );
-
+  handleChange = () => {
     const allFiles = this.getAllFiles();
     const allFilesArray = Array.from( allFiles );
 
@@ -175,12 +173,6 @@ class FileInput extends Component {
     for ( const pair of newFilesArryFromFormData ) {
       formData.append( 'file', pair );    
     } 
-
-    console.warn( formData, 'FORM _DATA' );
-
-    // const token = store.getState().keycloak.accessToken;
-
-    // console.log({ token }); //eslint-disable-line
 
     this.uploadFile( formData );
   };
