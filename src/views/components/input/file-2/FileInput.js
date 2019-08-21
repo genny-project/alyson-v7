@@ -137,19 +137,19 @@ class FileInput extends Component {
       return;
     }
 
-    axios({
-      method: 'post',
-      url: URL,
-      data: formData,
-      headers: { 'Content-Type': 'multipart/form-data','Authorization': `bearer ${token}` } ,
-    })
-    .then(( response ) => {
-      // handle success
-      console.log(  "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
-      console.warn({ response }); // eslint-disable-line
-      if ( this.props.onChangeValue )
-        this.props.onChangeValue( response.data.URL ); // send the URl to Genny system
-    })
+    axios
+      .post( URL, {
+        method: 'post',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data','Authorization': `bearer ${token}` } ,
+      })
+      .then(( response ) => {
+        // handle success
+        console.log( "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
+        console.warn({ response }); // eslint-disable-line
+        if ( this.props.onChangeValue )
+          this.props.onChangeValue( response.data.URL ); // send the URl to Genny system
+      })
       .catch(( response ) => {
           // handle error
         console.log( response, "FILE_UPLOAD_FAILURE" ); // eslint-disable-line
