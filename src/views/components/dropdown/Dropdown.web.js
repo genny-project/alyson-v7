@@ -46,6 +46,7 @@ class Dropdown extends Component {
     return (
       <Menu
         identifier={testID}
+        offsetY={50}
       >
         {({ isOpen }) => {
           return (

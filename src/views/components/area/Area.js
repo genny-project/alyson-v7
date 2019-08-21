@@ -13,6 +13,7 @@ class Area extends Component {
   }
 
   observer = null;
+  rect = null;
 
   state = {
     size: null,

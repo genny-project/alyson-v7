@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { func, bool } from 'prop-types';
 import debounce from 'lodash.debounce';
-import { isObject } from '../../../../utils';
+import { isObject, isInteger } from '../../../../utils';
 import MenuProvider from '../provider';
 
 class MenuWrapper extends Component {
@@ -32,6 +32,13 @@ class MenuWrapper extends Component {
   }
 
   setButtonArea = ( area ) => {
+    const offsetArea = area;
+
+    // console.log( 'offsetY', this.props.offsetY );
+    // if ( isInteger( this.props.offsetY )) {
+    //   offsetArea['bottom'] = offsetArea['bottom'] + this.props.offsetY;
+    // }
+
     const compareAreaValues = ( currentArea, nextArea ) => {
       const nextAreaKeys = Object.keys( nextArea );
 

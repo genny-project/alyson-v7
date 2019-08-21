@@ -12,10 +12,15 @@ class Boundary extends Component {
   }
 
   state = {
-    boundaryAdjustedArea: null,
+    boundaryAdjustedArea: {
+      left: null,
+      top: null,
+    },
   }
 
   updateBoundaryArea = ( area ) => {
+    console.log( '==============================' );
+    console.log( 'area', area );
     if (
       !isObject( area ) || (
         area.bottom === 0 &&
@@ -42,35 +47,54 @@ class Boundary extends Component {
     let topOffset = null;
     let bottomOffset = null;
 
+    console.log( 'screen', { screenLeft, screenRight, screenTop, screenBottom });
+
     if ( area.left < screenLeft ) leftOffset = screenLeft - area.left;
     if ( area.right > screenRight ) rightOffset = area.right - screenRight;
 
     if ( area.top < screenTop ) topOffset = screenTop - area.top;
     if ( area.bottom > screenBottom ) bottomOffset = area.bottom - screenBottom;
 
+    console.log( 'offsets', { leftOffset, rightOffset, topOffset, bottomOffset });
+
     const boundaryAdjustedLeft = isInteger( leftOffset ) || isInteger( rightOffset )
       ? area.left + leftOffset - rightOffset : null;
     const boundaryAdjustedTop = isInteger( topOffset ) || isInteger( bottomOffset )
       ? area.top + topOffset - bottomOffset : null;
 
-    const resultant = {};
+    console.log( 'boundaries', { boundaryAdjustedLeft, boundaryAdjustedTop });
+
+    const resultant = {
+      left: null,
+      top: null,
+    };
 
     if ( isInteger( boundaryAdjustedLeft )) resultant['left'] = boundaryAdjustedLeft;
     if ( isInteger( boundaryAdjustedTop )) resultant['top'] = boundaryAdjustedTop;
 
+    console.log( 'resultant', resultant );
     if (
-      (
-        isInteger( boundaryAdjustedLeft ) ||
-        isInteger( boundaryAdjustedTop )
-      ) && (
-        !this.state.boundaryAdjustedArea ||
-        boundaryAdjustedLeft !== this.state.boundaryAdjustedArea.left ||
-        boundaryAdjustedTop !== this.state.boundaryAdjustedArea.top
-      )
+      resultant.left !== this.state.boundaryAdjustedArea.left ||
+      resultant.top !== this.state.boundaryAdjustedArea.top
     ) {
-      this.setState({
-        boundaryAdjustedArea: resultant,
-      });
+      if (
+        isInteger( boundaryAdjustedLeft ) ||
+          isInteger( boundaryAdjustedTop )
+      ) {
+        console.log( 'set' );
+        this.setState({
+          boundaryAdjustedArea: resultant,
+        });
+      }
+      else {
+        console.log( 'not set' );
+        this.setState({
+          boundaryAdjustedArea: {
+            left: null,
+            top: null,
+          },
+        });
+      }
     }
   }
 

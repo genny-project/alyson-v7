@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { node, string } from 'prop-types';
-import { isObject } from '../../../../utils';
+import { isObject, isInteger } from '../../../../utils';
 import { Box, Portal, Boundary, Area } from '../../index';
 import MenuConsumer from '../consumer';
 
@@ -9,6 +9,9 @@ class MenuContent extends Component {
     children: node.isRequired,
     testID: string,
   }
+
+  positionX = null;
+  positionY = null;
 
   focus() {
     if ( this.input )
@@ -50,8 +53,20 @@ class MenuContent extends Component {
                         onChange={updateBoundaryArea}
                       >
                         {( areaProps ) => {
-                          const top = isObject( boundaryAdjustedArea, { withProperty: 'top' }) ? boundaryAdjustedArea.top : isObject( buttonArea ) ? buttonArea.bottom : 50;
-                          const left = isObject( boundaryAdjustedArea, { withProperty: 'left' }) ? boundaryAdjustedArea.left : isObject( buttonArea ) ? buttonArea.left : '50vw';
+                          console.log( '--------------------------' );
+                          const x = isObject( boundaryAdjustedArea, { withProperty: 'left' }) ? boundaryAdjustedArea.left : null;
+                          const y = isObject( boundaryAdjustedArea, { withProperty: 'top' }) ? boundaryAdjustedArea.top : null;
+
+                          const shouldUseBoundaryAdjustedX = isInteger( x, { isLessThanOrEqualTo: buttonArea.left });
+                          const shouldUseBoundaryAdjustedY = isInteger( y, { isLessThanOrEqualTo: buttonArea.bottom });
+
+                          console.log( 'adjusted', x, y, 'buttonArea', buttonArea.left, buttonArea.bottom );
+                          console.log( 'shouldUseBoundaryAdjusted', shouldUseBoundaryAdjustedX, shouldUseBoundaryAdjustedY );
+
+                          const left = shouldUseBoundaryAdjustedX ? x : buttonArea.left;
+                          const top = shouldUseBoundaryAdjustedY ? y : buttonArea.bottom;
+
+                          console.log( 'values', left, top );
 
                           return (
                             <div
@@ -62,7 +77,7 @@ class MenuContent extends Component {
                               }}
                               tabIndex="-1"
                               style={{
-                                top: top,
+                                top: top /* + this.props.offsetY */,
                                 left: left,
                                 position: 'absolute',
 
@@ -74,6 +89,13 @@ class MenuContent extends Component {
                                 flexDirection="column"
                                 onLayout={this.handleLayout}
                                 identifier="MENU"
+                                shadowColor="#000"
+                                shadowOpacity={0.4}
+                                shadowRadius={5}
+                                shadowOffset={{
+                                  width: 0,
+                                  height: 0,
+                                }}
                                 {...restProps}
                               >
                                 {children}
