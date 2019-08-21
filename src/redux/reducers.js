@@ -7,7 +7,34 @@ import dialog from '../views/components/dialog/dialog.reducer';
 
 import testDisplay from '../views/app/test-display/testDisplay.reducer';
 
-import theme from '../views/components-legacy/theme/theme.reducer'; // legacy compatibility
+const initialState = {
+  session: '',
+};
+
+const rawSession = ( state = initialState, { type, payload }) => {
+  switch ( type ) {
+    case 'SESSION_TEST':
+      return {
+        ...state,
+        session: payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+const gennyteerDisplay = ( state = '', action ) => {
+  switch ( action.type ) {
+    case 'DISPLAY_FROM_GENNYTEER':
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
 const reducers = combineReducers({
   keycloak,
@@ -15,8 +42,9 @@ const reducers = combineReducers({
   router,
   navigation,
   dialog,
-  theme,
   testDisplay,
+  rawSession,
+  gennyteerDisplay,
 });
 
 export default reducers;

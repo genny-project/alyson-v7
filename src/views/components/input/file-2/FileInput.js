@@ -3,7 +3,7 @@ import { bool, func } from 'prop-types';
 import axios from 'axios';
 import { Box, Text, Touchable, Icon } from '../../../components';
 import Preview from './Preview';
-import { isArray } from '../../../../utils';
+import { isArray, isString } from '../../../../utils';
 import store from '../../../../redux/store';
 
 /* These are commented out to be revisited later */
@@ -131,6 +131,12 @@ class FileInput extends Component {
     const token = store.getState().keycloak.accessToken;
     const URL = process.env.ENV_FILE_UPLOAD_URL;
 
+    if ( !isString( URL, { ofMinLength: 1 })) {
+      console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
+
+      return;
+    }
+
     axios({
       method: 'post',
       url: URL,
@@ -162,7 +168,7 @@ class FileInput extends Component {
     const numberOfFilesSelected = allFilesArray.length;
 
     const newFilesArryFromFormData = this.inputFileNew.current.files;
-    
+
     this.setState({
       numberOfFilesSelected,
       selectedFiles: allFilesArray,
@@ -171,8 +177,8 @@ class FileInput extends Component {
     const formData = new FormData();
 
     for ( const pair of newFilesArryFromFormData ) {
-      formData.append( 'file', pair );    
-    } 
+      formData.append( 'file', pair );
+    }
 
     this.uploadFile( formData );
   };

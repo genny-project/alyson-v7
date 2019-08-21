@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import { func, number, object, array, string } from 'prop-types';
+import { func, number, object, array, string, oneOf } from 'prop-types';
 import debounce from 'lodash.debounce';
 import dlv from 'dlv';
-import { Input, GoogleConsumer } from '../../index';
+import { flag /* code, name, countries */  } from 'country-emoji';
+import { Input, GoogleConsumer, Touchable, Box, Text } from '../../index';
+import { isString } from '../../../../utils';
+
+const iconInternational = String.fromCodePoint( 0x1F30E );
+const iconAU = flag( 'AU' );
 
 class InputAddress extends Component {
   static defaultProps = {
-    debounceTimer: 300,
+    debounceTimer: 100,
     includeAddressFields: [
       'street_number',
       'route',
@@ -24,14 +29,12 @@ class InputAddress extends Component {
     injectCustomAddressComponents: {
       street_address: '{{street_number}} {{street_name}}',
     },
-    icon: 'expand-more',
-    placeholder: 'Select an address...',
+    placeholder: 'Please enter an address...',
     getShortNameForAddressComponents: ['country'],
+    restrictCountry: 'au',
   }
 
   static propTypes = {
-    icon: string,
-    prefixIcon: string,
     placeholder: string,
     onChange: func,
     onChangeValue: func,
@@ -43,6 +46,9 @@ class InputAddress extends Component {
     injectCustomAddressComponents: object,
     getShortNameForAddressComponents: array,
     testID: string,
+    restrictCountry: oneOf( [
+      'au',
+    ] ),
   }
 
   constructor( props ) {
@@ -56,19 +62,43 @@ class InputAddress extends Component {
 
   state = {
     items: [],
+    countryLock: true,
   }
 
   autocompleteAddress = async address => {
-    const { google } = this.props;
+    const { google, restrictCountry } = this.props;
 
-    try {
-      const items = await google.autocompleteAddress( address );
+    const options = {
+      ...(
+        isString( restrictCountry, { ofMinLength: 1 }) &&
+        this.state.countryLock === true
+          ? {
+            componentRestrictions: {
+              country: restrictCountry,
+            },
+          }
+          : {}
+      ),
+    };
 
-      this.setState({ items });
+    if ( isString( address, { ofMinLength: 1 })) {
+      try {
+        const items = await google.autocompleteAddress(
+          address,
+          options
+        );
+
+        this.setState({ items });
+      }
+      catch ( error ) {
+        // eslint-disable-next-line no-console
+        console.warn( error );
+
+        this.setState({ items: [] });
+      }
     }
-    catch ( error ) {
-      // eslint-disable-next-line no-console
-      console.warn( error );
+    else {
+      this.setState({ items: [] });
     }
   }
 
@@ -81,10 +111,14 @@ class InputAddress extends Component {
     catch ( error ) {
       // eslint-disable-next-line no-console
       console.warn( error );
+
+      this.setState({ items: [] });
     }
   }
 
   formatPlace( place ) {
+    // console.log( 'formatPlace', place );
+
     try {
       const { injectCustomAddressComponents } = this.props;
       const { formatted_address, address_components, geometry } = place;
@@ -102,8 +136,8 @@ class InputAddress extends Component {
       return {
         ...components,
         full_address: formatted_address,
-        latitude: geometry.location.lat,
-        longitude: geometry.location.lng,
+        latitude: geometry.location.lat(),
+        longitude: geometry.location.lng(),
         ...customComponents,
       };
     }
@@ -186,6 +220,8 @@ class InputAddress extends Component {
   }
 
   handleChange = async item => {
+    // console.log( 'handleChange', item );
+
     const { google } = this.props;
     const { place_id } = item;
 
@@ -221,31 +257,55 @@ class InputAddress extends Component {
     }
   }
 
+  handleToggleCountryLock = () => {
+    this.setState( state => ({
+      countryLock: !state.countryLock,
+    }));
+  }
+
   handleType = text => {
+    // console.log( 'handleType', text );
     this.autocompleteAddress( text );
   }
 
   render() {
-    const { prefixIcon, placeholder, icon, testID, ...restProps } = this.props;
-    const { items } = this.state;
+    const { testID, onChangeValue, ...restProps } = this.props; // eslint-disable-line
+    const { items, countryLock } = this.state;
 
     return (
-      <Input
-        {...restProps}
-        type="autocomplete"
-        items={items}
-        borderBetweenItems
-        inputProps={{
-          placeholder,
-          prefixIcon,
-          icon,
-          flex: 1,
-        }}
-        onType={this.handleType}
-        itemStringKey="description"
-        onChange={this.handleChange}
-        testID={testID}
-      />
+      <Box
+        flexDirection="row"
+        alignItems="center"
+      >
+        {/*
+          This can be turned into a dropdown menu to allow any country to be selected.
+        */}
+        <Touchable
+          withFeedback
+          onPress={this.handleToggleCountryLock}
+        >
+          <Text
+            text={countryLock ? iconAU : iconInternational}
+            size="sm"
+          />
+        </Touchable>
+        <Box
+          paddingLeft={5}
+        />
+
+        <Input
+          {...restProps}
+          type="autocomplete"
+          items={items}
+          placeholder={this.props.placeholder}
+          borderBetweenItems
+          onType={this.handleType}
+          itemStringKey="description"
+          onChange={this.handleChange}
+          testID={testID}
+        />
+
+      </Box>
     );
   }
 }

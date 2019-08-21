@@ -6,6 +6,8 @@ const isInteger = ( integer, options = {}) => {
     isGreaterThan,
     isLessThanOrEqualTo,
     isGreaterThanOrEqualTo,
+    isPositive,
+    isNegative,
   } = options;
 
   /* Ensure a valid integer is given. */
@@ -73,6 +75,14 @@ const isInteger = ( integer, options = {}) => {
   /* Test if integer is greater than given value. */
   if ( isGreaterThan != null )
     return integer > isGreaterThan;
+
+  /* Test if integer is positive. */
+  if ( isPositive != null )
+    return Math.sign( integer ) === 1;
+
+  /* Test if integer is negative. */
+  if ( isNegative != null )
+    return Math.sign( integer ) === -1;
 
   /* If the integer is valid and no options were passed, return as valid. */
   return true;

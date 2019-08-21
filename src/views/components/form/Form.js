@@ -4,9 +4,9 @@ import { string, object, bool } from 'prop-types';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
+import dset from 'dset';
 import { isArray, isObject, isString } from '../../../utils';
 import { Bridge } from '../../../utils/vertx';
-import shallowCompare from '../../../utils/shallow-compare';
 import { Box, Text, Fragment } from '../index';
 import FormGroup from './group';
 
@@ -31,12 +31,16 @@ class Form extends Component {
   }
 
   inputRefs = {}
+  errors = {}
+  values = {}
+  lastSentValues = {}
+  randId = Math.floor( Math.random() * Math.floor( 1000 ));
 
   state = {
     validationList: {},
     initialValues: {},
     questionGroups: [],
-    formStatus: null,
+    // formStatus: null,
     missingBaseEntities: [],
   }
 
@@ -143,28 +147,39 @@ class Form extends Component {
 
     const setQuestionValue = ( ask ) => {
       // handle targetCode
+      let askValue = null;
+
       if ( isObject( ask, { withProperty: 'targetCode' })) {
         checkForBE( ask.targetCode );
         const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
         // console.log('ask', ask, value, value || null);
 
         if ( value !== null || ask.mandatory )
-          initialValues[ask.questionCode] = value !== null ? value : null;
+          askValue = value !== null ? value : null;
       }
+
+      const childValues = {};
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
         ask.childAsks.forEach( childAsk => {
-          setQuestionValue( childAsk );
+          childValues[childAsk.questionCode] = setQuestionValue( childAsk );
         });
       }
+
+      return isArray( ask.childAsks, { ofMinLength: 1 })
+        ? childValues
+        : askValue;
     };
 
-    questionGroups.forEach( questionGroup => {
-      setQuestionValue( questionGroup );
+    questionGroups.map( questionGroup => {
+      initialValues[questionGroup.questionCode] = setQuestionValue( questionGroup );
     });
 
     if ( Object.keys( initialValues ).length > 0 && this.props.shouldSetInitialValues ) {
-      this.setState({ initialValues });
+      this.setState({
+        initialValues,
+      });
+      this.values = JSON.parse( JSON.stringify( initialValues ));
     }
   }
 
@@ -182,24 +197,31 @@ class Form extends Component {
 
     const setValidation = ( ask ) => {
       // handle targetCode
+      let validation = null;
+
       if ( isObject( ask, { withProperty: 'targetCode' })) {
         const dataType = dlv( data, `${ask.attributeCode}.dataType` );
 
-        validationList[ask.questionCode] = {
+        validation = {
           dataType,
           required: ask.mandatory,
         };
       }
+      const childValidation = {};
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
         ask.childAsks.forEach( childAsk => {
-          setValidation( childAsk );
+          childValidation[childAsk.questionCode] = setValidation( childAsk );
         });
       }
+
+      return isArray( ask.childAsks, { ofMinLength: 1 })
+        ? childValidation
+        : validation;
     };
 
     questionGroups.forEach( questionGroup => {
-      setValidation( questionGroup );
+      validationList[questionGroup.questionCode] = setValidation( questionGroup );
     });
 
     this.setState({ validationList });
@@ -280,29 +302,41 @@ class Form extends Component {
 
   checkForUpdatedAttributeValues = ( newProps ) => {
     /* identify the attributes for each question */
-
     const { initialValues } = this.state;
     const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
 
-    const compareAttributeValues = ( ask ) => {
-      if ( !ask.question ) return false;
+    // let currentPath = newProps.questionGroupCode;
+    const rootPath = newProps.questionGroupCode;
+
+    const compareAttributeValues = ( ask, path ) => {
+      if ( !ask.question ) {
+        return false;
+      }
 
       const questionCode = ask.questionCode;
       const target = ask.targetCode;
       const attributeCode = ask.question.attributeCode;
       const baseEntityAttributeValue = dlv( newProps, `baseEntities.attributes.${target}.${attributeCode}.value` );
 
+      // const path = `${currentPath}.${ask.questionCode}`;
+
+      const initialValue = dlv( initialValues, `${path}.${ask.questionCode}` );
+
       const isMatch = (
-        initialValues[questionCode] == null &&
+        initialValue == null &&
         baseEntityAttributeValue == null
       ) ||
-      initialValues[questionCode] === baseEntityAttributeValue;
+      initialValue === baseEntityAttributeValue;
 
-      if ( isMatch ) return false;
+      if ( isMatch ) {
+        return false;
+      }
 
       if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
+        const currentPath = `${path}.${questionCode}`;
+
         const isChildMatch = ask.childAsks.some(
-          childAsk => compareAttributeValues( childAsk )
+          childAsk => compareAttributeValues( childAsk, currentPath )
         );
 
         return isChildMatch;
@@ -312,7 +346,7 @@ class Form extends Component {
     };
 
     const isDifference = newQuestionGroup.childAsks.some(
-      childAsk => compareAttributeValues( childAsk )
+      childAsk => compareAttributeValues( childAsk, rootPath )
     );
 
     return isDifference;
@@ -332,63 +366,128 @@ class Form extends Component {
 
     const { validationList } = this.state;
     const { types } = this.props.baseEntities.definitions;
-    const newState = {};
+    const errorList = {};
 
-    Object.keys( values ).forEach( field => {
-      const validationData = validationList[field];
-
-      if ( !validationData ) {
-        return;
-      }
-
-      const { dataType, required } = validationData;
-      const validationArray = types[dataType] && types[dataType].validationList;
-
-      if ( !isArray( validationArray, { ofMinLength: 1 })) {
-        return;
-      }
-
-      if (
-        isArray( Object.keys( values ), { ofExactLength: 1 }) &&
-        types[dataType] &&
-        types[dataType].typeName === 'java.lang.Boolean'
-      ) {
-        return {};
-      }
-
+    const validate = ( value, validation ) => {
+      // handle targetCode
+      // console.log( 'data', value, validation );
       let error = null;
 
-      if (
-        values[field] == null &&
-        required
-      ) {
-        newState[field] = 'Please enter this field';
-        // errors.push( 'Please enter this field' );
+      if ( !validation ) {
+        return;
       }
 
-      const isValid = validationArray.every( validation => {
-        const doesPass = new RegExp( validation.regex ).test( String( values[field] ));
+      const { dataType, required } = validation;
 
-        if ( !doesPass ) {
-          // errors.push( validation.errorMessage );
-          error = validation.errorMessage;
-        }
+      // console.log( 'dataType', types, dataType, validation, validation.dataType );
 
-        return doesPass;
-      });
+      const validationArray = types[dataType] && types[dataType].validationList;
+
+      // console.log( 'validationArray', validationArray );
+
+      if (
+        value == null &&
+        required
+      ) {
+        error = 'Please enter this field';
+      // errors.push( 'Please enter this field' );
+      }
+
+      if ( isArray( validationArray, { ofMinLength: 1 })) {
+      // newState[field] = error;
+      // newState[field] = errors;
+        validationArray.every( validation => {
+          if ( !isObject( validation, { withProperty: 'regex' })) {
+            console.warn( 'Warning: validation does not contain regex field', validation, validationArray ); // eslint-disable-line
+
+            return true;
+          }
+
+          const doesPass = new RegExp( validation.regex ).test( String( value ));
+
+          // console.log( 'doesPass', doesPass );
+
+          if ( !doesPass ) {
+            // errors.push( validation.errorMessage );
+            const hasErrorMessage = isString( validation.errorMessage, { ofMinLength: 1 });
+
+            if ( hasErrorMessage ) {
+              error = validation.errorMessage;
+            }
+            else {
+                // console.warn( 'Warning: object "validation" does not contain an errorMessage field', validation ); // eslint-disable-line
+              error = 'Error: Answer Invalid';
+            }
+          }
+
+          return doesPass;
+        });
+      }
 
       // console.log( 'errors', errors );
 
-      if ( !isValid )
-        newState[field] = error;
-        // newState[field] = errors;
+      // console.log( 'validation', validation );
+
+      let childValidation = null;
+
+      // recurse
+
+      // console.log( 'TYPE', value, isObject( value ));
+
+      // console.log( 'TYPE array',
+        // isObject( value ) && isArray( Object.keys( value ), { ofMinLength: 1 }));
+
+      const hasChildren = isObject( value ) && isArray( Object.keys( value ), { ofMinLength: 1 });
+
+      if ( hasChildren ) {
+        // console.log( 'hasChildren' );
+
+        Object.keys( value ).forEach( valueKey => {
+          const hasError = validate( value[valueKey], validation[valueKey] );
+
+          if ( hasError ) {
+            if ( !childValidation ) {
+              childValidation = {};
+            }
+            childValidation[valueKey] = validate( value[valueKey], validation[valueKey] );
+          }
+        });
+      }
+
+      return hasChildren
+        ? childValidation
+        : error;
+    };
+
+    Object.keys( values ).forEach( valueKey => {
+      // console.log( 'value',  valueKey );
+
+      errorList[valueKey] = validate( values[valueKey], validationList[valueKey] );
     });
 
-    return newState;
+    this.errors = errorList;
+
+    return errorList;
   }
 
-  sendAnswer = ( ask, newValue ) => {
-    let finalValue = newValue;
+  shouldSendAnswer = ({ value, valuePath }) => {
+    const initialValue = dlv( this.state.initialValues, valuePath );
+    const lastSentValue = dlv( this.lastSentValue, valuePath );
+
+    if ( lastSentValue != null ) {
+      if ( lastSentValue !== value ) {
+        return true;
+      }
+    }
+    else if ( initialValue !== value ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  sendAnswer = ({ ask, value, valuePath }) => {
+    let finalValue = value;
     let finalAttributeCode = ask.attributeCode;
 
     if ( ask.attributeCode.indexOf( 'ADDRESS_FULL' ) !== -1 ) {
@@ -405,8 +504,11 @@ class Form extends Component {
     ) {
       finalValue = JSON.stringify( finalValue );
     }
+
+    dset( this.lastSentValues, valuePath, value );
+
     // eslint-disable-next-line no-console
-    console.warn( 'sending answer...', {
+    console.warn( 'form attempting to send answer:', {
       askId: ask.id,
       attributeCode: finalAttributeCode,
       sourceCode: ask.sourceCode,
@@ -418,7 +520,7 @@ class Form extends Component {
       value: finalValue,
     });
 
-    Bridge.sendAnswer( [{
+    Bridge.sendFormattedAnswer({
       askId: ask.id,
       attributeCode: finalAttributeCode,
       sourceCode: ask.sourceCode,
@@ -428,20 +530,31 @@ class Form extends Component {
       identifier: ask.questionCode,
       weight: ask.weight,
       value: finalValue,
-    }] );
+    });
   }
 
-  handleChange = ( field, setFieldValue, setFieldTouched, ask ) => ( value, sendOnChange ) => {
+  handleChange = (
+    field,
+    setFieldValue,
+    setFieldTouched,
+    ask,
+    valuePath,
+  ) => (
+    value,
+    sendOnChange,
+  ) => {
+    this.state.isUpdating = true; // eslint-disable-line
+
     if ( value == null )
       return;
 
-    // console.log({ field, setFieldValue, setFieldTouched, ask, value, sendOnChange });
+    setFieldValue( valuePath, value );
+    setFieldTouched( valuePath, true );
 
-    setFieldValue( field, value );
-    setFieldTouched( field, true );
+    dset( this.values, valuePath, value );
 
-    if ( sendOnChange )
-      this.sendAnswer( ask, value );
+    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath }))
+      this.sendAnswer({ ask, value, valuePath });
   }
 
   handleFocusNextInput = ( questionGroupCode, currentFocusedIndex ) => () => {
@@ -454,91 +567,41 @@ class Form extends Component {
     }
   }
 
-  handleSubmit = ( values, form ) => {
-    // console.log( 'handle submit' );
-    if ( form ) {
-      const { setSubmitting } = form;
+  handleBlur = ( ask, valuePath ) => async () => {
+    await this.state.isUpdating === false;
 
-      setSubmitting( true );
-    }
-
-    const { questionGroups, formStatus } = this.state;
-
-    const questionGroup = questionGroups.find( group => {
-      return group.attributeCode.includes( 'BUTTON' );
-    }) || (
-      questionGroups.length > 0 &&
-      questionGroups[0]
-    );
-
-    if ( !questionGroup ) {
-      // eslint-disable-next-line no-console
-      console.warn( 'Could not submit form - no question group associated with form.' );
-
-      return;
-    }
-
-    /* send event to back end */
-    const eventData = {
-      code: questionGroup.questionCode,
-      value: JSON.stringify({
-        targetCode: questionGroup.targetCode,
-        action: formStatus || 'submit',
-      }),
-    };
-
-    Bridge.sendButtonEvent( 'FORM_SUBMIT', eventData );
-  }
-
-  handleBlur = ( ask, values, errors ) => () => {
     if ( ask ) {
       const questionCode = ask.questionCode;
 
       if (
         questionCode &&
-        values &&
-        values[questionCode] &&
-        (
-          !errors ||
-          !errors[questionCode]
-        )
+        this.values &&
+        isString( valuePath )
       ) {
-        this.sendAnswer( ask, values[questionCode] );
-      }
-    }
-  }
+        const value = dlv( this.values, valuePath );
 
-  handleKeyPress = ( submitForm, index, questionGroupCode ) => ( e ) => {
-    const key = e.key;
-    const formLength = (
-      this.inputRefs[questionGroupCode] &&
-      Object.keys( this.inputRefs[questionGroupCode] ).length
-    );
-
-    switch ( key ) {
-      case 'Enter':
-        if ( formLength === index + 1 ) {
-          submitForm();
+        if (
+          value &&
+          (
+            !this.errors ||
+            !dlv( this.errors, valuePath ) &&
+            this.shouldSendAnswer({ value, valuePath })
+          )
+        ) {
+          this.sendAnswer({ ask, value, valuePath });
         }
-        break;
-      default:
-        return null;
+      }
     }
   }
 
   renderQuestionGroup = ( questionGroup, index, form, ) => {
     const functions = {
-      handleChange: ( questionCode, setFieldValue, setFieldTouched, ask ) =>
-        this.handleChange( questionCode, setFieldValue, setFieldTouched, ask ),
-      handleFocusNextInput: ( code, index ) =>
-        this.handleFocusNextInput( code, index ),
-      handleBlur: ( ask, values, errors ) =>
-        this.handleBlur( ask, values, errors ),
-      handleKeyPress: ( submitForm, index, questionGroupCode ) =>
-        this.handleKeyPress( submitForm, index, questionGroupCode ),
-      addRef: ( questionGroupCode, index, input ) =>
-        this.inputRefs[questionGroupCode] = {
-          ...this.inputRefs[questionGroupCode],
+      handleChange: this.handleChange,
+      handleFocusNextInput: this.handleFocusNextInput( index ),
+      handleBlur: this.handleBlur,
+      addRef: ( input ) =>
+        this.inputRefs[questionGroup.questionGroupCode] = {
+          ...this.inputRefs[questionGroup.questionGroupCode],
           [index]: input,
         },
     };
@@ -554,6 +617,7 @@ class Form extends Component {
         functions={functions}
         inputRefs={this.inputRefs}
         isClosed={this.props.isClosed}
+        groupPath={questionGroup.questionCode}
       />
     );
   }
@@ -599,9 +663,7 @@ class Form extends Component {
 
     const { initialValues } = this.state;
 
-    // if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' ) console.log( 'render FORM' );
-
-    // let formProps = {};
+    // let oldProps = {};
 
     return (
       <Formik
@@ -611,56 +673,77 @@ class Form extends Component {
         validateOnBlur
         enableReinitialize
       >
-        {({
-          values,
-          errors,
-          touched,
-          submitForm,
-          submitCount,
-          isSubmitting,
-          setFieldValue,
-          setFieldTouched,
-        }) => {
-          const isFormValid = shallowCompare( this.doValidate( values ), {});
-
-          // const newFormProps = {
-          //   values,
-          //   errors,
-          //   touched,
-          //   submitForm,
-          //   submitCount,
-          //   isSubmitting,
-          //   setFieldValue,
-          //   setFieldTouched,
-          // };
-
+        {( form ) => {
           /*
-          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
-            console.log( 'render FORMIK', formProps, newFormProps );
-          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
-            console.log( 'errors', shallowCompare( formProps.errors, newFormProps.errors ));
-          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
-            console.log( 'touched', shallowCompare( formProps.touched, newFormProps.touched ));
-          if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' )
-            console.log( 'values', shallowCompare( formProps.values, newFormProps.values ));
-
-          if (
-            !(
-              shallowCompare( formProps.errors, newFormProps.errors ) &&
-              shallowCompare( formProps.touched, newFormProps.touched ) &&
-              shallowCompare( formProps.values, newFormProps.values )
-            )
-          ) {
-            if ( this.props.questionGroupCode === 'QUE_INPUTS_GRP' ) console.log( 'SHOULD UPDATE' );
-          }
+            Form values come from here
           */
 
-          // formProps = newFormProps;
+          // const showKeys = [
+          //   'dirty',
+          //   'error',
+          //   'errors',
+          //   'isSubmitting',
+          //   'isValid',
+          //   'isValidating',
+          //   'touched',
+          //   'values',
+          // ];
+
+          // console.log( '===================' );
+          // console.log( 'form props', Object.keys( form )
+          //  .filter( k => showKeys.includes( k )).map( key => form[key] ), oldProps );
+
+          // oldProps = form;
+
+          const {
+            values,
+            errors,
+            touched,
+            setFieldValue,
+            setFieldTouched,
+            validateField,
+            validateForm,
+            handleBlur,
+//             dirty: false
+//             error: undefined
+//             errors: {}
+//             handleBlur: ƒ (eventOrPath)
+//             handleChange: ƒ (eventOrPath)
+//             handleReset: ƒ ()
+//             handleSubmit: ƒ (e)
+//             isSubmitting: false
+//             isValid: false
+//             isValidating: true
+//             registerField: ƒ (name, Comp)
+//             resetForm: ƒ (nextValues)
+//             setError: ƒ (error)
+//             setErrors: ƒ (errors)
+//             setFieldError: ƒ (field, message)
+//             setFieldTouched: ƒ (field, touched, shouldValidate)
+//             setFieldValue: ƒ (field, value, shouldValidate)
+//             setFormikState: ƒ (s, callback)
+//             setStatus: ƒ (status)
+//             setSubmitting: ƒ (isSubmitting)
+//             setTouched: ƒ (touched)
+//             setValues: ƒ (values)
+//             status: undefined
+//             submitCount: 0
+//             submitForm: ƒ ()
+//             touched: {}
+//             unregisterField: ƒ (name)
+//             validateField: ƒ (field)
+//             validateForm: ƒ (values)
+//             validateOnBlur: true
+//             validateOnChange: true
+//              values
+
+          } = form;
+
+          this.errors = errors;
+
+          // const isFormValid = shallowCompare( this.doValidate( values ), {});
 
           return (
-            // <KeyboardAwareScrollView
-            //   testID={testID}
-            // >
             <Fragment>
               {questionGroups.map(( questionGroup, index ) => {
                 return this.renderQuestionGroup(
@@ -672,15 +755,14 @@ class Form extends Component {
                     touched,
                     setFieldValue,
                     setFieldTouched,
-                    isSubmitting,
-                    submitCount,
-                    submitForm,
-                    isFormValid,
+                    // isFormValid,
+                    validateField,
+                    validateForm,
+                    onBlur: handleBlur,
                   }
                 );
               })}
             </Fragment>
-            // </KeyboardAwareScrollView>
           );
         }}
       </Formik>

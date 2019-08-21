@@ -8,6 +8,7 @@ import style from './style.css'; //eslint-disable-line
 class RichEditor extends Component {
   static propTypes = {
     onChangeValue: func,
+    testID: string,
   };
 
   constructor( props ) {
@@ -68,6 +69,7 @@ class RichEditor extends Component {
   }
 
   render() {
+    const { testID } = this.props;
     const { editorState } = this.state;
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -98,6 +100,7 @@ class RichEditor extends Component {
         <div
           className={className}
           onClick={this.handleFocus}
+          testid={`${testID}`}
         >
           <Editor
             onBlur={this.handleBlur}

@@ -1,6 +1,5 @@
 // import React from 'react';
 import * as Pages from '../../views/pages';
-// import { Redirect } from '../../views/components';
 
 const routes = [
   {
@@ -28,11 +27,11 @@ const routes = [
     exact: true,
     component: Pages.Register,
   },
-  // {
-  //   path: '/',
-  //   exact: true,
-  //   component: () => <Redirect to="home" />,
-  // },
+  {
+    path: '/version',
+    exact: true,
+    component: Pages.Version,
+  },
   {
     path: '*',
     component: Pages.Generic,

@@ -2,9 +2,21 @@ import React, { Component } from 'react';
 import { string, object, number, bool, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge, arrayAddDelimiter } from '../../../../utils';
-import { Box, Collapsible, EventTouchable, Fragment, Text } from '../../index';
+import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
+import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
+import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
+
+const components = [
+  'group-wrapper',
+  'group-label',
+  'group-description',
+  'group-input',
+  'group-header-wrapper',
+  'group-clickable-wrapper',
+  'group-icon',
+  'group-content-wrapper',
+];
 
 const defaultStyle = {
   group: {
@@ -31,10 +43,12 @@ class FormGroup extends Component {
     asks: object,
     isClosed: bool,
     indexNumber: number,
+    groupPath: string,
   }
 
   state = {
     themes: [],
+    hover: false,
   }
 
   /* eslint-disable react/sort-comp */
@@ -55,6 +69,14 @@ class FormGroup extends Component {
       )) {
         this.getThemes();
       }
+    }
+  }
+
+  handleHover = ( hover ) => {
+    if ( hover !== this.state.hover ) {
+      this.setState({
+        hover: hover,
+      });
     }
   }
 
@@ -97,14 +119,15 @@ class FormGroup extends Component {
     ];
   }
 
-  getStyling = () => {
+  getStyling = ( componentType ) => {
     // filter links for panel
     const inheritedLinks = [
       ...filterThemes(
         this.props.inheritedThemes,
         this.props.themes,
         {
-          formGroup: true,
+          component: componentType,
+          acceptTypes: ['group'],
         },
       ),
     ];
@@ -114,7 +137,8 @@ class FormGroup extends Component {
         this.state.themes,
         this.props.themes,
         {
-          formGroup: true,
+          component: componentType,
+          acceptTypes: ['group'],
         },
       ),
     ];
@@ -168,13 +192,14 @@ class FormGroup extends Component {
     };
   }
 
-  renderInput = (
+  renderInput = ({
     ask,
     questionGroupCode,
     index,
     form,
-    additionalProps,
-  ) => {
+    additionalProps = {},
+    options = {},
+  }) => {
     const {
       dataTypes,
       functions,
@@ -187,15 +212,11 @@ class FormGroup extends Component {
       touched,
       setFieldValue,
       setFieldTouched,
-      isSubmitting,
-      submitForm,
-      isFormValid,
     } = form;
     const {
       handleChange,
-      handleFocusNextInput,
+      // handleFocusNextInput,
       handleBlur,
-      handleKeyPress,
       addRef,
     } = functions;
     const {
@@ -206,42 +227,38 @@ class FormGroup extends Component {
       contextList,
       readonly,
       placeholder,
+      // disabled,
     } = ask;
 
     const baseEntityDefinition = dataTypes[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
-    const isFormSubmit = isObject( contextList, { withProperty: 'isFormSubmit' }) ? contextList.isFormSubmit : false;
-
-    const useAttributeNameAsValue = isObject( contextList, { withProperty: 'useAttributeNameAsValue' }) ? contextList.useAttributeNameAsValue : false;
-    const useQuestionNameAsValue = isObject( contextList, { withProperty: 'useQuestionNameAsValue' }) ? contextList.useQuestionNameAsValue : false;
+    const { questionOnly } = options;
+    const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
 
     const inputProps = {
-      onChangeValue: handleChange( questionCode, setFieldValue, setFieldTouched, ask ), // functions
-      value: values && values[questionCode],
+      onChangeValue: handleChange(
+        questionCode,
+        setFieldValue,
+        setFieldTouched,
+        ask,
+        valuePath,
+      ),
+      value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
-      error: touched[questionCode] && errors[questionCode],
-      onBlur: handleBlur( ask, values, errors ), // functions
+      error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
+      onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
       question,
-      disabled: isFormSubmit
-        ? !isFormValid
-        : isSubmitting,
       editable: !readonly,
-      onSubmitEditing: handleFocusNextInput( questionGroupCode, index ), // functions
-      blurOnSubmit: (
-        !inputRefs[questionGroupCode] ||
-        !inputRefs[questionGroupCode][index + 1] // refs
-      ),
-      ref: input => addRef( questionGroupCode, index, input ),
+      // disabled: disabled,
+      ref: addRef,
       returnKeyType: (
         inputRefs[questionGroupCode] &&
         inputRefs[questionGroupCode][index + 1] // refs
       )
         ? 'next'
         : 'default',
-      onKeyPress: handleKeyPress( submitForm, index, questionGroupCode ), // functions
-      // onPress: () => submitForm(),
       testID: `${questionGroupCode}:${questionCode}` || '',
       ...contextList,
       parentGroupCode: questionGroupCode,
@@ -250,9 +267,7 @@ class FormGroup extends Component {
       inheritedThemes: this.getInhertiableThemes(),
       ask,
       isClosed: this.props.isClosed,
-      useAttributeNameAsValue: useAttributeNameAsValue,
-      useQuestionNameAsValue: useQuestionNameAsValue,
-      placeholder: placeholder || question.placeholder,
+      placeholder: placeholder || question.placeholder || question.name,
       index,
     };
 
@@ -283,6 +298,7 @@ class FormGroup extends Component {
           asks: this.props.asks,
           themes: this.props.themes,
           isClosed: this.props.isClosed,
+          groupPath: `${this.props.groupPath}.${ask.questionCode}`,
         },
       )
     );
@@ -296,6 +312,7 @@ class FormGroup extends Component {
       childAsks,
       question,
       questionCode,
+      targetCode,
     } = questionGroup;
 
     let properties = {};
@@ -318,194 +335,234 @@ class FormGroup extends Component {
     checkThemeForProperties( this.props.inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
-    const hasTitle = name && properties.renderQuestionGroupTitle;
+    const hasLabel = name && properties.renderQuestionGroupLabel;
     const hasDescription = description && properties.renderQuestionGroupDescription;
-    const hasDelimiter = properties.renderDelimiter;
+    // const hasDelimiter = properties.renderDelimiter;
 
-    const delimiterComponent = (
+    // const delimiterComponent = (
+    //   <Box
+    //     // delimiter props
+    //     padding={5}
+    //     {...this.getDelimiterStyling()['default']}
+    //   />
+    // );
+
+    // const delimiterHandler = ( array ) => {
+    //   return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
+    // };
+
+    const labelComponent = ( props ) => (
       <Box
-        // delimiter props
-        padding={5}
-        {...this.getDelimiterStyling()['default']}
-      />
+        // justifyContent="center"
+        marginBottom={10}
+        {...props}
+      >
+        <Text
+          size="xl"
+          text={name}
+          bold
+          {...props}
+        />
+      </Box>
     );
 
-    const delimiterHandler = ( array ) => {
-      return hasDelimiter ? arrayAddDelimiter( array, delimiterComponent ) : array;
-    };
+    const descriptionComponent = ( props ) => (
+      <Box
+        marginBottom={10}
+        {...props}
+      >
+        <Text
+          size="sm"
+          // text={description}
+          text="This is question group"
+          {...props}
+        />
+      </Box>
+    );
 
-    if (
-      properties.expandable
-    ) {
+    const headerWrapperComponent = ({ subcomponentProps }) => {
+      if ( !hasLabel && !hasDescription ) return;
+
       return (
-        <Collapsible
-          isClosed={this.props.isClosed}
-          testID={`${parentGroupCode}:${questionCode}:COLLAPSIBLE`}
-          renderHeader={(
-            question &&
-            properties.renderQuestionGroupInput
-          ) ? (
-              this.renderInput(
-                questionGroup,
-                parentGroupCode,
-                index,
-                form,
-                {
-                  flexWrapper: true,
-                }
-              )
-            ) : null
-          }
-          headerIconProps={this.getStyling()['default']}
-        >
-          <Box
-            key={name}
-            // zIndex={20 - index}
-            {...defaultStyle.group}
-            {...this.getStyling()['default']}
-          >
-            {hasDelimiter && delimiterComponent}
-            {delimiterHandler(
-              sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( childAsk, index ) => {
-                if ( isArray( childAsk.childAsks, { ofMinLength: 1 })) {
-                  return this.renderQuestionGroup(
-                    childAsk,
-                    index,
-                    form
-                  );
-                }
-
-                return this.renderInput(
-                  childAsk,
-                  questionCode,
-                  index,
-                  form,
-                );
-              })
-            )}
-          </Box>
-        </Collapsible>
-      );
-    }
-
-    if (
-      properties.renderQuestionGroupInput
-    ) {
-      return (
-        <EventTouchable
-          withFeedback
-          code={question.code}
-          parentCode={parentGroupCode || questionCode}
-          rootCode={rootCode}
-        >
-          <Box
-            key={name}
-            // zIndex={20 - index}
-            {...defaultStyle.group}
-            borderColor
-            {...this.getStyling()['default']}
-          >
-            {sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                return this.renderQuestionGroup(
-                  ask,
-                  index,
-                  form
-                );
-              }
-
-              return this.renderInput(
-                ask,
-                questionCode,
-                index,
-                form,
-              );
-            })}
-          </Box>
-        </EventTouchable>
-      );
-    }
-
-    // if ( this.props.rootCode === 'QUE_AGENT_PROFILE_GRP' )
-    // console.log( 'style', this.getStyling());
-
-    return (
-      <Fragment>
         <Box
-          key={name}
-          zIndex={50 - index}
           {...defaultStyle.group}
-          // padding={10}
-          {...this.getStyling()['default']}
+          {...subcomponentProps['group-header-wrapper']}
         >
-          {
-            (
-              hasTitle &&
-              hasDescription
-            ) ? (
-              <Box
-                marginBottom={10}
-                padding={10}
-                flexDirection="column"
-              >
-                {
-                  hasTitle ? (
-                    <Box
-                      // justifyContent="center"
-                      marginBottom={10}
-                    >
-                      <Text
-                        size="xl"
-                        text={name}
-                        bold
-                      />
-                    </Box>
-                  ) : null
-                }
-                {
-                  hasDescription ? (
-                    <Box>
-                      <Text
-                        size="sm"
-                        text={description}
-                      />
-                    </Box>
-                  ) : null
-                }
-              </Box>
-              ) : null
-          }
+          { hasLabel ? labelComponent( subcomponentProps['group-label'] ) : null }
+          { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
           {(
             question &&
             properties.renderQuestionGroupInput
           ) ? (
-              this.renderInput(
-                questionGroup,
-                parentGroupCode,
+              this.renderInput({
+                ask: questionGroup,
+                questionGroupCode: parentGroupCode,
                 index,
                 form,
-              )) : null
+              })
+            ) : null
           }
-          {delimiterHandler(
-            sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
-              if ( isArray( ask.childAsks, { ofMinLength: 1 })) {
-                return this.renderQuestionGroup(
-                  ask,
-                  index,
-                  form
-                );
-              }
-
-              return this.renderInput(
-                ask,
-                questionCode,
-                index,
-                form,
-              );
-            })
-          )}
         </Box>
-      </Fragment>
+      );
+    };
+
+    const contentWrapperComponent = ( subcomponentProps ) => (
+      <Box
+        {...defaultStyle.group}
+        {...subcomponentProps['group-content-wrapper']}
+      >
+        { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+          if (
+            isArray( ask.childAsks, { ofMinLength: 1 }) &&
+            properties.renderChildAsks !== false
+          ) {
+            return this.renderQuestionGroup(
+              ask,
+              index,
+              form
+            );
+          }
+
+          return this.renderInput({
+            ask: ask,
+            questionGroupCode: questionCode,
+            index,
+            form,
+          });
+        })}
+      </Box>
+    );
+
+    if (
+      !isArray( childAsks, { ofMinLength: 1 })
+    ) {
+      return this.renderInput({
+        ask: questionGroup,
+        questionGroupCode: questionCode,
+        index,
+        form,
+        options: {
+          questionOnly: true,
+        },
+      });
+    }
+
+    return (
+      <StatelessThemeHandler
+        getStyling={this.getStyling}
+        componentTypes={components}
+      >
+        {({
+          // onChangeState,
+          // inputProps,
+          componentProps,
+        }) => {
+          const subcomponentProps = componentProps;
+
+          if (
+            properties.expandable ||
+            properties.dropdown
+          ) {
+            const WrapperElement = properties.dropdown ? Dropdown : Collapsible;
+
+            return (
+              <Box
+                justifyContent="center"
+                flexDirection="column"
+                {...subcomponentProps['group-wrapper']}
+              >
+                { hasLabel && !properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
+                { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
+                {(
+                  question &&
+                  properties.renderQuestionGroupInput &&
+                  !properties.renderQuestionGroupInputInsideClickable
+                ) ? (
+                    this.renderInput({
+                      ask: questionGroup,
+                      questionGroupCode: parentGroupCode,
+                      index,
+                      form,
+                      additionalProps: {
+                        flexWrapper: true,
+                      },
+                    })
+                  ) : null }
+                <WrapperElement
+                  subcomponentProps={subcomponentProps}
+                  isClosed={this.props.isClosed}
+                  testID={`${parentGroupCode || questionCode}:${questionCode}`}
+                  renderHeader={(
+                    <Fragment>
+                      { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
+                      {(
+                        question &&
+                        properties.renderQuestionGroupInput &&
+                        properties.renderQuestionGroupInputInsideClickable
+                      ) ? (
+                          this.renderInput({
+                            ask: questionGroup,
+                            questionGroupCode: parentGroupCode,
+                            index,
+                            form,
+                            additionalProps: {
+                              flexWrapper: true,
+                            },
+                          })
+                        ) : null }
+                    </Fragment>
+                  )}
+                >
+                  {/* CONTENT WRAPPER ELEMENT */}
+                  {contentWrapperComponent( subcomponentProps )}
+                </WrapperElement>
+              </Box>
+            );
+          }
+
+          if (
+            properties.renderQuestionGroupInput
+          ) {
+            return (
+              <EventTouchable
+                withFeedback
+                code={question.code}
+                parentCode={parentGroupCode || questionCode}
+                rootCode={rootCode}
+                targetCode={targetCode}
+                width="100%"
+                onMouseEnter={() => this.handleHover( true )}
+                onMouseLeave={() => this.handleHover( false )}
+                {...defaultStyle.group}
+                {...subcomponentProps['group-wrapper']}
+                {...this.state.hover ? this.getStyling()['hover'] : {}}
+              >
+                {/* HEADER WRAPPER ELEMENT */}
+                {headerWrapperComponent( subcomponentProps )}
+                {/* CONTENT WRAPPER ELEMENT */}
+                {contentWrapperComponent( subcomponentProps )}
+              </EventTouchable>
+            );
+          }
+
+          return (
+            // WRAPPER ELEMENT
+            <Box
+              key={name}
+              zIndex={50 - index}
+              {...defaultStyle.group}
+              // padding={10}
+              {...subcomponentProps['group-wrapper']}
+            >
+              {/* HEADER WRAPPER ELEMENT */}
+              {headerWrapperComponent({ subcomponentProps })}
+              {/* CONTENT WRAPPER ELEMENT */}
+              {contentWrapperComponent( subcomponentProps )}
+            </Box>
+          );
+        }
+      }
+      </StatelessThemeHandler>
     );
   }
 }

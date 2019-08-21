@@ -5,6 +5,7 @@ ADD package.json package.json
 ADD . .
 RUN rm -f .env
 RUN apk add git
+RUN npm install react-navigation
 RUN npm install
 RUN npm run build:web
 

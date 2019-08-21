@@ -80,6 +80,14 @@ module.exports = {
       babelLoaderConfiguration,
       imageLoaderConfiguration,
       styleLoaderConfiguration,
+      {
+        test: /\.txt$/i,
+        use: 'raw-loader',
+      },
+      {
+        test: /\.TextFile$/i,
+        use: 'raw-loader',
+      },
     ],
   },
 

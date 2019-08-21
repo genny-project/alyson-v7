@@ -1,136 +1,128 @@
 import React, { Component } from 'react';
-import { string, number, oneOfType, func } from 'prop-types';
-import axios from 'axios';
-import { connect } from 'react-redux';
-import SignaturePad from 'react-signature-pad-wrapper';
-import { InputText, Input, Button } from '../../../components';
-import { TabsLegacy as Tabs } from '../../../components-legacy';
+// import { string, number, oneOfType, func } from 'prop-types';
+// import axios from 'axios';
+// import { connect } from 'react-redux';
+// import SignaturePad from 'react-signature-pad-wrapper';
+// import { InputText, Input, Button } from '../../../components';
 
 class InputSignature extends Component {
-  static defaultProps = {
-    height: 'auto',
-    width: '100%',
-  };
+  // static defaultProps = {
+  //   height: 'auto',
+  //   width: '100%',
+  // };
 
-  static propTypes = {
-    height: oneOfType( [string, number] ),
-    width: oneOfType( [string, number] ),
-    onChangeValue: func,
-  };
+  // static propTypes = {
+  //   height: oneOfType( [string, number] ),
+  //   width: oneOfType( [string, number] ),
+  //   onChangeValue: func,
+  // };
 
-  state = {
-    textSignatureValue: '',
-    validated: false,
-  };
+  // state = {
+  //   textSignatureValue: '',
+  //   validated: false,
+  // };
 
-  /* Helper method for submitting */
-  submitSignature = async dataFromDrawingPad => {
-    const { config } = this.props;
+  // /* Helper method for submitting */
+  // submitSignature = async dataFromDrawingPad => {
+  //   const { config } = this.props;
 
-    if ( !config || !config.ENV_SIGNATURE_URL ) {
-      console.error( 'No Signature URL provided' );
-    }
-    try {
-      axios({
-        method: 'post',
-        url: config.ENV_SIGNATURE_URL,
-        data: dataFromDrawingPad,
-      }).then( data => {
-        if ( data && data.data.signatureURL ) {
-          this.setState({ validated: true });
-        }
-        if ( this.props.onChangeValue )
-          //eslint-disable-line
-          this.props.onChangeValue( data.data.signatureURL );
-      });
-    } catch ( error ) {
-      console.error( 'Error while sending the signatures', error );
-    }
-  };
+  //   if ( !config || !config.ENV_SIGNATURE_URL ) {
+  //     console.error( 'No Signature URL provided' );
+  //   }
+  //   try {
+  //     axios({
+  //       method: 'post',
+  //       url: config.ENV_SIGNATURE_URL,
+  //       data: dataFromDrawingPad,
+  //     }).then( data => {
+  //       if ( data && data.data.signatureURL ) {
+  //         this.setState({ validated: true });
+  //       }
+  //       if ( this.props.onChangeValue )
+  //         //eslint-disable-line
+  //         this.props.onChangeValue( data.data.signatureURL );
+  //     });
+  //   } catch ( error ) {
+  //     console.error( 'Error while sending the signatures', error );
+  //   }
+  // };
 
-  /* submit thw signature data  from canvas */
-  handleSignatureSubmitOnDraw = () => {
-    const dataFromDrawingPad = this.signaturePad.toDataURL();
+  // /* submit thw signature data  from canvas */
+  // handleSignatureSubmitOnDraw = () => {
+  //   const dataFromDrawingPad = this.signaturePad.toDataURL();
 
-    this.submitSignature({ type: 'draw', data: dataFromDrawingPad });
-  };
+  //   this.submitSignature({ type: 'draw', data: dataFromDrawingPad });
+  // };
 
-  /* submit text  signature data */
-  handleSignatureSubmitOnText = () => {
-    const { textSignatureValue } = this.state;
+  // /* submit text  signature data */
+  // handleSignatureSubmitOnText = () => {
+  //   const { textSignatureValue } = this.state;
 
-    this.submitSignature({ type: 'text', data: textSignatureValue });
-  };
+  //   this.submitSignature({ type: 'text', data: textSignatureValue });
+  // };
 
-  // clear the canvas
-  handleClearCanvas = () => {
-    this.signaturePad.clear();
-  };
+  // // clear the canvas
+  // handleClearCanvas = () => {
+  //   this.signaturePad.clear();
+  // };
 
-  /* handle text signature change */
-  handleTextSignatureChange = event => {
-    const { value } = event.target;
+  // /* handle text signature change */
+  // handleTextSignatureChange = event => {
+  //   const { value } = event.target;
 
-    this.setState({ textSignatureValue: value });
-  };
+  //   this.setState({ textSignatureValue: value });
+  // };
 
-  renderButtons = () => {
-    const { validated } = this.state;
+  // renderButtons = () => {
+  //   const { validated } = this.state;
 
-    if ( validated ) {
-      return null;
-    }
+  //   if ( validated ) {
+  //     return null;
+  //   }
 
-    return (
-      <div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            width: '100%',
-            backgroundColor: 'whitesmoke',
-          }}
-        >
-          <div style={{ width: '100%' }}>
-            <Button
-              width="100%"
-              onPress={this.handleClearCanvas}
-              color="red"
-              withFeedback
-              style={{ marginTop: '10px', width: '100%' }}
-            >
-              Reset
-            </Button>
-          </div>
+  //   return (
+  //     <div>
+  //       <div
+  //         style={{
+  //           display: 'flex',
+  //           flexDirection: 'row',
+  //           width: '100%',
+  //           backgroundColor: 'whitesmoke',
+  //         }}
+  //       >
+  //         <div style={{ width: '100%' }}>
+  //           <Button
+  //             width="100%"
+  //             onPress={this.handleClearCanvas}
+  //             color="red"
+  //             withFeedback
+  //             style={{ marginTop: '10px', width: '100%' }}
+  //           >
+  //             Reset
+  //           </Button>
+  //         </div>
 
-          <div style={{ width: '100%' }}>
-            <Button
-              width="100%"
-              onPress={this.handleSignatureSubmitOnDraw}
-              color="green"
-              withFeedback
-            >
-              Validate
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  //         <div style={{ width: '100%' }}>
+  //           <Button
+  //             width="100%"
+  //             onPress={this.handleSignatureSubmitOnDraw}
+  //             color="green"
+  //             withFeedback
+  //           >
+  //             Validate
+  //           </Button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   render() {
-    const { height, width } = this.props;
+    // const { height, width } = this.props;
 
     return (
-      <div
-        className="custom-signature"
-        style={{
-          width: width,
-          height: height,
-          marginTop: '50px',
-        }}
-      >
-        <Tabs
+      <div className="custom-signature">
+        {/* <Tabs
           tabBackground="#f5f5f5"
           activeTabBackground="#afafaf"
           width="100%"
@@ -168,7 +160,7 @@ class InputSignature extends Component {
             <InputText
               type="text"
               size="lg"
-              textSize="sm"
+              size="sm"
               padding={10}
               backgroundColor="#f1f1f1"
               borderSize={1}
@@ -192,14 +184,16 @@ class InputSignature extends Component {
           <div style={{ width: '100%', height: '100%', padding: '20px', backgroundColor: '#fff' }}>
             <Input type="upload" />
           </div>
-        </Tabs>
+        </Tabs> */}
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  config: state.keycloak.data,
-});
+// const mapStateToProps = state => ({
+//   config: state.keycloak.data,
+// });
 
-export default connect( mapStateToProps )( InputSignature );
+// export default connect( mapStateToProps )( InputSignature );
+
+export default InputSignature;

@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import { string, object, func } from 'prop-types';
 import debounce from 'lodash.debounce';
+import { Field } from 'formik';
 import { Input } from '../../index';
-import FormInputDropdown from './dropdown';
-import FormInputCheckbox from './checkbox';
+import FormInputWithItems from './input-with-items';
 
+/*
+1. This component handles higher level data and passes them to individual components
+2. How the data is submitted like debouncing and not deboucing while sending the data to backend
+*/
 class FormInput extends Component {
   static propTypes = {
     type: string.isRequired,
     question: object,
     onChangeValue: func.isRequired,
     ask: object,
-  }
+  };
 
   constructor( props ) {
     super( props );
@@ -20,25 +24,35 @@ class FormInput extends Component {
   }
 
   focus() {
-    if (
-      this.input &&
-      this.input.focus
-    ) {
+    if ( this.input && this.input.focus ) {
       this.input.focus();
     }
   }
 
+  // validateUsername = ( value ) => {
+  //   let error;
+
+  //   if ( value === 'admin' ) {
+  //     error = 'Nice try!';
+  //   }
+
+  //   return error;
+  // }
+
   handleChangeDebounced = ( value, withSend ) => {
+    // console.log( 'handleChangeDebounced' );
     this.props.onChangeValue( value, withSend );
-  }
+  };
 
   handleChangeValueWithSend = value => {
+    // console.log( 'handleChangeValueWithSend' );
     this.props.onChangeValue( value, true );
-  }
+  };
 
   handleChangeValueWithSendAndDebounce = value => {
+    // console.log( 'handleChangeValueWithSendAndDebounce' );
     this.handleChangeDebounced( value, true );
-  }
+  };
 
   render() {
     const { type, question } = this.props;
@@ -54,7 +68,7 @@ class FormInput extends Component {
             {...inputProps}
             html={question.html}
             onChangeValue={this.handleChangeValueWithSend}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -63,29 +77,33 @@ class FormInput extends Component {
       case 'dropdownmultiple':
       case 'tag':
       case 'menu':
-        return (
-          <FormInputDropdown
-            {...inputProps}
-            onChangeValue={this.handleChangeValueWithSendAndDebounce}
-            ref={input => this.input = input}
-          />
-        );
-
       case 'checkboxmultiple':
+      case 'radio':
         return (
-          <FormInputCheckbox
+          <FormInputWithItems
             {...inputProps}
-            ref={input => this.input = input}
-            onChangeValue={this.handleChangeValueWithSendAndDebounce}
-          />
+          >
+            {({ items }) => {
+              return (
+                <Input
+                  {...inputProps}
+                  onChangeValue={this.handleChangeValueWithSendAndDebounce}
+                  items={items}
+                  ref={input => ( this.input = input )}
+                />
+              );
+            }}
+          </FormInputWithItems>
         );
 
       case 'switch':
       case 'java.lang.boolean':
+      case 'boolean':
       case 'payment':
       case 'audioRecord':
       case 'audiorecord':
       case 'date':
+      case 'time':
       case 'java.time.localdate':
       case 'datetime':
       case 'codeverificationfive':
@@ -94,11 +112,12 @@ class FormInput extends Component {
       case 'java.time.localdatetime':
       case 'htmlarea':
       case 'rich-text-editor':
+      case 'editor':
         return (
           <Input
             {...inputProps}
             onChangeValue={this.handleChangeValueWithSendAndDebounce}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -112,20 +131,34 @@ class FormInput extends Component {
       case 'Imagemultiple':
       case 'images':
       case 'signature':
+      case 'address':
         return (
           <Input
             {...inputProps}
             onChangeValue={this.handleChangeValueWithSend}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
       default:
         return (
-          <Input
-            {...inputProps}
-            ref={input => this.input = input}
-          />
+          <Field
+            name={this.props.ask.questionCode}
+            // validate={this.validateUsername}
+          >
+            {() =>
+              // { form, field }
+            {
+              return (
+                <Input
+                  {...inputProps}
+                    // value={field.value}
+                  ref={input => ( this.input = input )}
+                />
+              );
+            }
+            }
+          </Field>
         );
     }
   }

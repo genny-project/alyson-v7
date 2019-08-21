@@ -6,4 +6,15 @@ export * from '../views/components/dialog/dialog.actions';
 
 export * from '../views/app/test-display/testDisplay.actions';
 
-export * from '../views/components-legacy/theme/theme.actions'; // legacy compatibility
+// Just for testing purposes
+export const rawSession = data => ({
+  type: 'SESSION_TEST',
+  payload: data,
+});
+
+export const gennyteerDisplay = data => ({
+  type: 'DISPLAY_FROM_GENNYTEER',
+  payload: data,
+});
+
+global.gennyteerDisplay = gennyteerDisplay;

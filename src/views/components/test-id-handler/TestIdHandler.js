@@ -2,6 +2,7 @@ import React, { Component, isValidElement } from 'react';
 import { string, integer, node } from 'prop-types';
 import { store } from '../../../redux';
 import * as actions from '../../../redux/actions';
+import { isDevMode } from '../../../utils';
 
 var timeoutMouseOverID;
 var timeoutMouseOutID;
@@ -18,17 +19,6 @@ class TestIdHandler extends Component {
     timer: integer,
   }
 
-  handleMouseOverDebounced = () => {
-    window.clearTimeout( timeoutMouseOutID );
-
-    timeoutMouseOverID = window.setTimeout(
-      () => {
-        this.handleMouseOver();
-      },
-      this.props.timer,
-    );
-  }
-
   handleMouseOutDebounced = () => {
     window.clearTimeout( timeoutMouseOverID );
 
@@ -40,22 +30,33 @@ class TestIdHandler extends Component {
     );
   }
 
+  handleMouseOverDebounced = () => {
+    window.clearTimeout( timeoutMouseOutID );
+
+    timeoutMouseOverID = window.setTimeout(
+      () => {
+        this.handleMouseOver();
+      },
+      this.props.timer,
+    );
+  }
+
   handleMouseOver = () => {
-    if ( window.originalQueryParams.showcodes ) {
-      store.dispatch( actions.setTestId({ id: this.props.testID }));
-    }
+    store.dispatch( actions.setTestId({ id: this.props.testID }));
   }
 
   handleMouseOut = () => {
-    if ( window.originalQueryParams.showcodes ) {
-      store.dispatch( actions.removeTestId());
-    }
+    store.dispatch( actions.removeTestId());
   }
 
   render() {
     const {
       children,
     } = this.props;
+
+    if ( !isDevMode()) {
+      return children;
+    }
 
     return (
       React.Children.map( children, child => (

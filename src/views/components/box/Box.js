@@ -89,6 +89,7 @@ function Box({
   overscrollBehaviorY,
   onLayout,
   onBlur,
+  boxSizing,
   ...restProps
 }) {
   const boxStyle = filterOutUnspecifiedProps({
@@ -160,6 +161,7 @@ function Box({
     overscrollBehavior,
     overscrollBehaviorX,
     overscrollBehaviorY,
+    boxSizing,
     ...__dangerouslySetStyle,
   });
 
@@ -202,7 +204,9 @@ Box.propTypes = {
   alignItems: oneOf(
     ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
   ),
-  alignSelf: string,
+  alignSelf: oneOf(
+    ['normal', 'auto', 'center', 'flex-start', 'flex-end']
+  ),
   height: oneOfType(
     [string, number]
   ),
@@ -327,6 +331,9 @@ Box.propTypes = {
       [string, number]
     ),
   }),
+  boxSizing: oneOf(
+    ['content-box', 'border-box']
+  ),
 };
 
 export default Box;

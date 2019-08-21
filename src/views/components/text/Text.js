@@ -28,7 +28,8 @@ const Text = ({
   fontWeight,
   height,
   size = 'sm',
-  align,
+  textAlign,
+  alignSelf = 'center',
   width,
   bold,
   fontFamily,
@@ -43,7 +44,7 @@ const Text = ({
     fontWeight: bold ? 'bold' : fontWeight,
     height,
     fontSize: TEXT_SIZES[size],
-    textAlign: align,
+    textAlign,
     width,
     color: colors[color] || color,
     fontFamily: fontFamily || Platform.select({
@@ -52,6 +53,7 @@ const Text = ({
     }),
     cursor,
     whiteSpace,
+    alignSelf: alignSelf,
   };
 
   let child = text || children;
@@ -89,7 +91,7 @@ Text.propTypes = {
   children: oneOfType(
     [number, string, node]
   ),
-  align: oneOf(
+  textAlign: oneOf(
     ['auto', 'left', 'right', 'center', 'justify']
   ),
   width: oneOfType(
@@ -105,6 +107,9 @@ Text.propTypes = {
   ),
   cursor: oneOf(
     ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text']
+  ),
+  alignSelf: oneOf(
+    ['normal', 'auto', 'center', 'flex-start', 'flex-end']
   ),
 };
 

@@ -57,6 +57,7 @@ const EventTouchable = ({
     onPress: handlePress,
     showSpinnerOnClick,
     value,
+    disabled,
   };
 
   return React.createElement(

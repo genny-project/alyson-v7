@@ -13,41 +13,38 @@ class MessageHandler {
     // setInterval( this.checkDispatchHistory, 500 );
   }
 
-  validMessageTypes = [
-    'DATA_MSG',
-    'CMD_MSG',
-    'EVT_MSG',
-  ]
+  validMessageTypes = ['DATA_MSG', 'CMD_MSG', 'EVT_MSG'];
 
   eventTypes = {
     DATA_MSG: 'data_type',
     CMD_MSG: 'cmd_type',
     EVT_MSG: 'event_type',
-  }
+  };
 
   checkMessageBatch = () => {
-    if (
-      this.beBatch.length > 0 &&
-      new Date().getTime() - this.lastBe > 200
-    ) {
+    if ( this.beBatch.length > 0 && new Date().getTime() - this.lastBe > 200 ) {
       this.drainMessageBatch();
     }
-  }
+  };
 
-  removeMessageFromDispatcHistory = ( message ) => {
+  removeMessageFromDispatcHistory = message => {
     this.dispatchHistory = this.dispatchHistory.filter( item => item.msg_id !== message.msg_id );
-  }
+  };
 
-  addMessageToDispatchHistory = ( message ) => {
+  addMessageToDispatchHistory = message => {
     this.dispatchHistory.push( message );
 
     setTimeout(() => {
       this.removeMessageFromDispatcHistory( message );
     }, 5000 );
-  }
+  };
 
   drainMessageBatch = () => {
+    // console.log( 'this.beBatch ', this.beBatch.length, JSON.stringify({ batch: this.beBatch }));
+
     const message = this.beBatch.reduce( this.handleReduceMessageBatch, this.beBatch[0] );
+
+    // console.log( 'drain message', message );
 
     store.dispatch( message );
 
@@ -56,7 +53,7 @@ class MessageHandler {
     }
 
     this.beBatch = [];
-  }
+  };
 
   handleReduceMessageBatch = ( output, current ) => {
     /**
@@ -68,7 +65,7 @@ class MessageHandler {
     if ( current.payload.aliasCode && current.payload.aliasCode !== current.payload.parentCode ) {
       const message = {
         ...current,
-        links: ( current.questions ? current.links.concat( current.questions ) : current.links ),
+        links: current.questions ? current.links.concat( current.questions ) : current.links,
       };
 
       store.dispatch( message );
@@ -81,11 +78,9 @@ class MessageHandler {
     }
 
     output.payload.items = [
-      ...output.payload.items.filter( item => (
-        !current.payload.items.some( newItem => (
-          newItem.code === item.code
-        ))
-      )),
+      ...output.payload.items.filter(
+        item => !current.payload.items.some( newItem => newItem.code === item.code )
+      ),
       ...current.payload.items.map( item => ({
         delete: current.payload.delete,
         replace: current.payload.replace,
@@ -94,12 +89,12 @@ class MessageHandler {
         totalCount: current.payload.returnCount,
         linkCode: current.payload.linkCode,
         ...item,
-        links: ( item.questions ? item.links.concat( item.questions ) : item.links ),
+        links: item.questions ? item.links.concat( item.questions ) : item.links,
       })),
     ];
 
     return output;
-  }
+  };
 
   onMessage = message => {
     if ( !message ) return;
@@ -107,22 +102,18 @@ class MessageHandler {
     const { msg_type, data_type, messages } = message;
     const isValidMessage = this.validMessageTypes.includes( msg_type );
 
-    if (
-      !isValidMessage &&
-      data_type !== 'QBulkMessage'
-    ) {
+    if ( !isValidMessage && data_type !== 'QBulkMessage' ) {
       this.log(
-        `Ignoring message of type ${msg_type}. Must be one of the following: ${this.validMessageTypes.join( '|' )}`,
+        `Ignoring message of type ${msg_type}. Must be one of the following: ${this.validMessageTypes.join(
+          '|'
+        )}`,
         'warn'
       );
 
       return;
     }
 
-    if (
-      data_type === 'QBulkMessage' &&
-      isArray( messages, { ofMinLength: 1 })
-    ) {
+    if ( data_type === 'QBulkMessage' && isArray( messages, { ofMinLength: 1 })) {
       messages.forEach( this.onMessage );
 
       return;
@@ -143,13 +134,10 @@ class MessageHandler {
 
     if ( message.data_type === 'BaseEntity' && !message.delete && !message.replace ) {
       /* Add to a batch */
-      this.beBatch.push(
-        action( message )
-      );
+      this.beBatch.push( action( message ));
 
       this.lastBe = new Date().getTime();
-    }
-    else {
+    } else {
       const payload = message;
 
       if ( isArray( payload.items )) {
@@ -160,19 +148,17 @@ class MessageHandler {
           totalCount: payload.returnCount,
           replace: payload.replace,
           ...item,
-          links: ( item.questions ? item.links.concat( item.questions ) : item.links ),
+          links: item.questions ? item.links.concat( item.questions ) : item.links,
         }));
       }
 
-      store.dispatch(
-        action( payload )
-      );
+      store.dispatch( action( payload ));
 
       if ( payload.is_cached_message ) {
         this.addMessageToDispatchHistory( payload );
       }
     }
-  }
+  };
 }
 
 export default MessageHandler;

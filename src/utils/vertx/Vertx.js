@@ -1,6 +1,7 @@
 import EventBus from 'vertx3-eventbus-client';
 import decodeToken from 'jwt-decode';
 import NProgress from 'nprogress';
+import { push } from 'react-router-redux';
 import { prefixedLog } from '../../utils';
 import { store } from '../../redux';
 import * as actions from '../../redux/actions';
@@ -27,7 +28,6 @@ const codecFunc = cb =>
     const simple = new zstd.Simple();
 
     cb( simple );
-    // console.warn(decoded);
   });
 
 class Vertx {
@@ -87,6 +87,8 @@ class Vertx {
       const { session_state } = sessionData;
       const { eventBus } = this.state;
 
+      store.dispatch( actions.rawSession( sessionData.session_state ));
+
       eventBus.registerHandler( session_state, this.handleRegisterHandler );
 
       store.dispatch( actions.initVertxSuccess());
@@ -118,18 +120,50 @@ class Vertx {
     if ( error ) this.log( error, 'error' );
   };
 
-  handleIncomingMessage = ( message, isCachedMessage ) => {
+  handleLogoutOnLogoutEvent = async () => {
+    const promises = [
+      Storage.remove( 'kcSessionState' ),
+      Storage.remove( 'kcSessionNonce' ),
+      Storage.remove( 'kcAuth' ),
+      this.asyncSetState({
+        isAuthenticated: false,
+        accessToken: null,
+        refreshToken: null,
+        sessionState: null,
+        sessionNonce: null,
+        error: null,
+        user: {},
+        consecutiveTokenFails: 0,
+      }),
+    ];
+
+    await Promise.all( promises );
+  }
+
+  handleIncomingMessage = ( message, isCachedMessage, isAnswerMessage ) => {
     const { incomingMessageHandler } = this.state;
 
     if ( isCachedMessage ) {
       message['is_cached_message'] = true;
     }
 
+    if ( isAnswerMessage ) {
+      message['is_answer_message'] = true;
+    }
+
     if ( message.cmd_type && message.cmd_type === 'ROUTE_CHANGE' ) {
       NProgress.done();
     }
 
+    if ( message.cmd_type === 'LOGOUT' ) {
+      store.dispatch( actions.userLogout());
+      this.handleLogoutOnLogoutEvent();
+      store.dispatch( push( '/logout' ));
+    }
+
     // this.log( 'Receiving a message' );
+
+    // if ( isAnswerMessage ) console.log( 'message', JSON.stringify({ message }));
     if ( incomingMessageHandler ) incomingMessageHandler( message );
   };
 

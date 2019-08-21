@@ -6,8 +6,9 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     panel,
     component,
     onlyInheritableThemes,
-    formGroup,
+    acceptTypes,
     onlyComponentThemes,
+    dataType,
   } = options;
 
   const themes = [];
@@ -19,15 +20,51 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     return {};
 
   sort( themeLinks, { paths: ['weight', 'created'], direction: 'asc' }).forEach( theme => {
-    if ( isString( panel ) && theme.panel !== panel ) return;
+    if (
+      isString( panel ) && (
+        theme.panel !== panel &&
+        theme.panel !== 'FRAME'
+      ))
+      return;
 
-    if ( isString( panel ) && ( !isString( component ) && theme.component )) return;
+    if (
+      isString( panel ) && (
+        !isString( component ) &&
+        theme.component
+      ))
+      return;
 
-    if ( isString( component ) && !( theme.component === component || theme.component === 'all' || theme.component == null )) return;
+    if (
+      !isArray( acceptTypes ) &&
+      isString( component ) &&
+      !(
+        theme.component === component ||
+        theme.component == null
+      ))
+      return;
 
-    if ( formGroup && !( theme.component == null || theme.component === 'all' )) return;
+    if (
+      isArray( acceptTypes ) &&
+      !(
+        theme.component === component ||
+        theme.component == null ||
+        acceptTypes.includes( theme.component )
+      ))
+      return;
 
-    if ( onlyComponentThemes && !( theme.component === component )) return true;
+    if (
+      isString( dataType ) &&
+      !(
+        theme.dataType === dataType ||
+        theme.dataType == null
+      ))
+      return;
+
+    if (
+      onlyComponentThemes &&
+      !( theme.component === component )
+    )
+      return true;
 
     const properties = dlv( allThemes, `${theme.code}.properties` );
 
@@ -37,8 +74,6 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
       properties.inheritable === false
     )
       return;
-
-    // console.log( 'added' );
 
     themes.push( theme );
   });

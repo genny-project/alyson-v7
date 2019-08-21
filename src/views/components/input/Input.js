@@ -1,32 +1,37 @@
 import React, { Component } from 'react';
-import { string, object, func } from 'prop-types';
+import { string, object, func, bool } from 'prop-types';
 import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
-import CheckBox from './checkbox';
-import InputDatePicker from './date-picker';
+import InputDatePicker from './date-time/date-picker';
+import InputTimePicker from './date-time/time-picker';
+import InputDateTimePicker from './date-time/date-time-picker';
 import InputFile from './file';
+import InputFile2 from './file-2';
 import InputScroll from './scroll';
 import InputRating from './rating';
 import InputText from './text';
+// import InputTextWithStateThemes from './text/InputTextWithStateThemes';
 import InputTextArea from './textarea';
+import InputTextWithDynamicWidth from './text-with-dynamic-width';
 import Switch from './switch';
-import InputDropdown from './dropdown';
 import Passcode from './passcode';
 import InputRead from './read';
 import InputCurrency from './currency';
 import InputCreditCard from './credit-card';
-import InputCheckbox from './checkbox-2';
 import InputPayment from './payment';
 import AudioRecord from './audio-record';
 import SegmentedControl from './segmented-control';
 import InputTag from './tag';
-import InputMenu from './menu';
 import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
 import InputImage from './image';
 import InputSort from './sort';
+import InputBoolean from './input-boolean';
+import CheckBoxList from './checkbox-list';
+
+/* maps the component to  */
 
 class Input extends Component {
   static propTypes = {
@@ -35,48 +40,49 @@ class Input extends Component {
     question: object,
     theme: object,
     onChangeState: func,
-  }
+    inputFieldProps: object,
+    dynamicWidth: bool,
+  };
 
   state = {
     active: false,
     hover: false,
-  }
+  };
 
   blur() {
-    if (
-      this.input &&
-      this.input.blur
-    ) {
+    if ( this.input && this.input.blur ) {
       this.input.blur();
     }
   }
 
   focus() {
-    if (
-      this.input &&
-      this.input.focus
-    ) {
+    if ( this.input && this.input.focus ) {
       this.input.focus();
     }
   }
 
-  handleStateChange = ( newState ) => {
-    this.setState( state => ({
-      ...state,
-      ...newState,
-    }), () => {
-      if ( this.props.onChangeState )
-        this.props.onChangeState( this.state );
-    });
-  }
+  handleStateChange = newState => {
+    this.setState(
+      state => ({
+        ...state,
+        ...newState,
+      }),
+      () => {
+        if ( this.props.onChangeState ) this.props.onChangeState( this.state );
+      }
+    );
+  };
 
   render() {
-    const { type, ...restProps } = this.props;
+    const { type, dynamicWidth, inputFieldProps, ...restProps } = this.props;
 
     const inputProps = {
       ...restProps,
       type,
+      dynamicWidth,
     };
+
+    const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
     switch ( type ) {
       case 'text':
@@ -84,9 +90,10 @@ class Input extends Component {
       case 'acn number':
       case 'double':
         return (
-          <InputText
+          <TextInputElement
             {...inputProps}
-            ref={input => this.input = input}
+            {...inputFieldProps}
+            ref={input => ( this.input = input )}
             onChangeState={this.handleStateChange}
           />
         );
@@ -95,9 +102,10 @@ class Input extends Component {
         return (
           <InputText
             {...inputProps}
+            {...inputFieldProps}
             type="text"
             secureTextEntry
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -106,7 +114,8 @@ class Input extends Component {
           <InputText
             keyboardType="email-address"
             {...inputProps}
-            ref={input => this.input = input}
+            {...inputFieldProps}
+            ref={input => ( this.input = input )}
             onChangeState={this.handleStateChange}
           />
         );
@@ -117,7 +126,9 @@ class Input extends Component {
             multiline
             numberOfLines={2}
             {...inputProps}
+            {...inputFieldProps}
             ref={input => this.input = input}
+            onChangeState={this.handleStateChange}
           />
         );
 
@@ -129,10 +140,11 @@ class Input extends Component {
       case 'mobile':
       case 'landline':
         return (
-          <InputText
+          <TextInputElement
             keyboardType="phone-pad"
             {...inputProps}
-            ref={input => this.input = input}
+            {...inputFieldProps}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -141,7 +153,15 @@ class Input extends Component {
         return (
           <InputCurrency
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'boolean':
+        return (
+          <InputBoolean
+            {...inputProps}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -150,7 +170,7 @@ class Input extends Component {
         return (
           <Switch
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -159,7 +179,7 @@ class Input extends Component {
         return (
           <InputRead
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -167,7 +187,7 @@ class Input extends Component {
         return (
           <InputScroll
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -175,7 +195,7 @@ class Input extends Component {
         return (
           <InputRating
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -183,7 +203,8 @@ class Input extends Component {
         return (
           <InputAutocomplete
             {...inputProps}
-            ref={input => this.input = input}
+            // inputFieldProps={inputFieldProps}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -191,35 +212,48 @@ class Input extends Component {
         return (
           <InputAddress
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
       case 'dropdown':
         return (
-          <InputDropdown
+          <InputTag
             {...inputProps}
-            ref={input => this.input = input}
+            allowMultipleSelection={false}
+            allowNewTags={false}
+            ref={input => ( this.input = input )}
           />
         );
 
       case 'checkbox':
+      case 'checkboxmultiple':
         return (
-          <CheckBox
+          <CheckBoxList
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
       case 'radio':
         return (
-          <CheckBox
+          <CheckBoxList
             {...inputProps}
             radio
             ref={input => this.input = input}
           />
         );
-      // case 'file':
+
+      case 'file':
+      case 'upload':
+        return (
+          <InputFile2
+            {...inputProps}
+            ref={input => this.input = input}
+          />
+        );
+
+        // case 'file':
       // case 'upload':
       //   return (
       //     <InputFile
@@ -243,7 +277,7 @@ class Input extends Component {
         return (
           <InputImage
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -255,7 +289,7 @@ class Input extends Component {
             {...inputProps}
             multiple
             imageOnly
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -264,19 +298,28 @@ class Input extends Component {
         return (
           <InputDatePicker
             {...inputProps}
+            // inputFieldProps={inputFieldProps}
             date
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'time':
+        return (
+          <InputTimePicker
+            {...inputProps}
+            inputFieldProps={inputFieldProps}
+            ref={input => ( this.input = input )}
           />
         );
 
       case 'datetime':
       case 'java.time.localdatetime':
         return (
-          <InputDatePicker
+          <InputDateTimePicker
             {...inputProps}
-            date
-            time
-            ref={input => this.input = input}
+            inputFieldProps={inputFieldProps}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -284,7 +327,7 @@ class Input extends Component {
         return (
           <Passcode
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -295,7 +338,7 @@ class Input extends Component {
             {...inputProps}
             numberOfInputs={5}
             keyboardType="default"
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -303,23 +346,14 @@ class Input extends Component {
         return (
           <InputCreditCard
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
-
-      case 'checkboxmultiple':
-        return (
-          <InputCheckbox
-            {...inputProps}
-            ref={input => this.input = input}
-          />
-        );
-
       case 'payment':
         return (
           <InputPayment
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -328,7 +362,7 @@ class Input extends Component {
         return (
           <AudioRecord
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
@@ -336,65 +370,52 @@ class Input extends Component {
         return (
           <SegmentedControl
             {...inputProps}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
 
       case 'dropdownmultiple':
         return (
           <InputTag
-            placeholder="Please select..."
             {...inputProps}
             allowMultipleSelection
             allowNewTags={false}
-            ref={input => this.input = input}
+            ref={input => ( this.input = input )}
           />
         );
       case 'tag':
         return (
           <InputTag
             {...inputProps}
-            ref={input => this.input = input}
+            allowMultipleSelection
+            ref={input => ( this.input = input )}
           />
         );
       case 'signature':
-        return (
-          <Signature
-            {...this.props}
-          />
-        );
+        return <Signature {...this.props} />;
 
       case 'htmlarea':
       case 'rich-text-editor':
       case 'editor':
       case 'texteditor':
-        return (
-          <RichTextEditor
-            {...inputProps}
-          />
-        );
+        return <RichTextEditor {...inputProps} />;
 
       case 'event':
+      case 'buttonevent':
+      case 'form previous submit':
+      case 'form cancel next':
+      case 'form submit':
+      case 'button':
+      case 'form submit cancel':
         return (
           <InputEvent
             {...inputProps}
-          />
-        );
-
-      case 'menu':
-        return (
-          <InputMenu
-            {...inputProps}
-            ref={input => this.input = input}
+            {...inputFieldProps}
           />
         );
 
       case 'sort':
-        return (
-          <InputSort
-            {...inputProps}
-          />
-        );
+        return <InputSort {...inputProps} />;
 
       case 'questionname':
         return (
@@ -402,6 +423,16 @@ class Input extends Component {
             {...inputProps}
             text={this.props.question.name}
           />
+        );
+
+      /* DEPRECATED DATATYPES */
+      case 'menu':
+        return (
+          <Text>
+            Datatype `
+            {type}
+            ` has been deprecated.
+          </Text>
         );
 
       default:

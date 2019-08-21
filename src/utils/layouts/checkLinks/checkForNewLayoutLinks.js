@@ -1,21 +1,13 @@
 import dlv from 'dlv';
-import { isArray, isObject, shallowCompare  } from '../../index';
+import { isArray, isObject } from '../../index';
 
 const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {}) => {
-  const {
-    ignoreAdd,
-    ignoreRemove,
-    ignoreNewPanel,
-  } = options;
+  const { ignoreAdd, ignoreRemove, ignoreNewPanel } = options;
 
   const currentLinks = [];
-  const newLinks = [];
+  // const newLinks = [];
 
-  if (
-    !isArray( currentArray ) ||
-    !isArray( newArray ) ||
-    !isObject( layoutData )
-  ) {
+  if ( !isArray( currentArray ) || !isArray( newArray ) || !isObject( layoutData )) {
     return false;
   }
 
@@ -26,35 +18,47 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
     });
   }
 
-  if ( isArray( newArray )) {
-    newArray.forEach( item => {
-      /* Ask Bes are being passed to Frame via the baseEntity prop, while frames and
-       themes have their own props so we need to check where we are looking for a base
-       entity. If no entity is found that matches the target code  of the link, it is
-       not added to the array of new links */
+  let updatedArray = [];
 
-      if ( 
-        item.type === 'sublayout' ||
-        isObject( dlv( layoutData,
-          item.type === 'sublayout' // legacy compatibility
-            ? `layoutsLegacy.${item.code.split( '/' )[0]}.${item.code.split( '/' ).slice( 1, item.code.split( '/' ).length ).join( '/' )}` // legacy compatibility
-            : `${item.type}s.${item.code}` )
-        )) {
-        // console.log(item.code)
-        newLinks.push( item.code );
-      }
+  if ( isArray( newArray )) {
+    // newArray.forEach( item => {
+    //   /* Ask Bes are being passed to Frame via the baseEntity prop, while frames and
+    //    themes have their own props so we need to check where we are looking for a base
+    //    entity. If no entity is found that matches the target code  of the link, it is
+    //    not added to the array of new links */
+
+    //   if ( isObject( dlv( layoutData, `${item.type}s.${item.code}` ))) {
+    //     // console.log(item.code)
+    //     newLinks.push( item.code );
+    //   }
+    // });
+    updatedArray = newArray.filter( i => {
+      // console.log( i.code, isObject( dlv( layoutData, `${i.type}s.${i.code}` )));
+
+      return isObject( dlv( layoutData, `${i.type}s.${i.code}` ));
     });
   }
 
   // console.log(newLinks);
 
   /* Find the differences between the two sets of links */
-  const toAdd = newLinks.filter( item => !currentLinks.includes( item ));
-  const toRemove = currentLinks.filter( item => !newLinks.includes( item ));
+
+  // if ( showLog ) console.log( 'list of links', currentArray, updatedArray );
+  // Need to take into account panel as well.
+  // const toAdd = newLinks.filter( item => !currentLinks.includes( item ));
+  const toAdd = updatedArray.filter( ni =>
+    currentArray.filter( ci => ni.code === ci.code && ni.panel === ci.panel ).length < 1 );
+  // const toRemove = currentLinks.filter( item => !newLinks.includes( item ));
+  const toRemove = currentArray.filter( ci =>
+    updatedArray.filter( ni => ni.code === ci.code && ni.panel === ci.panel ).length < 1 );
+
+  // if ( showLog ) console.log( 'tos', toAdd, toRemove );
 
   const toChangePanel = [];
 
   /* For items that have the same target, check if the panel ( linkValue ) is the same*/
+
+  /*
   newLinks.filter( newLinkCode => currentLinks.includes( newLinkCode )).forEach( newLinkCode => {
     const oldBe = currentArray.filter( link => link.code === newLinkCode )[0];
     const newBe = newArray.filter( link => link.code === newLinkCode )[0];
@@ -63,13 +67,10 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
 
     if ( !isPanelMatch ) toChangePanel.push( newLinkCode );
   });
+  */
 
   /* if any changes are found, update */
-  if (
-    toAdd.length > 0 ||
-    toRemove.length > 0 ||
-    toChangePanel.length > 0
-  ) {
+  if ( toAdd.length > 0 || toRemove.length > 0 || toChangePanel.length > 0 ) {
     return true;
   }
 

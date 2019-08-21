@@ -1,134 +1,47 @@
-import React, { Component, isValidElement } from 'react';
-import { array, bool, object, any, string, func } from 'prop-types';
-// import { Menu, MenuButton, MenuItem, MenuList, MenuLink } from '@reach/menu-button';
-import { withRouter } from 'react-router-dom';
-import { isArray, isString, isObject, Bridge } from '../../../utils';
-import { Fragment, Icon, Box, Text,
-  Menu, MenuButton, MenuItem, MenuContent,
-} from '../index';
-import './Dropdown.css';
-
-const styles = {
-  menuButtonStyle: {
-    backgroundColor: 'transparent',
-    border: 0,
-    // padding: 10,
-    fontSize: 16,
-    cursor: 'pointer',
-    color: 'black',
-  },
-  menuListStyle: {
-    // background: '#bbb',
-    borderWidth: 2,
-    borderColor: '#black',
-    borderStyle: 'solid',
-    padding: 5,
-  },
-  menuLinkStyle: {
-    textAlign: 'right',
-    padding: 15,
-    color: 'black',
-  },
-};
+import React, { Component } from 'react';
+import { any, bool, func, string, object, node, oneOf } from 'prop-types';
+import { Box, Icon, Menu, MenuButton, MenuContent, Fragment }  from '../../components';
 
 class Dropdown extends Component {
+  static defaultProps = {
+    testID: 'collapsible',
+    wrapperProps: {},
+    headerWrapperProps: {},
+    headerIconProps: {},
+    iconPlacement: 'right',
+  }
+
   static propTypes = {
-    items: array.isRequired,
-    text: any,
-    facingRight: bool,
-    disabled: bool,
-    testID: string,
     children: any,
-    history: object,
+    // open: bool,
+    onToggle: func,
+    testID: string,
+    wrapperProps: object,
+    headerWrapperProps: object,
+    headerIconProps: object,
+    renderHeader: node,
+    isClosed: bool,
+    iconPlacement: oneOf(
+      ['left', 'right']
+    ),
+    disabled: bool,
     color: string,
     backgroundColor: string,
-    iconProps: object,
-    onChangeState: func,
-  }
-
-  inputs = {};
-
-  state = {
-    isHovering: false,
-    currentComponent: null,
-  }
-
-  focus() {
-    if ( this.inputs && this.inputs[0] )
-      this.inputs[0].focus();
-  }
-
-  blur() {
-    if ( this.inputs && this.inputs[0] )
-      this.input[0].blur();
-  }
-
-  handleMouseEnter = component => () => {
-    this.setState({
-      isHovering: true,
-      currentComponent: component,
-    });
-
-    if ( this.props.onChangeState )
-      this.props.onChangeState({ hover: true });
-  }
-
-  handleMouseLeave = () => {
-    this.setState({
-      isHovering: false,
-      currentComponent: null,
-    });
-
-    if ( this.props.onChangeState )
-      this.props.onChangeState({ hover: false });
-  }
-
-  handleSelect = item => () => {
-    if (
-      item.code &&
-      item.parentCode
-    ) {
-      this.setState({
-        isHovering: false,
-        currentComponent: null,
-      });
-
-      if ( this.props.onChangeState )
-        this.props.onChangeState({ hover: false });
-
-      Bridge.sendFormattedEvent(
-        item
-      );
-    }
-  }
-
-  handleNavigate = item => event => {
-    event.preventDefault();
-
-    const href = (
-      item.href === 'home' ? '/'
-      : item.href.startsWith( '/' ) ? item.href
-      : `/${item.href}`
-    );
-
-    this.props.history.push( href );
-
-    return false;
+    subcomponentProps: object,
   }
 
   render() {
     const {
-      items,
-      text,
-      // facingRight,
-      disabled,
       children,
       testID,
+      renderHeader,
+      isClosed,
+      iconPlacement,
+      disabled,
       color,
-      backgroundColor,
-      iconProps,
+      // backgroundColor,
+      subcomponentProps,
     } = this.props;
-    const { isHovering, currentComponent } = this.state; // eslint-disable-line no-unused-vars
 
     return (
       <Menu
@@ -137,107 +50,68 @@ class Dropdown extends Component {
         {({ isOpen }) => {
           return (
             <Fragment>
-              <MenuButton
-                disabled={disabled || !isArray( items, { ofMinLength: 1 })}
-                style={{
-                  ...styles['menuButtonStyle'],
-                  color,
-                }}
-                data-testid={testID}
-                testID={testID}
-                onMouseEnter={this.handleMouseEnter( 'button' )}
-                onMouseLeave={this.handleMouseLeave}
+              <Box
+                justifyContent="center"
+                flexDirection="column"
+                {...subcomponentProps['group-header-wrapper']}
               >
+                {/* header alt goes here */}
                 <Box
+                  // header wrapper styling here?
+                  flex={1}
                   justifyContent="space-between"
-                  id={`element-${testID}`}
+                  flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
                 >
-                  {isValidElement( children ) ? children
-                  : isString( text ) ? text
-                  : isArray( children )
-                    ? children.map(( child ) => (
-                      isValidElement( child )
-                        ? child
-                        : null
-                    ))
-                    : null
-                    }
-                  <Box
-                    justifyContent="center"
-                    transform={[
-                      { rotate: isOpen ? '0deg' : '270deg' },
-                    ]}
-                  >
-                    <Box
-                      paddingTop={2}
-                    >
-                      <Icon
-                        name="expand_more"
-                        color={this.props.color || 'black'}
-                        size="xs"
-                      />
-                    </Box>
-                  </Box>
+                  {/* {renderHeader} */}
+                  {!isClosed
+                    ? (
+                      <MenuButton
+                        disabled={disabled}
+                        style={{
+                          color,
+                        }}
+                        data-testid={testID}
+                        testID={testID}
+                        {...subcomponentProps['group-clickable-wrapper']}
+                      >
+                        {renderHeader}
+                        <Box
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Box
+                            transform={[
+                              { rotate: isOpen ? '0deg' : '270deg' },
+                            ]}
+                            {...subcomponentProps['group-icon']}
+                          >
+                            <Icon
+                              name="keyboard_arrow_down"
+                              color="black"
+                              cursor="pointer"
+                              {...subcomponentProps['group-icon']}
+                            />
+                          </Box>
+                        </Box>
+                      </MenuButton>
+                    ) : null }
                 </Box>
-              </MenuButton>
+              </Box>
 
-              {isArray( items, { ofMinLength: 1 }) && (
+              {(
                 <MenuContent
-                  style={{
-                    ...{
-                      ...styles['menuListStyle'],
-                      color,
-                      backgroundColor,
-                    },
-                  }}
                   ref={input => this.input = input}
                   identifier={testID}
+                  {...subcomponentProps['group-content-wrapper']}
                 >
-                  {items.map(( item, index ) => {
-                    const hasIcon = isObject( iconProps ) &&
-                      isString( item.icon, { ofMinLength: 1 });
-
-                    return (
-                      <MenuItem
-                        key={item.text}
-                        ref={input => this.inputs[index] = input}
-                        onPress={item.href
-                          ? this.handleNavigate( item )
-                          : this.handleSelect( item )
-                        }
-                        id={index}
-                        testID={`${item.parentCode || item.rootCode}:${item.code}`}
-                        onMouseEnter={this.handleMouseEnter( item.code )}
-                        onMouseLeave={this.handleMouseLeave}
-                        {...item.style}
-                      >
-                        { hasIcon
-                          ? (
-                            <Box
-                              paddingRight={5}
-                            >
-                              <Icon
-                                name={item.icon}
-                                color="black"
-                                {...iconProps}
-                              />
-                            </Box>
-                          ) : null
-                        }
-                        {
-                          isString( item.text, { isNotSameAs: ' ' })
-                            ? (
-                              <Text
-                                color={color}
-                                whiteSpace="nowrap"
-                                text={item.text}
-                                {...item.style}
-                              />
-                            ) : null
-                        }
-                      </MenuItem>
-                    );
-                  })}
+                  {(
+                    React.Children.map( children, child => (
+                      React.cloneElement( child, {
+                        ...child.props,
+                        isOpen: isOpen,
+                      })
+                    ))
+                  )}
                 </MenuContent>
               )}
             </Fragment>
@@ -248,4 +122,4 @@ class Dropdown extends Component {
   }
 }
 
-export default withRouter( Dropdown );
+export default Dropdown;

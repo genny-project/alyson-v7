@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { object, array, string, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Box, Text, Recurser, Swipeable } from '../index';
+import { Box, Text, Recurser, Swipeable, ActivityIndicator } from '../../components';
 import Panel from './panel';
 import {
   isArray,
@@ -37,39 +37,38 @@ const defaultStyle = {
     height: '100%',
   },
   panel: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   north: {
     width: '100%',
-    alignItems: 'flex-start',
+    flexDirection: 'column',
   },
   south: {
     width: '100%',
-    alignItems: 'flex-end',
+    flexDirection: 'column-reverse',
+
   },
   east: {
-    justifyContent: 'flex-end',
+    flexDirection: 'row-reverse',
   },
   west: {
-    justifyContent: 'flex-start',
+    flexDirection: 'row',
   },
   centre: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 };
 
 class Frame extends Component {
   static defaultProps = {
-    panels: [
-      'NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE',
-    ],
-    linkTypes: [
-      'asks', 'frames', 'themes',
-      'sublayouts', // legacy compatibility
-    ],
+    panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE', 'FRAME'],
+    linkTypes: ['asks', 'frames', 'themes'],
     inheritedProps: {},
-  }
+  };
 
   static propTypes = {
     frames: object,
@@ -79,17 +78,15 @@ class Frame extends Component {
     rootCode: string,
     inheritedProps: object,
     isRootFrame: bool,
-    sublayouts: object, // legacy compatibility
     isClosed: bool,
-  }
+  };
 
   state = {
     frames: [],
     asks: [],
     themes: [],
-    sublayouts: [], // legacy compatibility
     panels: {},
-  }
+  };
 
   /* eslint-disable react/sort-comp */
 
@@ -98,45 +95,110 @@ class Frame extends Component {
   }
 
   shouldComponentUpdate( nextProps, nextState ) {
+    // console.log( 'should update', nextProps.rootCode );
+
     /* If rootCode is different, then a different base
     entity needs to be rendered inside the frame */
-    if ( this.props.rootCode !== nextProps.rootCode )
-      return true;
+    if ( this.props.rootCode !== nextProps.rootCode ) return true;
 
     /* Check if any of the links of the root base entity have changed */
-    if (  isObject( dlv( nextProps, `frames.${nextProps.rootCode}` ))) {
-      if ( checkForNewLayoutLinks(
-        /* Valid links are added to the state key that matches their
+    if ( isObject( dlv( nextProps, `frames.${nextProps.rootCode}` ))) {
+      if (
+        checkForNewLayoutLinks(
+          /* Valid links are added to the state key that matches their
         link type, so check all the state arrays together */
 
-        this.state.frames.concat(
-          this.state.asks,
-          this.state.themes,
-          this.state.sublayouts, // legacy compatiblity
-        ),
-        dlv( nextProps, `frames.${nextProps.rootCode}.links` ),
-        nextProps,
-      )) {
+          this.state.frames.concat( this.state.asks, this.state.themes ),
+          dlv( nextProps, `frames.${nextProps.rootCode}.links` ),
+          nextProps,
+          {},
+          this.props.rootCode === 'FRM_MAIN'
+        )
+      ) {
         return true;
       }
     }
 
     /* Check if the inherited themes have changed */
-    if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps ))
+    if ( checkForNewInheritedThemes( this.props.inheritedProps, nextProps.inheritedProps )) {
       return true;
+    }
 
     if ( this.props.isClosed !== nextProps.isClosed ) {
       return true;
     }
 
-    if ( !shallowCompare( this.state.panels, nextState.panels ))
+    if ( !shallowCompare( this.state.panels, nextState.panels )) {
       return true;
+    }
+
+    // console.log( 'check theme properties' );
+
+    if ( this.checkThemeProperties( nextState.themes, this.props.themes, nextProps.themes )) {
+      // console.log( 'new properties found' );
+
+      return true;
+    }
+
+    // console.log( '7' );
+    // console.log( '-----------------------------' );
+    // console.log( 'no updates' );
 
     return false;
   }
 
   componentDidUpdate() {
     this.getChildLayouts();
+  }
+
+  checkThemeProperties = ( linkedThemes, currentThemes, nextThemes ) => {
+    if ( !isArray( linkedThemes )) {
+      return false;
+    }
+
+    const hasUpdatedTheme = linkedThemes.some( theme => {
+      // console.log( 'theme', theme, currentThemes, nextThemes );
+
+      const currentThemeData =  dlv( currentThemes, `${theme.code}` );
+      const nextThemeData =  dlv( nextThemes, `${theme.code}` );
+
+      // console.log( 'themeData', currentThemeData, nextThemeData );
+
+      if (
+        !isObject( currentThemeData ) ||
+        !isObject( nextThemeData )
+      ) {
+        return true;
+      }
+
+      if ( isObject( nextThemeData, { withProperty: 'data' })) {
+        const currentThemePropKeys = Object.keys( currentThemeData.data );
+        const newThemePropKeys = Object.keys( nextThemeData.data );
+
+        if ( currentThemePropKeys.length !== newThemePropKeys.length ) {
+          return true;
+        }
+
+        const hasUpdatedProperties = newThemePropKeys.some( propKey => {
+          const currentPropObject = currentThemeData.data[propKey];
+          const nextPropObject = nextThemeData.data[propKey];
+
+          // console.log( 'compare', currentPropObject, nextPropObject ) );
+
+          if ( !shallowCompare( currentPropObject, nextPropObject )) {
+            return true;
+          }
+
+          return false;
+        });
+
+        return hasUpdatedProperties;
+      }
+
+      return false;
+    });
+
+    return hasUpdatedTheme;
   }
 
   getChildLayouts = () => {
@@ -149,38 +211,33 @@ class Frame extends Component {
 
     /* filter each of the links based on their type */
     const linkedFrames = getLayoutLinksOfType( rootFrame.links, this.props, 'frame' );
-    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask' );
+    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask', this.props.rootCode === 'FRM_SIDEBAR' );
     const linkedThemes = getLayoutLinksOfType( rootFrame.links, this.props, 'theme' );
-    const linkedSublayouts = getLayoutLinksOfType( rootFrame.links, this.props, 'sublayout' ); // legacy compatiblity
 
     /* update the state  */
     this.updateLinks( 'frames', linkedFrames );
     this.updateLinks( 'asks', linkedAsks );
     this.updateLinks( 'themes', linkedThemes );
-    this.updateLinks( 'sublayouts', linkedSublayouts ); // legacy compatiblity
-  }
+  };
 
   updateLinks = ( stateKey, links ) => {
     /* check if the stateKey is valid  */
     if ( this.props.linkTypes.includes( stateKey )) {
-      this.setState({
-        [stateKey]: [
-          ...links,
-        ],
-      }, () => {});
-    }
-  }
-
-  getInhertiableThemes = ( panel ) => {
-    const panelLinks = [
-      ...filterThemes(
-        this.state.themes,
-        this.props.themes,
+      this.setState(
         {
-          panel: panel,
-          onlyInheritableThemes: true,
-        }
-      ),
+          [stateKey]: [...links],
+        },
+        () => {}
+      );
+    }
+  };
+
+  getInhertiableThemes = panel => {
+    const panelLinks = [
+      ...filterThemes( this.state.themes, this.props.themes, {
+        panel: panel,
+        onlyInheritableThemes: true,
+      }),
     ];
 
     // get props from theme links
@@ -189,32 +246,24 @@ class Frame extends Component {
     return {
       ...objectMerge( this.props.inheritedProps, themeProps ),
     };
-  }
+  };
 
-  getDelimiterStyling = ( panel ) => {
+  getDelimiterStyling = panel => {
     // filter links for panel
     const inheritedLinks = [
-      ...filterThemes(
-        this.props.inheritedProps,
-        this.props.themes,
-        {
-          panel: panel,
-          component: 'delimiter',
-          onlyComponentThemes: true,
-        },
-      ),
+      ...filterThemes( this.props.inheritedProps, this.props.themes, {
+        panel: panel,
+        component: 'delimiter',
+        onlyComponentThemes: true,
+      }),
     ];
 
     const panelLinks = [
-      ...filterThemes(
-        this.state.themes,
-        this.props.themes,
-        {
-          panel: panel,
-          component: 'delimiter',
-          onlyComponentThemes: true,
-        },
-      ),
+      ...filterThemes( this.state.themes, this.props.themes, {
+        panel: panel,
+        component: 'delimiter',
+        onlyComponentThemes: true,
+      }),
     ];
 
     // get props from theme links
@@ -227,9 +276,9 @@ class Frame extends Component {
       ...combinedThemeProps,
       // ...themeProps,
     };
-  }
+  };
 
-  getPropertiesByPanel = ( panel ) => {
+  getPropertiesByPanel = panel => {
     let properties = {};
 
     const checkThemeForProperties = ( themes, panel ) => {
@@ -251,24 +300,28 @@ class Frame extends Component {
     checkThemeForProperties( this.state.themes, panel );
 
     return properties;
-  }
+  };
 
   render() {
     const { rootCode, frames, isRootFrame, isClosed } = this.props;
 
     const rootFrame = frames[rootCode];
 
-    // console.log( this.state.panels );
-
     if ( !rootFrame ) {
+      console.warn( 'waiting for Root Frame...' ); // eslint-disable-line
+
       return (
         <Box
           justifyContent="center"
           alignItems="center"
           flex={1}
+          flexDirection="column"
         >
+          <ActivityIndicator size="large" />
+          <Box height={20} />
           <Text
-            text="No Base Entity Found"
+            text="Loading..."
+            align="center"
           />
         </Box>
       );
@@ -278,30 +331,26 @@ class Frame extends Component {
       return array.filter( item => item.panel === panel );
     };
 
-    const panelContent = this.state.frames.concat(
-      this.state.asks,
-      this.state.sublayouts, // legacy compatibility
-    );
+    const panelContent = this.state.frames.concat( this.state.asks );
 
-    const hasContent = ( panel ) => {
+    const hasContent = panel => {
       return isArray( filterByPanel( panelContent, panel ), { ofMinLength: 1 });
     };
 
     /* Compile  all styling for the panel*/
-    const getStylingByPanel = ( panel ) => {
-      const checkPanelFlex = ( panel ) => {
+    const getStylingByPanel = panel => {
+      const checkPanelFlex = panel => {
         switch ( panel ) {
           case 'north':
           case 'south':
-            return (
-              hasContent( 'CENTRE' ) ||
-              hasContent( 'EAST' ) ||
-              hasContent( 'WEST' )
-            ) ? {} : { flex: 1 };
+            return hasContent( 'CENTRE' ) || hasContent( 'EAST' ) || hasContent( 'WEST' )
+              ? {}
+              : { flex: 1 };
           case 'east':
           case 'west':
             return hasContent( 'CENTRE' ) ? {} : { flex: 1 };
           case 'centre':
+          case 'frame':
           default:
             return {};
         }
@@ -316,24 +365,16 @@ class Frame extends Component {
       };
     };
 
-    const getStyling = ( panel ) => {
+    const getStyling = panel => {
       // filter links for panel
       const inheritedLinks = [
-        ...filterThemes(
-          this.props.inheritedProps,
-          this.props.themes,
-          { formGroup: true },
-        ),
+        ...filterThemes( this.props.inheritedProps, this.props.themes, { formGroup: true }),
       ];
 
       const panelLinks = [
-        ...filterThemes(
-          this.state.themes,
-          this.props.themes,
-          {
-            panel: panel.toUpperCase(),
-          }
-        ),
+        ...filterThemes( this.state.themes, this.props.themes, {
+          panel: panel.toUpperCase(),
+        }),
       ];
 
       // get props from theme links
@@ -349,22 +390,16 @@ class Frame extends Component {
       };
     };
 
-    const isExpandable = ( panel ) => isArray( rootFrame.expandablePanels )
-      ? rootFrame.expandablePanels.includes( panel )
-      : false;
+    const isExpandable = panel =>
+      isArray( rootFrame.expandablePanels ) ? rootFrame.expandablePanels.includes( panel ) : false;
 
-    const shouldUseSwipeable = (
+    const shouldUseSwipeable =
       getDeviceSize() === 'sm' &&
       !isRootFrame &&
-      hasContent( 'CENTRE' ) && (
-        hasContent( 'WEST' ) ||
-        hasContent( 'EAST' )
-      )
-    );
+      hasContent( 'CENTRE' ) &&
+      ( hasContent( 'WEST' ) || hasContent( 'EAST' ));
 
-    const RowComponent = shouldUseSwipeable
-      ? Swipeable
-      : Box;
+    const RowComponent = shouldUseSwipeable ? Swipeable : Box;
 
     return (
       <Box
@@ -372,134 +407,109 @@ class Frame extends Component {
         text
         // onLayout={this.handleOnLayout}
         {...defaultStyle.wrapper}
+        {...getStyling( 'wrapper' )['default']}
       >
-        {
-          hasContent( 'NORTH' )
-            ? (
+        {hasContent( 'NORTH' ) ? (
+          <Panel
+            rootCode={rootCode}
+            location="NORTH"
+            style={getStylingByPanel( 'north' )} // theme props for this element filterThemes() -> getPropsFromThemes()
+            inheritedProps={getStyling( 'north' )}
+            isExpandable={isExpandable( 'NORTH' )}
+            // onLayout={this.handlePanelOnLayout}
+          >
+            <Recurser
+              content={filterByPanel( panelContent, 'NORTH' )}
+              themes={this.getInhertiableThemes( 'NORTH' )}
+              // delimiterProps={this.getDelimiterStyling( 'NORTH' )}
+              hasDelimiter={this.getPropertiesByPanel( 'NORTH' )['renderDelimiter']}
+              isClosed={isClosed}
+            />
+          </Panel>
+        ) : null}
+        {hasContent( 'WEST' ) || hasContent( 'CENTRE' ) || hasContent( 'EAST' ) ? (
+          <RowComponent
+            id="row"
+            {...( shouldUseSwipeable ? defaultStyle.rowMobile : defaultStyle.row )}
+          >
+            {hasContent( 'WEST' ) ? (
               <Panel
                 rootCode={rootCode}
-                location="NORTH"
-                style={getStylingByPanel( 'north' )} // theme props for this element filterThemes() -> getPropsFromThemes()
-                inheritedProps={getStyling( 'north' )}
-                isExpandable={isExpandable( 'NORTH' )}
+                location="WEST"
+                style={getStylingByPanel( 'west' )}
+                inheritedProps={getStyling( 'west' )}
+                isExpandable={isExpandable( 'WEST' )}
                 // onLayout={this.handlePanelOnLayout}
               >
                 <Recurser
-                  content={filterByPanel( panelContent, 'NORTH' )}
-                  themes={this.getInhertiableThemes( 'NORTH' )}
-                  // delimiterProps={this.getDelimiterStyling( 'NORTH' )}
-                  hasDelimiter={this.getPropertiesByPanel( 'NORTH' )['renderDelimiter']}
+                  content={filterByPanel( panelContent, 'WEST' )}
+                  // themes={{ ...this.getStyling( 'WEST', true ) }}
+                  themes={this.getInhertiableThemes( 'WEST' )}
+                  // delimiterProps={this.getDelimiterStyling( 'WEST' )}
+                  hasDelimiter={this.getPropertiesByPanel( 'WEST' )['renderDelimiter']}
                   isClosed={isClosed}
                 />
               </Panel>
-            )
-            : null
-          }
-        {
-            hasContent( 'WEST' ) ||
-            hasContent( 'CENTRE' ) ||
-            hasContent( 'EAST' )
-              ? (
-                <RowComponent
-                  id="row"
-                  {...shouldUseSwipeable ? defaultStyle.rowMobile : defaultStyle.row}
-                >
-                  {
-                    hasContent( 'WEST' )
-                      ? (
-                        <Panel
-                          rootCode={rootCode}
-                          location="WEST"
-                          style={getStylingByPanel( 'west' )}
-                          inheritedProps={getStyling( 'west' )}
-                          isExpandable={isExpandable( 'WEST' )}
-                          // onLayout={this.handlePanelOnLayout}
-                        >
-                          <Recurser
-                            content={filterByPanel( panelContent, 'WEST' )}
-                            // themes={{ ...this.getStyling( 'WEST', true ) }}
-                            themes={this.getInhertiableThemes( 'WEST' )}
-                            // delimiterProps={this.getDelimiterStyling( 'WEST' )}
-                            hasDelimiter={this.getPropertiesByPanel( 'WEST' )['renderDelimiter']}
-                            isClosed={isClosed}
-                          />
-                        </Panel>
-                      )
-                      : null
-                  }
-                  {
-                    hasContent( 'CENTRE' )
-                      ? (
-                        <Panel
-                          rootCode={rootCode}
-                          location="CENTRE"
-                          style={getStylingByPanel( 'centre' )}
-                          inheritedProps={getStyling( 'centre' )}
-                          isExpandable={isExpandable( 'CENTRE' )}
-                          // onLayout={this.handlePanelOnLayout}
-                        >
-                          <Recurser
-                            content={filterByPanel( panelContent, 'CENTRE' )}
-                            // themes={{ ...this.getStyling( 'CENTRE', true ) }}
-                            themes={this.getInhertiableThemes( 'CENTRE' )}
-                            // delimiterProps={this.getDelimiterStyling( 'CENTRE' )}
-                            hasDelimiter={this.getPropertiesByPanel( 'CENTER' )['renderDelimiter']}
-                            isClosed={isClosed}
-                          />
-                        </Panel>
-                      )
-                      : null
-                  }
-                  {
-                    hasContent( 'EAST' )
-                      ? (
-                        <Panel
-                          rootCode={rootCode}
-                          location="EAST"
-                          style={getStylingByPanel( 'east' )}
-                          inheritedProps={getStyling( 'east' )}
-                          isExpandable={isExpandable( 'EAST' )}
-                          // onLayout={this.handlePanelOnLayout}
-                        >
-                          <Recurser
-                            content={filterByPanel( panelContent, 'EAST' )}
-                            // themes={{ ...this.getStyling( 'EAST', true ) }}
-                            themes={this.getInhertiableThemes( 'EAST' )}
-                            // delimiterProps={this.getDelimiterStyling( 'EAST' )}
-                            hasDelimiter={this.getPropertiesByPanel( 'EAST' )['renderDelimiter']}
-                            isClosed={isClosed}
-                          />
-                        </Panel>
-                      )
-                      : null
-                  }
-                </RowComponent>
-              )
-              : null
-          }
-        {
-            hasContent( 'SOUTH' )
-              ? (
-                <Panel
-                  rootCode={rootCode}
-                  location="SOUTH"
-                  style={getStylingByPanel( 'south' )}
-                  inheritedProps={getStyling( 'south' )}
-                  isExpandable={isExpandable( 'SOUTH' )}
-                  // onLayout={this.handlePanelOnLayout}
-                >
-                  <Recurser
-                    content={filterByPanel( panelContent, 'SOUTH' )}
-                    // themes={{ ...this.getStyling( 'SOUTH', true ) }}
-                    themes={this.getInhertiableThemes( 'SOUTH' )}
-                    // delimiterProps={this.getDelimiterStyling( 'SOUTH' )}
-                    hasDelimiter={this.getPropertiesByPanel( 'SOUTH' )['renderDelimiter']}
-                    isClosed={isClosed}
-                  />
-                </Panel>
-              )
-              : null
-          }
+            ) : null}
+            {hasContent( 'CENTRE' ) ? (
+              <Panel
+                rootCode={rootCode}
+                location="CENTRE"
+                style={getStylingByPanel( 'centre' )}
+                inheritedProps={getStyling( 'centre' )}
+                isExpandable={isExpandable( 'CENTRE' )}
+                // onLayout={this.handlePanelOnLayout}
+              >
+                <Recurser
+                  content={filterByPanel( panelContent, 'CENTRE' )}
+                  // themes={{ ...this.getStyling( 'CENTRE', true ) }}
+                  themes={this.getInhertiableThemes( 'CENTRE' )}
+                  // delimiterProps={this.getDelimiterStyling( 'CENTRE' )}
+                  hasDelimiter={this.getPropertiesByPanel( 'CENTER' )['renderDelimiter']}
+                  isClosed={isClosed}
+                />
+              </Panel>
+            ) : null}
+            {hasContent( 'EAST' ) ? (
+              <Panel
+                rootCode={rootCode}
+                location="EAST"
+                style={getStylingByPanel( 'east' )}
+                inheritedProps={getStyling( 'east' )}
+                isExpandable={isExpandable( 'EAST' )}
+                // onLayout={this.handlePanelOnLayout}
+              >
+                <Recurser
+                  content={filterByPanel( panelContent, 'EAST' )}
+                  // themes={{ ...this.getStyling( 'EAST', true ) }}
+                  themes={this.getInhertiableThemes( 'EAST' )}
+                  // delimiterProps={this.getDelimiterStyling( 'EAST' )}
+                  hasDelimiter={this.getPropertiesByPanel( 'EAST' )['renderDelimiter']}
+                  isClosed={isClosed}
+                />
+              </Panel>
+            ) : null}
+          </RowComponent>
+        ) : null}
+        {hasContent( 'SOUTH' ) ? (
+          <Panel
+            rootCode={rootCode}
+            location="SOUTH"
+            style={getStylingByPanel( 'south' )}
+            inheritedProps={getStyling( 'south' )}
+            isExpandable={isExpandable( 'SOUTH' )}
+            // onLayout={this.handlePanelOnLayout}
+          >
+            <Recurser
+              content={filterByPanel( panelContent, 'SOUTH' )}
+              // themes={{ ...this.getStyling( 'SOUTH', true ) }}
+              themes={this.getInhertiableThemes( 'SOUTH' )}
+              // delimiterProps={this.getDelimiterStyling( 'SOUTH' )}
+              hasDelimiter={this.getPropertiesByPanel( 'SOUTH' )['renderDelimiter']}
+              isClosed={isClosed}
+            />
+          </Panel>
+        ) : null}
       </Box>
     );
   }
@@ -512,7 +522,7 @@ const mapStateToProps = state => ({
   asks: state.vertx.asks,
   themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
-  layoutsLegacy: state.vertx.layoutsLegacy,
+  vertx: state.vertx.layouts,
 });
 
 export default connect( mapStateToProps )( Frame );

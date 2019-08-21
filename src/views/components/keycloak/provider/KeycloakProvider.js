@@ -20,16 +20,14 @@ class KeycloakProvider extends Component {
     clientSecret: string,
     baseUrl: string.isRequired,
     children: any,
-  }
+  };
 
   /* eslint-disable react/sort-comp */
 
   attemptLogin = ( options = {}) => {
     if ( this.state.isAuthenticated ) return;
 
-    const {
-      replaceUrl = false,
-    } = options;
+    const { replaceUrl = false } = options;
 
     const LoginUrl = this.createLoginUrl();
     const isValidUrl = Linking.canOpenURL( LoginUrl.getUrl());
@@ -37,6 +35,21 @@ class KeycloakProvider extends Component {
     if ( !isValidUrl ) {
       // eslint-disable-next-line no-console
       console.warn( `Attempted to open invalid login URL: ${LoginUrl.getUrl()}` );
+
+      return;
+    }
+
+    if ( LoginUrl.getUrl().startsWith( 'undefined' )) {
+      const error = `Invalid redirect URL: ${LoginUrl.getUrl()}`;
+
+      // eslint-disable-next-line no-console
+      console.warn( error );
+
+      if ( !this.state.error || !this.state.error.startsWith( 'Invalid redirect URL: undefined' )) {
+        this.setState({
+          error: error,
+        });
+      }
 
       return;
     }
@@ -50,20 +63,17 @@ class KeycloakProvider extends Component {
     return new Promise( async ( resolve, reject ) => {
       await this.asyncSetState({ promise: { resolve, reject } });
 
-      LoginUrl
-        .addEventListener( 'url', this.handleAuthUrlChange )
+      LoginUrl.addEventListener( 'url', this.handleAuthUrlChange )
         .open({ replaceUrl })
         .then( resolve )
         .catch( reject );
     });
-  }
+  };
 
   attemptRegister = ( options = {}) => {
     if ( this.state.isAuthenticated ) return;
 
-    const {
-      replaceUrl = false,
-    } = options;
+    const { replaceUrl = false } = options;
 
     const RegisterUrl = this.createRegisterUrl();
     const isValidUrl = Linking.canOpenURL( RegisterUrl.getUrl());
@@ -84,35 +94,27 @@ class KeycloakProvider extends Component {
     return new Promise( async ( resolve, reject ) => {
       await this.asyncSetState({ promise: { resolve, reject } });
 
-      const session = await RegisterUrl
-        .addEventListener( 'url', this.handleAuthUrlChange )
-        .open({ replaceUrl });
+      const session = await RegisterUrl.addEventListener( 'url', this.handleAuthUrlChange ).open({
+        replaceUrl,
+      });
 
       resolve( session );
     });
-  }
+  };
 
   attemptLogout = async ( options = {}) => {
-    const {
-      replaceUrl = false,
-    } = options;
+    const { replaceUrl = false } = options;
 
     const LogoutUrl = this.createLogoutUrl();
     const isValidUrl = Linking.canOpenURL( LogoutUrl.getUrl());
 
-    if (
-      !isValidUrl &&
-      Platform.OS === 'web'
-    ) {
+    if ( !isValidUrl && Platform.OS === 'web' ) {
       return new Error( `Attempted to open invalid logout URL: ${LogoutUrl.getUrl()}` );
     }
 
-    if ( this.state.refreshTimer )
-      clearInterval( this.state.refreshTimer );
+    if ( this.state.refreshTimer ) clearInterval( this.state.refreshTimer );
 
-    store.dispatch(
-      actions.userLogout()
-    );
+    store.dispatch( actions.userLogout());
 
     /* Make sure to wait for each of these functions to finish. */
     const promises = [
@@ -134,25 +136,22 @@ class KeycloakProvider extends Component {
     /* Wait for the above promises to all finish. */
     await Promise.all( promises );
 
-    await LogoutUrl
-      .addEventListener( 'url', this.handleLogoutUrlChange )
-      .open({ replaceUrl });
+    await LogoutUrl.addEventListener( 'url', this.handleLogoutUrlChange ).open({ replaceUrl });
 
     return new Promise(( resolve, reject ) => {
       if ( Platform.OS === 'web' ) {
         this.setState({ promise: { resolve, reject } });
-      }
-      else {
+      } else {
         resolve();
       }
     });
-  }
+  };
 
   createLoginUrl = options => {
     const url = this.createActionUrl( 'auth', options );
 
     return new Url( url );
-  }
+  };
 
   createLogoutUrl = options => {
     const realmUrl = this.createRealmUrl();
@@ -166,7 +165,7 @@ class KeycloakProvider extends Component {
     const url = `${realmUrl}/protocol/openid-connect/logout?${query}`;
 
     return new Url( url );
-  }
+  };
 
   doLoginWithApi = async ( options = {}) => {
     const realmUrl = this.createRealmUrl();
@@ -199,14 +198,13 @@ class KeycloakProvider extends Component {
       this.handleTokenRefreshSuccess( response.data );
 
       return true;
-    }
-    catch ( error ) {
+    } catch ( error ) {
       // eslint-disable-next-line no-console
       console.warn( error );
 
       throw new Error( error );
     }
-  }
+  };
 
   doRegisterWithApi = async data => {
     const { baseUrl, realm } = this.props;
@@ -214,10 +212,7 @@ class KeycloakProvider extends Component {
     const endpoint = `${apiUrl}/keycloak/register`;
     const registrationData = { ...data };
 
-    if (
-      !registrationData.username &&
-      registrationData.email
-    ) {
+    if ( !registrationData.username && registrationData.email ) {
       registrationData.username = registrationData.email;
     }
 
@@ -238,14 +233,13 @@ class KeycloakProvider extends Component {
       });
 
       return this.doLoginWithApi( data );
-    }
-    catch ( error ) {
+    } catch ( error ) {
       // eslint-disable-next-line no-console
       console.warn( error );
 
       throw new Error( error );
     }
-  }
+  };
 
   handleAuthSuccess = async code => {
     await this.asyncSetState({
@@ -260,7 +254,7 @@ class KeycloakProvider extends Component {
 
       this.setState({ promise: null });
     }
-  }
+  };
 
   handleUrlDecoding = async url => {
     const sessionState = await Storage.get( 'kcSessionState' );
@@ -270,17 +264,15 @@ class KeycloakProvider extends Component {
     if ( typeof query !== 'object' ) return;
     if ( Object.keys( query ).length === 0 ) return;
 
-    if (
-      query.state &&
-      query.state === sessionState &&
-      query.code
-    ) {
+    if ( query.state && query.state === sessionState && query.code ) {
       this.handleAuthSuccess( query.code );
+    } else {
+      this.handleError( 'Unable to decode keycloak URL after returning from auth screen.', {
+        query,
+        sessionState,
+      });
     }
-    else {
-      this.handleError( 'Unable to decode keycloak URL after returning from auth screen.', { query, sessionState });
-    }
-  }
+  };
 
   /* eslint-enable react/sort-comp */
 
@@ -306,20 +298,16 @@ class KeycloakProvider extends Component {
     doLoginWithApi: this.doLoginWithApi,
     doRegisterWithApi: this.doRegisterWithApi,
     handleUrlDecoding: this.handleUrlDecoding,
-  }
+  };
 
   componentDidMount = () => {
     this.checkStorage();
 
-    if ( Platform.OS === 'web' )
-      this.checkCallback();
-  }
+    if ( Platform.OS === 'web' ) this.checkCallback();
+  };
 
   componentDidUpdate( prevProps, prevState ) {
-    if (
-      !prevState.accessToken &&
-      this.state.accessToken
-    ) {
+    if ( !prevState.accessToken && this.state.accessToken ) {
       store.dispatch(
         actions.attemptAuthSuccess({
           accessToken: this.state.accessToken,
@@ -329,13 +317,12 @@ class KeycloakProvider extends Component {
   }
 
   componentWillUnmount() {
-    if ( this.state.refreshTimer )
-      clearInterval( this.state.refreshTimer );
+    if ( this.state.refreshTimer ) clearInterval( this.state.refreshTimer );
   }
 
   asyncSetState = state => {
     return new Promise( resolve => this.setState( state, resolve ));
-  }
+  };
 
   checkStorage = async () => {
     this.setState({
@@ -345,8 +332,7 @@ class KeycloakProvider extends Component {
     try {
       const session = await Storage.getAndParse( 'kcAuth' );
 
-      if ( !session )
-        throw false;
+      if ( !session ) throw false;
 
       const {
         state,
@@ -371,18 +357,15 @@ class KeycloakProvider extends Component {
         this.startTokenRefresh();
       }
 
-      if ( this.state.resolve )
-        this.state.resolve();
-    }
-    catch ( e ) {
+      if ( this.state.resolve ) this.state.resolve();
+    } catch ( e ) {
       /* We don't care if there is an error. */
-    }
-    finally {
+    } finally {
       this.setState({
         isCheckingStorage: false,
       });
     }
-  }
+  };
 
   checkCallback = async () => {
     this.setState({
@@ -401,28 +384,26 @@ class KeycloakProvider extends Component {
       /* Remove `state` and `code` from the URL query params. */
       let newUrl = location.pathname;
 
-      if ( numberOfRestQueries.length > 0 )
-        newUrl += `?${queryString.stringify( restQuery )}`;
+      if ( numberOfRestQueries.length > 0 ) newUrl += `?${queryString.stringify( restQuery )}`;
 
       history.replaceState({}, null, newUrl );
 
       /* Ensure the sessions are aligned. */
-      if ( sessionState === state )
-        this.handleAuthSuccess( code );
+      if ( sessionState === state ) this.handleAuthSuccess( code );
       else {
         // eslint-disable-next-line no-console
-        console.warn( 'Uh oh! Upon authentication, it seems the session state in the callback URL does not match the saved session state in local storage.' );
+        console.warn(
+          'Uh oh! Upon authentication, it seems the session state in the callback URL does not match the saved session state in local storage.'
+        );
       }
-    }
-    catch ( e ) {
+    } catch ( e ) {
       /* We don't care if there is an error. */
-    }
-    finally {
+    } finally {
       this.setState({
         isCheckingCallback: false,
       });
     }
-  }
+  };
 
   createRealmUrl() {
     const { baseUrl, realm } = this.props;
@@ -435,6 +416,7 @@ class KeycloakProvider extends Component {
     const realmUrl = this.createRealmUrl();
     const redirectUri = keycloakUtils.getValidRedirectUri({ excludePathname: true });
     const sessionState = uuid();
+
     const sessionNonce = uuid();
 
     const {
@@ -457,13 +439,13 @@ class KeycloakProvider extends Component {
     Storage.set( 'kcSessionNonce', sessionNonce );
 
     return `${realmUrl}/protocol/openid-connect/${action}?${stringifiedQuery}`;
-  }
+  };
 
   createRegisterUrl = options => {
     const url = this.createActionUrl( 'registrations', options );
 
     return new Url( url );
-  }
+  };
 
   startTokenRefresh( code ) {
     this.handleTokenRefresh( code );
@@ -479,12 +461,11 @@ class KeycloakProvider extends Component {
     if ( type === 'cancel' ) {
       const error = `Could not ${action}! User dismissed window - try again.`;
 
-      if ( promise )
-        promise.reject( error );
+      if ( promise ) promise.reject( error );
 
       this.setState({ error });
     }
-  }
+  };
 
   handleTokenRefresh = async code => {
     const realmUrl = this.createRealmUrl();
@@ -492,27 +473,24 @@ class KeycloakProvider extends Component {
     const { refreshToken } = this.state;
     const { clientId, clientSecret } = this.props;
 
-    const redirectUrl = keycloakUtils.getValidRedirectUri({
-      excludeSearch: true,
-      excludePathname: true,
-    }) || config.keycloak.redirectUri;
+    const redirectUrl =
+      keycloakUtils.getValidRedirectUri({
+        excludeSearch: true,
+        excludePathname: true,
+      }) || config.keycloak.redirectUri;
 
-    const grantType = code
-      ? 'authorization_code'
-      : 'refresh_token';
+    const grantType = code ? 'authorization_code' : 'refresh_token';
 
-    const grant = code
-      ? { code }
-      : { refresh_token: refreshToken };
+    const grant = code ? { code } : { refresh_token: refreshToken };
 
     const options = {
       credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        ...clientSecret && {
+        ...( clientSecret && {
           Authorization: `Basic ${btoa( `${clientId}:${clientSecret}` )}`,
-        },
+        }),
       },
       body: queryString.stringify({
         ...grant,
@@ -542,8 +520,7 @@ class KeycloakProvider extends Component {
       }
 
       this.handleTokenRefreshSuccess( responseJson );
-    }
-    catch ( error ) {
+    } catch ( error ) {
       await this.asyncSetState( state => ({
         consecutiveTokenFails: state.consecutiveTokenFails + 1,
       }));
@@ -553,20 +530,18 @@ class KeycloakProvider extends Component {
       /* If the token refresh fails more than three times in a row, log the user out. */
       if ( consecutiveTokenFails > 3 ) {
         this.attemptLogout();
-      }
-      else {
+      } else {
         /* Wait one second, then try refresh. */
         setTimeout(() => this.handleTokenRefresh( code ), 5000 );
       }
 
       this.handleError( error );
-    }
-    finally {
+    } finally {
       this.setState({ isFetchingToken: false });
     }
-  }
+  };
 
-  handleApiRegistrationSuccess = () => {}
+  handleApiRegistrationSuccess = () => {};
 
   handleTokenRefreshSuccess = async ({
     access_token,
@@ -580,15 +555,18 @@ class KeycloakProvider extends Component {
     const refreshExpiresInSeconds = refresh_expires_in * 1000; // Convert from seconds to ms
 
     const setTokens = new Promise( resolve => {
-      this.setState({
-        isAuthenticated: true,
-        refreshToken: refresh_token,
-        refreshTokenExpiresOn: currentTime + refreshExpiresInSeconds,
-        accessToken: access_token,
-        accessTokenExpiresOn: currentTime + accessExpiresInSeconds,
-        idToken: id_token,
-        consecutiveTokenFails: 0,
-      }, resolve );
+      this.setState(
+        {
+          isAuthenticated: true,
+          refreshToken: refresh_token,
+          refreshTokenExpiresOn: currentTime + refreshExpiresInSeconds,
+          accessToken: access_token,
+          accessTokenExpiresOn: currentTime + accessExpiresInSeconds,
+          idToken: id_token,
+          consecutiveTokenFails: 0,
+        },
+        resolve
+      );
     });
 
     const setUserData = new Promise(( resolve, reject ) => {
@@ -596,22 +574,23 @@ class KeycloakProvider extends Component {
         if ( id_token || access_token ) {
           const decodedIdToken = keycloakUtils.decodeToken( id_token || access_token );
 
-          this.setState({
-            user: {
-              email: decodedIdToken.email,
-              firstName: decodedIdToken.given_name,
-              lastName: decodedIdToken.family_name,
-              fullName: decodedIdToken.name,
-              username: decodedIdToken.preferred_username,
-              id: decodedIdToken.sub,
+          this.setState(
+            {
+              user: {
+                email: decodedIdToken.email,
+                firstName: decodedIdToken.given_name,
+                lastName: decodedIdToken.family_name,
+                fullName: decodedIdToken.name,
+                username: decodedIdToken.preferred_username,
+                id: decodedIdToken.sub,
+              },
             },
-          }, resolve );
-        }
-        else {
+            resolve
+          );
+        } else {
           resolve();
         }
-      }
-      catch ( error ) {
+      } catch ( error ) {
         // eslint-disable-next-line no-console
         console.warn({ error });
 
@@ -620,9 +599,7 @@ class KeycloakProvider extends Component {
     });
 
     /* Wait for these operations to finish. */
-    await Promise.all(
-      [setTokens, setUserData]
-    );
+    await Promise.all( [setTokens, setUserData] );
 
     Storage.stringifyAndSet( 'kcAuth', {
       refreshToken: this.state.refreshToken,
@@ -631,7 +608,7 @@ class KeycloakProvider extends Component {
       accessTokenExpiresOn: this.state.accessTokenExpiresOn,
       timestamp: new Date().getTime(),
     });
-  }
+  };
 
   handleError = error => {
     this.setState({ error });
@@ -641,24 +618,18 @@ class KeycloakProvider extends Component {
 
       this.setState({ promise: null });
     }
-  }
+  };
 
   handleUrlDecoding = url => {
     const { sessionState } = this.state;
     const { query } = queryString.parseUrl( url );
 
-    if (
-      query &&
-      query.state &&
-      query.state === sessionState &&
-      query.code
-    ) {
+    if ( query && query.state && query.state === sessionState && query.code ) {
       this.handleAuthSuccess( query.code );
-    }
-    else {
+    } else {
       this.handleError( 'Unable to decode keycloak URL after returning from auth screen.' );
     }
-  }
+  };
 
   hasTokenExpired( expiresOn ) {
     const currentTime = new Date().getTime();
@@ -673,9 +644,7 @@ class KeycloakProvider extends Component {
 
     if ( url.startsWith( appUrl )) {
       if ( browserSession ) {
-        browserSession
-          .removeEventListener( 'url', this.handleLogoutUrlChange )
-          .close();
+        browserSession.removeEventListener( 'url', this.handleLogoutUrlChange ).close();
       }
 
       if ( this.state.promise ) {
@@ -684,7 +653,7 @@ class KeycloakProvider extends Component {
         this.setState({ promise: null });
       }
     }
-  }
+  };
 
   handleAuthUrlChange = event => {
     const { url } = event;
@@ -693,7 +662,7 @@ class KeycloakProvider extends Component {
     if ( url.startsWith( appUrl )) {
       this.handleUrlDecoding( url );
     }
-  }
+  };
 
   render() {
     return (
