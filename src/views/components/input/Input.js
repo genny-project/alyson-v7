@@ -217,10 +217,6 @@ class Input extends Component {
 
       case 'dropdown':
         return (
-          // <InputDropdown
-          //   {...inputProps}
-          //   ref={input => this.input = input}
-          // />
           <InputTag
             {...inputProps}
             allowMultipleSelection={false}
@@ -292,7 +288,7 @@ class Input extends Component {
         return (
           <InputDatePicker
             {...inputProps}
-            inputFieldProps={inputFieldProps}
+            // inputFieldProps={inputFieldProps}
             date
             ref={input => ( this.input = input )}
           />
@@ -399,6 +395,7 @@ class Input extends Component {
       case 'form previous submit':
       case 'form cancel next':
       case 'form submit':
+      case 'button':
       case 'form submit cancel':
         return (
           <InputEvent
