@@ -6,6 +6,7 @@ import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLin
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
 import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
+import DataControl from '../data-control';
 
 const components = [
   'group-wrapper',
@@ -272,11 +273,21 @@ class FormGroup extends Component {
     };
 
     return (
-      <VisualControl
+      <DataControl
         key={questionCode}
         {...inputProps}
         {...additionalProps}
-      />
+      >
+        {( props ) => {
+          console.log( 'DATA CONTROL PROPS', props );
+
+          return (
+            <VisualControl
+              {...props}
+            />
+          );
+        }}
+      </DataControl>
     );
   }
 

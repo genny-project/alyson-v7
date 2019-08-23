@@ -28,6 +28,7 @@
     "appcenter": "^1.6.0",
     "appcenter-analytics": "^1.6.0",
     "appcenter-crashes": "^1.6.0",
+    "au-bn-validator": "^1.2.2",
     "axios": "^0.18.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-react-native-web": "^0.8.6",

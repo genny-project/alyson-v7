@@ -34,7 +34,7 @@ class WithMask extends Component {
     valueLength: 0,
   }
 
-  // handleChange func 
+  // handleChange func
   handleChange = ( vall ) => {
     console.warn( '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%', this.props.mask );
     console.warn({ vall }, 'VALUE FROM HANDLE CHANGE' ); //eslint-disable-line
@@ -55,11 +55,11 @@ class WithMask extends Component {
 
     //   return;
     // }
-    
+
     const dataType = 'PASSWORD';
 
     const val = vall;
-    
+
     if ( equalsIgnoreCase( dataType, 'EMAIL' )) {
       this.handleEmailValidation( val );
 
@@ -71,7 +71,7 @@ class WithMask extends Component {
 
       return; // exit handle change after this line
     }
-    
+
     if ( equalsIgnoreCase( dataType, 'ACN' )) {
       this.handleACNValidation( val );
 
@@ -151,34 +151,36 @@ class WithMask extends Component {
   handleDoubleValidation = ( value ) => {
     // Working for Number and String data type and a double data type inside that
     // const a = 13123.123 ==> Valid
-    // const a = 13123.123  ==> Also Valid even though the data is inside the string
-    // do a if check if only absoulte double is required 
-    const regexValue = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;  
+    // const a = '13123.123'  ==> Also Valid even though the data is inside the string
+    // do a if check if only absoulte double is required
+    const regexValue = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
 
     const isValid = regexValue.test( value );
 
     this.setState({
       displayValue: value,
     });
-    
+
     console.warn( isValid ); // eslint-disable-line
 
     return isValid;
   }
 
   render() {
-    const { children } = this.props;
+    const { children, ...restProps } = this.props;
     const { displayValue } = this.state;
 
-    console.warn( 'PROPS IN WITH MASK ...inputProps',this.props ); //eslint-disable-line
-
-    if ( !children ) {
-      return 'Render Props requires a children';
-    }
+    console.warn( 'render DataControl wrapper' );
 
     return (
-      
-      children({ handleChange: this.handleChange, displayValue: !this.props.mask ? this.state.value : displayValue  })
+      children({
+        // handleChangeValue: this.handleChange,
+        ...restProps,
+        onChangeValue: () => console.log( 'data control change value intercept' ),
+        onChangeText: () => console.log( 'data control change text intercept' ),
+        onBlur: () => console.log( 'data control blur intercept' ),
+        displayValue: !this.props.mask ? this.state.value : displayValue,
+      })
     );
   }
 }
