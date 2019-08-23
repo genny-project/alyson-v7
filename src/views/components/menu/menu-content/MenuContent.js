@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
-import { node, string } from 'prop-types';
+import { node, string, number, oneOf } from 'prop-types';
 import { isObject, isInteger } from '../../../../utils';
 import { Box, Portal, Boundary, Area } from '../../index';
 import MenuConsumer from '../consumer';
 
 class MenuContent extends Component {
+  static defaultProps = {
+    offsetX: 0,
+    offsetY: 0,
+    position: 'left',
+  }
+
   static propTypes = {
     children: node.isRequired,
     testID: string,
+    offsetX: number,
+    offsetY: number,
+    position: oneOf( [
+      'left', 'center', 'right',
+    ] ),
   }
-
-  positionX = null;
-  positionY = null;
 
   focus() {
     if ( this.input )
@@ -29,7 +37,7 @@ class MenuContent extends Component {
   }
 
   render() {
-    const { children, testID, ...restProps } = this.props;
+    const { children, testID, offsetX, offsetY, position, ...restProps } = this.props;
 
     // console.log( this.input );
 
@@ -53,20 +61,16 @@ class MenuContent extends Component {
                         onChange={updateBoundaryArea}
                       >
                         {( areaProps ) => {
-                          console.log( '--------------------------' );
-                          const x = isObject( boundaryAdjustedArea, { withProperty: 'left' }) ? boundaryAdjustedArea.left : null;
-                          const y = isObject( boundaryAdjustedArea, { withProperty: 'top' }) ? boundaryAdjustedArea.top : null;
+                          const x = isObject( boundaryAdjustedArea, { withProperty: 'x' }) ? boundaryAdjustedArea.x : null;
+                          const y = isObject( boundaryAdjustedArea, { withProperty: 'y' }) ? boundaryAdjustedArea.y : null;
 
-                          const shouldUseBoundaryAdjustedX = isInteger( x, { isLessThanOrEqualTo: buttonArea.left });
-                          const shouldUseBoundaryAdjustedY = isInteger( y, { isLessThanOrEqualTo: buttonArea.bottom });
+                          const positions = {
+                            left: buttonArea.left + offsetX,
+                            center: buttonArea.left + ( buttonArea.width / 2 ) + offsetX,
+                            right: buttonArea.right + offsetX,
+                          };
 
-                          console.log( 'adjusted', x, y, 'buttonArea', buttonArea.left, buttonArea.bottom );
-                          console.log( 'shouldUseBoundaryAdjusted', shouldUseBoundaryAdjustedX, shouldUseBoundaryAdjustedY );
-
-                          const left = shouldUseBoundaryAdjustedX ? x : buttonArea.left;
-                          const top = shouldUseBoundaryAdjustedY ? y : buttonArea.bottom;
-
-                          console.log( 'values', left, top );
+                          const top = buttonArea.bottom + offsetY;
 
                           return (
                             <div
@@ -77,10 +81,10 @@ class MenuContent extends Component {
                               }}
                               tabIndex="-1"
                               style={{
-                                top: top /* + this.props.offsetY */,
-                                left: left,
                                 position: 'absolute',
-
+                                top: isInteger( y ) ? y : top,
+                                left: isInteger( x ) ? x : positions[position],
+                                ...( isInteger( x ) ? {} : { transform: `translateX( -${position === 'right' ? 100 : position === 'center' ? 50 : 0}%)` }),
                               }}
                               onBlur={handleContentBlur}
                               onFocus={handleContentFocus}

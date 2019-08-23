@@ -46,7 +46,6 @@ class Dropdown extends Component {
     return (
       <Menu
         identifier={testID}
-        offsetY={50}
       >
         {({ isOpen }) => {
           return (
@@ -56,14 +55,11 @@ class Dropdown extends Component {
                 flexDirection="column"
                 {...subcomponentProps['group-header-wrapper']}
               >
-                {/* header alt goes here */}
                 <Box
-                  // header wrapper styling here?
                   flex={1}
                   justifyContent="space-between"
                   flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
                 >
-                  {/* {renderHeader} */}
                   {!isClosed
                     ? (
                       <MenuButton
