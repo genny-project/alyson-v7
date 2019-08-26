@@ -37,7 +37,8 @@ class FormGroup extends Component {
     inheritedThemes: array,
     inheritedProps: object,
     index: number,
-    dataTypes: object,
+    data: object,
+    types: object,
     functions: object,
     inputRefs: object,
     themes: object,
@@ -202,11 +203,11 @@ class FormGroup extends Component {
     options = {},
   }) => {
     const {
-      dataTypes,
+      data,
+      types,
       functions,
       inputRefs,
     } = this.props;
-
     const {
       values,
       errors,
@@ -231,8 +232,9 @@ class FormGroup extends Component {
       // disabled,
     } = ask;
 
-    const baseEntityDefinition = dataTypes[attributeCode];
+    const baseEntityDefinition = data[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+    const dataTypeObject = types[dataType];
 
     const { questionOnly } = options;
     const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
@@ -247,6 +249,8 @@ class FormGroup extends Component {
       ),
       value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
+      mask: dataTypeObject.inputmask,
+      validation: dataTypeObject.validationList,
       error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
       onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
@@ -279,8 +283,6 @@ class FormGroup extends Component {
         {...additionalProps}
       >
         {( props ) => {
-          console.log( 'DATA CONTROL PROPS', props );
-
           return (
             <VisualControl
               {...props}
@@ -303,7 +305,8 @@ class FormGroup extends Component {
           inheritedProps: this.props.inheritedProps,
           inheritedThemes: this.getInhertiableThemes(),
           index: index,
-          dataTypes: this.props.dataTypes,
+          data: this.props.data,
+          types: this.props.types,
           functions: this.props.functions,
           inputRefs: this.props.inputRefs,
           asks: this.props.asks,
@@ -581,7 +584,8 @@ class FormGroup extends Component {
 export { FormGroup };
 
 const mapStateToProps = state => ({
-  dataTypes: state.vertx.baseEntities.definitions.data,
+  data: state.vertx.baseEntities.definitions.data,
+  types: state.vertx.baseEntities.definitions.types,
   themes: state.vertx.layouts.themes,
   asks: state.vertx.layouts.asks,
 });

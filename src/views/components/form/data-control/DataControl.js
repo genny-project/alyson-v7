@@ -1,108 +1,97 @@
-import React, { Component } from 'react';
-import { any, object, oneOf } from 'prop-types';
+import { Component } from 'react';
+import { any, object, string, func } from 'prop-types';
 import validatorABN from 'au-bn-validator';
 import Masker from './masker';
-// render props to handle the state for applying the masks
+import { isString } from '../../../../utils';
 
-const equalsIgnoreCase = ( value, expectedValue ) => {
-  const val = value.toLowerCase();
-  const expectedVal = expectedValue.toLowerCase();
+const types = [
+  'email','abn','acn','password','double','floatingpoint',
+];
 
-  if ( val === expectedVal ) {
-    return true;
-  }
-
-  return false;
-};
-
-class WithMask extends Component {
+class DataControl extends Component {
   static defaultProps = {
-    mask: {
-      maskValue: '###-###-###',
-    },
+    // mask: {
+    //   maskValue: '###-###-###',
+    // },
   }
 
   static propTypes = {
     children: any,
-    mask: object, // eslint-disable-line
+    // mask: object, // eslint-disable-line
     ask: object,
+    type: string,
+    error: string,
+    onChangeValue: func,
+    onBlur: func,
   }
 
   state = {
-    displayValue: '',
-    value: '',
-    valueLength: 0,
+    maskedValue: '',
+    // value: '',
+    // valueLength: 0,
+    error: null,
+  }
+
+  handleBlur = () => {
+    console.log( 'blur intercept' );
+    console.log( 'error', this.state.error );
+    if ( !isString( this.state.error )) {
+      if ( this.props.onBlur ) {
+        this.props.onBlur();
+      }
+    }
+  }
+
+  handleChangeValue = ( value ) => {
+    console.log( 'change value intercept' );
+    if ( !isString( this.state.error )) {
+      if ( this.props.onChangeValue ) {
+        this.props.onChangeValue( value );
+      }
+    }
   }
 
   // handleChange func
-  handleChange = ( vall ) => {
-    console.warn( '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%', this.props.mask );
-    console.warn({ vall }, 'VALUE FROM HANDLE CHANGE' ); //eslint-disable-line
-    // if ( this.props.mask !== null ) {
-    //   console.warn( 'NO MASK' );
-    //   if ( this.props.editable === false || this.props.disabled )
-    //     return null;
+  handleChangeText = ( value ) => {
+    console.log( 'change text intercept' );
+    const { type } = this.props;
+    const dataType = type.toLowerCase();
 
-    //   const newValue = vall;
+    if ( this.props.mask ) {
+      console.log( 'pure value', value );
+      const maskedValue = Masker.applyMask2( value, '00(000)-000-0000', ['-','(',')'] , this.props.mask.type );
 
-    //   this.setState({
-    //     valueLength: newValue.length,
-    //     value: newValue,
-    //   });
+      console.log( 'maskedValue', maskedValue );
 
-    //   if ( this.props.onChangeText )
-    //     this.props.onChangeText( newValue );
-
-    //   return;
-    // }
-
-    const dataType = 'PASSWORD';
-
-    const val = vall;
-
-    if ( equalsIgnoreCase( dataType, 'EMAIL' )) {
-      this.handleEmailValidation( val );
-
-      return  ;
+      if ( this.state.maskedValue !== maskedValue ) {
+        this.setState({
+          maskedValue,
+        });
+      }
     }
 
-    if ( equalsIgnoreCase( dataType, 'ABN' )) {
-      this.handleABNValidation( val );
-
-      return; // exit handle change after this line
-    }
-
-    if ( equalsIgnoreCase( dataType, 'ACN' )) {
-      this.handleACNValidation( val );
-
-      return;
-    }
-
-    if ( equalsIgnoreCase( dataType, 'PASSWORD' )) {
-      console.warn( 'INSIDE PASSWORD triggered' ); //eslint-disable-line
-      this.handlePasswordValidation ( val );
-
-      return;
-    }
-
-    if ( equalsIgnoreCase( dataType, 'DOUBLE' )) {
-      this.handleDoubleValidation( val );
-
-      return;
-    }
-
-    if ( equalsIgnoreCase( dataType, 'FLOATINGPOINT' )) {
-      this.handleABNValidation( val );
-
-      return;
-    }
-
-    const value = Masker.applyMask2( val, '00(000)-000-0000', ['-','(',')'] , this.props.mask.type );
-
-    if ( this.state.displayValue !== value ) {
-      this.setState({
-        displayValue: value,
-      });
+    switch ( dataType ) {
+      case 'email':
+        this.handleEmailValidation( value );
+        break;
+      case 'abn':
+        this.handleABNValidation( value );
+        break;
+      case 'acn':
+        this.handleACNValidation( value );
+        break;
+      case 'password':
+        this.handlePasswordValidation ( value );
+        break;
+      case 'double':
+        this.handleDoubleValidation( value );
+        break;
+      case 'floatingpoint':
+        this.handleABNValidation( value );
+        break;
+      default:
+        // eslint-disable-next-line no-console
+        // console.warn( `data type '${type}' does not have a validation` );
     }
   }
 
@@ -123,16 +112,16 @@ class WithMask extends Component {
   }
 
   handleEmailValidation = ( emailValue ) => {
+    console.log( 'email validation' );
     // eslint-disable-next-line
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
     const validBoolean = emailRegex.test( emailValue );
 
+    console.log( 'test', validBoolean );
     this.setState({
-      displayValue: emailValue,
+      // displayValue: emailValue,
+      error: !validBoolean ? 'Please enter a valid email address' : null,
     });
-
-    return validBoolean;
   }
 
   handlePasswordValidation = ( val = '' ) => {
@@ -143,9 +132,9 @@ class WithMask extends Component {
     const passwordString = passwordArr.join( '' );
 
     console.log({ passwordString });  //eslint-disable-line
-    this.setState({
-      displayValue: passwordString,
-    });
+    // this.setState({
+    //   displayValue: passwordString,
+    // });
   }
 
   handleDoubleValidation = ( value ) => {
@@ -157,9 +146,9 @@ class WithMask extends Component {
 
     const isValid = regexValue.test( value );
 
-    this.setState({
-      displayValue: value,
-    });
+    // this.setState({
+    //   displayValue: value,
+    // });
 
     console.warn( isValid ); // eslint-disable-line
 
@@ -168,21 +157,46 @@ class WithMask extends Component {
 
   render() {
     const { children, ...restProps } = this.props;
-    const { displayValue } = this.state;
+    const {
+      maskedValue,
+      error,
+    } = this.state;
 
-    console.warn( 'render DataControl wrapper' );
+    // if data control is not required, then return children with all props
+    if (
+      !types.includes( this.props.type ) &&
+      !this.props.mask
+    ) {
+      return (
+        children({
+          ...restProps,
+        })
+      );
+    }
+
+    /* things to do
+      1/ key restrict -> onChangeText, only allow certain keypresses to pass through
+      2/ mask -> onChangeText, force each character to fit predescribed pattern
+      3/ realtime validation -> onChangeText, run regex to check if field is valid
+      4/ filter errors for child
+      5/ stop onChangeValue and onBlur events from passing upwards if value is not a valid answer
+    */
+
+    console.log( 'this.state.maskedValue', maskedValue, !this.props.mask );
 
     return (
       children({
-        // handleChangeValue: this.handleChange,
         ...restProps,
-        onChangeValue: () => console.log( 'data control change value intercept' ),
-        onChangeText: () => console.log( 'data control change text intercept' ),
-        onBlur: () => console.log( 'data control blur intercept' ),
-        displayValue: !this.props.mask ? this.state.value : displayValue,
+        onChangeValue: this.handleChangeValue,
+        onChangeText: this.handleChangeText,
+        onBlur: this.handleBlur,
+        value: this.props.mask ? maskedValue : this.props.value,
+        updateValueWhenFocused: this.props.mask ? true : null,
+        placeholder: this.props.mask ? '00(000)-000-0000' : null, // input mask.placeholder ?? or just placeholder
+        error: isString( error ) ? error : this.props.error,
       })
     );
   }
 }
 
-export default WithMask;
+export default DataControl;

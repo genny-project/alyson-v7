@@ -1,80 +1,68 @@
 import {  isInteger } from '../../../../utils';
 
+const maskCharacters = [
+  'a', '9', '*',
+];
+
 // insert ========>>>>>>>>  prototype  Array extension  ===========>>>>>>>> //
 Array.prototype.insert = function ( index, item ) {
   this.splice( index, 0, item );
 };
 
 class Masker {
-  // Apply masking for a single delimeter string
-  applyMaskForSingleDelimeter( incomingValue, mask, delimeter, dataType = 'number' ) {
-    console.warn({ incomingValue }); //eslint-disable-line
-    // eslint-disable-next-line
-    const delimeterPositions = this.getDelimeterPosition( mask,delimeter ); // get delimeter positions
-    const arrValues = this.convertStringToArray( incomingValue ); // array values from the incoming string
-    const newArr = [];
+  setFields = ( formattedDate ) => {
+    const selectionValuesForInputSections = ( datestring ) => {
+      return datestring.split( separatorRegex );
+    };
 
-    console.warn({ arrValues }); //eslint-disable-line
-    arrValues.forEach(( item,index ) => {
-      if ( delimeterPositions.includes( index )) { // HARD PART BEGINS HERE
-        newArr.insert( index , delimeter );
-      }
-      else if ( this.isMatchDataType( dataType, item )) {
-        newArr.push( item );
-      }
-    });
+    const findMatchInFormatFields = ( string ) => {
+      let value = null;
 
-    return newArr.join( '' );
-  }
+      Object.keys( dateTimeFormats ).some( fieldKey => {
+        const findMatch = dateTimeFormats[fieldKey].some( formatString => {
+          const isMatch = formatString === string;
 
-  applyMask1( incomingValue, mask, delimeter, dataType = 'number' ) {
-    console.warn({ incomingValue }); //eslint-disable-line
-    // eslint-disable-next-line
-    const delimeterPositions = this.getDelimeterPos( mask,delimeter ); // get delimeter positions
-    const delimeterPositionsArr = Object.entries( delimeterPositions );
-    const arrValues = this.convertStringToArray( incomingValue ); // array values from the incoming string
-    const newArr = [];
+          if ( isMatch ) value = fieldKey;
 
-    console.warn({ delimeterPositions }); 
-    console.warn({ delimeterPositionsArr }); 
-    console.warn({ arrValues });  
+          return isMatch;
+        });
 
-    let trigger = false;
-    let val = [];
-  
-    arrValues.forEach(( item,index ) => {
-      delimeterPositionsArr.forEach(( ii,i ) => {
-        const singleDelimeter = delimeterPositionsArr[i][0];
-        const delimetersArray = delimeterPositionsArr[i][1];
-
-        if ( delimetersArray.includes( index )) {
-          console.warn( 'DELIMETER', singleDelimeter ); // eslint-disable-line
-          trigger = true;
-          val = [index, singleDelimeter];
-          // newArr.insert( index,delimeterPositionsArr[i][0] );
-        }
-        else if ( this.isMatchDataType( dataType, item )) {
-          trigger = false;
-          val = item;
-          // newArr.push( item );
-        }
+        return findMatch;
       });
 
-      if ( trigger === true ) {
-        console.warn( 'DELIMETER INSIDE TRIGGER', val[0] ); //eslint-disable-line
-        newArr.insert( val[0], val[1] );
-      }
+      return value;
+    };
 
-      else if ( trigger === false ) {
-        newArr.push( val );
+    const split = selectionValuesForInputSections( formattedDate );
+
+    const fields = {};
+    const inputs = {};
+
+    split.forEach(( s, index ) => {
+      const field = findMatchInFormatFields( s );
+
+      if ( isString( field )) {
+        fields[index] = {
+          value: s,
+          length: s.length,
+          type: field,
+        };
+
+        inputs[Object.keys( inputs ).length] = field;
+      }
+      else {
+        fields[index] = {
+          value: s,
+          length: s.length,
+          type: 'separator',
+        };
       }
     });
-    console.warn({ newArr }); //eslint-disable-line
 
-    return newArr.join( '' );
+    this.selectionFields = fields;
+    this.inputSections = inputs;
   }
 
-  // Apply Mask
   applyMask2( incomingValue, mask, delimeter, dataType ) {
     const delimeterPositions = this.getDelimeterPos( mask,delimeter ); // get delimeter positions
 
@@ -107,13 +95,13 @@ class Masker {
         newArr.push( item );
       }
     });
-    
+
     return newArr.join( '' );
   }
 
   // Data check match Returns a Boolean
   isMatchDataType( allowedDataType, character ) {
-    if ( allowedDataType === 'number' ) {  
+    if ( allowedDataType === 'number' ) {
       try {
         const a = parseInt( character ,10 );
 
@@ -121,7 +109,7 @@ class Masker {
         const b = isInteger( a );
 
         console.warn({ b }); //eslint-disable-line
-        
+
         // throw new Error( ' EROOOOOOOOOOOOOOOOOOOOOOOOOOOOR' );
 
         return isInteger( a );
@@ -150,18 +138,21 @@ class Masker {
     return arr;
   }
 
+  /*
   // Get array Position of an Array
   getArrayPosition( arr,el ) {
     if ( arr.includes( el )) {
       return arr.indexOf( el );
     }
   }
+  */
 
+  /*
   // Get the positions for single delimeter
   getDelimeterPosition( mask, delimeter ) {
     const arrayFromMaskString = mask.split( '' );
     const arr = [];
-    
+
     arrayFromMaskString.forEach(( element, i ) => {
       if ( element === delimeter ) {
         arr.push( i );
@@ -169,35 +160,38 @@ class Masker {
     });
       // eslint-disable-next-line
       console.warn({ arr });
-    
+
     return arr;
   };
+  */
 
-  // Get the Delimeter Positions for multiple delimeters 
+  // Get the Delimeter Positions for multiple delimeters
   /*
-    Output = > 
+    Output = >
     {
       "-": [0,4,10],
       "(": [5],
       ")": [8]
     }
   */
- 
+
   // get delimeter position for multiple positions
    getDelimeterPos = ( mask, delimeters ) => {
      const maskValArr = mask.split( '' );
      const a = {};
 
     // create an array
+     console.log({ maskValArr, delimeters });
      maskValArr.forEach(( el, i ) => {
        delimeters.forEach( dd => {
+         console.log( 'compare', { el, dd });
          if ( dd === el ) {
            a[dd] = [];
            console.log( i ); //eslint-disable-line
          }
        });
      });
-  
+
      // append data to the created array above
      maskValArr.forEach(( el, i ) => {
        delimeters.forEach( dd => {
@@ -206,17 +200,34 @@ class Masker {
          }
        });
      });
-  
+
      return a;
    };
 
-   getMaskedValues() {
-     console.log( ' GET MASKED VALUES' ); //eslint-disable-line
-   }
+  /*
+   getDelimeterPos = ( mask ) => {
+    const maskValArr = mask.split( '' );
+    const array = {};
 
-   getRealValues() {
-     console.log( 'GET REAL VALUES' ); //eslint-disable-line
-   }
+   // create an array
+    maskValArr.forEach(( character, i ) => {
+      if ( maskCharacters.includes( character )) {
+        array[dd] = [];
+         console.log( i ); //eslint-disable-line
+      }
+    });
+
+    // append data to the created array above
+    maskValArr.forEach(( el, i ) => {
+      delimeters.forEach( dd => {
+        if ( dd === el ) {
+          array[dd].push( i );
+        }
+      });
+    });
+
+    return a;
+   };*/
 }
 
 export default new Masker();
