@@ -55,7 +55,8 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     if (
       isString( dataType ) &&
       !(
-        theme.dataType === dataType ||
+        isString( theme.dataType ) &&
+        theme.dataType.toLowerCase() === dataType.toLowerCase() ||
         theme.dataType == null
       ))
       return;
