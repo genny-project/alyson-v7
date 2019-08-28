@@ -6,7 +6,7 @@ import InputAutocomplete from './autocomplete';
 import InputDatePicker from './date-time/date-picker';
 import InputTimePicker from './date-time/time-picker';
 import InputDateTimePicker from './date-time/date-time-picker';
-import InputFile from './file';
+// import InputFile from './file';
 import InputFile2 from './file-2';
 import InputScroll from './scroll';
 import InputRating from './rating';
@@ -246,6 +246,9 @@ class Input extends Component {
 
       case 'file':
       case 'upload':
+      case 'imagemultiple':
+      case 'Imagemultiple':
+      case 'images':
         return (
           <InputFile2
             {...inputProps}
@@ -253,42 +256,11 @@ class Input extends Component {
           />
         );
 
-        // case 'file':
-      // case 'upload':
-      //   return (
-      //     <InputFile
-      //       {...inputProps}
-      //       ref={input => this.input = input}
-      //     />
-      //   );
-
-      // case 'filemultiple':
-      // case 'uploadmultiple':
-      //   return (
-      //     <InputFile
-      //       {...inputProps}
-      //       multiple
-      //       ref={input => this.input = input}
-      //     />
-      //   );
-
       case 'image':
       case 'Image':
         return (
           <InputImage
             {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'imagemultiple':
-      case 'Imagemultiple':
-      case 'images':
-        return (
-          <InputFile
-            {...inputProps}
-            multiple
-            imageOnly
             ref={input => ( this.input = input )}
           />
         );

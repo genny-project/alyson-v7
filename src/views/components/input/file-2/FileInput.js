@@ -1,20 +1,25 @@
 import React, { Component } from 'react';
-import { bool, func } from 'prop-types';
+import { bool, func, array, arrayOf, string, number, object } from 'prop-types';
 import axios from 'axios';
+// import prettierBytes from 'prettier-bytes';
 import { Box, Text, Touchable, Icon } from '../../../components';
-import Preview from './Preview';
-import { isArray, isString } from '../../../../utils';
+import InputFileItem from './file-item';
+import { isArray, isString, isObject, isInteger } from '../../../../utils';
 import store from '../../../../redux/store';
+// import config from '../../../../config';
+import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 /* These are commented out to be revisited later */
 // import Camera from './Camera';
-const fileTypes = ['image/jpeg', 'image/pjpeg', 'image/png'];
-
 class FileInput extends Component {
   static defaultProps = {
     multiple: true,
-    // imageOnly: false,
     // accept: [],
+    defaultValue: [],
+    allowedFileTypes: [],
+    // maxNumberOfFiles: 3,
+    // maxFileSize: 10000,
+    // maxTotalFileSize: 100000,
   };
 
   static propTypes = {
@@ -22,6 +27,22 @@ class FileInput extends Component {
     // imageOnly: bool,
     // accept: array,
     onChangeValue: func,
+    defaultValue: array,
+    maxFileSize: number,
+    maxTotalFileSize: number,
+    maxNumberOfFiles: number,
+    allowedFileTypes: arrayOf(
+      string
+    ),
+    subcomponentProps: object,
+    iconProps: object,
+    icon: string,
+    iconOnly: bool,
+    question: object,
+    disabled: bool,
+    editable: bool,
+    error: string,
+    isClosed: bool,
   };
 
   constructor( props ) {
@@ -32,7 +53,6 @@ class FileInput extends Component {
 
   state = {
     selectedFiles: [],
-    numberOfFilesSelected: 0,
     requestCamera: false,
   };
 
@@ -40,96 +60,64 @@ class FileInput extends Component {
     const URL = process.env.ENV_FILE_UPLOAD_URL;
 
     console.log( URL ); //eslint-disable-line
+
+    // this.updateFilesFromProps();
   }
 
-  getAllFiles = () => {
+  // componentDidUpdate( prevProps ) {
+  //   if (
+  //     this.props != null &&
+  //     this.props.value !== prevProps.value
+  //   ) {
+  //     this.updateFilesFromProps();
+  //   }
+  // }
+
+  getFilesFromInput = () => {
     const input = this.inputFileNew.current;
     const { files } = input;
 
     return files;
   };
 
-  // To be visited later for getting data from camera
-  // Calculates the size of a selected file to be uploaded in MB
-  CalculateFileSize( number ) {
-    if ( number < 1024 ) {
-      return `${number}bytes`;
-    }
-    if ( number >= 1024 && number < 1048576 ) {
-      return `${( number / 1024 ).toFixed( 1 )}KB`;
-    }
-    if ( number >= 1048576 ) {
-      return `${( number / 1048576 ).toFixed( 1 )}MB`;
-    }
-  }
+  // updateFilesFromProps = () => {
+  //   const { value, defaultValue } = this.props;
+  //   let files = [];
 
-  // Check if the incoming value type is correct
-  validFileType( file ) {
-    for ( var i = 0; i < fileTypes.length; i++ ) {
-      if ( file.type === fileTypes[i] ) {
-        return true;
-      }
-    }
+  //   if (
+  //     isArray( value )
+  //   ) {
+  //     this.setState({ files: value });
 
-    return false;
-  }
+  //     return;
+  //   }
+
+  //   try {
+  //     files = ( value && value !== 'null' )
+  //       ? JSON.parse( value )
+  //       : defaultValue;
+  //   } catch ( e ) {
+  //     //
+  //   }
+
+  //   if (
+  //     isArray( files )
+  //   ) {
+  //     this.setState({ files: files });
+  //   }
+  // }
 
   sendFilesToBackend() {
     console.log('This method will send files to the backend'); //eslint-disable-line
   }
 
-  // This method generates preview of the files selected to be uploaded
-  generatePreview = () => {
-    const { selectedFiles } = this.state;
-
-    // Handle the closing of close button in preview component
-    const handleClose = file => () => {
-      // const dataInhandleCloase =
-      // this.state.selectedFiles.filter( item => item.name !== file.name );
-
-      console.warn({ file }); //eslint-disable-line
-      this.setState( state => {
-        return {
-          selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
-          // eslint-disable-next-line max-len
-          numberOfFilesSelected: state.selectedFiles.filter( item => item.name !== file.name ).length,
-        };
-      }, console.warn(this.state, 'state in handle close')); //eslint-disable-line
-
-      this.uploadFile();
-    };
-
-    return (
-      <div style={{ display: 'flex', marginTop: 20 }}>
-        {isArray( selectedFiles ) ? (
-          selectedFiles.map( file => (
-            <div
-              key={file.name}
-              style={{
-                position: 'relative',
-                border: '1px solid black',
-                borderRadius: '4px',
-                margin: '10px 5px',
-              }}
-            >
-              <Box>
-                <Preview
-                  file={file}
-                  onHandleClose={handleClose( file )}
-                />
-              </Box>
-            </div>
-          ))
-        ) : (
-          <Text text="No File selected" />
-        )}
-      </div>
-    );
-  };
-
   uploadFile( formData ) {
     const token = store.getState().keycloak.accessToken;
-    const URL = process.env.ENV_FILE_UPLOAD_URL;
+    // const keycloakData = store.getState().keycloak.data;
+
+    // const URL = `${config.genny.host}${keycloakData.ENV_GENNY_BRIDGE_MEDIA}`;
+
+    const URL = 'https://internmatch-test.gada.io/qwanda/images';
 
     if ( !isString( URL, { ofMinLength: 1 })) {
       console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
@@ -153,6 +141,10 @@ class FileInput extends Component {
       .catch(( response ) => {
           // handle error
         console.log( response, "FILE_UPLOAD_FAILURE" ); // eslint-disable-line
+      })
+      .finally(( response ) => {
+        // always executed
+        console.log( response, 'finally' ); // eslint-disable-line
       });
   }
 
@@ -160,27 +152,68 @@ class FileInput extends Component {
     this.inputFileNew.current.click();
   };
 
-  handleChange = () => {
-    const allFiles = this.getAllFiles();
+  handleAddFile = () => {
+    const allFiles = this.getFilesFromInput();
     const allFilesArray = Array.from( allFiles );
+    const { maxNumberOfFiles, maxFileSize, maxTotalFileSize } = this.props;
+    const { selectedFiles } = this.state;
 
     console.warn({ allFilesArray }); //eslint-disable-line
-    const numberOfFilesSelected = allFilesArray.length;
 
-    const newFilesArryFromFormData = this.inputFileNew.current.files;
+    const addFilesToArray = ( currentItems, newItems ) => {
+      if (
+        isArray( currentItems ) &&
+        isArray( newItems )
+      ) {
+        return currentItems.concat( newItems );
+      }
 
-    this.setState({
-      numberOfFilesSelected,
-      selectedFiles: allFilesArray,
-    });
+      return allFilesArray;
+    };
 
-    const formData = new FormData();
+    const newFilesArray = addFilesToArray( selectedFiles, allFilesArray );
 
-    for ( const pair of newFilesArryFromFormData ) {
-      formData.append( 'file', pair );
+    const checkNumberOfFiles = () => {
+      return !isInteger( maxNumberOfFiles ) || newFilesArray.length <= maxNumberOfFiles;
+    };
+
+    const checkFileSizes = () => {
+      let totalFileSize = 0;
+      const invalidFiles = [];
+
+      newFilesArray.forEach( file => {
+        totalFileSize = totalFileSize + file.size;
+
+        if ( isInteger( maxFileSize ) && file.size > maxFileSize ) {
+          invalidFiles.push( file );
+        }
+      });
+
+      return !isArray( invalidFiles, { ofMinLength: 1 }) &&
+        ( !isInteger( maxTotalFileSize ) || totalFileSize <= maxTotalFileSize );
+    };
+
+    if ( checkNumberOfFiles()) {
+      if ( checkFileSizes()) {
+        this.setState({
+          selectedFiles: newFilesArray,
+        });
+
+        const formData = new FormData();
+
+        for ( const pair of allFiles ) {
+          formData.append( 'file', pair );
+        }
+
+        this.uploadFile( formData );
+      }
+      else {
+        console.warn( 'Invalid: file size exceeds limit' ); // eslint-disable-line
+      }
     }
-
-    this.uploadFile( formData );
+    else {
+      console.warn( 'Invalid: number of files exceeds limit' ); // eslint-disable-line
+    }
   };
 
   // Please donot remove
@@ -194,80 +227,172 @@ class FileInput extends Component {
   // };
 
   render() {
-    const { multiple } = this.props;
-    const { numberOfFilesSelected } = this.state;
+    const {
+      multiple,
+      subcomponentProps,
+      iconProps,
+      icon,
+      iconOnly,
+      question,
+      maxNumberOfFiles,
+    } = this.props;
+    const { selectedFiles } = this.state;
+
+    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
+
+    const handleClose = file => () => {
+      // const dataInhandleCloase =
+      // this.state.selectedFiles.filter( item => item.name !== file.name );
+
+      console.warn({ file }); //eslint-disable-line
+      this.setState( state => {
+        return {
+          selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
+          // eslint-disable-next-line max-len
+          numberOfFilesSelected: state.selectedFiles.filter( item => item.name !== file.name ).length,
+        };
+      }, console.warn(this.state, 'state in handle close')); //eslint-disable-line
+
+      this.uploadFile();
+    };
+
+    const isInputDisabled = this.props.disabled ||
+      isInteger( maxNumberOfFiles ) && selectedFiles.length >= maxNumberOfFiles;
+
+    /*
+      File Upload Input
+
+      0/ move url to keycloak configs
+      1/ select one or more files from the device and send the file data to the upload server
+      2/ upload via api, returns a url to the hosted file
+      3/ answer needs to be stored as an array of objects containing: uploadurl, name, type
+      4/ add any files from the value prop to the state of selected items
+      5/ dispay all selected items using the url
+
+      props
+      0/ file type restrict
+      1/ allow multiple files
+    */
 
     return (
-      <Box
-        flexDirection="column"
-        height="auto"
-        justifyContent="space-around"
+      <SubcomponentThemeHandler
+        subcomponentProps={subcomponentProps}
+        editable={this.props.editable}
+        disabled={isInputDisabled}
+        error={this.props.error}
       >
-        <Box
-          backgroundColor="#121254e8"
-          width="100px"
-          height="40px"
-          alignItems="center"
-        >
-          <Touchable
-            onClick={this.handleClickOnHiddenButton}
-            withFeedback
-            width="100%"
-          >
+        {({
+          componentProps,
+          // updateState,
+          // filterComponentProps,
+        }) => {
+          return (
             <Box
+              flexDirection="column"
+              // height="auto"
               justifyContent="space-around"
-              width="100%"
-              alignItems="center"
+              {...componentProps['input-wrapper']}
             >
-              <Icon
-                name="cloud_upload"
-                color="#fff"
+              <Box
+                flexWrap="wrap"
+                {...componentProps['input-selected-wrapper']}
+              >
+                {isArray( selectedFiles ) ? (
+                  selectedFiles.map( file => {
+                    const previewImage = window.URL.createObjectURL( file );
+
+                    return (
+                      <InputFileItem
+                        key={file.name}
+                        size={file.size}
+                        name={file.name}
+                        // uploaded={file.uploaded}
+                        type={file.type}
+                        preview={previewImage}
+                        uploadURL={file.uploadURL}
+                        onRemove={handleClose( file )}
+                        {...componentProps['input-selected']}
+                      />
+                    );
+                  })
+                ) : (
+                  <Text text="No File selected" />
+                )}
+              </Box>
+
+              <Touchable
+                onPress={this.handleClickOnHiddenButton}
+                withFeedback
+                backgroundColor="#121254e8"
+                width="100%"
+                // height="40px"
+                alignItems="center"
+                justifyContent="center"
+                disabled={isInputDisabled}
+                {...componentProps['input-field']}
+              >
+                { hasIcon
+                  ? (
+                    <Icon
+                      name={icon}
+                      color="black"
+                      {...iconProps}
+                      iconProps={componentProps['input-icon']}
+                    />
+                  ) : null
+                  }
+                { hasIcon &&
+                    hasText
+                  ? (
+                    <Box
+                      paddingRight={5}
+                    />
+                  ) : null
+                  }
+                {
+                    hasText && !(
+                      this.props.isClosed &&
+                      hasIcon
+                    )
+                      ? (
+                        <Text
+                          whiteSpace="nowrap"
+                          text="Add File"
+                          {...componentProps['input-field']}
+                        />
+                      ) : null
+                  }
+              </Touchable>
+
+              <input
+                onChange={this.handleAddFile}
+                ref={this.inputFileNew}
+                type="file"
+                multiple={multiple}
+                name="fileupload"
+                style={{ display: 'none' }}
+                accept={this.props.allowedFileTypes.toString( ',' )}
               />
-              <Text
-                size="xxs"
-                text="Upload"
-                color="#FFF"
-              />
-              <Text
-                text={`(${numberOfFilesSelected})`}
-                color="white"
-                size="xxs"
-              />
+
+              {/* Please DONOT REMOVE*/}
+              {/* See the comments above */}
+
+              {/* <EventTouchable
+                onPress={this.handleCamera}
+                withFeedback
+              >
+                <Text text=" Camera" />
+              </EventTouchable> */}
+              {/* Commented out because we are not using this for now */}
+              {/* <Camera /> */}
+
             </Box>
-          </Touchable>
-
-          <input
-            onChange={this.handleChange}
-            ref={this.inputFileNew}
-            type="file"
-            multiple={multiple}
-            name="fileupload"
-            onClick={this.handleClickOnHiddenButton}
-            style={buttonStyle}
-          />
-        </Box>
-
-        {this.generatePreview()}
-
-        {/* Please DONOT REMOVE*/}
-        {/* See the comments above */}
-
-        {/* <EventTouchable
-          onPress={this.handleCamera}
-          withFeedback
-        >
-          <Text text=" Camera" />
-        </EventTouchable> */}
-        {/* Commented out because we are not using this for now */}
-        {/* <Camera /> */}
-
-      </Box>
+          );
+        }}
+      </SubcomponentThemeHandler>
     );
   }
 }
-
-const buttonStyle = {
-  visibility: 'hidden',
-};
 
 export default FileInput;
