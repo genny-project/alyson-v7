@@ -162,6 +162,8 @@ class DataControl extends Component {
       error,
     } = this.state;
 
+    console.log( 'mask', this.props.mask );
+
     // if data control is not required, then return children with all props
     if (
       !types.includes( this.props.type ) &&
@@ -182,7 +184,7 @@ class DataControl extends Component {
       5/ stop onChangeValue and onBlur events from passing upwards if value is not a valid answer
     */
 
-    console.log( 'this.state.maskedValue', maskedValue, !this.props.mask );
+    console.log( 'mask', this.props.mask );
 
     return (
       children({
@@ -192,7 +194,7 @@ class DataControl extends Component {
         onBlur: this.handleBlur,
         value: this.props.mask ? maskedValue : this.props.value,
         updateValueWhenFocused: this.props.mask ? true : null,
-        placeholder: this.props.mask ? '00(000)-000-0000' : null, // input mask.placeholder ?? or just placeholder
+        placeholder: this.props.mask ? this.props.mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
       })
     );
