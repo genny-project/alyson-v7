@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, array, arrayOf, string, number, object } from 'prop-types';
 import axios from 'axios';
 // import prettierBytes from 'prettier-bytes';
-import { Box, Text, Touchable, Icon } from '../../../components';
+import { Box, Text, Touchable, Icon } from '../..';
 import InputFileItem from './file-item';
 import { isArray, isString, isObject, isInteger } from '../../../../utils';
 import store from '../../../../redux/store';
@@ -158,17 +158,33 @@ class FileInput extends Component {
     const { maxNumberOfFiles, maxFileSize, maxTotalFileSize } = this.props;
     const { selectedFiles } = this.state;
 
-    console.warn({ allFilesArray }); //eslint-disable-line
-
     const addFilesToArray = ( currentItems, newItems ) => {
       if (
         isArray( currentItems ) &&
         isArray( newItems )
       ) {
-        return currentItems.concat( newItems );
+        const duplicateItems = [];
+        const newItemNames = newItems.map( newItem => newItem.name );
+        const filteredCurrentItems = currentItems.filter( currentItem => {
+          const isItemDuplicate = newItemNames.includes( currentItem.name );
+
+          if ( isItemDuplicate ) {
+            duplicateItems.push( currentItem );
+          }
+
+          return !isItemDuplicate;
+        });
+
+        return filteredCurrentItems.concat( newItems );
       }
 
-      return allFilesArray;
+      if ( isArray( currentItems ))
+        return currentItems;
+
+      if ( isArray( newItems ))
+        return newItems;
+
+      return [];
     };
 
     const newFilesArray = addFilesToArray( selectedFiles, allFilesArray );
@@ -242,10 +258,6 @@ class FileInput extends Component {
     const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
 
     const handleClose = file => () => {
-      // const dataInhandleCloase =
-      // this.state.selectedFiles.filter( item => item.name !== file.name );
-
-      console.warn({ file }); //eslint-disable-line
       this.setState( state => {
         return {
           selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
@@ -284,8 +296,8 @@ class FileInput extends Component {
       >
         {({
           componentProps,
-          // updateState,
-          // filterComponentProps,
+          updateState,
+          filterComponentProps,
         }) => {
           return (
             <Box
@@ -312,7 +324,11 @@ class FileInput extends Component {
                         preview={previewImage}
                         uploadURL={file.uploadURL}
                         onRemove={handleClose( file )}
-                        {...componentProps['input-selected']}
+                        onChangeState={this.handleChangeState}
+                        stateBasedProps={
+                          ({ active, hover }) => filterComponentProps( 'input-selected', { active, hover })
+                        }
+                        // {...componentProps['input-selected']}
                       />
                     );
                   })
@@ -330,6 +346,7 @@ class FileInput extends Component {
                 alignItems="center"
                 justifyContent="center"
                 disabled={isInputDisabled}
+                onChangeState={updateState( 'input-field' )}
                 {...componentProps['input-field']}
               >
                 { hasIcon

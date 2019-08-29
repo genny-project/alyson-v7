@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { func, any, number } from 'prop-types';
+import { func, any, number, object } from 'prop-types';
 import prettierBytes from 'prettier-bytes';
 import { Box, Text, Icon, Image, Touchable, Link } from '../../../../components';
 import { trimAndAppendDots, isInteger, isObject } from '../../../../../utils';
@@ -34,6 +34,12 @@ class InputFileItem extends Component {
     onRemove: func,
     // testID: string,
     nameCharacterLimit: number,
+    stateBasedProps: object,
+  }
+
+  state = {
+    hover: false,
+    active: false,
   }
 
   getIconName() {
@@ -44,6 +50,13 @@ class InputFileItem extends Component {
     });
 
     return isObject( fileTypes, { withProperty: matchType }) ? fileTypes[matchType] : fileTypes['default'];
+  }
+
+  handleChangeState = ( newState ) => {
+    this.setState( state => ({
+      ...state,
+      ...newState,
+    }));
   }
 
   render() {
@@ -59,6 +72,7 @@ class InputFileItem extends Component {
       onRemove,
       // testID,
       nameCharacterLimit,
+      stateBasedProps,
       // ...restProps
     } = this.props;
 
@@ -146,12 +160,14 @@ class InputFileItem extends Component {
         <Touchable
           withFeedback
           onPress={() => onRemove ? onRemove( id ) : null}
+          onChangeState={this.handleChangeState}
         >
           <Icon
             name="close"
             size="sm"
             color="black"
             cursor="pointer"
+            {...stateBasedProps( this.state )}
           />
         </Touchable>
       </Box>

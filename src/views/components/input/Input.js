@@ -6,8 +6,7 @@ import InputAutocomplete from './autocomplete';
 import InputDatePicker from './date-time/date-picker';
 import InputTimePicker from './date-time/time-picker';
 import InputDateTimePicker from './date-time/date-time-picker';
-// import InputFile from './file';
-import InputFile2 from './file-2';
+import InputFile from './file';
 import InputScroll from './scroll';
 import InputRating from './rating';
 import InputText from './text';
@@ -250,7 +249,7 @@ class Input extends Component {
       case 'Imagemultiple':
       case 'images':
         return (
-          <InputFile2
+          <InputFile
             {...inputProps}
             ref={input => this.input = input}
           />
