@@ -11,6 +11,8 @@ class MenuContent extends Component {
     position: 'left',
   }
 
+  // use GROUP_CONTENT_WRAPPER to change position
+
   static propTypes = {
     children: node.isRequired,
     testID: string,
