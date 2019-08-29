@@ -22,6 +22,8 @@ class FileInput extends Component {
     // maxTotalFileSize: 100000,
   };
 
+  // use VCL_INPUT to change restriction props
+
   static propTypes = {
     multiple: bool,
     // imageOnly: bool,
