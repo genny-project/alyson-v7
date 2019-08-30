@@ -120,6 +120,12 @@ class FormGroup extends Component {
   }
 
   getStyling = ( componentType ) => {
+    const { dataTypes, questionGroup } = this.props;
+    const { attributeCode } = questionGroup;
+
+    const baseEntityDefinition = dataTypes[attributeCode];
+    const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+    
     // filter links for panel
     const inheritedLinks = [
       ...filterThemes(
@@ -127,6 +133,7 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
+          dataType: dataType,
           acceptTypes: ['group'],
         },
       ),
@@ -138,6 +145,7 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
+          dataType: dataType,
           acceptTypes: ['group'],
         },
       ),
