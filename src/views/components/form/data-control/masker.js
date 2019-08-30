@@ -9,7 +9,7 @@ const maskCharacters = [
 
 class Masker {
   applyMask( incomingValue, mask ) {
-    const delimiterPositions = this.getDelimiterPositions( mask ); // get delimiter positions
+    const delimiterPositions = this.getDelimiterPosition( mask ); // get delimiter positions
 
     // const delimiterPositionsArray = Object.entries( delimiterPositions );
     const delimiterPositionsArray = Object.keys( delimiterPositions );
