@@ -10,19 +10,17 @@ const types = [
 
 class DataControl extends Component {
   static defaultProps = {
-    // mask: {
-    //   maskValue: '###-###-###',
-    // },
   }
 
   static propTypes = {
     children: any,
-    // mask: object, // eslint-disable-line
+    mask: object,
     ask: object,
     type: string,
     error: string,
     onChangeValue: func,
     onBlur: func,
+    value: any,
   }
 
   state = {
@@ -33,8 +31,6 @@ class DataControl extends Component {
   }
 
   handleBlur = () => {
-    console.log( 'blur intercept' );
-    console.log( 'error', this.state.error );
     if ( !isString( this.state.error )) {
       if ( this.props.onBlur ) {
         this.props.onBlur();
@@ -43,7 +39,6 @@ class DataControl extends Component {
   }
 
   handleChangeValue = ( value ) => {
-    console.log( 'change value intercept' );
     if ( !isString( this.state.error )) {
       if ( this.props.onChangeValue ) {
         this.props.onChangeValue( value );
@@ -53,15 +48,11 @@ class DataControl extends Component {
 
   // handleChange func
   handleChangeText = ( value ) => {
-    console.log( 'change text intercept' );
-    const { type } = this.props;
+    const { type, mask } = this.props;
     const dataType = type.toLowerCase();
 
-    if ( this.props.mask ) {
-      console.log( 'pure value', value );
-      const maskedValue = Masker.applyMask2( value, '00(000)-000-0000', ['-','(',')'] , this.props.mask.type );
-
-      console.log( 'maskedValue', maskedValue );
+    if ( mask ) {
+      const maskedValue = Masker.applyMask( value, mask );
 
       if ( this.state.maskedValue !== maskedValue ) {
         this.setState({
@@ -112,12 +103,10 @@ class DataControl extends Component {
   }
 
   handleEmailValidation = ( emailValue ) => {
-    console.log( 'email validation' );
     // eslint-disable-next-line
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const validBoolean = emailRegex.test( emailValue );
 
-    console.log( 'test', validBoolean );
     this.setState({
       // displayValue: emailValue,
       error: !validBoolean ? 'Please enter a valid email address' : null,
@@ -125,8 +114,6 @@ class DataControl extends Component {
   }
 
   handlePasswordValidation = ( val = '' ) => {
-    console.log({ val });
-    console.log( typeof val );
     const valueArr = val.split( '' );
     const passwordArr = valueArr.map(() => '*' );
     const passwordString = passwordArr.join( '' );
@@ -162,8 +149,6 @@ class DataControl extends Component {
       error,
     } = this.state;
 
-    console.log( 'mask', this.props.mask );
-
     // if data control is not required, then return children with all props
     if (
       !types.includes( this.props.type ) &&
@@ -183,8 +168,6 @@ class DataControl extends Component {
       4/ filter errors for child
       5/ stop onChangeValue and onBlur events from passing upwards if value is not a valid answer
     */
-
-    console.log( 'mask', this.props.mask );
 
     return (
       children({
