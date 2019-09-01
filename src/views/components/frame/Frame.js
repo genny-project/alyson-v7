@@ -316,7 +316,7 @@ class Frame extends Component {
     if ( !rootFrame ) {
       console.warn( 'waiting for Root Frame...' ); // eslint-disable-line
 
-      setTitle( `${isString( projectName ) ? `${projectName} | ` : ''}Loading...` );
+      setTitle( `${isString( projectName ) ? `${projectName}` : 'Loading...'}` );
 
       return (
         <Box
@@ -335,7 +335,7 @@ class Frame extends Component {
       );
     }
 
-    setTitle( `${isString( projectName ) ? `${projectName} | ` : ''}Home` );
+    setTitle( `${isString( projectName ) ? `${projectName}` : 'Loading...'}` );
 
     const filterByPanel = ( array, panel ) => {
       return array.filter( item => item.panel === panel );

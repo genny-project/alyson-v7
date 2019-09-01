@@ -24,7 +24,7 @@ class Loading extends Component {
     const projectAttributes = storeQuery.getProjectAttributes();
     const projectName = dlv( projectAttributes, 'PRI_NAME.value' );
 
-    setTitle( `${isString( projectName ) ? `${projectName} | ` : ''}Loading...` );
+    setTitle( `${isString( projectName ) ? `${projectName}` : 'Loading...'}` );
 
     if ( isAuthenticated ) {
       return (

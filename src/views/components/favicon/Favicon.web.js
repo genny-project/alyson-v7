@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Favicon from 'react-favicon';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { storeQuery  } from '../../../utils';
+import store from '../../../redux/store';
 
 class ProjectFavicon extends Component {
   static defaultProps = {
@@ -15,8 +15,9 @@ class ProjectFavicon extends Component {
   }
 
   render() {
-    const projectAttributes = storeQuery.getProjectAttributes();
-    const projectFavicon = dlv( projectAttributes, 'PRI_FAVICON.value' );
+    // const projectAttributes = storeQuery.getProjectAttributes();
+    const { keycloak } = store.getState();
+    const projectFavicon = dlv( keycloak, 'data.PRI_FAVICON' );
 
     return (
       <Favicon
