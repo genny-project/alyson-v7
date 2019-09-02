@@ -3,6 +3,30 @@
 import dlv from 'dlv';
 import { isArray, isString, isObject } from '../../../../utils';
 
+/*
+const panels = [
+  "NORTH",
+  "SOUTH",
+  "EAST",
+  "WEST",
+  "CENTRE",
+];
+
+const injectControlIntoState = ({ item, state }) => {
+  // alter the state
+
+  // console.log('item', item);
+
+  const baseEntityCode = item.code;
+
+  panels.forEach( panel => {
+    const panelId = `${baseEntityCode}:${panel}`;
+
+    state[panelId] = 'open';
+  });
+};
+*/
+
 const injectControlIntoState = ({ item, state }) => {
   /* alter the state */
 

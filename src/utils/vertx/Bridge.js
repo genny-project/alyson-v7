@@ -162,17 +162,18 @@ class Bridge {
     const { actionCache } = store.getState().vertx;
 
     if ( isObject( data, { withProperties: ['code', 'parentCode'] })) {
-      const dataKeys = Object.keys( data ).filter(
-        key => key !== 'code' && key !== 'parentCode' && key !== 'rootCode'
-      );
+      // const dataKeys = Object.keys( data ).filter(
+      //   key => key !== 'code' && key !== 'parentCode' && key !== 'rootCode'
+      // );
 
-      const dataString = dataKeys
-        .map( key => {
-          return `:${key}=${data[key]}`;
-        })
-        .join( '' );
+      // const dataString = dataKeys
+      //   .map( key => {
+      //     return `:${key}=${data[key]}`;
+      //   })
+      //   .join( '' );
 
-      const actionId = `${data.rootCode}:${data.parentCode}:${data.code}${dataString}`;
+      // const actionId = `${data.rootCode}:${data.parentCode}:${data.code}${dataString}`;
+      const actionId = `${data.rootCode}:${data.parentCode}:${data.code}`;
 
       if ( actionCache[actionId] ) {
         if ( isObject( actionCache[actionId] )) {

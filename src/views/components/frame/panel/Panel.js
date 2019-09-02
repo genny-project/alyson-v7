@@ -101,7 +101,12 @@ class Panel extends Component {
 
     const Wrapper = isExpandable ? 'div' : Fragment;
 
-    const specialStyle = this.state.display === 'closed' ? { width: '0%' } : this.state.display === 'open' ? { width: '100%' } : {};
+    // const specialStyle = this.state.display === 'closed' ? { width: '0%' } : this.state.display === 'open' ? { width: '100%' } : {};
+    const specialStyle = {};
+
+    const closedProps = this.state.display === 'closed' ? inheritedProps['closed'] : null;
+    // console.log( this.props.rootCode, { inheritedProps })
+    if ( this.props.rootCode === 'FRM_SIDEBAR' ) console.log( {inheritedProps, closedProps})
 
     return (
       <Box
@@ -109,7 +114,7 @@ class Panel extends Component {
         {...isExpandable ? { position: 'relative' } : {}}
         {...style}
         {...inheritedProps['default']}
-        {...this.state.display === 'closed' ? inheritedProps['closed'] : null}
+        {...closedProps}
         // transitionDuration='200ms'
         // transitionProperty='width'
         // transitionTimingFunction='ease'
