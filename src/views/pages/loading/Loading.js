@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
 import { ActivityIndicator } from 'react-native';
+import dlv from 'dlv';
 import { KeycloakConsumer, Redirect, Box, Text } from '../../components';
+import { storeQuery, setTitle } from '../../../utils';
 
 class Loading extends Component {
   static propTypes = {
@@ -15,6 +17,14 @@ class Loading extends Component {
       isCheckingStorage,
       isCheckingCallback,
     } = this.props.keycloak;
+
+    // const projectAttributes = storeQuery.getProjectAttributes();
+    // const projectName = dlv( projectAttributes, 'PRI_TITLE' );
+
+    const projectAttributes = storeQuery.getProjectAttributes();
+    const projectName = dlv( projectAttributes, 'PRI_NAME.value' );
+
+    setTitle( projectName );
 
     if ( isAuthenticated ) {
       return (
