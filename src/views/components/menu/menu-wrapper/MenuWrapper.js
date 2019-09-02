@@ -32,21 +32,27 @@ class MenuWrapper extends Component {
   }
 
   setButtonArea = ( area ) => {
+    const offsetArea = { ...area };
+
     const compareAreaValues = ( currentArea, nextArea ) => {
+      if ( !isObject( currentArea ) || !isObject( nextArea )) return true;
+
       const nextAreaKeys = Object.keys( nextArea );
 
-      const isObjectMatch = nextAreaKeys.some( nextAreaKey => {
+      const isObjectDiff = nextAreaKeys.some( nextAreaKey => {
         const isKeyMatch = nextArea[nextAreaKey] === currentArea[nextAreaKey];
 
         return !isKeyMatch;
       });
 
-      return isObjectMatch;
+      return isObjectDiff;
     };
 
-    if ( !compareAreaValues( this.state.buttonArea, area )) {
+    if (
+      compareAreaValues( this.state.buttonArea, offsetArea )
+    ) {
       this.setState({
-        buttonArea: area,
+        buttonArea: offsetArea,
       });
     }
   }
