@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { BackHandler } from 'react-native';
 import queryString from 'query-string';
+import dlv from 'dlv';
 import AuthenticatedApp from './authenticated';
 import Routing from '../routing';
-import { location } from '../../utils';
+import store from '../../redux/store';
+import { location, setTitle } from '../../utils';
 import { DebugDisplay, Favicon } from '../components';
 
 class App extends Component {
@@ -69,6 +71,11 @@ class App extends Component {
   };
 
   render() {
+    const { keycloak } = store.getState();
+    const projectName = dlv( keycloak, 'data.PRI_NAME' );
+
+    setTitle( projectName );
+
     return (
       <AuthenticatedApp>
         <Routing />

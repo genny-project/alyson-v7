@@ -3,7 +3,7 @@ import { object } from 'prop-types';
 import { ActivityIndicator } from 'react-native';
 import dlv from 'dlv';
 import { KeycloakConsumer, Redirect, Box, Text } from '../../components';
-import { storeQuery, setTitle, isString } from '../../../utils';
+import { storeQuery, setTitle } from '../../../utils';
 
 class Loading extends Component {
   static propTypes = {
@@ -24,7 +24,7 @@ class Loading extends Component {
     const projectAttributes = storeQuery.getProjectAttributes();
     const projectName = dlv( projectAttributes, 'PRI_NAME.value' );
 
-    setTitle( `${isString( projectName ) ? `${projectName}` : 'Loading...'}` );
+    setTitle( projectName );
 
     if ( isAuthenticated ) {
       return (

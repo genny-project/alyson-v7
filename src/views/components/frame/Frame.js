@@ -19,7 +19,6 @@ import {
   objectMerge,
   storeQuery,
   setTitle,
-  isString,
 } from '../../../utils';
 
 const defaultStyle = {
@@ -316,7 +315,7 @@ class Frame extends Component {
     if ( !rootFrame ) {
       console.warn( 'waiting for Root Frame...' ); // eslint-disable-line
 
-      setTitle( `${isString( projectName ) ? `${projectName}` : 'Loading...'}` );
+      setTitle( projectName );
 
       return (
         <Box
@@ -334,8 +333,6 @@ class Frame extends Component {
         </Box>
       );
     }
-
-    setTitle( `${isString( projectName ) ? `${projectName}` : 'Loading...'}` );
 
     const filterByPanel = ( array, panel ) => {
       return array.filter( item => item.panel === panel );
