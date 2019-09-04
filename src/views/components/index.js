@@ -22,6 +22,7 @@ export { default as EventButton } from './event-button';
 export { default as EventButtonLink } from './event-button-link';
 export { default as EventLink } from './event-link';
 export { default as EventTouchable } from './event-touchable';
+export { default as Favicon } from './favicon';
 export { default as FlatList } from './flat-list';
 export { default as Form } from './form';
 export { default as Fragment } from './fragment';

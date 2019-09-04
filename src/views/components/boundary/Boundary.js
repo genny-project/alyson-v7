@@ -11,8 +11,13 @@ class Boundary extends Component {
     ] ),
   }
 
+  currentArea = null;
+
   state = {
-    boundaryAdjustedArea: null,
+    boundaryAdjustedArea: {
+      x: null,
+      y: null,
+    },
   }
 
   updateBoundaryArea = ( area ) => {
@@ -28,6 +33,8 @@ class Boundary extends Component {
         area.y === 0
       )
     ) return null;
+
+    if ( this.currentArea != null ) return null;
 
     const dimensions = Dimensions.get( 'window' );
 
@@ -48,29 +55,41 @@ class Boundary extends Component {
     if ( area.top < screenTop ) topOffset = screenTop - area.top;
     if ( area.bottom > screenBottom ) bottomOffset = area.bottom - screenBottom;
 
-    const boundaryAdjustedLeft = isInteger( leftOffset ) || isInteger( rightOffset )
+    const boundaryAdjustedX = isInteger( leftOffset ) || isInteger( rightOffset )
       ? area.left + leftOffset - rightOffset : null;
-    const boundaryAdjustedTop = isInteger( topOffset ) || isInteger( bottomOffset )
+    const boundaryAdjustedY = isInteger( topOffset ) || isInteger( bottomOffset )
       ? area.top + topOffset - bottomOffset : null;
 
-    const resultant = {};
+    const resultant = {
+      x: null,
+      y: null,
+    };
 
-    if ( isInteger( boundaryAdjustedLeft )) resultant['left'] = boundaryAdjustedLeft;
-    if ( isInteger( boundaryAdjustedTop )) resultant['top'] = boundaryAdjustedTop;
+    if ( isInteger( boundaryAdjustedX )) resultant['x'] = boundaryAdjustedX;
+    if ( isInteger( boundaryAdjustedY )) resultant['y'] = boundaryAdjustedY;
+
+    this.currentArea = area;
 
     if (
-      (
-        isInteger( boundaryAdjustedLeft ) ||
-        isInteger( boundaryAdjustedTop )
-      ) && (
-        !this.state.boundaryAdjustedArea ||
-        boundaryAdjustedLeft !== this.state.boundaryAdjustedArea.left ||
-        boundaryAdjustedTop !== this.state.boundaryAdjustedArea.top
-      )
+      resultant.x !== this.state.boundaryAdjustedArea.x ||
+      resultant.y !== this.state.boundaryAdjustedArea.y
     ) {
-      this.setState({
-        boundaryAdjustedArea: resultant,
-      });
+      if (
+        isInteger( boundaryAdjustedX ) ||
+          isInteger( boundaryAdjustedY )
+      ) {
+        this.setState({
+          boundaryAdjustedArea: resultant,
+        });
+      }
+      else {
+        this.setState({
+          boundaryAdjustedArea: {
+            x: null,
+            y: null,
+          },
+        });
+      }
     }
   }
 
@@ -80,9 +99,6 @@ class Boundary extends Component {
     return (
       typeof children === 'function'
         ? children({
-          // setSize: this.handleSetSize,
-          // setObserve: this.setObserve,
-          // size: this.state.size,
           updateBoundaryArea: this.updateBoundaryArea,
           boundaryAdjustedArea: this.state.boundaryAdjustedArea,
         })

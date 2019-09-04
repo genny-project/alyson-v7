@@ -2,19 +2,30 @@ import { Component } from 'react';
 import { any, object, string, func } from 'prop-types';
 import validatorABN from 'au-bn-validator';
 import Masker from './masker';
-import { isString } from '../../../../utils';
+import { isString, isObject } from '../../../../utils';
 
 const types = [
   'email','abn','acn','password','double','floatingpoint',
 ];
 
+const keyfilters = {
+  pint: /^[0-9]+$/, // Positive integers
+  int: /^[0-9-]+$/, // Integers
+  pnum: /^[0-9.]+$/, // Positive numbers
+  num: /^[0-9.-]+$/, // Numbers
+  alpha: /^[a-zA-Z]+$/, // Alphabetic
+  alphanum: /^[a-zA-Z0-9]+$/, // Alphanumeric
+};
+
 class DataControl extends Component {
   static defaultProps = {
+    keyfilter: 'pnum',
   }
 
   static propTypes = {
     children: any,
     mask: object,
+    keyfilter: string,
     ask: object,
     type: string,
     error: string,
@@ -48,7 +59,7 @@ class DataControl extends Component {
 
   // handleChange func
   handleChangeText = ( value ) => {
-    const { type, mask } = this.props;
+    const { type, mask, keyfilter } = this.props;
     const dataType = type.toLowerCase();
 
     if ( mask ) {
@@ -57,6 +68,18 @@ class DataControl extends Component {
       if ( this.state.maskedValue !== maskedValue ) {
         this.setState({
           maskedValue,
+        });
+      }
+    }
+
+    if ( keyfilter ) {
+      const isValueValid = isObject( keyfilters, { withProperty: keyfilter })
+        ? keyfilters[keyfilter].test( value )
+        : keyfilter.test( value );
+
+      if ( isValueValid || value == null || value.length === 0 ) {
+        this.setState({
+          maskedValue: value,
         });
       }
     }
@@ -143,7 +166,7 @@ class DataControl extends Component {
   }
 
   render() {
-    const { children, ...restProps } = this.props;
+    const { children, mask, keyfilter, ...restProps } = this.props;
     const {
       maskedValue,
       error,
@@ -152,7 +175,8 @@ class DataControl extends Component {
     // if data control is not required, then return children with all props
     if (
       !types.includes( this.props.type ) &&
-      !this.props.mask
+      !mask &&
+      !keyfilter
     ) {
       return (
         children({
@@ -169,15 +193,17 @@ class DataControl extends Component {
       5/ stop onChangeValue and onBlur events from passing upwards if value is not a valid answer
     */
 
+    const useMaskedValue = mask != null || keyfilter != null;
+
     return (
       children({
         ...restProps,
         onChangeValue: this.handleChangeValue,
         onChangeText: this.handleChangeText,
         onBlur: this.handleBlur,
-        value: this.props.mask ? maskedValue : this.props.value,
-        updateValueWhenFocused: this.props.mask ? true : null,
-        placeholder: this.props.mask ? this.props.mask : null, // input mask.placeholder ?? or just placeholder
+        value: useMaskedValue ? maskedValue : this.props.value,
+        updateValueWhenFocused: useMaskedValue ? true : null,
+        placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
       })
     );

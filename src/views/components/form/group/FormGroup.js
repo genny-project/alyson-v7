@@ -122,6 +122,12 @@ class FormGroup extends Component {
   }
 
   getStyling = ( componentType ) => {
+    const { types, questionGroup } = this.props;
+    const { attributeCode } = questionGroup;
+
+    const baseEntityDefinition = types && types[attributeCode];
+    const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+
     // filter links for panel
     const inheritedLinks = [
       ...filterThemes(
@@ -129,6 +135,7 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
+          dataType: dataType,
           acceptTypes: ['group'],
         },
       ),
@@ -140,6 +147,7 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
+          dataType: dataType,
           acceptTypes: ['group'],
         },
       ),
@@ -319,7 +327,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode, rootCode } = this.props;
+    const { index, questionGroup, form, parentGroupCode, rootCode, types } = this.props;
     const {
       description,
       name,
@@ -327,14 +335,28 @@ class FormGroup extends Component {
       question,
       questionCode,
       targetCode,
+      attributeCode,
     } = questionGroup;
 
     let properties = {};
 
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
+      const baseEntityDefinition = types && types[attributeCode];
+      const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
-      themes.forEach( linkedTheme => {
+      const themeLinks = [
+        ...filterThemes(
+          themes,
+          this.props.themes,
+          {
+            dataType: dataType,
+            acceptTypes: ['group'],
+          },
+        ),
+      ];
+
+      themeLinks.forEach( linkedTheme => {
         const themeProperties = dlv( this.props.themes, `${linkedTheme.code}.properties` );
 
         if ( isObject( themeProperties )) {

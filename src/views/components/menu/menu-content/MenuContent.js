@@ -1,13 +1,26 @@
 import React, { Component } from 'react';
-import { node, string } from 'prop-types';
-import { isObject } from '../../../../utils';
+import { node, string, number, oneOf } from 'prop-types';
+import { isObject, isInteger } from '../../../../utils';
 import { Box, Portal, Boundary, Area } from '../../index';
 import MenuConsumer from '../consumer';
 
 class MenuContent extends Component {
+  static defaultProps = {
+    offsetX: 0,
+    offsetY: 0,
+    position: 'left',
+  }
+
+  // use GROUP_CONTENT_WRAPPER to change position
+
   static propTypes = {
     children: node.isRequired,
     testID: string,
+    offsetX: number,
+    offsetY: number,
+    position: oneOf( [
+      'left', 'center', 'right',
+    ] ),
   }
 
   focus() {
@@ -26,7 +39,7 @@ class MenuContent extends Component {
   }
 
   render() {
-    const { children, testID, ...restProps } = this.props;
+    const { children, testID, offsetX, offsetY, position, ...restProps } = this.props;
 
     // console.log( this.input );
 
@@ -50,8 +63,16 @@ class MenuContent extends Component {
                         onChange={updateBoundaryArea}
                       >
                         {( areaProps ) => {
-                          const top = isObject( boundaryAdjustedArea, { withProperty: 'top' }) ? boundaryAdjustedArea.top : isObject( buttonArea ) ? buttonArea.bottom : 50;
-                          const left = isObject( boundaryAdjustedArea, { withProperty: 'left' }) ? boundaryAdjustedArea.left : isObject( buttonArea ) ? buttonArea.left : '50vw';
+                          const x = isObject( boundaryAdjustedArea, { withProperty: 'x' }) ? boundaryAdjustedArea.x : null;
+                          const y = isObject( boundaryAdjustedArea, { withProperty: 'y' }) ? boundaryAdjustedArea.y : null;
+
+                          const positions = {
+                            left: buttonArea.left + offsetX,
+                            center: buttonArea.left + ( buttonArea.width / 2 ) + offsetX,
+                            right: buttonArea.right + offsetX,
+                          };
+
+                          const top = buttonArea.bottom + offsetY;
 
                           return (
                             <div
@@ -62,10 +83,10 @@ class MenuContent extends Component {
                               }}
                               tabIndex="-1"
                               style={{
-                                top: top,
-                                left: left,
                                 position: 'absolute',
-
+                                top: isInteger( y ) ? y : top,
+                                left: isInteger( x ) ? x : positions[position],
+                                ...( isInteger( x ) ? {} : { transform: `translateX( -${position === 'right' ? 100 : position === 'center' ? 50 : 0}%)` }),
                               }}
                               onBlur={handleContentBlur}
                               onFocus={handleContentFocus}
@@ -74,6 +95,13 @@ class MenuContent extends Component {
                                 flexDirection="column"
                                 onLayout={this.handleLayout}
                                 identifier="MENU"
+                                shadowColor="#000"
+                                shadowOpacity={0.4}
+                                shadowRadius={5}
+                                shadowOffset={{
+                                  width: 0,
+                                  height: 0,
+                                }}
                                 {...restProps}
                               >
                                 {children}

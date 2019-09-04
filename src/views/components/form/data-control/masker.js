@@ -62,7 +62,7 @@ class Masker {
     }
   };
 
-  getdelimiterPositions = ( mask ) => {
+  getDelimiterPosition = ( mask ) => {
     // delimiters are all non mask characters
     const maskValArr = mask.split( '' );
     const delimiters = {};
