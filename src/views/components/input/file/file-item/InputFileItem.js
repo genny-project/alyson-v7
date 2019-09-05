@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { func, any, number, object } from 'prop-types';
 import prettierBytes from 'prettier-bytes';
 import { Box, Text, Icon, Image, Touchable, Link } from '../../../../components';
-import { trimAndAppendDots, isInteger, isObject } from '../../../../../utils';
+import { trimAndAppendDots, isInteger, isObject, isString } from '../../../../../utils';
 
 const fileTypes = {
   zip: 'archive',
@@ -81,9 +81,13 @@ class InputFileItem extends Component {
       ( !!preview || !!uploadURL )
     );
 
-    const trimmedName = isInteger( nameCharacterLimit )
-      ? trimAndAppendDots( name, nameCharacterLimit )
-      : name;
+    const trimmedName = isString( name )
+      ? isInteger( nameCharacterLimit )
+        ? trimAndAppendDots( name, nameCharacterLimit )
+        : name
+      : isInteger( nameCharacterLimit )
+        ? trimAndAppendDots( uploadURL, nameCharacterLimit )
+        : uploadURL;
 
     return (
       <Box

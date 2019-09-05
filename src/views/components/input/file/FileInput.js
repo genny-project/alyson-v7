@@ -15,6 +15,7 @@ class FileInput extends Component {
   static defaultProps = {
     multiple: true,
     // accept: [],
+    value: [],
     defaultValue: [],
     allowedFileTypes: [],
     // maxNumberOfFiles: 3,
@@ -31,6 +32,7 @@ class FileInput extends Component {
     onChangeValue: func,
     defaultValue: array,
     maxFileSize: number,
+    value: array,
     maxTotalFileSize: number,
     maxNumberOfFiles: number,
     allowedFileTypes: arrayOf(
@@ -59,21 +61,64 @@ class FileInput extends Component {
   };
 
   componentDidMount() {
+    const { value } = this.props;
     const URL = process.env.ENV_FILE_UPLOAD_URL;
 
     console.log( URL ); //eslint-disable-line
 
-    // this.updateFilesFromProps();
+    this.updateFilesFromProps();
   }
 
-  // componentDidUpdate( prevProps ) {
-  //   if (
-  //     this.props != null &&
-  //     this.props.value !== prevProps.value
-  //   ) {
-  //     this.updateFilesFromProps();
-  //   }
-  // }
+  componentDidUpdate( prevProps, prevState ) {
+    const { value } = this.props;
+    const { selectedFiles } = this.props;
+
+    console.log( prevProps, this.props.value );
+
+    const checkForNewFiles = () => {
+      // if prevProps.value is different from this.props.value
+      // if state.selectedFiles is different from this.props.value
+      if (
+        isArray( prevProps.value ) &&
+        isArray( value ) &&
+        prevProps.value.length !== value.length
+      ) {
+        return true;
+      }
+
+      // if (
+      //   prevProps.value.some( prevUrl => {
+      //     return !value.includes( prevUrl );
+      //   })
+      // ) {
+      //   return true;
+      // }
+
+      if (
+        isArray( selectedFiles ) &&
+        isArray( value ) &&
+        selectedFiles.length !== value.length
+      ) {
+        return true;
+      }
+
+      // if (
+      //   selectedFiles.some( stateUrl => {
+      //     return !value.includes( stateUrl );
+      //   })
+      // ) {
+      //   return true;
+      // }
+
+      return false;
+    };
+
+    if (
+      checkForNewFiles()
+    ) {
+      this.updateFilesFromProps();
+    }
+  }
 
   getFilesFromInput = () => {
     const input = this.inputFileNew.current;
@@ -82,32 +127,28 @@ class FileInput extends Component {
     return files;
   };
 
-  // updateFilesFromProps = () => {
-  //   const { value, defaultValue } = this.props;
-  //   let files = [];
+  updateFilesFromProps = () => {
+    console.log( 'updateFilesFromProps' );
+    const { value } = this.props;
 
-  //   if (
-  //     isArray( value )
-  //   ) {
-  //     this.setState({ files: value });
+    const formattedFiles = value.map( file => ({
+      name: file.name,
+      uploadURL: file.url,
+      type: 'image',
+      size: 0,
+    }));
 
-  //     return;
-  //   }
+    console.log( 'new state files', formattedFiles );
 
-  //   try {
-  //     files = ( value && value !== 'null' )
-  //       ? JSON.parse( value )
-  //       : defaultValue;
-  //   } catch ( e ) {
-  //     //
-  //   }
+    const fileNames = formattedFiles.map( formattedFile => formattedFile.name );
 
-  //   if (
-  //     isArray( files )
-  //   ) {
-  //     this.setState({ files: files });
-  //   }
-  // }
+    this.setState( state => ({
+      selectedFiles: [
+        ...state.selectedFiles.filter( file => !fileNames.includes( file.name )),
+        ...formattedFiles,
+      ],
+    }));
+  }
 
   sendFilesToBackend() {
     console.log('This method will send files to the backend'); //eslint-disable-line
@@ -119,7 +160,8 @@ class FileInput extends Component {
 
     // const URL = `${config.genny.host}${keycloakData.ENV_GENNY_BRIDGE_MEDIA}`;
 
-    const URL = 'https://internmatch-test.gada.io/qwanda/images';
+    // const URL = 'https://internmatch-test.gada.io/qwanda/images';
+    const URL = 'https://media-proxy-test.gada.io/public';
 
     if ( !isString( URL, { ofMinLength: 1 })) {
       console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
@@ -127,27 +169,75 @@ class FileInput extends Component {
       return;
     }
 
-    axios
-      .post( URL, {
-        method: 'post',
-        data: formData,
-        headers: { 'Content-Type': 'multipart/form-data','Authorization': `bearer ${token}` } ,
-      })
-      .then(( response ) => {
-        // handle success
-        console.log( "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
-        console.warn({ response }); // eslint-disable-line
-        if ( this.props.onChangeValue )
-          this.props.onChangeValue( response.data.URL ); // send the URl to Genny system
-      })
-      .catch(( response ) => {
-          // handle error
-        console.log( response, "FILE_UPLOAD_FAILURE" ); // eslint-disable-line
-      })
-      .finally(( response ) => {
-        // always executed
-        console.log( response, 'finally' ); // eslint-disable-line
-      });
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `bearer ${token}`,
+    };
+
+    axios.post( URL, formData, {
+      headers: headers,
+    })
+    .then(( response ) => {
+      // handle success
+      console.log( "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
+      console.warn({ response }); // eslint-disable-line
+
+      if ( isArray( response.data.files )) {
+        // response.data.files <- array of UUIDs, need to be appended to:
+        // https://media-proxy-test.gada.io/public/<uuid>
+
+        // need an ID to match the uuid with existing files in the state
+
+        const formattedUrls = response.data.files.map( file => ({ name: file.name, url: `${URL}/${file.uuid}` }));
+
+        if ( this.props.onChangeValue ) {
+          this.props.onChangeValue( formattedUrls ); // send the URl to Genny system
+        }
+        this.setState({
+
+        });
+      }
+    })
+    .catch(( response ) => {
+      // handle error
+      console.log( response, "FILE_UPLOAD_FAILURE" ); // eslint-disable-line
+    });
+  }
+
+  deleteFile( url, callback ) {
+    const token = store.getState().keycloak.accessToken;
+    // const keycloakData = store.getState().keycloak.data;
+
+    // const URL = `${config.genny.host}${keycloakData.ENV_GENNY_BRIDGE_MEDIA}`;
+
+    // const URL = 'https://media-proxy-test.gada.io/public';
+
+    const URL = url;
+
+    if ( !isString( URL, { ofMinLength: 1 })) {
+      console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
+
+      return;
+    }
+
+    const headers = {
+      // 'Content-Type': 'multipart/form-data',
+      Authorization: `bearer ${token}`,
+    };
+
+    axios.delete( URL, {
+      headers: headers,
+    })
+    .then(( response ) => {
+      // handle success
+      console.log( "FILE_DELETE_SUCCESS" ); // eslint-disable-line
+      console.warn({ response }); // eslint-disable-line
+      callback( 'success' );
+    })
+    .catch(( response ) => {
+      // handle error
+      console.log( response, "FILE_DELETE_FAILURE" ); // eslint-disable-line
+    });
   }
 
   handleClickOnHiddenButton = () => {
@@ -161,12 +251,15 @@ class FileInput extends Component {
     const { selectedFiles } = this.state;
 
     const addFilesToArray = ( currentItems, newItems ) => {
+      console.log({ newItems });
       if (
         isArray( currentItems ) &&
         isArray( newItems )
       ) {
         const duplicateItems = [];
         const newItemNames = newItems.map( newItem => newItem.name );
+
+        console.log({ newItemNames });
         const filteredCurrentItems = currentItems.filter( currentItem => {
           const isItemDuplicate = newItemNames.includes( currentItem.name );
 
@@ -189,7 +282,13 @@ class FileInput extends Component {
       return [];
     };
 
-    const newFilesArray = addFilesToArray( selectedFiles, allFilesArray );
+    const formattedNewFiles = allFilesArray.map( file => ({
+      file: file,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    }));
+    const newFilesArray = addFilesToArray( selectedFiles, formattedNewFiles );
 
     const checkNumberOfFiles = () => {
       return !isInteger( maxNumberOfFiles ) || newFilesArray.length <= maxNumberOfFiles;
@@ -213,11 +312,17 @@ class FileInput extends Component {
 
     if ( checkNumberOfFiles()) {
       if ( checkFileSizes()) {
+        console.log({ filesForState: newFilesArray });
+
         this.setState({
           selectedFiles: newFilesArray,
         });
 
+        console.log({ filesToBeUploaded: allFiles });
+
         const formData = new FormData();
+
+        // const filesToBeUploaded = newFilesArray.filter( file => !isString( file.url ));
 
         for ( const pair of allFiles ) {
           formData.append( 'file', pair );
@@ -232,6 +337,20 @@ class FileInput extends Component {
     else {
       console.warn( 'Invalid: number of files exceeds limit' ); // eslint-disable-line
     }
+  };
+
+  handleRemoveFile = ( file ) => {
+    this.deleteFile( file.uploadURL, ( response ) => {
+      if ( response === 'success' ) {
+        this.setState( state => {
+          return {
+            selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
+            // eslint-disable-next-line max-len
+            numberOfFilesSelected: state.selectedFiles.filter( item => item.name !== file.name ).length,
+          };
+        }, console.warn(this.state, 'state in handle close')); //eslint-disable-line
+      }
+    });
   };
 
   // Please donot remove
@@ -258,19 +377,6 @@ class FileInput extends Component {
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
     const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
-
-    const handleClose = file => () => {
-      this.setState( state => {
-        return {
-          selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
-          // eslint-disable-next-line max-len
-          numberOfFilesSelected: state.selectedFiles.filter( item => item.name !== file.name ).length,
-        };
-      }, console.warn(this.state, 'state in handle close')); //eslint-disable-line
-
-      this.uploadFile();
-    };
-
     const isInputDisabled = this.props.disabled ||
       isInteger( maxNumberOfFiles ) && selectedFiles.length >= maxNumberOfFiles;
 
@@ -314,7 +420,9 @@ class FileInput extends Component {
               >
                 {isArray( selectedFiles ) ? (
                   selectedFiles.map( file => {
-                    const previewImage = window.URL.createObjectURL( file );
+                    const previewImage = file.uploadURL ? file.uploadURL : window.URL.createObjectURL( file.file );
+
+                    console.log({ file });
 
                     return (
                       <InputFileItem
@@ -325,7 +433,7 @@ class FileInput extends Component {
                         type={file.type}
                         preview={previewImage}
                         uploadURL={file.uploadURL}
-                        onRemove={handleClose( file )}
+                        onRemove={() => this.handleRemoveFile( file )}
                         onChangeState={this.handleChangeState}
                         stateBasedProps={
                           ({ active, hover }) => filterComponentProps( 'input-selected', { active, hover })
