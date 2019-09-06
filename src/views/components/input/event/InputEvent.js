@@ -112,6 +112,7 @@ class InputEvent extends Component {
                         whiteSpace="nowrap"
                         text={question.name}
                         {...restProps}
+                        {...componentProps['input-field']}
                       />
                     ) : null
                 }

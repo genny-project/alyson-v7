@@ -10,9 +10,11 @@ class Area extends Component {
       node, func,
     ] ),
     onChange: func,
+    onUpdate: func,
   }
 
   observer = null;
+  rect = null;
 
   state = {
     size: null,
@@ -29,7 +31,32 @@ class Area extends Component {
     if ( node == null ) return;
 
     const observer = observeRect( node, rect => {
-      if ( this.props.onChange ) this.props.onChange( rect );
+      const rectObject = {
+        bottom: rect.bottom,
+        height: rect.height,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        width: rect.width,
+        x: rect.x,
+        y: rect.y,
+      };
+
+      if ( this.props.onChange ) {
+        if (
+          !( rectObject.bottom === 0 &&
+            rectObject.height === 0 &&
+            rectObject.left === 0 &&
+            rectObject.right === 0 &&
+            rectObject.top === 0 &&
+            rectObject.width === 0 &&
+            rectObject.x === 0 &&
+            rectObject.y === 0 )
+        ) {
+          this.props.onChange( rectObject );
+        }
+      }
+      this.rect = rectObject;
     });
 
     this.observer = observer;
@@ -38,23 +65,24 @@ class Area extends Component {
     }
   }
 
-  handleSetSize = ( dimensions ) => {
-    if ( !shallowCompare( this.state.size, dimensions )) {
+  handleSetSize = ( rect ) => {
+    if ( !shallowCompare( this.state.size, rect )) {
       this.setState({
-        size: dimensions,
+        size: rect,
       });
     }
   }
 
   render() {
-    const { children } = this.props;
+    const { children, onUpdate } = this.props;
 
     return (
       typeof children === 'function'
         ? children({
           // setSize: this.handleSetSize,
           setObserve: this.setObserve,
-          size: this.state.size,
+          size: this.rect,
+          updateArea: onUpdate ? () =>  onUpdate( this.rect ) : null,
         })
         : children
     );

@@ -17,6 +17,8 @@ import {
   getDeviceSize,
   shallowCompare,
   objectMerge,
+  storeQuery,
+  setTitle,
 } from '../../../utils';
 
 const defaultStyle = {
@@ -307,8 +309,13 @@ class Frame extends Component {
 
     const rootFrame = frames[rootCode];
 
+    const projectAttributes = storeQuery.getProjectAttributes();
+    const projectName = dlv( projectAttributes, 'PRI_NAME.value' );
+
     if ( !rootFrame ) {
       console.warn( 'waiting for Root Frame...' ); // eslint-disable-line
+
+      setTitle( projectName );
 
       return (
         <Box

@@ -17,8 +17,7 @@ class MenuButton extends Component {
         {({ handleToggle, setButtonArea, setRef }) => {
           return (
             <Area
-              identifier={`button-${testID}`}
-              onChange={setButtonArea}
+              onUpdate={setButtonArea}
             >
               {( props ) => {
                 return (
@@ -26,7 +25,10 @@ class MenuButton extends Component {
                     {...restProps}
                     withFeedback
                     testID={testID}
-                    onPress={handleToggle}
+                    onPress={( event ) => {
+                      props.updateArea();
+                      handleToggle( event );
+                    }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"
                   >
@@ -35,8 +37,9 @@ class MenuButton extends Component {
                       style={{
                         display: 'flex',
                       }}
-                    />
-                    {children}
+                    >
+                      {children}
+                    </span>
                   </Touchable>
                 );
               }}
