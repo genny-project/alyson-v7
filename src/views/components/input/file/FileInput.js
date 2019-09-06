@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, array, arrayOf, string, number, object } from 'prop-types';
 import axios from 'axios';
 // import prettierBytes from 'prettier-bytes';
-import { Box, Text, Touchable, Icon, Fragment } from '../..';
+import { Box, Text, Touchable, Icon, Fragment, ActivityIndicator } from '../..';
 import InputFileItem from './file-item';
 import { isArray, isString, isObject, isInteger } from '../../../../utils';
 import store from '../../../../redux/store';
@@ -58,6 +58,8 @@ class FileInput extends Component {
 
   state = {
     selectedFiles: [],
+    uploading: false,
+    deleting: false,
   };
 
   componentDidMount() {
@@ -115,6 +117,7 @@ class FileInput extends Component {
     if (
       checkForNewFiles()
     ) {
+      console.warn('updating input files from props' ); // eslint-disable-line
       this.updateFilesFromProps();
     }
   }
@@ -134,6 +137,7 @@ class FileInput extends Component {
         uploadURL: file.uploadURL,
         type: file.type,
         size: file.size,
+        uuid: file.uuid,
       });
     });
   }
@@ -168,12 +172,9 @@ class FileInput extends Component {
 
   uploadFile( formData ) {
     const token = store.getState().keycloak.accessToken;
-    // const keycloakData = store.getState().keycloak.data;
+    const keycloakData = store.getState().keycloak.data;
 
-    // const URL = `${config.genny.host}${keycloakData.ENV_GENNY_BRIDGE_MEDIA}`;
-
-    // const URL = 'https://internmatch-test.gada.io/qwanda/images';
-    const URL = 'https://media-proxy-test.gada.io/public';
+    const URL = `${keycloakData.ENV_MEDIA_PROXY_URL}`;
 
     if ( !isString( URL, { ofMinLength: 1 })) {
       console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
@@ -186,6 +187,10 @@ class FileInput extends Component {
       'Authorization': `bearer ${token}`,
     };
 
+    this.setState({
+      uploading: true,
+    });
+
     axios.post( URL, formData, {
       headers: headers,
     })
@@ -195,25 +200,10 @@ class FileInput extends Component {
       console.warn({ response }); // eslint-disable-line
 
       if ( isArray( response.data.files )) {
-        // response.data.files <- array of UUIDs, need to be appended to:
-        // https://media-proxy-test.gada.io/public/<uuid>
-
-        // need an ID to match the uuid with existing files in the state
-
-        const formattedUrls = response.data.files.map( file => ({ name: file.name, url: `${URL}/${file.uuid}` }));
-
-        // CONVERT FILES TO STATE FORMAT
-
-        // const formattedFiles = response.data.files.map( file => ({
-        //   name: file.name,
-        //   uploadURL: file.url,
-        //   type: 'image',
-        //   size: 0,
-        // }));
-
-        // const fileNames = formattedFiles.map( formattedFile => formattedFile.name );
+        const formattedUrls = response.data.files.map( file => ({ name: file.name, url: `${URL}/${file.uuid}`, uuid: file.uuid }));
 
         this.setState( state => ({
+          uploading: false,
           selectedFiles: [
             ...state.selectedFiles.map( file => {
               const matchingFileWithURL = formattedUrls.find( fileWithURL => (
@@ -227,6 +217,7 @@ class FileInput extends Component {
                 return {
                   ...file,
                   uploadURL: matchingFileWithURL.url,
+                  id: matchingFileWithURL.uuid,
                 };
               }
 
@@ -255,12 +246,6 @@ class FileInput extends Component {
 
   deleteFile( file ) {
     const token = store.getState().keycloak.accessToken;
-    // const keycloakData = store.getState().keycloak.data;
-
-    // const URL = `${config.genny.host}${keycloakData.ENV_GENNY_BRIDGE_MEDIA}`;
-
-    // const URL = 'https://media-proxy-test.gada.io/public';
-
     const URL = file.uploadURL;
 
     if ( !isString( URL, { ofMinLength: 1 })) {
@@ -274,6 +259,10 @@ class FileInput extends Component {
       Authorization: `bearer ${token}`,
     };
 
+    this.setState({
+      deleting: true,
+    });
+
     axios.delete( URL, {
       headers: headers,
     })
@@ -283,6 +272,7 @@ class FileInput extends Component {
       console.warn({ response }); // eslint-disable-line
 
       this.setState( state => ({
+        deleting: false,
         selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
       }), () => {
         if ( this.props.onChangeValue ) {
@@ -426,7 +416,11 @@ class FileInput extends Component {
       maxNumberOfFiles,
       showName,
     } = this.props;
-    const { selectedFiles } = this.state;
+    const {
+      selectedFiles,
+      uploading,
+      deleting,
+    } = this.state;
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
     const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
@@ -485,6 +479,7 @@ class FileInput extends Component {
                     return (
                       <InputFileItem
                         key={file.name}
+                        id={file.uuid}
                         size={file.size}
                         name={file.name}
                         // uploaded={file.uploaded}
@@ -503,6 +498,23 @@ class FileInput extends Component {
                   <Text text="No File selected" />
                 )}
               </Box>
+
+              { uploading || deleting ? (
+                <Box
+                  justifyContent="center"
+                  alignItems="center"
+                  alignSelf="center"
+                  flexDirection="row"
+                >
+                  <Text
+                    text={`File ${uploading ? 'upload' : 'deletion'} in progress`}
+                  />
+                  <Box
+                    padding={5}
+                  />
+                  <ActivityIndicator />
+                </Box>
+              ) : null }
 
               {
                 editable ? (
