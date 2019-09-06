@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, array, arrayOf, string, number, object } from 'prop-types';
 import axios from 'axios';
 // import prettierBytes from 'prettier-bytes';
-import { Box, Text, Touchable, Icon } from '../..';
+import { Box, Text, Touchable, Icon, Fragment } from '../..';
 import InputFileItem from './file-item';
 import { isArray, isString, isObject, isInteger } from '../../../../utils';
 import store from '../../../../redux/store';
@@ -57,11 +57,9 @@ class FileInput extends Component {
 
   state = {
     selectedFiles: [],
-    requestCamera: false,
   };
 
   componentDidMount() {
-    const { value } = this.props;
     const URL = process.env.ENV_FILE_UPLOAD_URL;
 
     console.log( URL ); //eslint-disable-line
@@ -71,9 +69,7 @@ class FileInput extends Component {
 
   componentDidUpdate( prevProps, prevState ) {
     const { value } = this.props;
-    const { selectedFiles } = this.props;
-
-    console.log( prevProps, this.props.value );
+    const { selectedFiles } = this.state;
 
     const checkForNewFiles = () => {
       // if prevProps.value is different from this.props.value
@@ -95,8 +91,10 @@ class FileInput extends Component {
       // }
 
       if (
+        isArray( prevState.selectedFiles ) &&
         isArray( selectedFiles ) &&
         isArray( value ) &&
+        prevState.selectedFiles.length !== value.length &&
         selectedFiles.length !== value.length
       ) {
         return true;
@@ -127,18 +125,31 @@ class FileInput extends Component {
     return files;
   };
 
+  convertFilesToStateFormat = ( files ) => {
+    return files.map( file => {
+      // if ( )
+      return ({
+        name: file.name,
+        uploadURL: file.uploadURL,
+        type: file.type,
+        size: file.size,
+      });
+    });
+  }
+
   updateFilesFromProps = () => {
-    console.log( 'updateFilesFromProps' );
     const { value } = this.props;
 
-    const formattedFiles = value.map( file => ({
-      name: file.name,
-      uploadURL: file.url,
-      type: 'image',
-      size: 0,
-    }));
+    // const formattedFiles = value.map( file => ({
+    //   name: file.name,
+    //   uploadURL: file.url,
+    //   type: 'image',
+    //   size: 0,
+    // }));
 
-    console.log( 'new state files', formattedFiles );
+    const formattedFiles = this.convertFilesToStateFormat( value );
+
+    // CONVERT FILES TO STATE FORMAT
 
     const fileNames = formattedFiles.map( formattedFile => formattedFile.name );
 
@@ -190,11 +201,48 @@ class FileInput extends Component {
 
         const formattedUrls = response.data.files.map( file => ({ name: file.name, url: `${URL}/${file.uuid}` }));
 
-        if ( this.props.onChangeValue ) {
-          this.props.onChangeValue( formattedUrls ); // send the URl to Genny system
-        }
-        this.setState({
+        // CONVERT FILES TO STATE FORMAT
 
+        // const formattedFiles = response.data.files.map( file => ({
+        //   name: file.name,
+        //   uploadURL: file.url,
+        //   type: 'image',
+        //   size: 0,
+        // }));
+
+        // const fileNames = formattedFiles.map( formattedFile => formattedFile.name );
+
+        this.setState( state => ({
+          selectedFiles: [
+            ...state.selectedFiles.map( file => {
+              const matchingFileWithURL = formattedUrls.find( fileWithURL => (
+                fileWithURL.name === file.name
+              ));
+              // check if file name matches
+
+              // if yes, then add the url to the file object
+
+              if ( isObject( matchingFileWithURL )) {
+                return {
+                  ...file,
+                  uploadURL: matchingFileWithURL.url,
+                };
+              }
+
+              return file;
+            }),
+          ],
+        }), () => {
+          // CONVERT FILES TO SEND FORMAT
+          if ( this.props.onChangeValue ) {
+            const answerFiles = this.state.selectedFiles.map( file => {
+              delete file.file;
+
+              return file;
+            });
+
+            this.props.onChangeValue( answerFiles ); // send the URl to Genny system
+          }
         });
       }
     })
@@ -204,7 +252,7 @@ class FileInput extends Component {
     });
   }
 
-  deleteFile( url, callback ) {
+  deleteFile( file ) {
     const token = store.getState().keycloak.accessToken;
     // const keycloakData = store.getState().keycloak.data;
 
@@ -212,7 +260,7 @@ class FileInput extends Component {
 
     // const URL = 'https://media-proxy-test.gada.io/public';
 
-    const URL = url;
+    const URL = file.uploadURL;
 
     if ( !isString( URL, { ofMinLength: 1 })) {
       console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
@@ -232,7 +280,14 @@ class FileInput extends Component {
       // handle success
       console.log( "FILE_DELETE_SUCCESS" ); // eslint-disable-line
       console.warn({ response }); // eslint-disable-line
-      callback( 'success' );
+
+      this.setState( state => ({
+        selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
+      }), () => {
+        if ( this.props.onChangeValue ) {
+          this.props.onChangeValue( this.state.selectedFiles ); // send the URl to Genny system
+        }
+      });
     })
     .catch(( response ) => {
       // handle error
@@ -250,8 +305,9 @@ class FileInput extends Component {
     const { maxNumberOfFiles, maxFileSize, maxTotalFileSize } = this.props;
     const { selectedFiles } = this.state;
 
+    // CONVERT FILES TO STATE FORMAT
+
     const addFilesToArray = ( currentItems, newItems ) => {
-      console.log({ newItems });
       if (
         isArray( currentItems ) &&
         isArray( newItems )
@@ -259,7 +315,6 @@ class FileInput extends Component {
         const duplicateItems = [];
         const newItemNames = newItems.map( newItem => newItem.name );
 
-        console.log({ newItemNames });
         const filteredCurrentItems = currentItems.filter( currentItem => {
           const isItemDuplicate = newItemNames.includes( currentItem.name );
 
@@ -282,12 +337,19 @@ class FileInput extends Component {
       return [];
     };
 
-    const formattedNewFiles = allFilesArray.map( file => ({
-      file: file,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    }));
+    const formattedNewFiles = allFilesArray.map( file => {
+      if ( !isObject( file, { withProperty: 'file' })) {
+        return ({
+          file: file,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        });
+      }
+
+      return file;
+    });
+
     const newFilesArray = addFilesToArray( selectedFiles, formattedNewFiles );
 
     const checkNumberOfFiles = () => {
@@ -312,13 +374,9 @@ class FileInput extends Component {
 
     if ( checkNumberOfFiles()) {
       if ( checkFileSizes()) {
-        console.log({ filesForState: newFilesArray });
-
         this.setState({
           selectedFiles: newFilesArray,
         });
-
-        console.log({ filesToBeUploaded: allFiles });
 
         const formData = new FormData();
 
@@ -340,17 +398,9 @@ class FileInput extends Component {
   };
 
   handleRemoveFile = ( file ) => {
-    this.deleteFile( file.uploadURL, ( response ) => {
-      if ( response === 'success' ) {
-        this.setState( state => {
-          return {
-            selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
-            // eslint-disable-next-line max-len
-            numberOfFilesSelected: state.selectedFiles.filter( item => item.name !== file.name ).length,
-          };
-        }, console.warn(this.state, 'state in handle close')); //eslint-disable-line
-      }
-    });
+    if ( file.uploadURL ) {
+      this.deleteFile( file );
+    }
   };
 
   // Please donot remove
@@ -371,6 +421,7 @@ class FileInput extends Component {
       icon,
       iconOnly,
       question,
+      editable,
       maxNumberOfFiles,
     } = this.props;
     const { selectedFiles } = this.state;
@@ -379,6 +430,9 @@ class FileInput extends Component {
     const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
     const isInputDisabled = this.props.disabled ||
       isInteger( maxNumberOfFiles ) && selectedFiles.length >= maxNumberOfFiles;
+
+    // const readOnly = selectedFiles.length > 0;
+    const readOnly = false;
 
     /*
       File Upload Input
@@ -418,11 +472,13 @@ class FileInput extends Component {
                 flexWrap="wrap"
                 {...componentProps['input-selected-wrapper']}
               >
-                {isArray( selectedFiles ) ? (
+                {isArray( selectedFiles, { ofMinLength: 1 }) ? (
                   selectedFiles.map( file => {
-                    const previewImage = file.uploadURL ? file.uploadURL : window.URL.createObjectURL( file.file );
-
-                    console.log({ file });
+                    const previewImage = file.uploadURL
+                      ? file.uploadURL
+                      : isObject( file, { withProperty: file })
+                        ? window.URL.createObjectURL( file.file )
+                        : null;
 
                     return (
                       <InputFileItem
@@ -435,10 +491,8 @@ class FileInput extends Component {
                         uploadURL={file.uploadURL}
                         onRemove={() => this.handleRemoveFile( file )}
                         onChangeState={this.handleChangeState}
-                        stateBasedProps={
-                          ({ active, hover }) => filterComponentProps( 'input-selected', { active, hover })
-                        }
-                        // {...componentProps['input-selected']}
+                        readOnly={!editable}
+                        {...filterComponentProps( 'input-selected', { readonly: readOnly })}
                       />
                     );
                   })
@@ -447,61 +501,66 @@ class FileInput extends Component {
                 )}
               </Box>
 
-              <Touchable
-                onPress={this.handleClickOnHiddenButton}
-                withFeedback
-                backgroundColor="#121254e8"
-                width="100%"
-                // height="40px"
-                alignItems="center"
-                justifyContent="center"
-                disabled={isInputDisabled}
-                onChangeState={updateState( 'input-field' )}
-                {...componentProps['input-field']}
-              >
-                { hasIcon
-                  ? (
-                    <Icon
-                      name={icon}
-                      color="black"
-                      {...iconProps}
-                      iconProps={componentProps['input-icon']}
-                    />
-                  ) : null
-                  }
-                { hasIcon &&
-                    hasText
-                  ? (
-                    <Box
-                      paddingRight={5}
-                    />
-                  ) : null
-                  }
-                {
-                    hasText && !(
-                      this.props.isClosed &&
-                      hasIcon
-                    )
-                      ? (
-                        <Text
-                          whiteSpace="nowrap"
-                          text="Add File"
-                          {...componentProps['input-field']}
-                        />
-                      ) : null
-                  }
-              </Touchable>
+              {
+                editable ? (
+                  <Fragment>
+                    <Touchable
+                      onPress={this.handleClickOnHiddenButton}
+                      withFeedback
+                      backgroundColor="#121254e8"
+                      width="100%"
+                      // height="40px"
+                      alignItems="center"
+                      justifyContent="center"
+                      disabled={isInputDisabled}
+                      onChangeState={updateState( 'input-field' )}
+                      {...componentProps['input-field']}
+                    >
+                      { hasIcon
+                        ? (
+                          <Icon
+                            name={icon}
+                            color="black"
+                            {...iconProps}
+                            iconProps={componentProps['input-icon']}
+                          />
+                        ) : null
+                        }
+                      { hasIcon &&
+                          hasText
+                        ? (
+                          <Box
+                            paddingRight={5}
+                          />
+                        ) : null
+                        }
+                      {
+                          hasText && !(
+                            this.props.isClosed &&
+                            hasIcon
+                          )
+                            ? (
+                              <Text
+                                whiteSpace="nowrap"
+                                text="Add File"
+                                {...componentProps['input-field']}
+                              />
+                            ) : null
+                        }
+                    </Touchable>
 
-              <input
-                onChange={this.handleAddFile}
-                ref={this.inputFileNew}
-                type="file"
-                multiple={multiple}
-                name="fileupload"
-                style={{ display: 'none' }}
-                accept={this.props.allowedFileTypes.toString( ',' )}
-              />
-
+                    <input
+                      onChange={this.handleAddFile}
+                      ref={this.inputFileNew}
+                      type="file"
+                      multiple={multiple}
+                      name="fileupload"
+                      style={{ display: 'none' }}
+                      accept={this.props.allowedFileTypes.toString( ',' )}
+                    />
+                  </Fragment>
+                ) : null
+              }
               {/* Please DONOT REMOVE*/}
               {/* See the comments above */}
 

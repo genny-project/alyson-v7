@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { func, any, number, object } from 'prop-types';
+import { func, any, number, bool, oneOfType, string } from 'prop-types';
 import prettierBytes from 'prettier-bytes';
-import { Box, Text, Icon, Image, Touchable, Link } from '../../../../components';
+import { Box, Text, Icon, Image, Touchable, Link, Fragment } from '../../../../components';
 import { trimAndAppendDots, isInteger, isObject, isString } from '../../../../../utils';
 
 const fileTypes = {
@@ -18,9 +18,13 @@ const fileTypes = {
 };
 
 class InputFileItem extends Component {
-  // static defaultProps = {
-  //   testID: 'input-file-item',
-  // }
+  static defaultProps = {
+    imageHeight: 20,
+    imageWidth: 20,
+    backgroundColor: '#ddd',
+    flexDirection: 'row',
+    showName: true,
+  }
 
   static propTypes = {
     id: any,
@@ -34,13 +38,22 @@ class InputFileItem extends Component {
     onRemove: func,
     // testID: string,
     nameCharacterLimit: number,
-    stateBasedProps: object,
+    readOnly: bool,
+    imageHeight: oneOfType(
+      [string, number]
+    ),
+    imageWidth: oneOfType(
+      [string, number]
+    ),
+    backgroundColor: string,
+    flexDirection: string,
+    showName: bool,
   }
 
-  state = {
-    hover: false,
-    active: false,
-  }
+  // state = {
+  //   hover: false,
+  //   active: false,
+  // }
 
   getIconName() {
     const { type } = this.props;
@@ -72,7 +85,12 @@ class InputFileItem extends Component {
       onRemove,
       // testID,
       nameCharacterLimit,
-      stateBasedProps,
+      readOnly,
+      imageHeight,
+      imageWidth,
+      backgroundColor,
+      flexDirection,
+      showName,
       // ...restProps
     } = this.props;
 
@@ -92,20 +110,20 @@ class InputFileItem extends Component {
     return (
       <Box
         key={id}
-        flexDirection="row"
+        flexDirection={flexDirection}
         justifyContent="flex-start"
         alignItems="center"
         padding={5}
         marginRight={5}
         marginBottom={5}
         // paddingBottom={15}
-        backgroundColor="#ddd"
+        backgroundColor={backgroundColor}
       >
         {hasImagePreview ? (
           <Image
             source={uploadURL || preview}
-            width={20}
-            height={20}
+            width={imageHeight}
+            height={imageWidth}
             fit="cover"
           />
         ) : (
@@ -118,62 +136,72 @@ class InputFileItem extends Component {
           </Box>
         )}
 
-        <Box
-          padding={5}
-        />
-        { uploadURL
+        { showName
           ? (
-            <Link
-              to={uploadURL}
-              externalLink
-            >
-              <Text
-                size="xs"
-                width="100%"
-                color="blue"
-                decoration="underline"
+            <Fragment>
+              <Box
+                padding={5}
+              />
+
+              {uploadURL
+                ? (
+                  <Link
+                    to={uploadURL}
+                    externalLink
+                  >
+                    <Text
+                      size="xs"
+                      width="100%"
+                      color="blue"
+                      decoration="underline"
+                    >
+                      {/* trimAndAppendDots( file.name, 8 ) */}
+                      {trimmedName}
+                      {/* {uploaded
+                        ? ' (uploaded)'
+                        : ' (not uploaded)'} */}
+                      {size ? prettierBytes( size ) : null}
+                      {/* {error && '(ERROR)'} */}
+                    </Text>
+                  </Link>
+                )
+                : (
+                  <Text
+                    size="xs"
+                    width="100%"
+                  >
+                    {trimmedName}
+                    {/* {uploaded
+                      ? ' (uploaded)'
+                      : ' (not uploaded)'} */}
+                    {/* {error && '(ERROR)'} */}
+                  </Text>
+                )}
+            </Fragment>
+          ) : null
+        }
+        {
+          !readOnly ? (
+            <Fragment>
+              <Box
+                padding={5}
+              />
+
+              <Touchable
+                withFeedback
+                onPress={() => onRemove ? onRemove( id ) : null}
+                onChangeState={this.handleChangeState}
               >
-                {/* trimAndAppendDots( file.name, 8 ) */}
-                {trimmedName}
-                {/* {uploaded
-                  ? ' (uploaded)'
-                  : ' (not uploaded)'} */}
-                {size ? prettierBytes( size ) : null}
-                {/* {error && '(ERROR)'} */}
-              </Text>
-            </Link>
-          )
-          : (
-            <Text
-              size="xs"
-              width="100%"
-            >
-              {trimmedName}
-              {/* {uploaded
-                ? ' (uploaded)'
-                : ' (not uploaded)'} */}
-              {/* {error && '(ERROR)'} */}
-            </Text>
-          )
-            }
-
-        <Box
-          padding={5}
-        />
-
-        <Touchable
-          withFeedback
-          onPress={() => onRemove ? onRemove( id ) : null}
-          onChangeState={this.handleChangeState}
-        >
-          <Icon
-            name="close"
-            size="sm"
-            color="black"
-            cursor="pointer"
-            {...stateBasedProps( this.state )}
-          />
-        </Touchable>
+                <Icon
+                  name="close"
+                  size="sm"
+                  color="black"
+                  cursor="pointer"
+                />
+              </Touchable>
+            </Fragment>
+          ) : null
+        }
       </Box>
     );
   }
