@@ -47,6 +47,7 @@ class FileInput extends Component {
     editable: bool,
     error: string,
     isClosed: bool,
+    showName: bool,
   };
 
   constructor( props ) {
@@ -423,6 +424,7 @@ class FileInput extends Component {
       question,
       editable,
       maxNumberOfFiles,
+      showName,
     } = this.props;
     const { selectedFiles } = this.state;
 
@@ -492,6 +494,7 @@ class FileInput extends Component {
                         onRemove={() => this.handleRemoveFile( file )}
                         onChangeState={this.handleChangeState}
                         readOnly={!editable}
+                        showName={showName}
                         {...filterComponentProps( 'input-selected', { readonly: readOnly })}
                       />
                     );

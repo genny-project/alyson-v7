@@ -25,7 +25,7 @@ import InputTag from './tag';
 import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
-import InputImage from './image';
+// import InputImage from './image';
 import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
@@ -258,9 +258,10 @@ class Input extends Component {
       case 'image':
       case 'Image':
         return (
-          <InputImage
+          <InputFile
+            allowedFileTypes={['image/*']}
             {...inputProps}
-            ref={input => ( this.input = input )}
+            ref={input => this.input = input}
           />
         );
 
