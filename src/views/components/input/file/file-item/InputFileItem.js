@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { func, any, number, bool, oneOfType, string } from 'prop-types';
-import prettierBytes from 'prettier-bytes';
+// import prettierBytes from 'prettier-bytes';
 import { Box, Text, Icon, Image, Touchable, Link, Fragment } from '../../../../components';
 import { trimAndAppendDots, isInteger, isObject, isString } from '../../../../../utils';
 
@@ -28,12 +28,12 @@ class InputFileItem extends Component {
 
   static propTypes = {
     id: any,
-    size: any,
-    name: any,
+    // size: any,
+    name: string,
     // uploaded: any,
-    type: any,
+    type: string,
     preview: any,
-    uploadURL: any,
+    uploadURL: string,
     // error: any,
     onRemove: func,
     // testID: string,
@@ -75,7 +75,7 @@ class InputFileItem extends Component {
   render() {
     const {
       id,
-      size,
+      // size,
       name,
       // uploaded,
       type,
@@ -154,15 +154,8 @@ class InputFileItem extends Component {
                       width="100%"
                       color="blue"
                       decoration="underline"
-                    >
-                      {/* trimAndAppendDots( file.name, 8 ) */}
-                      {trimmedName}
-                      {/* {uploaded
-                        ? ' (uploaded)'
-                        : ' (not uploaded)'} */}
-                      {size ? prettierBytes( size ) : null}
-                      {/* {error && '(ERROR)'} */}
-                    </Text>
+                      text={trimmedName}
+                    />
                   </Link>
                 )
                 : (
@@ -171,10 +164,6 @@ class InputFileItem extends Component {
                     width="100%"
                   >
                     {trimmedName}
-                    {/* {uploaded
-                      ? ' (uploaded)'
-                      : ' (not uploaded)'} */}
-                    {/* {error && '(ERROR)'} */}
                   </Text>
                 )}
             </Fragment>
