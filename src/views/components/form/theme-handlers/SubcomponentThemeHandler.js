@@ -61,6 +61,7 @@ class SubcomponentThemeHandler extends Component {
         ...getObjectFromKey( 'selected', { condition: subcomponents[type] && subcomponents[type].selected }),
         ...getObjectFromKey( 'disabled', { condition: editable === false || disabled }),
         ...getObjectFromKey( 'error', { condition: error }),
+        ...getObjectFromKey( 'readonly', { condition: subcomponents[type] && subcomponents[type].readonly }),
       };
     };
 

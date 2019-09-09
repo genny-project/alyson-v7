@@ -83,9 +83,6 @@ class InputEvent extends Component {
               flexDirection="row"
               {...componentProps['input-wrapper']}
             >
-              {/* <Box
-
-              > */}
               { hasIcon
                 ? (
                   <Icon
@@ -119,7 +116,6 @@ class InputEvent extends Component {
                       />
                     ) : null
                 }
-              {/* </Box> */}
             </EventTouchable>
           );
         }
