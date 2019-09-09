@@ -60,6 +60,7 @@ class FileInput extends Component {
     selectedFiles: [],
     uploading: false,
     deleting: false,
+    error: null,
   };
 
   componentDidMount() {
@@ -189,6 +190,7 @@ class FileInput extends Component {
 
     this.setState({
       uploading: true,
+      error: null,
     });
 
     axios.post( URL, formData, {
@@ -241,6 +243,13 @@ class FileInput extends Component {
     .catch(( response ) => {
       // handle error
       console.log( response, "FILE_UPLOAD_FAILURE" ); // eslint-disable-line
+      this.setState( state => ({
+        uploading: false,
+        selectedFiles: [
+          ...state.selectedFiles.filter( file => isObject( file, { withProperty: 'uploadURL' })),
+        ],
+        error: response.message,
+      }));
     });
   }
 
@@ -261,6 +270,7 @@ class FileInput extends Component {
 
     this.setState({
       deleting: true,
+      error: null,
     });
 
     axios.delete( URL, {
@@ -283,6 +293,10 @@ class FileInput extends Component {
     .catch(( response ) => {
       // handle error
       console.log( response, "FILE_DELETE_FAILURE" ); // eslint-disable-line
+      this.setState({
+        deleting: false,
+        error: response.message,
+      });
     });
   }
 
@@ -420,6 +434,7 @@ class FileInput extends Component {
       selectedFiles,
       uploading,
       deleting,
+      error,
     } = this.state;
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
@@ -499,7 +514,7 @@ class FileInput extends Component {
                 )}
               </Box>
 
-              { uploading || deleting ? (
+              { uploading || deleting || error ? (
                 <Box
                   justifyContent="center"
                   alignItems="center"
@@ -507,12 +522,14 @@ class FileInput extends Component {
                   flexDirection="row"
                 >
                   <Text
-                    text={`File ${uploading ? 'upload' : 'deletion'} in progress`}
+                    text={`${error ? error : `File ${uploading ? 'upload' : 'deletion'} in progress`}`}
                   />
                   <Box
                     padding={5}
                   />
-                  <ActivityIndicator />
+                  { !error ? (
+                    <ActivityIndicator />
+                  ) : null }
                 </Box>
               ) : null }
 

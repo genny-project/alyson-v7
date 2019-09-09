@@ -59,7 +59,7 @@ class InputFileItem extends Component {
     const { type } = this.props;
 
     const matchType = Object.keys( fileTypes ).find( fileTypeKey => {
-      return type.includes( fileTypeKey );
+      return isString( type ) ? type.includes( fileTypeKey ) : false;
     });
 
     return isObject( fileTypes, { withProperty: matchType }) ? fileTypes[matchType] : fileTypes['default'];
@@ -95,7 +95,7 @@ class InputFileItem extends Component {
     } = this.props;
 
     const hasImagePreview = (
-      type.includes( 'image' ) &&
+      isString( type ) && type.includes( 'image' ) &&
       ( !!preview || !!uploadURL )
     );
 
