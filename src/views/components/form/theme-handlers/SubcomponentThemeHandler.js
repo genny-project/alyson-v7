@@ -31,6 +31,7 @@ class SubcomponentThemeHandler extends Component {
   render() {
     const { children, subcomponentProps, editable, disabled, error } = this.props;
     const { subcomponents } = this.state;
+
     // integrate state
     const getPropsByType = ( type, conditions ) => {
       if ( !isObject( subcomponentProps )) return {};
