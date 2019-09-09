@@ -443,7 +443,7 @@ class FileInput extends Component {
       isInteger( maxNumberOfFiles ) && selectedFiles.length >= maxNumberOfFiles;
 
     // const readOnly = selectedFiles.length > 0;
-    const readOnly = false;
+    // const readOnly = false;
 
     /*
       File Upload Input
@@ -505,7 +505,7 @@ class FileInput extends Component {
                         onChangeState={this.handleChangeState}
                         readOnly={!editable}
                         showName={showName}
-                        {...filterComponentProps( 'input-selected', { readonly: readOnly })}
+                        {...filterComponentProps( 'input-selected', { readonly: !editable })}
                       />
                     );
                   })
