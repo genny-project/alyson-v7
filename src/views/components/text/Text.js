@@ -37,6 +37,7 @@ const Text = ({
   transform,
   whiteSpace = 'normal',
   cursor,
+  fontStyle = 'normal',
   ...restProps
 }) => {
   const style = {
@@ -54,6 +55,7 @@ const Text = ({
     cursor,
     whiteSpace,
     alignSelf: alignSelf,
+    fontStyle,
   };
 
   let child = text || children;
@@ -110,6 +112,9 @@ Text.propTypes = {
   ),
   alignSelf: oneOf(
     ['normal', 'auto', 'center', 'flex-start', 'flex-end']
+  ),
+  fontStyle: oneOf(
+    ['normal', 'italic']
   ),
 };
 
