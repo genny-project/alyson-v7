@@ -263,8 +263,8 @@ class FormGroup extends Component {
       onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
       question,
-      editable: !readonly,
-      // disabled: disabled,
+      editable: !readonly, // <- display only
+      // disabled: disabled, // <- input, but disabled
       ref: addRef,
       returnKeyType: (
         inputRefs[questionGroupCode] &&
