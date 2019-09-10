@@ -260,6 +260,9 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
     ...( dlv( attributes, 'PRI_CONTENT_SELECTED.value' )
       ? { selected: dlv( attributes, 'PRI_CONTENT_SELECTED.value' ) }
       : null ),
+    ...( dlv( attributes, 'PRI_CONTENT_READONLY.value' )
+      ? { readonly: dlv( attributes, 'PRI_CONTENT_READONLY.value' ) }
+      : null ),
     ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' )
       ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) }
       : null ),

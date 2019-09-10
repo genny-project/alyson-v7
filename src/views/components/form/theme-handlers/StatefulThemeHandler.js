@@ -40,8 +40,6 @@ class StatefulThemeHandler extends Component {
     const getSubcomponentPropsByType = ( type ) => {
       const typeThemes = getStyling( type );
 
-      // if ( this.props.identifier === 'QUE_TEXT' ) console.log( typeThemes );
-
       const getObjectFromKey = ( key, options = {}) => {
         const themeProps = isObject( typeThemes, { withProperty: key }) &&
         ( !isObject( options, { withProperty: 'condition' }) || options.condition )
@@ -63,6 +61,7 @@ class StatefulThemeHandler extends Component {
         ...getObjectFromKey( 'selected', { returnWithKey: true }),
         ...getObjectFromKey( 'disabled', { returnWithKey: true, condition: editable === false || disabled }),
         ...getObjectFromKey( 'error', { returnWithKey: true, condition: error }),
+        ...getObjectFromKey( 'readonly', { returnWithKey: true }),
         ...icon ? { icon } : {},
       };
     };
