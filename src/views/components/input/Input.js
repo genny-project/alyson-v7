@@ -111,7 +111,7 @@ class Input extends Component {
 
       case 'email':
         return (
-          <InputText
+          <TextInputElement
             keyboardType="email-address"
             {...inputProps}
             {...inputFieldProps}
