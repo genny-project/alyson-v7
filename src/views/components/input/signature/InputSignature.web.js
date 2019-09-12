@@ -47,7 +47,7 @@ class InputSignature extends Component {
       });
       console.log( "SIGNATURE_UPLOAD_SUCCESS", response ); // eslint-disable-line
 
-      if ( isArray( response.data.files )) {
+      if ( isArray( response.data.files, { ofMinLength: 1 })) {
         this.setState({
           file: response.data.files[0],
           uploading: false,
