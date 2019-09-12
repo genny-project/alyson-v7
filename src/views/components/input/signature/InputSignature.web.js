@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-// import { string, number, oneOfType, func } from 'prop-types';
-// import axios from 'axios';
-// import { connect } from 'react-redux';
-// import SignaturePad from 'react-signature-pad-wrapper';
-// import { InputText, Input, Button } from '../../../components';
+import { func } from 'prop-types';
+import SignaturePad from 'react-signature-pad-wrapper';
+import { Box, Touchable, Text, Icon, Image, ActivityIndicator } from '../../../components';
+import { Api, isArray, isObject, convertImageURLtoFile, isFile, createFormDataFromFiles } from '../../../../utils';
 
 class InputSignature extends Component {
   // static defaultProps = {
@@ -11,155 +10,207 @@ class InputSignature extends Component {
   //   width: '100%',
   // };
 
-  // static propTypes = {
-  //   height: oneOfType( [string, number] ),
-  //   width: oneOfType( [string, number] ),
-  //   onChangeValue: func,
-  // };
+  static propTypes = {
+    // height: oneOfType( [string, number] ),
+    // width: oneOfType( [string, number] ),
+    onChangeValue: func,
+  };
 
-  // state = {
-  //   textSignatureValue: '',
-  //   validated: false,
-  // };
+  state = {
+    file: null,
+    uploading: false,
+    deleting: false,
+    error: null,
+    empty: true,
+  };
 
-  // /* Helper method for submitting */
-  // submitSignature = async dataFromDrawingPad => {
-  //   const { config } = this.props;
+  /* Helper method for submitting */
+  submitSignature = async dataFromDrawingPad => {
+    this.setState({
+      uploading: true,
+      error: null,
+    });
 
-  //   if ( !config || !config.ENV_SIGNATURE_URL ) {
-  //     console.error( 'No Signature URL provided' );
-  //   }
-  //   try {
-  //     axios({
-  //       method: 'post',
-  //       url: config.ENV_SIGNATURE_URL,
-  //       data: dataFromDrawingPad,
-  //     }).then( data => {
-  //       if ( data && data.data.signatureURL ) {
-  //         this.setState({ validated: true });
-  //       }
-  //       if ( this.props.onChangeValue )
-  //         //eslint-disable-line
-  //         this.props.onChangeValue( data.data.signatureURL );
-  //     });
-  //   } catch ( error ) {
-  //     console.error( 'Error while sending the signatures', error );
-  //   }
-  // };
+    try {
+      const imgFile = convertImageURLtoFile( dataFromDrawingPad.data, 'signature.png' );
 
-  // /* submit thw signature data  from canvas */
-  // handleSignatureSubmitOnDraw = () => {
-  //   const dataFromDrawingPad = this.signaturePad.toDataURL();
+      const formData = new FormData();
 
-  //   this.submitSignature({ type: 'draw', data: dataFromDrawingPad });
-  // };
+      if ( !isFile( imgFile )) throw 'Error; Invalid \'File\' Object';
 
-  // /* submit text  signature data */
-  // handleSignatureSubmitOnText = () => {
-  //   const { textSignatureValue } = this.state;
+      formData.append( 'file', imgFile );
 
-  //   this.submitSignature({ type: 'text', data: textSignatureValue });
-  // };
+      const formData2 = createFormDataFromFiles( imgFile );
 
-  // // clear the canvas
-  // handleClearCanvas = () => {
-  //   this.signaturePad.clear();
-  // };
+      const response = await Api.postMediaFile({
+        data: formData2,
+      });
+      console.log( "SIGNATURE_UPLOAD_SUCCESS", response ); // eslint-disable-line
 
-  // /* handle text signature change */
-  // handleTextSignatureChange = event => {
-  //   const { value } = event.target;
+      if ( isArray( response.data.files )) {
+        this.setState({
+          file: response.data.files[0],
+          uploading: false,
+          empty: true,
+        }, () => {
+          if ( this.props.onChangeValue ) {
+            this.props.onChangeValue( this.state.file ); // send the URl to Genny system
+          }
+        });
+      }
+    } catch ( error ) {
+      console.error( 'SIGNATURE_UPLOAD_FAILURE', error );
+      this.setState({
+        uploading: false,
+        error: error,
+      });
+    }
+  };
 
-  //   this.setState({ textSignatureValue: value });
-  // };
+  /* submit thw signature data  from canvas */
+  handleSignatureSubmitOnDraw = () => {
+    const dataFromDrawingPad = this.signaturePad.toDataURL();
 
-  // renderButtons = () => {
-  //   const { validated } = this.state;
+    this.submitSignature({ type: 'draw', data: dataFromDrawingPad });
+  };
 
-  //   if ( validated ) {
-  //     return null;
-  //   }
+  handleSignatureEndDraw = () => {
+    this.setState({
+      empty: this.signaturePad && this.signaturePad.isEmpty(),
+    });
+  }
 
-  //   return (
-  //     <div>
-  //       <div
-  //         style={{
-  //           display: 'flex',
-  //           flexDirection: 'row',
-  //           width: '100%',
-  //           backgroundColor: 'whitesmoke',
-  //         }}
-  //       >
-  //         <div style={{ width: '100%' }}>
-  //           <Button
-  //             width="100%"
-  //             onPress={this.handleClearCanvas}
-  //             color="red"
-  //             withFeedback
-  //             style={{ marginTop: '10px', width: '100%' }}
-  //           >
-  //             Reset
-  //           </Button>
-  //         </div>
+  /* submit text  signature data */
+  handleSignatureSubmitOnText = () => {
+    const { textSignatureValue } = this.state;
 
-  //         <div style={{ width: '100%' }}>
-  //           <Button
-  //             width="100%"
-  //             onPress={this.handleSignatureSubmitOnDraw}
-  //             color="green"
-  //             withFeedback
-  //           >
-  //             Validate
-  //           </Button>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // };
+    this.submitSignature({ type: 'text', data: textSignatureValue });
+  };
+
+  // delete the saved signature
+  handleDeleteFile = async ( file ) => {
+    this.setState({
+      deleting: true,
+      error: null,
+    });
+
+    try {
+      const response = await Api.deleteMediaFile( file.url );
+      console.log( "SIGNATURE_DELETE_SUCCESS", response ); // eslint-disable-line
+
+      this.setState({
+        deleting: false,
+        file: null,
+        empty: true,
+      }, () => {
+        if ( this.props.onChangeValue ) {
+          this.props.onChangeValue( [] ); // send the URl to Genny system
+        }
+      });
+    } catch ( error ) {
+      console.error( 'SIGNATURE_DELETE_FAILURE', error );
+      this.setState({
+        deleting: false,
+        error: error,
+        empty: true,
+      });
+    }
+  }
+
+  // clear the canvas
+  handleClearCanvas = () => {
+    this.signaturePad.clear();
+  };
+
+  /* handle text signature change */
+  handleTextSignatureChange = event => {
+    const { value } = event.target;
+
+    this.setState({ textSignatureValue: value });
+  };
+
+  handleLayout = () => {
+    console.warn( 'sending \'resize\' event' ); // eslint-disable-line
+    window.dispatchEvent( new Event( 'resize' ));
+  }
 
   render() {
-    // const { height, width } = this.props;
+    // const {} = this.props;
+    const { width, file, deleting, uploading, error, empty } = this.state;
+
+    const buttons = [];
+
+    if ( !uploading && !deleting ) {
+      if ( isObject( file )) {
+        buttons.push({ icon: 'clear', handlePress: () => this.handleDeleteFile( file ) });
+      }
+      else {
+        buttons.push({ icon: 'clear', handlePress: this.handleClearCanvas });
+        if ( !empty ) {
+          buttons.push({ icon: 'publish', handlePress: this.handleSignatureSubmitOnDraw });
+        }
+      }
+    }
 
     return (
-      <div className="custom-signature">
-        {/* <Tabs
-          tabBackground="#f5f5f5"
-          activeTabBackground="#afafaf"
-          width="100%"
-          tabBarBackground="#f1f1f1"
-          tabBarSize="md"
-          textColor="black"
-          tabs={[
-            { key: 0, title: 'Draw ', testID: 'Draw' },
-            { key: 1, title: 'Write ', testID: 'Write' },
-            { key: 2, title: 'Upload ', testID: 'Upload' },
-
-          ]}
+      <Box
+        flexDirection="column"
+      >
+        <Box
+          width={width}
+          height="100%"
+          backgroundColor="#f9f9f9"
+          flexDirection="column"
+          position="relative"
+          onLayout={this.handleLayout}
         >
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              margin: '20px',
-              background: '#f9f9f9',
-            }}
+          { uploading || deleting || error ? (
+            <Box
+              justifyContent="center"
+              alignItems="center"
+              alignSelf="center"
+              flexDirection="row"
+            >
+              <Text
+                text={`${error ? error : `File ${uploading ? 'upload' : 'deletion'} in progress`}`}
+              />
+              <Box
+                padding={5}
+              />
+              { !error ? (
+                <ActivityIndicator />
+              ) : null }
+            </Box>
+          ) : null }
+          {
+            isObject( file, { withProperty: 'url' }) ? (
+              <Image
+                source={file.url}
+              />
+            ) : (
+              <SignaturePad
+                ref={ref => ( this.signaturePad = ref )}
+                // redrawOnResize
+                height={250}
+                // width={300}
+                options={{
+                  dotSize: 1,
+                  minWidth: 0.5,
+                  maxWidth: 2,
+                  onEnd: this.handleSignatureEndDraw,
+                }}
+              />
+            )
+          }
+          {/* <Box
+            width="100%"
+            backgroundColor="white"
+            padding={20}
+            flexDirection="column"
           >
-            <SignaturePad
-              ref={ref => ( this.signaturePad = ref )}
-              backgroundColor="red"
-              height={150}
-              redrawOnResize
-              options={{ height: '150px' }}
-              onend={this.handleSignatureSubmitOnDraw} // eslint-disable-line
-            />
-
-            {this.renderButtons()}
-          </div>
-
-          <div style={{ width: '100%', marginTop: 20, backgroundColor: '#fff', padding: 20 }}>
             <InputText
               type="text"
-              size="lg"
+              // size="lg"
               size="sm"
               padding={10}
               backgroundColor="#f1f1f1"
@@ -168,32 +219,46 @@ class InputSignature extends Component {
               onChange={this.handleTextSignatureChange}
               value={this.state.textSignatureValue}
             />
-            <p style={{ fontFamily: 'satisfy', fontSize: 20 }}>
-              {' '}
-              {this.state.textSignatureValue}
-            </p>
-            <Button
-              onPress={this.handleSignatureSubmitOnText}
-              color="green"
-              withFeedback
-              style={{ marginTop: '10px' }}
-            >
-              Submit
-            </Button>
-          </div>
-          <div style={{ width: '100%', height: '100%', padding: '20px', backgroundColor: '#fff' }}>
-            <Input type="upload" />
-          </div>
-        </Tabs> */}
-      </div>
+            <Text
+              size="lg"
+              fontFamily="satisfy"
+              text={this.state.textSignatureValue}
+            />
+          </Box> */}
+          {/* <Box>
+            <Input
+              type="file"
+              editable
+            />
+          </Box> */}
+          <Box
+            position="absolute"
+            top={0}
+            right={0}
+          >
+            {buttons.map( button => {
+              return (
+                <Touchable
+                  key={button.text}
+                  onPress={button.handlePress}
+                >
+                  <Box
+                    padding={5}
+                  >
+                    <Icon
+                      name={button.icon}
+                      color="#aaa"
+                      cursor="pointer"
+                    />
+                  </Box>
+                </Touchable>
+              );
+            })}
+          </Box>
+        </Box>
+      </Box>
     );
   }
 }
-
-// const mapStateToProps = state => ({
-//   config: state.keycloak.data,
-// });
-
-// export default connect( mapStateToProps )( InputSignature );
 
 export default InputSignature;
