@@ -196,7 +196,7 @@ class FileInput extends Component {
                 return {
                   ...file,
                   uploadURL: matchingFileWithURL.url,
-                  id: matchingFileWithURL.uuid,
+                  uuid: matchingFileWithURL.uuid,
                 };
               }
 
