@@ -70,6 +70,7 @@ class Frame extends Component {
     panels: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRE', 'FRAME'],
     linkTypes: ['asks', 'frames', 'themes'],
     inheritedProps: {},
+    wrapperThemes: {},
   };
 
   static propTypes = {
@@ -81,6 +82,7 @@ class Frame extends Component {
     inheritedProps: object,
     isRootFrame: bool,
     isClosed: bool,
+    wrapperThemes: object,
   };
 
   state = {
@@ -245,38 +247,10 @@ class Frame extends Component {
     // get props from theme links
     const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
 
+    // console.warn({ getInhertiableThemes: themeProps });
+
     return {
       ...objectMerge( this.props.inheritedProps, themeProps ),
-    };
-  };
-
-  getDelimiterStyling = panel => {
-    // filter links for panel
-    const inheritedLinks = [
-      ...filterThemes( this.props.inheritedProps, this.props.themes, {
-        panel: panel,
-        component: 'delimiter',
-        onlyComponentThemes: true,
-      }),
-    ];
-
-    const panelLinks = [
-      ...filterThemes( this.state.themes, this.props.themes, {
-        panel: panel,
-        component: 'delimiter',
-        onlyComponentThemes: true,
-      }),
-    ];
-
-    // get props from theme links
-    const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
-    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
-
-    const combinedThemeProps = objectMerge( inheritedThemeProps, themeProps );
-
-    return {
-      ...combinedThemeProps,
-      // ...themeProps,
     };
   };
 
@@ -305,7 +279,7 @@ class Frame extends Component {
   };
 
   render() {
-    const { rootCode, frames, isRootFrame, isClosed } = this.props;
+    const { rootCode, frames, isRootFrame, isClosed, wrapperThemes } = this.props;
 
     const rootFrame = frames[rootCode];
 
@@ -374,10 +348,6 @@ class Frame extends Component {
 
     const getStyling = panel => {
       // filter links for panel
-      const inheritedLinks = [
-        ...filterThemes( this.props.inheritedProps, this.props.themes, { formGroup: true }),
-      ];
-
       const panelLinks = [
         ...filterThemes( this.state.themes, this.props.themes, {
           panel: panel.toUpperCase(),
@@ -385,12 +355,12 @@ class Frame extends Component {
       ];
 
       // get props from theme links
-      const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
       const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
 
-      const combinedThemeProps = objectMerge( inheritedThemeProps, themeProps );
+      const combinedThemeProps = objectMerge( this.props.inheritedProps, themeProps );
 
       // console.log( inheritedThemeProps, themeProps, combinedThemeProps );
+      // console.warn({ inheritedLinks });
 
       return {
         ...combinedThemeProps,
@@ -408,13 +378,19 @@ class Frame extends Component {
 
     const RowComponent = shouldUseSwipeable ? Swipeable : Box;
 
+    const inheritableWrapperThemes = {
+      ...objectMerge( wrapperThemes, this.getInhertiableThemes( 'WRAPPER' )),
+    };
+
     return (
       <Box
         id="wrapper"
         text
         // onLayout={this.handleOnLayout}
         {...defaultStyle.wrapper}
-        {...getStyling( 'wrapper' )['default']}
+        // {...wrapperThemes['default']}
+        // {...getStyling( 'wrapper' )['default']}
+        {...objectMerge( getStyling( 'wrapper' ), wrapperThemes )['default']}
       >
         {hasContent( 'NORTH' ) ? (
           <Panel
@@ -428,6 +404,7 @@ class Frame extends Component {
             <Recurser
               content={filterByPanel( panelContent, 'NORTH' )}
               themes={this.getInhertiableThemes( 'NORTH' )}
+              wrapperThemes={inheritableWrapperThemes}
               // delimiterProps={this.getDelimiterStyling( 'NORTH' )}
               hasDelimiter={this.getPropertiesByPanel( 'NORTH' )['renderDelimiter']}
               isClosed={isClosed}
@@ -452,6 +429,7 @@ class Frame extends Component {
                   content={filterByPanel( panelContent, 'WEST' )}
                   // themes={{ ...this.getStyling( 'WEST', true ) }}
                   themes={this.getInhertiableThemes( 'WEST' )}
+                  wrapperThemes={inheritableWrapperThemes}
                   // delimiterProps={this.getDelimiterStyling( 'WEST' )}
                   hasDelimiter={this.getPropertiesByPanel( 'WEST' )['renderDelimiter']}
                   isClosed={isClosed}
@@ -471,6 +449,7 @@ class Frame extends Component {
                   content={filterByPanel( panelContent, 'CENTRE' )}
                   // themes={{ ...this.getStyling( 'CENTRE', true ) }}
                   themes={this.getInhertiableThemes( 'CENTRE' )}
+                  wrapperThemes={inheritableWrapperThemes}
                   // delimiterProps={this.getDelimiterStyling( 'CENTRE' )}
                   hasDelimiter={this.getPropertiesByPanel( 'CENTER' )['renderDelimiter']}
                   isClosed={isClosed}
@@ -490,6 +469,7 @@ class Frame extends Component {
                   content={filterByPanel( panelContent, 'EAST' )}
                   // themes={{ ...this.getStyling( 'EAST', true ) }}
                   themes={this.getInhertiableThemes( 'EAST' )}
+                  wrapperThemes={inheritableWrapperThemes}
                   // delimiterProps={this.getDelimiterStyling( 'EAST' )}
                   hasDelimiter={this.getPropertiesByPanel( 'EAST' )['renderDelimiter']}
                   isClosed={isClosed}
@@ -511,6 +491,7 @@ class Frame extends Component {
               content={filterByPanel( panelContent, 'SOUTH' )}
               // themes={{ ...this.getStyling( 'SOUTH', true ) }}
               themes={this.getInhertiableThemes( 'SOUTH' )}
+              wrapperThemes={inheritableWrapperThemes}
               // delimiterProps={this.getDelimiterStyling( 'SOUTH' )}
               hasDelimiter={this.getPropertiesByPanel( 'SOUTH' )['renderDelimiter']}
               isClosed={isClosed}
