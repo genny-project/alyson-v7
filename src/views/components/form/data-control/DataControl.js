@@ -19,7 +19,7 @@ const keyfilters = {
 
 class DataControl extends Component {
   static defaultProps = {
-    keyfilter: 'pnum',
+    // keyfilter: 'pnum',
   }
 
   static propTypes = {
@@ -88,21 +88,22 @@ class DataControl extends Component {
       case 'email':
         this.handleEmailValidation( value );
         break;
-      case 'abn':
-        this.handleABNValidation( value );
-        break;
-      case 'acn':
-        this.handleACNValidation( value );
-        break;
-      case 'password':
-        this.handlePasswordValidation ( value );
-        break;
-      case 'double':
-        this.handleDoubleValidation( value );
-        break;
-      case 'floatingpoint':
-        this.handleABNValidation( value );
-        break;
+      // case 'abn':
+      // case 'abn number':
+      //   this.handleABNValidation( value );
+      //   break;
+      // case 'acn':
+      //   this.handleACNValidation( value );
+      //   break;
+      // case 'password':
+      //   this.handlePasswordValidation ( value );
+      //   break;
+      // case 'double':
+      //   this.handleDoubleValidation( value );
+      //   break;
+      // case 'floatingpoint':
+      //   this.handleABNValidation( value );
+        // break;
       default:
         // eslint-disable-next-line no-console
         // console.warn( `data type '${type}' does not have a validation` );
@@ -110,7 +111,7 @@ class DataControl extends Component {
   }
 
   handleABNValidation = ( value ) => {
-    validatorABN.validateABN( value );
+    const result = validatorABN.validateABN( value ); // eslint-disable-line
   }
 
   handleACNValidation = ( value ) => {
