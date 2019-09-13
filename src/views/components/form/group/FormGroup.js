@@ -6,6 +6,7 @@ import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLin
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
 import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
+import DataControl from '../data-control';
 
 const components = [
   'group-wrapper',
@@ -36,7 +37,8 @@ class FormGroup extends Component {
     inheritedThemes: array,
     inheritedProps: object,
     index: number,
-    dataTypes: object,
+    data: object,
+    types: object,
     functions: object,
     inputRefs: object,
     themes: object,
@@ -120,10 +122,10 @@ class FormGroup extends Component {
   }
 
   getStyling = ( componentType ) => {
-    const { dataTypes, questionGroup } = this.props;
+    const { types, questionGroup } = this.props;
     const { attributeCode } = questionGroup;
 
-    const baseEntityDefinition = dataTypes[attributeCode];
+    const baseEntityDefinition = types && types[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
     // filter links for panel
@@ -209,11 +211,11 @@ class FormGroup extends Component {
     options = {},
   }) => {
     const {
-      dataTypes,
+      data,
+      types,
       functions,
       inputRefs,
     } = this.props;
-
     const {
       values,
       errors,
@@ -238,8 +240,9 @@ class FormGroup extends Component {
       // disabled,
     } = ask;
 
-    const baseEntityDefinition = dataTypes[attributeCode];
+    const baseEntityDefinition = data[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+    const dataTypeObject = types[dataType];
 
     const { questionOnly } = options;
     const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
@@ -254,6 +257,8 @@ class FormGroup extends Component {
       ),
       value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
+      mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
+      validation: isObject( dataTypeObject ) ? dataTypeObject.validationList : null,
       error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
       onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
@@ -280,11 +285,19 @@ class FormGroup extends Component {
     };
 
     return (
-      <VisualControl
+      <DataControl
         key={questionCode}
         {...inputProps}
         {...additionalProps}
-      />
+      >
+        {( props ) => {
+          return (
+            <VisualControl
+              {...props}
+            />
+          );
+        }}
+      </DataControl>
     );
   }
 
@@ -300,7 +313,8 @@ class FormGroup extends Component {
           inheritedProps: this.props.inheritedProps,
           inheritedThemes: this.getInhertiableThemes(),
           index: index,
-          dataTypes: this.props.dataTypes,
+          data: this.props.data,
+          types: this.props.types,
           functions: this.props.functions,
           inputRefs: this.props.inputRefs,
           asks: this.props.asks,
@@ -313,7 +327,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode, rootCode, dataTypes } = this.props;
+    const { index, questionGroup, form, parentGroupCode, rootCode, types } = this.props;
     const {
       description,
       name,
@@ -328,7 +342,7 @@ class FormGroup extends Component {
 
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
-      const baseEntityDefinition = dataTypes[attributeCode];
+      const baseEntityDefinition = types && types[attributeCode];
       const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
 
       const themeLinks = [
@@ -592,7 +606,8 @@ class FormGroup extends Component {
 export { FormGroup };
 
 const mapStateToProps = state => ({
-  dataTypes: state.vertx.baseEntities.definitions.data,
+  data: state.vertx.baseEntities.definitions.data,
+  types: state.vertx.baseEntities.definitions.types,
   themes: state.vertx.layouts.themes,
   asks: state.vertx.layouts.asks,
 });
