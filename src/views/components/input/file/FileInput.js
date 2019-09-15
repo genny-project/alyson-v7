@@ -131,7 +131,7 @@ class FileInput extends Component {
   };
 
   convertFilesToStateFormat = ( files ) => {
-    return files.map( file => {
+    return isArray( files ) ? files.map( file => {
       // if ( )
       return ({
         name: file.name,
@@ -140,7 +140,7 @@ class FileInput extends Component {
         size: file.size,
         uuid: file.uuid,
       });
-    });
+    }) : [];
   }
 
   updateFilesFromProps = () => {

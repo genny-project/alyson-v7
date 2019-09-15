@@ -16,10 +16,11 @@ class Recurser extends Component {
     isClosed: bool,
     delimiterProps: object,
     hasDelimiter: bool,
+    wrapperThemes: object,
   };
 
   render() {
-    const { content, themes, delimiterProps, /* hasDelimiter,*/ isClosed } = this.props;
+    const { content, themes, delimiterProps, isClosed , wrapperThemes } = this.props;
 
     if ( !isArray( content, { ofMinLength: 1 })) {
       return null;
@@ -44,6 +45,8 @@ class Recurser extends Component {
             const baseEntityCode = child.code;
             const linkType = child.type;
 
+            // console.warn({ inheritedProps: themes });
+
             if ( linkType === 'ask' ) {
               return (
                 <Form
@@ -62,6 +65,7 @@ class Recurser extends Component {
                   rootCode={baseEntityCode}
                   inheritedProps={themes}
                   isClosed={isClosed}
+                  wrapperThemes={wrapperThemes}
                 />
               );
             }
