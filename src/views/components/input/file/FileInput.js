@@ -11,6 +11,7 @@ import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 /* These are commented out to be revisited later */
 // import Camera from './Camera';
+
 class FileInput extends Component {
   static defaultProps = {
     multiple: true,

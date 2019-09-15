@@ -43,7 +43,7 @@ class ColourPicker extends Component {
             <Box
               borderRadius={10}
               width={10}
-              height={100}
+              height="100%"
               {...componentProps['input-wrapper']}
             >
               <Box
