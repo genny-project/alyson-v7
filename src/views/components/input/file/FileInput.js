@@ -4,6 +4,7 @@ import axios from 'axios';
 // import prettierBytes from 'prettier-bytes';
 import { Box, Text, Touchable, Icon, Fragment, ActivityIndicator } from '../..';
 import InputFileItem from './file-item';
+import InputFilePlaceholder from './file-placeholder';
 import { isArray, isString, isObject, isInteger } from '../../../../utils';
 import store from '../../../../redux/store';
 // import config from '../../../../config';
@@ -22,6 +23,7 @@ class FileInput extends Component {
     // maxNumberOfFiles: 3,
     // maxFileSize: 10000,
     // maxTotalFileSize: 100000,
+    placeholder: 'No File Selected',
   };
 
   // use VCL_INPUT to change restriction props
@@ -49,6 +51,7 @@ class FileInput extends Component {
     error: string,
     isClosed: bool,
     showName: bool,
+    placeholder: string,
   };
 
   constructor( props ) {
@@ -430,6 +433,7 @@ class FileInput extends Component {
       editable,
       maxNumberOfFiles,
       showName,
+      placeholder,
     } = this.props;
     const {
       selectedFiles,
@@ -511,7 +515,10 @@ class FileInput extends Component {
                     );
                   })
                 ) : (
-                  <Text text="No File selected" />
+                  <InputFilePlaceholder
+                    text={placeholder}
+                    {...componentProps['input-placeholder']}
+                  />
                 )}
               </Box>
 
