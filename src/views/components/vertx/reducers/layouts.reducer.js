@@ -28,6 +28,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderQuestionGroupLabel',
   },
+  PRI_HAS_QUESTION_GRP_ICON: {
+    default: true,
+    label: 'renderQuestionGroupIcon',
+  },
   PRI_HAS_QUESTION_GRP_DESCRIPTION: {
     default: false,
     label: 'renderQuestionGroupDescription',
@@ -116,6 +120,7 @@ const componentTypes = {
   INPUT_ITEM: 'input-item',
   INPUT_SELECTED_WRAPPER: 'input-selected-wrapper',
   INPUT_SELECTED: 'input-selected',
+  INPUT_PLACEHOLDER: 'input-placeholder',
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
