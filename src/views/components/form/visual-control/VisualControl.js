@@ -40,6 +40,7 @@ const subcomponents = [
   'input-item',
   'input-selected-wrapper',
   'input-selected',
+  'input-placeholder',
 ];
 
 class VisualControl extends Component {

@@ -9,6 +9,7 @@ class Collapsible extends Component {
     headerWrapperProps: {},
     headerIconProps: {},
     iconPlacement: 'right',
+    showIcon: true,
   }
 
   static propTypes = {
@@ -28,6 +29,7 @@ class Collapsible extends Component {
     color: string,
     backgroundColor: string,
     subcomponentProps: object,
+    showIcon: bool,
   }
 
   state = {
@@ -46,6 +48,7 @@ class Collapsible extends Component {
       isClosed,
       iconPlacement,
       subcomponentProps,
+      showIcon,
     } = this.props;
 
     const { isOpen } = this.state;
@@ -71,24 +74,26 @@ class Collapsible extends Component {
                   {...subcomponentProps['group-clickable-wrapper']}
                 >
                   {renderHeader}
-                  <Box
-                    justifyContent="center"
-                    alignItems="center"
-                  >
+                  {showIcon ? (
                     <Box
-                      transform={[
-                        { rotate: isOpen ? '0deg' : '270deg' },
-                      ]}
-                      {...subcomponentProps['group-icon']}
+                      justifyContent="center"
+                      alignItems="center"
                     >
-                      <Icon
-                        name="keyboard_arrow_down"
-                        color="black"
-                        cursor="pointer"
+                      <Box
+                        transform={[
+                          { rotate: isOpen ? '0deg' : '270deg' },
+                        ]}
                         {...subcomponentProps['group-icon']}
-                      />
+                      >
+                        <Icon
+                          name="keyboard_arrow_down"
+                          color="black"
+                          cursor="pointer"
+                          {...subcomponentProps['group-icon']}
+                        />
+                      </Box>
                     </Box>
-                  </Box>
+                  ) : null }
                 </Touchable>
               ) : null
             }

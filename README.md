@@ -104,7 +104,8 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
 | PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in a floating dropdown component. |
-| PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
+| PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group** and has either of the properties **PRI_IS_DROPDOWN** or **PRI_IS_EXPANDABLE**, then it will render the **Icon** as part of the in addition to the child asks. See *Question Group Inputs* for more detail. Defaults to true.|
+| PRI_HAS_QUESTION_GRP_ICON | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
 | PRI_HAS_INPUT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Input. Default is `true` |
 | PRI_HAS_LABEL | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Label. |
 | PRI_HAS_REQUIRED | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a symbol to indicate the field is mandatory. |
@@ -197,6 +198,7 @@ An **Input** that is part of a **Visual Control** might be a single element, suc
 | Item | `INPUT_ITEM` | an element selectable by the user |
 | Selected Element Wrapper | `INPUT_SELECTED_WRAPPER` | box containing all the elements that have been selected |
 | Selected Element | `INPUT_SELECTED` | a selected element |
+| Placeholder Element | `INPUT_PLACEHOLDER` | an element shown if there are no selected elements. **currently only supported for file input**|
 
 ### Applying Themes.
 Any Themes which are attached to a **Question** via the **Context List** will be passed to all elements of the **Visual Control**. A Theme can be directed to only be applied to a specific component of the **Visual Control** by using the field `visualControlType` (set the value to any of the above types, written in ALL CAPS eg `"visualControlType": "INPUT"`).
@@ -266,6 +268,11 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 ## New Changes
+
+* Added new Theme Attribute **PRI_HAS_QUESTION_GRP_ICON**.
+* Added new Input Subcomponent **INPUT_PLACEHOLDER**.
+
+----
 
 * Added dataType field to Contexts.
 
