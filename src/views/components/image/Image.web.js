@@ -49,6 +49,7 @@ const Image = ({
               width,
               backgroundColor: backgroundColor,
               backgroundImage: `url('${source}')`,
+              flexShrink: 0,
             }}
             role="img"
           />

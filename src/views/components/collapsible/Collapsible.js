@@ -9,6 +9,7 @@ class Collapsible extends Component {
     headerWrapperProps: {},
     headerIconProps: {},
     iconPlacement: 'right',
+    showIcon: true,
   }
 
   static propTypes = {
@@ -28,6 +29,7 @@ class Collapsible extends Component {
     color: string,
     backgroundColor: string,
     subcomponentProps: object,
+    showIcon: bool,
   }
 
   state = {
@@ -46,6 +48,7 @@ class Collapsible extends Component {
       isClosed,
       iconPlacement,
       subcomponentProps,
+      showIcon,
     } = this.props;
 
     const { isOpen } = this.state;
@@ -61,37 +64,34 @@ class Collapsible extends Component {
         >
           {/* header alt goes here */}
           {/* {renderHeader} */}
-          {
-            !isClosed
-              ? (
-                <Touchable
-                  withFeedback
-                  onPress={this.handlePress}
-                  testID={testID}
-                  {...subcomponentProps['group-clickable-wrapper']}
+          <Touchable
+            withFeedback
+            onPress={this.handlePress}
+            testID={testID}
+            {...subcomponentProps['group-clickable-wrapper']}
+          >
+            {renderHeader}
+            {showIcon && !isClosed ? (
+              <Box
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box
+                  transform={[
+                    { rotate: isOpen ? '0deg' : '270deg' },
+                  ]}
+                  {...subcomponentProps['group-icon']}
                 >
-                  {renderHeader}
-                  <Box
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Box
-                      transform={[
-                        { rotate: isOpen ? '0deg' : '270deg' },
-                      ]}
-                      {...subcomponentProps['group-icon']}
-                    >
-                      <Icon
-                        name="keyboard_arrow_down"
-                        color="black"
-                        cursor="pointer"
-                        {...subcomponentProps['group-icon']}
-                      />
-                    </Box>
-                  </Box>
-                </Touchable>
-              ) : null
-            }
+                  <Icon
+                    name="keyboard_arrow_down"
+                    color="black"
+                    cursor="pointer"
+                    {...subcomponentProps['group-icon']}
+                  />
+                </Box>
+              </Box>
+            ) : null }
+          </Touchable>
         </Box>
 
         <Box

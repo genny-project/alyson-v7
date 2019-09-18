@@ -105,8 +105,6 @@ class Panel extends Component {
     const specialStyle = {};
 
     const closedProps = this.state.display === 'closed' ? inheritedProps['closed'] : null;
-    // console.log( this.props.rootCode, { inheritedProps })
-    if ( this.props.rootCode === 'FRM_SIDEBAR' ) console.log( {inheritedProps, closedProps})
 
     return (
       <Box

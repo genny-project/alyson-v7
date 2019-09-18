@@ -25,7 +25,7 @@ import InputTag from './tag';
 import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
-import InputImage from './image';
+// import InputImage from './image';
 import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
@@ -238,48 +238,30 @@ class Input extends Component {
         return (
           <CheckBoxList
             {...inputProps}
-            multiSelect={false}
-            icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: '' }}
-            ref={input => ( this.input = input )}
-          />        );
+            radio
+            ref={input => this.input = input}
+          />
+        );
 
       case 'file':
       case 'upload':
-        return (
-          <InputFile
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'filemultiple':
-      case 'uploadmultiple':
-        return (
-          <InputFile
-            {...inputProps}
-            multiple
-            ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'image':
-      case 'Image':
-        return (
-          <InputImage
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
       case 'imagemultiple':
       case 'Imagemultiple':
       case 'images':
         return (
           <InputFile
             {...inputProps}
-            multiple
-            imageOnly
-            ref={input => ( this.input = input )}
+            ref={input => this.input = input}
+          />
+        );
+
+      case 'image':
+      case 'Image':
+        return (
+          <InputFile
+            allowedFileTypes={['image/*']}
+            {...inputProps}
+            ref={input => this.input = input}
           />
         );
 
