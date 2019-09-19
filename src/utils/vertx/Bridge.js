@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 import axios from 'axios';
 import config from '../../config';
-import { prefixedLog, isObject, isString } from '../../utils';
+import { prefixedLog, isObject, isString, isArray } from '../../utils';
 import { store } from '../../redux';
 import Vertx from './Vertx';
 import MessageHandler from './MessageHandler';
@@ -54,22 +54,29 @@ class Bridge {
       ? events[event]( eventType, data, token )
       : events[event]( eventType, data );
 
-    const foundCachedAction = this.checkStoreForCachedAction({
+    const foundCachedActions = this.checkStoreForCachedAction({
       event,
       eventType,
       data,
     });
 
-    // eslint-disable-next-line no-console
-    console.warn( 'foundCachedAction', foundCachedAction );
+    if ( isArray( foundCachedActions )) {
+      console.warn( 'Triggering Cached Action...' ); // eslint-disable-line
 
-    if ( foundCachedAction ) {
-      Vertx.handleIncomingMessage( foundCachedAction, true );
+      foundCachedActions.forEach( item => {
+        if ( isObject( item )) {
+          Vertx.handleIncomingMessage( item, true );
+
+          if ( item.send !== false ) {
+            console.warn( 'sending event', eventObject ); // eslint-disable-line
+
+            Vertx.sendMessage( eventObject );
+          }
+        }
+      });
     }
-
-    if ( !foundCachedAction.cache_only ) {
-      // eslint-disable-next-line no-console
-      console.warn( 'sending event', eventObject );
+    else {
+      console.warn( 'sending event', eventObject );  // eslint-disable-line
 
       Vertx.sendMessage( eventObject );
     }
@@ -162,30 +169,48 @@ class Bridge {
     const { actionCache } = store.getState().vertx;
 
     if ( isObject( data, { withProperties: ['code', 'parentCode'] })) {
-      // const dataKeys = Object.keys( data ).filter(
-      //   key => key !== 'code' && key !== 'parentCode' && key !== 'rootCode'
-      // );
-
-      // const dataString = dataKeys
-      //   .map( key => {
-      //     return `:${key}=${data[key]}`;
-      //   })
-      //   .join( '' );
-
-      // const actionId = `${data.rootCode}:${data.parentCode}:${data.code}${dataString}`;
       const actionId = `${data.rootCode}:${data.parentCode}:${data.code}`;
 
-      if ( actionCache[actionId] ) {
-        if ( isObject( actionCache[actionId] )) {
-          return actionCache[actionId];
-        }
-        // eslint-disable-next-line no-console
-        console.warn( 'send cached message', actionCache[actionId] );
+      const getAllMatchingCacheActions = ( code ) => {
+        let matches = [];
 
-        return false;
+        const addToMatchingArray = ( code ) => {
+          if (
+            code &&
+            isArray( actionCache[code], { ofMinLength: 1 })
+          ) {
+            matches =  matches.concat( actionCache[code] );
+          }
+        };
+
+        const idVarRoot = `{ROOTCODE}:${data.parentCode}:${data.code}`;
+        const idVarParent = `${data.rootCode}:{PARENTCODE}:${data.code}`;
+        const idVarCode = `${data.rootCode}:${data.parentCode}:{CODE}`;
+
+        if ( isObject( actionCache, { withProperty: code })) {
+          addToMatchingArray( code );
+        }
+
+        if ( actionCache[idVarRoot] ) {
+          addToMatchingArray( idVarRoot );
+        }
+        if ( actionCache[idVarParent] ) {
+          addToMatchingArray( idVarParent );
+        };
+        if ( actionCache[idVarCode] ) {
+          addToMatchingArray( idVarCode );
+        };
+
+        return matches;
+      };
+
+      const allMatchingCacheAction = getAllMatchingCacheActions( actionId );
+
+      if ( isArray( allMatchingCacheAction, { ofMinLength: 1 })) {
+        return allMatchingCacheAction;
       }
       // eslint-disable-next-line no-console
-      console.warn( 'no match found for actionId', actionId );
+      console.warn( `No Matches Found for '${actionId}'` );
 
       return false;
     }

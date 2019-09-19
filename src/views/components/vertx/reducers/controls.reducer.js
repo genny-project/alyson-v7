@@ -52,25 +52,27 @@ const injectControlIntoState = ({ item, state }) => {
   }
 };
 
-const updateControl = ({ payload, state }) => {
+const updateControl = ({ type, payload, state }) => {
   /* alter the state */
 
-  const panelId = payload.code;
+  const newState = {
+    ...state
+  };
 
-  if ( state[panelId] ) {
-    if ( state[panelId] !== 'open') {
-      return {
-        ...state,
-        [panelId]: 'open',
-      };
-    }
-    else if ( state[panelId] !== 'closed') {
-      return {
-        ...state,
-        [panelId]: 'closed',
-      };
-    }
+  if ( isArray( payload.codes, {ofMinLength: 1 } )) {
+    payload.codes.forEach( code => {
+      if ( newState[code] ) {
+        if ( newState[code] !== 'open' && ( type === 'toggle' || type === 'open' )) {
+          newState[code] = 'open';
+        }
+        else if ( newState[code] !== 'closed'  && ( type === 'toggle' || type === 'close' )) {
+          newState[code] = 'closed';
+        }
+      }
+    })
   }
+
+  return newState;
 };
 
 const reducer = ( state = {}, { type, payload }) => {
@@ -106,7 +108,27 @@ const reducer = ( state = {}, { type, payload }) => {
 
       return {
         ...state,
-        ...updateControl({ payload, state})
+        ...updateControl({ type: 'toggle', payload, state})
+      };
+    }
+
+    case 'PANEL_OPEN': {
+      if ( !isObject( payload))
+        return state;
+
+      return {
+        ...state,
+        ...updateControl({ type: 'open', payload, state})
+      };
+    }
+
+    case 'PANEL_CLOSE': {
+      if ( !isObject( payload))
+        return state;
+
+      return {
+        ...state,
+        ...updateControl({ type: 'close', payload, state})
       };
     }
 
