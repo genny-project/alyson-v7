@@ -390,7 +390,7 @@ class Frame extends Component {
         {...defaultStyle.wrapper}
         // {...wrapperThemes['default']}
         // {...getStyling( 'wrapper' )['default']}
-        {...objectMerge( getStyling( 'wrapper' ), wrapperThemes )['default']}
+        {...objectMerge( wrapperThemes, getStyling( 'wrapper' ))['default']}
       >
         {hasContent( 'NORTH' ) ? (
           <Panel

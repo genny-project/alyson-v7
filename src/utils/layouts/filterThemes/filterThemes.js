@@ -51,16 +51,16 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
         acceptTypes.includes( theme.component )
       ))
       return;
-
+    
     if (
-      isString( dataType ) &&
+      !onlyInheritableThemes &&
+      isString( theme.dataType ) &&
+      // isString( dataType ) &&
       !(
-        isString( theme.dataType ) &&
-        theme.dataType.toLowerCase() === dataType.toLowerCase() ||
-        theme.dataType == null
-      ))
-      return;
-
+        isString( dataType ) &&
+        dataType.toLowerCase() === theme.dataType.toLowerCase()
+      )) return;
+   
     if (
       onlyComponentThemes &&
       !( theme.component === component )
