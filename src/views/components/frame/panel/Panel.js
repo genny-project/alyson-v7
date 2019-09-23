@@ -5,7 +5,7 @@ import { object, node, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { store } from '../../../../redux';
 import { Box, Fragment, Icon, Touchable } from '../../index';
-import { isObject } from '../../../../utils';
+import { isObject, Bridge } from '../../../../utils';
 
 class Panel extends Component {
   static defaultProps = {
@@ -28,7 +28,23 @@ class Panel extends Component {
       isObject( nextProps.controls, { withProperty: panelId }) &&
       nextProps.controls[panelId] !== nextState.display
     ) {
-      return { display: nextProps.controls[panelId] };
+
+      Bridge.sendFormattedEvent(
+        {
+          code: nextProps.location,
+          parentCode: nextProps.rootCode,
+          rootCode: nextProps.rootCode,
+          eventType: 'BTN_CLICK',
+          messageType: 'BTN',
+          value: {
+            state: nextState.display
+          },
+        }
+      );
+
+      return {
+        display: nextProps.controls[panelId]
+      };
     }
 
     return null;
