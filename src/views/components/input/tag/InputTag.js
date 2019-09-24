@@ -305,6 +305,7 @@ class InputTag extends Component {
                       flexDirection: 'column',
                       ...componentProps['input-wrapper'],
                     }}
+                    componentID="INPUT-WRAPPER"
                     isOpen={isOpen}
                     handleToggleMenu={handleToggleMenu}
                   >
@@ -315,6 +316,7 @@ class InputTag extends Component {
                           <Box
                             flexWrap="wrap"
                             // marginTop={10}
+                            componentID="INPUT-SELECTED-WRAPPER"
                             {...componentProps['input-selected-wrapper']}
                           >
                             {selectedItems.length > 0 && (

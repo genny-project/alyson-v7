@@ -391,12 +391,16 @@ class FormGroup extends Component {
       <Box
         // justifyContent="center"
         marginBottom={10}
+        componentID="GROUP-LABEL"
+        componentCode={questionCode}
         {...props}
       >
         <Text
           size="xl"
           text={name}
           bold
+          componentID="GROUP-LABEL"
+          componentCode={questionCode}
           {...props}
         />
       </Box>
@@ -405,6 +409,8 @@ class FormGroup extends Component {
     const descriptionComponent = ( props ) => (
       <Box
         marginBottom={10}
+        componentID="GROUP-DESCRIPTION"
+        componentCode={questionCode}
         {...props}
       >
         <Text
@@ -422,6 +428,8 @@ class FormGroup extends Component {
       return (
         <Box
           {...defaultStyle.group}
+          componentID="GROUP-HEADER-WRAPPER"
+          componentCode={questionCode}
           {...subcomponentProps['group-header-wrapper']}
         >
           { hasLabel ? labelComponent( subcomponentProps['group-label'] ) : null }
@@ -445,6 +453,8 @@ class FormGroup extends Component {
     const contentWrapperComponent = ( subcomponentProps ) => (
       <Box
         {...defaultStyle.group}
+        componentID="GROUP-CONTENT-WRAPPER"
+        componentCode={questionCode}
         {...subcomponentProps['group-content-wrapper']}
       >
         { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
@@ -505,6 +515,8 @@ class FormGroup extends Component {
               <Box
                 justifyContent="center"
                 flexDirection="column"
+                componentID="GROUP-WRAPPER"
+                componentCode={questionCode}
                 {...subcomponentProps['group-wrapper']}
               >
                 { hasLabel && !properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
@@ -533,6 +545,7 @@ class FormGroup extends Component {
                       ? properties.renderQuestionGroupIcon
                       : true
                   )}
+                  questionCode={questionCode}
                   renderHeader={(
                     <Fragment>
                       { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
@@ -575,6 +588,8 @@ class FormGroup extends Component {
                 onMouseEnter={() => this.handleHover( true )}
                 onMouseLeave={() => this.handleHover( false )}
                 {...defaultStyle.group}
+                componentID="GROUP-WRAPPER"
+                componentCode={questionCode}
                 {...subcomponentProps['group-wrapper']}
                 {...this.state.hover ? this.getStyling()['hover'] : {}}
               >
@@ -593,6 +608,8 @@ class FormGroup extends Component {
               zIndex={50 - index}
               {...defaultStyle.group}
               // padding={10}
+              componentID="GROUP-WRAPPER"
+              componentCode={questionCode}
               {...subcomponentProps['group-wrapper']}
             >
               {/* HEADER WRAPPER ELEMENT */}

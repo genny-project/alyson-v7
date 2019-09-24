@@ -554,6 +554,7 @@ class InputText extends Component {
                 android: nativeProps,
               })}
               ref={this.handleRef}
+              data-component-type="INPUT-TEXT"
               {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
             />
           )

@@ -481,10 +481,12 @@ class FileInput extends Component {
               flexDirection="column"
               // height="auto"
               justifyContent="space-around"
+              componentID="INPUT-WRAPPER"
               {...componentProps['input-wrapper']}
             >
               <Box
                 flexWrap="wrap"
+                componentID="INPUT-SELECTED-WRAPPER"
                 {...componentProps['input-selected-wrapper']}
               >
                 {isArray( selectedFiles, { ofMinLength: 1 }) ? (
@@ -552,6 +554,7 @@ class FileInput extends Component {
                       alignItems="center"
                       justifyContent="center"
                       disabled={isInputDisabled}
+                      componentID="INPUT-FIELD"
                       onChangeState={updateState( 'input-field' )}
                       {...componentProps['input-field']}
                     >
@@ -561,6 +564,7 @@ class FileInput extends Component {
                             name={icon}
                             color="black"
                             {...iconProps}
+                            componentID="INPUT-ICON"
                             iconProps={componentProps['input-icon']}
                           />
                         ) : null
@@ -582,6 +586,7 @@ class FileInput extends Component {
                               <Text
                                 whiteSpace="nowrap"
                                 text="Add File"
+                                componentID="INPUT-FIELD"
                                 {...componentProps['input-field']}
                               />
                             ) : null

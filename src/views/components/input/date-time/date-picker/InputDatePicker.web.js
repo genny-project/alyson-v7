@@ -191,6 +191,7 @@ class InputDatePicker extends PureComponent {
                   onPress={event => {
                     event.stopPropagation();
                   }}
+                  componentID="INPUT-ITEM-WRAPPER"
                   {...componentProps['input-item-wrapper']}
                 >
                   <Box
