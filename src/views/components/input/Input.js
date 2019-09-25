@@ -29,6 +29,7 @@ import RichTextEditor from './rich-text-editor';
 import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
+import ColourPicker from './colour-picker';
 
 /* maps the component to  */
 
@@ -110,7 +111,7 @@ class Input extends Component {
 
       case 'email':
         return (
-          <InputText
+          <TextInputElement
             keyboardType="email-address"
             {...inputProps}
             {...inputFieldProps}
@@ -394,6 +395,16 @@ class Input extends Component {
           <Text
             {...inputProps}
             text={this.props.question.name}
+          />
+        );
+
+      case 'color':
+      case 'colour':
+        return (
+          <ColourPicker
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => ( this.input = input )}
           />
         );
 
