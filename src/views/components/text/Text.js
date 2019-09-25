@@ -40,6 +40,7 @@ const Text = ({
   cursor,
   componentID,
   componentCode,
+  fontStyle = 'normal',
   ...restProps
 }) => {
   const style = {
@@ -57,6 +58,7 @@ const Text = ({
     cursor,
     whiteSpace,
     alignSelf: alignSelf,
+    fontStyle,
   };
 
   let child = text || children;
@@ -119,6 +121,9 @@ Text.propTypes = {
   ),
   componentID: string,
   componentCode: string,
+  fontStyle: oneOf(
+    ['normal', 'italic']
+  ),
 };
 
 export default Text;
