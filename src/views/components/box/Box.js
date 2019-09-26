@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
+import uuid from 'uuid/v4';
 import { any, oneOf, oneOfType, string, number, array, func, bool, object, shape } from 'prop-types';
 
 /** Ensure the props we're going to use were indeed passed through. */
@@ -190,6 +191,8 @@ function Box({
       ]}
       onLayout={onLayout}
       onBlur={onBlur}
+      nativeID={uuid()}
+      ref={( ref ) => console.log({ ref })}
     >
       {children}
     </View>
