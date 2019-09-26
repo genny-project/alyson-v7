@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { object, node, string } from 'prop-types';
 import { connect } from 'react-redux';
-import html2pdf from 'html2pdf.js'
 import { store } from '../../../../redux';
 import { Box, Fragment, Icon, Touchable } from '../../index';
 import { isObject } from '../../../../utils';
@@ -94,18 +93,6 @@ class Panel extends Component {
     if ( this.props.onLayout ) this.props.onLayout( event, this.props.location );
   }
 
-  handlePress = (e ) => {
-    console.log(' PRESS');
-    const  element = document.getElementById('root');
-    var opt = {
-      filename:     'alyson-test.pdf',
-      jsPDF:        { orientation: 'landscape' }
-    };
-
-    if ( element )
-      html2pdf().set(opt).from(element).save();
-  }
-
   render() {
     const { rootCode, children, location, style, inheritedProps, aliases, isExpandable } = this.props;
     const currentFullscreenCode = aliases['FULLSCREEN_PANEL'];
@@ -119,8 +106,7 @@ class Panel extends Component {
     return (
       <Box
         test-id={`rootCode-${location}-panel`}
-        // {...isExpandable ? { position: 'relative' } : {}}
-        position='relative'
+        {...isExpandable ? { position: 'relative' } : {}}
         {...style}
         {...inheritedProps['default']}
         {...this.state.display === 'closed' ? inheritedProps['closed'] : null}
@@ -131,7 +117,7 @@ class Panel extends Component {
         onLayout={this.handleOnLayout}
       >
         {
-          !isExpandable
+          isExpandable
             ? (
               <Box
                 position="absolute"
@@ -141,7 +127,6 @@ class Panel extends Component {
               >
                 <Touchable
                   onPress={this.handleToggleMaximised}
-                  onPress={this.handlePress}
                   withFeedback
                   opacity={0}
                   hoverProps={{
@@ -152,13 +137,10 @@ class Panel extends Component {
                 >
                   <Box
                     padding={5}
-                    backgroundColor="black"
                   >
                     <Icon
-                      // size="sm"
-                      // color="black"
-                      size="lg"
-                      color="white"
+                      size="sm"
+                      color="black"
                       name={`fullscreen${isFullscreen ? '_exit' : ''}`}
                     />
                   </Box>

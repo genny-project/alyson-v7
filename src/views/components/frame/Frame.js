@@ -4,7 +4,9 @@ import React, { Component } from 'react';
 import { object, array, string, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Box, Text, Recurser, Swipeable, ActivityIndicator } from '../../components';
+import { findNodeHandle } from 'react-native';
+import html2pdf from 'html2pdf.js';
+import { Box, Text, Recurser, Swipeable, ActivityIndicator, Touchable, Icon } from '../../components';
 import Panel from './panel';
 import {
   isArray,
@@ -278,6 +280,26 @@ class Frame extends Component {
     return properties;
   };
 
+  handleRef = ( ref ) => {
+    console.log({ ref });
+    this.box = ref;
+  }
+
+  handlePress = ( e ) => {
+    console.log( ' PRESS' );
+    const  element = document.getElementById( 'root' );
+    // const element = findNodeHandle( this.box );
+    // element.setAttribute('id', uuid());
+
+    var opt = {
+      filename: 'alyson-test.pdf',
+      jsPDF: { orientation: 'landscape' },
+    };
+
+    if ( element )
+      html2pdf().set( opt ).from( element ).save();
+  }
+
   render() {
     const { rootCode, frames, isRootFrame, isClosed, wrapperThemes } = this.props;
 
@@ -390,8 +412,56 @@ class Frame extends Component {
         {...defaultStyle.wrapper}
         // {...wrapperThemes['default']}
         // {...getStyling( 'wrapper' )['default']}
+        position="relative"
         {...objectMerge( wrapperThemes, getStyling( 'wrapper' ))['default']}
+        onRef={this.handleRef}
       >
+        {
+          // !isExpandable
+          rootCode === 'FRM_CONTENT'
+            ? (
+              <Box
+                position="absolute"
+                top={0}
+                right={0}
+                zIndex={10000}
+              >
+                <Touchable
+                  // onPress={this.handleToggleMaximised}
+                  onPress={this.handlePress}
+                  withFeedback
+                  opacity={0.5}
+                  hoverProps={{
+                    style: {
+                      opacity: 1,
+                    },
+                  }}
+                >
+                  <Box
+                    padding={5}
+                    backgroundColor="black"
+                  >
+                    <Icon
+                      // size="sm"
+                      // color="black"
+                      size="lg"
+                      color="white"
+                      name="fullscreen"
+                    />
+                  </Box>
+                  {/* <Box
+                    transform="rotate(270deg)"
+                  >
+                    <Icon
+                      size="sm"
+                      color="black"
+                      name="signal_cellular_4_bar"
+                    />
+                  </Box> */}
+                </Touchable>
+              </Box>
+            ) : null
+        }
         {hasContent( 'NORTH' ) ? (
           <Panel
             rootCode={rootCode}
