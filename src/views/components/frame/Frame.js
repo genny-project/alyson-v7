@@ -5,8 +5,6 @@ import { object, array, string, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { findNodeHandle } from 'react-native';
-import html2pdf from 'html2pdf.js';
-import uuid from 'uuid';
 import { Box, Text, Recurser, Swipeable, ActivityIndicator, Touchable, Icon, Dropdown, Fragment } from '../../components';
 import Panel from './panel';
 import {
@@ -22,6 +20,7 @@ import {
   objectMerge,
   storeQuery,
   setTitle,
+  saveElementAsPdf,
 } from '../../../utils';
 
 const defaultStyle = {
@@ -288,28 +287,11 @@ class Frame extends Component {
   }
 
   handlePress = () => {
-    console.log( ' PRESS' );
-
     if ( this.frame ) {
       const element = findNodeHandle( this.frame );
 
-      var opt = {
-        filename: `internmatch-${uuid()}.pdf`,
-        jsPDF: { orientation: 'landscape' },
-      };
-
       if ( element )
-        html2pdf().set( opt ).from( element ).save();
-
-        // html2pdf().from( element ).toPdf().outputImg( 'img' )
-        //   .then(( pdf ) => {
-        //     var file = pdf;
-
-        //             // The PDF has been converted to a Data URI string and passed to this function.
-        //             // Use pdfAsString however you like (send as email, etc)! For instance:
-        //     console.log({ file });
-        //   });
-        // .save();
+        saveElementAsPdf( element );
     }
   }
 
@@ -417,6 +399,8 @@ class Frame extends Component {
       ...objectMerge( wrapperThemes, this.getInhertiableThemes( 'WRAPPER' )),
     };
 
+    const frameProperties = this.getPropertiesByPanel( 'FRAME' );
+
     return (
       <Box
         id="wrapper"
@@ -431,13 +415,13 @@ class Frame extends Component {
       >
         {
           // !isExpandable
-          rootCode === 'FRM_CONTENT_WRAPPER'
+          frameProperties.shareable
             ? (
               <Box
                 position="absolute"
                 left={0}
                 bottom={0}
-                zIndex={10000}
+                zIndex={1000}
               >
                 <Dropdown
                   subcomponentProps={{
@@ -457,8 +441,8 @@ class Frame extends Component {
                         padding={5}
                       >
                         <Icon
-                      // size="sm"
-                      // color="black"
+                          // size="sm"
+                          // color="black"
                           size="sm"
                           color="black"
                           name="share"
