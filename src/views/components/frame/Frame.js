@@ -384,12 +384,9 @@ class Frame extends Component {
 
     return (
       <Box
-        id="wrapper"
-        text
-        // onLayout={this.handleOnLayout}
+        componentID="FRAME-WRAPPER"
+        componentCode={rootCode}
         {...defaultStyle.wrapper}
-        // {...wrapperThemes['default']}
-        // {...getStyling( 'wrapper' )['default']}
         {...objectMerge( wrapperThemes, getStyling( 'wrapper' ))['default']}
       >
         {hasContent( 'NORTH' ) ? (
@@ -414,6 +411,8 @@ class Frame extends Component {
         {hasContent( 'WEST' ) || hasContent( 'CENTRE' ) || hasContent( 'EAST' ) ? (
           <RowComponent
             id="row"
+            componentID="FRAME-ROW"
+            componentCode={rootCode}
             {...( shouldUseSwipeable ? defaultStyle.rowMobile : defaultStyle.row )}
           >
             {hasContent( 'WEST' ) ? (

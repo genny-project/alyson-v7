@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-// import { string, object, bool, number, func } from 'prop-types';
+import { string } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
 import { Box, Text } from '../../../../components';
 
 class VisualControlRequired extends Component {
   static propTypes = {
+    questionCode: string,
   }
 
   render() {
     const {
+      questionCode,
       ...restProps
     } = this.props;
 
@@ -16,10 +18,14 @@ class VisualControlRequired extends Component {
       <Box
         paddingLeft={5}
         marginRight="auto"
+        componentID="VCL-REQUIRED"
+        componentCode={questionCode}
       >
         <Text
           text="*"
           color="red"
+          componentID="VCL-REQUIRED"
+          componentCode={questionCode}
           {...restProps}
         />
       </Box>

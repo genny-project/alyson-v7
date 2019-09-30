@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TouchableWithoutFeedback, TouchableOpacity, Platform } from 'react-native';
 import { node, bool, object, func, oneOf, oneOfType, string, number, array, shape, any } from 'prop-types';
 import { store } from '../../../redux';
-import { isDevMode } from '../../../utils';
+import { isDevMode, isString } from '../../../utils';
 import { TestIdHandler, Fragment } from '../../components';
 
 class Touchable extends Component {
@@ -119,6 +119,8 @@ class Touchable extends Component {
     testID: string,
     onRef: func,
     disabled: bool,
+    componentID: string,
+    componentCode: string,
   }
 
   state = {
@@ -250,6 +252,8 @@ class Touchable extends Component {
       overflowY,
       display,
       disabled,
+      componentCode,
+      componentID,
       ...restProps
     } = this.props;
 
@@ -351,6 +355,9 @@ class Touchable extends Component {
           onKeyPress={this.handleKeyPress}
           onKeyDown={this.handleKeyPress}
           ref={this.handleRef}
+          data-component-type="TEXT"
+          data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
+          data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
         >
           {children}
         </Element>

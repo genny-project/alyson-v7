@@ -30,6 +30,7 @@ class Collapsible extends Component {
     backgroundColor: string,
     subcomponentProps: object,
     showIcon: bool,
+    questionCode: string,
   }
 
   state = {
@@ -49,6 +50,7 @@ class Collapsible extends Component {
       iconPlacement,
       subcomponentProps,
       showIcon,
+      questionCode,
     } = this.props;
 
     const { isOpen } = this.state;
@@ -60,6 +62,8 @@ class Collapsible extends Component {
           flex={1}
           justifyContent="space-between"
           flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
+          componentID="GROUP-HEADER-WRAPPER"
+          componentCode={questionCode}
           {...subcomponentProps['group-header-wrapper']}
         >
           {/* header alt goes here */}
@@ -71,6 +75,8 @@ class Collapsible extends Component {
                   withFeedback
                   onPress={this.handlePress}
                   testID={testID}
+                  componentID="GROUP-CLICKABLE-WRAPPER"
+                  componentCode={questionCode}
                   {...subcomponentProps['group-clickable-wrapper']}
                 >
                   {renderHeader}
@@ -83,12 +89,16 @@ class Collapsible extends Component {
                         transform={[
                           { rotate: isOpen ? '0deg' : '270deg' },
                         ]}
+                        componentID="GROUP-ICON"
+                        componentCode={questionCode}
                         {...subcomponentProps['group-icon']}
                       >
                         <Icon
                           name="keyboard_arrow_down"
                           color="black"
                           cursor="pointer"
+                          componentID="GROUP-ICON"
+                          componentCode={questionCode}
                           {...subcomponentProps['group-icon']}
                         />
                       </Box>
@@ -100,6 +110,8 @@ class Collapsible extends Component {
         </Box>
 
         <Box
+          componentID="GROUP-CONTENT-WRAPPER"
+          componentCode={questionCode}
           {...subcomponentProps['group-content-wrapper']}
         >
           {isOpen && !isClosed ? (

@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { object, string } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
 import { Box, Text } from '../../../../components';
 
 class VisualControlLabel extends Component {
   static propTypes = {
     question: object,
+    questionCode: string,
   }
 
   render() {
     const {
       question,
+      questionCode,
       ...restProps
     } = this.props;
 
@@ -21,7 +23,8 @@ class VisualControlLabel extends Component {
         <Text
           size="xs"
           text={question.name}
-                    // decoration="underline"
+          componentID="VCL-LABEL"
+          componentCode={questionCode}
           {...restProps}
         />
       </Box>
