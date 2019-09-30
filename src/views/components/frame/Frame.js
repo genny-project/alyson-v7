@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { findNodeHandle } from 'react-native';
 import html2pdf from 'html2pdf.js';
-import { Box, Text, Recurser, Swipeable, ActivityIndicator, Touchable, Icon } from '../../components';
+import uuid from 'uuid';
+import { Box, Text, Recurser, Swipeable, ActivityIndicator, Touchable, Icon, Dropdown, Fragment } from '../../components';
 import Panel from './panel';
 import {
   isArray,
@@ -86,6 +87,8 @@ class Frame extends Component {
     isClosed: bool,
     wrapperThemes: object,
   };
+
+  frame = null;
 
   state = {
     frames: [],
@@ -281,23 +284,33 @@ class Frame extends Component {
   };
 
   handleRef = ( ref ) => {
-    console.log({ ref });
-    this.box = ref;
+    this.frame = ref;
   }
 
-  handlePress = ( e ) => {
+  handlePress = () => {
     console.log( ' PRESS' );
-    const  element = document.getElementById( 'root' );
-    // const element = findNodeHandle( this.box );
-    // element.setAttribute('id', uuid());
 
-    var opt = {
-      filename: 'alyson-test.pdf',
-      jsPDF: { orientation: 'landscape' },
-    };
+    if ( this.frame ) {
+      const element = findNodeHandle( this.frame );
 
-    if ( element )
-      html2pdf().set( opt ).from( element ).save();
+      var opt = {
+        filename: `internmatch-${uuid()}.pdf`,
+        jsPDF: { orientation: 'landscape' },
+      };
+
+      if ( element )
+        html2pdf().set( opt ).from( element ).save();
+
+        // html2pdf().from( element ).toPdf().outputImg( 'img' )
+        //   .then(( pdf ) => {
+        //     var file = pdf;
+
+        //             // The PDF has been converted to a Data URI string and passed to this function.
+        //             // Use pdfAsString however you like (send as email, etc)! For instance:
+        //     console.log({ file });
+        //   });
+        // .save();
+    }
   }
 
   render() {
@@ -418,19 +431,82 @@ class Frame extends Component {
       >
         {
           // !isExpandable
-          rootCode === 'FRM_CONTENT'
+          rootCode === 'FRM_CONTENT_WRAPPER'
             ? (
               <Box
                 position="absolute"
-                top={0}
-                right={0}
+                left={0}
+                bottom={0}
                 zIndex={10000}
               >
-                <Touchable
+                <Dropdown
+                  subcomponentProps={{
+                    'group-content-wrapper': {
+                      // width: 100,
+                      flexDirection: 'row',
+                      backgroundColor: 'white',
+                      offsetY: -50,
+                    },
+                  }}
+                  // isClosed={this.props.isClosed}
+                  // testID={`${parentGroupCode || questionCode}:${questionCode}`}
+                  showIcon={false}
+                  renderHeader={(
+                    <Fragment>
+                      <Box
+                        padding={5}
+                      >
+                        <Icon
+                      // size="sm"
+                      // color="black"
+                          size="sm"
+                          color="black"
+                          name="share"
+                          cursor="pointer"
+                        />
+                      </Box>
+                    </Fragment>
+                  )}
+                >
+                  <Touchable
+                    onPress={this.handlePress}
+                    withFeedback
+                  >
+                    <Box
+                      padding={5}
+                    >
+                      <Icon
+                        // size="sm"
+                        // color="black"
+                        size="sm"
+                        color="black"
+                        // name="picture_as_pdf"
+                        name="save-alt"
+                        cursor="pointer"
+                      />
+                    </Box>
+                  </Touchable>
+                  {/* <Box
+                    paddingRight={5}
+                  />
+                  <Box
+                    padding={5}
+                  >
+                    <Icon
+                      // size="sm"
+                      // color="black"
+                      size="sm"
+                      color="black"
+                      name="email"
+                      cursor="pointer"
+                    />
+                  </Box> */}
+                </Dropdown>
+                {/* <Touchable
                   // onPress={this.handleToggleMaximised}
                   onPress={this.handlePress}
                   withFeedback
-                  opacity={0.5}
+                  opacity={0}
                   hoverProps={{
                     style: {
                       opacity: 1,
@@ -439,26 +515,19 @@ class Frame extends Component {
                 >
                   <Box
                     padding={5}
-                    backgroundColor="black"
+                    // backgroundColor="black"
+                    // opacity={0.5}
                   >
                     <Icon
                       // size="sm"
                       // color="black"
                       size="lg"
-                      color="white"
-                      name="fullscreen"
+                      color="black"
+                      name="share"
+                      cursor="pointer"
                     />
                   </Box>
-                  {/* <Box
-                    transform="rotate(270deg)"
-                  >
-                    <Icon
-                      size="sm"
-                      color="black"
-                      name="signal_cellular_4_bar"
-                    />
-                  </Box> */}
-                </Touchable>
+                </Touchable> */}
               </Box>
             ) : null
         }
