@@ -259,7 +259,8 @@ class VisualControl extends Component {
               flex={flexWrapper ? 1 : null}
               justifyContent="center"
               zIndex={100 - index}
-            // padding={5}
+              componentID="VCL-WRAPPER"
+              componentCode={this.props.ask.questionCode}
               {...componentProps['vcl-wrapper']}
             >
               {(
@@ -270,6 +271,7 @@ class VisualControl extends Component {
               >
                 <VisualControlLabel
                   question={this.props.question}
+                  questionCode={this.props.ask.questionCode}
                   {...componentProps['vcl-label']}
                 />
 
@@ -278,6 +280,7 @@ class VisualControl extends Component {
                   this.props.required
                 ) && (
                   <VisualControlRequired
+                    questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-required']}
                   />
                 )}
@@ -287,6 +290,7 @@ class VisualControl extends Component {
                   properties.renderVisualControlHint
                 ) && (
                   <VisualControlHint
+                    questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
                   />
                 )}
@@ -298,6 +302,7 @@ class VisualControl extends Component {
                 properties.renderVisualControlDescription
               ) && (
                 <VisualControlDescription
+                  questionCode={this.props.ask.questionCode}
                   {...componentProps['vcl-description']}
                 />
               )}
@@ -351,6 +356,7 @@ class VisualControl extends Component {
               ) && (
                 <VisualControlError
                   error={this.props.error}
+                  questionCode={this.props.ask.questionCode}
                   {...componentProps['vcl-error']}
                 />
               )}

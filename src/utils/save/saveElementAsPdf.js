@@ -6,15 +6,33 @@ const saveElementAsPdf = ( element, options = {}) => {
     fileName, // eslint-disable-line
   } = options;
 
+  // const element = originalElement.cloneNode( true );
+
   if ( !element ) {
     console.warn( 'Error: Element not found' ); // eslint-disable-line
 
     return ;
   }
 
+  let currentMinWidth = null;
+
+  if ( element.style.minWidth !== 'fit-content' ) {
+    currentMinWidth = element.style.minWidth;
+    element.style.minWidth = 'fit-content';
+  }
+
   const opt = {
     filename: `internmatch-${uuid()}.pdf`,
     jsPDF: { orientation: 'landscape' },
+    html2canvas: {
+      backgroundColor: 'red',
+      width: element.scrollWidth, // has to be a number!
+      onclone: () => {
+        if ( currentMinWidth !== null ) {
+          element.style.minWidth = currentMinWidth;
+        }
+      },
+    },
   };
 
   html2pdf().set( opt ).from( element ).save();

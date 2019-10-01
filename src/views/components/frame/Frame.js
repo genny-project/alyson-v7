@@ -403,14 +403,18 @@ class Frame extends Component {
 
     return (
       <Box
-        id="wrapper"
-        text
-        // onLayout={this.handleOnLayout}
+        componentID="FRAME-WRAPPER"
+        componentCode={rootCode}
         {...defaultStyle.wrapper}
         // {...wrapperThemes['default']}
         // {...getStyling( 'wrapper' )['default']}
         position="relative"
         {...objectMerge( wrapperThemes, getStyling( 'wrapper' ))['default']}
+        {...( frameProperties.shareable ? {
+          height: 'fit-content',
+          // width: 'fit-content',
+          backgroundColor: 'blue',
+        } : {})}
         onRef={this.handleRef}
       >
         {
@@ -419,7 +423,7 @@ class Frame extends Component {
             ? (
               <Box
                 position="absolute"
-                left={0}
+                left={500}
                 bottom={0}
                 zIndex={1000}
               >
@@ -537,6 +541,8 @@ class Frame extends Component {
         {hasContent( 'WEST' ) || hasContent( 'CENTRE' ) || hasContent( 'EAST' ) ? (
           <RowComponent
             id="row"
+            componentID="FRAME-ROW"
+            componentCode={rootCode}
             {...( shouldUseSwipeable ? defaultStyle.rowMobile : defaultStyle.row )}
           >
             {hasContent( 'WEST' ) ? (
