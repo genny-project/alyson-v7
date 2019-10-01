@@ -423,7 +423,7 @@ class Frame extends Component {
             ? (
               <Box
                 position="absolute"
-                left={500}
+                left={0}
                 bottom={0}
                 zIndex={1000}
               >
