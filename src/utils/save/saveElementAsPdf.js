@@ -1,9 +1,11 @@
 import html2pdf from 'html2pdf.js';
 import uuid from 'uuid';
+import store from '../../redux/store';
 
 const saveElementAsPdf = ( element, options = {}) => {
   const {
     fileName, // eslint-disable-line
+    code,
   } = options;
 
   // const element = originalElement.cloneNode( true );
@@ -21,8 +23,11 @@ const saveElementAsPdf = ( element, options = {}) => {
     element.style.minWidth = 'fit-content';
   }
 
+  const keycloakData = store.getState().keycloak.data;
+  const project = keycloakData.realm;
+
   const opt = {
-    filename: `internmatch-${uuid()}.pdf`,
+    filename: `${project}-${code}-${uuid()}.pdf`,
     jsPDF: { orientation: 'landscape' },
     html2canvas: {
       backgroundColor: 'red',

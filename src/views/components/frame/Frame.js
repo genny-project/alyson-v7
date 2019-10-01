@@ -291,7 +291,7 @@ class Frame extends Component {
       const element = findNodeHandle( this.frame );
 
       if ( element )
-        saveElementAsPdf( element );
+        saveElementAsPdf( element, { code: this.props.rootCode });
     }
   }
 
