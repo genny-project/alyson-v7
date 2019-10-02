@@ -48,6 +48,7 @@ class InputFileItem extends Component {
     backgroundColor: string,
     flexDirection: string,
     showName: bool,
+    fit: string,
   }
 
   // state = {
@@ -91,6 +92,7 @@ class InputFileItem extends Component {
       backgroundColor,
       flexDirection,
       showName,
+      fit,
       // ...restProps
     } = this.props;
 
@@ -129,7 +131,7 @@ class InputFileItem extends Component {
             source={uploadURL || preview}
             width={imageHeight}
             height={imageWidth}
-            fit="cover"
+            fit={fit}
           />
         ) : (
           <Box>
