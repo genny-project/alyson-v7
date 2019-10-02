@@ -30,7 +30,7 @@ const saveElementAsPdf = ( element, options = {}) => {
     filename: `${project}-${code}-${uuid()}.pdf`,
     jsPDF: { orientation: 'landscape' },
     html2canvas: {
-      backgroundColor: 'red',
+      // backgroundColor: 'red',
       width: element.scrollWidth, // has to be a number!
       onclone: () => {
         if ( currentMinWidth !== null ) {
