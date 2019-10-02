@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import { object, array, string, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { Box, Text, Recurser, Swipeable, ActivityIndicator } from '../../components';
+import { findNodeHandle } from 'react-native';
+import { Box, Text, Recurser, Swipeable, ActivityIndicator, Touchable, Icon, Dropdown, Fragment } from '../../components';
 import Panel from './panel';
 import {
   isArray,
@@ -19,6 +20,7 @@ import {
   objectMerge,
   storeQuery,
   setTitle,
+  saveElementAsPdf,
 } from '../../../utils';
 
 const defaultStyle = {
@@ -84,6 +86,8 @@ class Frame extends Component {
     isClosed: bool,
     wrapperThemes: object,
   };
+
+  frame = null;
 
   state = {
     frames: [],
@@ -278,6 +282,19 @@ class Frame extends Component {
     return properties;
   };
 
+  handleRef = ( ref ) => {
+    this.frame = ref;
+  }
+
+  handlePress = () => {
+    if ( this.frame ) {
+      const element = findNodeHandle( this.frame );
+
+      if ( element )
+        saveElementAsPdf( element, { code: this.props.rootCode });
+    }
+  }
+
   render() {
     const { rootCode, frames, isRootFrame, isClosed, wrapperThemes } = this.props;
 
@@ -382,13 +399,126 @@ class Frame extends Component {
       ...objectMerge( wrapperThemes, this.getInhertiableThemes( 'WRAPPER' )),
     };
 
+    const frameProperties = this.getPropertiesByPanel( 'FRAME' );
+
     return (
       <Box
         componentID="FRAME-WRAPPER"
         componentCode={rootCode}
         {...defaultStyle.wrapper}
+        // {...wrapperThemes['default']}
+        // {...getStyling( 'wrapper' )['default']}
+        position="relative"
         {...objectMerge( wrapperThemes, getStyling( 'wrapper' ))['default']}
+        {...( frameProperties.shareable ? {
+          height: 'fit-content',
+          // width: 'fit-content',
+          backgroundColor: 'blue',
+        } : {})}
+        onRef={this.handleRef}
       >
+        {
+          // !isExpandable
+          frameProperties.shareable
+            ? (
+              <Box
+                position="absolute"
+                left={0}
+                bottom={0}
+                zIndex={1000}
+              >
+                <Dropdown
+                  subcomponentProps={{
+                    'group-content-wrapper': {
+                      // width: 100,
+                      flexDirection: 'row',
+                      backgroundColor: 'white',
+                      offsetY: -50,
+                    },
+                  }}
+                  // isClosed={this.props.isClosed}
+                  // testID={`${parentGroupCode || questionCode}:${questionCode}`}
+                  showIcon={false}
+                  renderHeader={(
+                    <Fragment>
+                      <Box
+                        padding={5}
+                      >
+                        <Icon
+                          // size="sm"
+                          // color="black"
+                          size="sm"
+                          color="black"
+                          name="share"
+                          cursor="pointer"
+                        />
+                      </Box>
+                    </Fragment>
+                  )}
+                >
+                  <Touchable
+                    onPress={this.handlePress}
+                    withFeedback
+                  >
+                    <Box
+                      padding={5}
+                    >
+                      <Icon
+                        // size="sm"
+                        // color="black"
+                        size="sm"
+                        color="black"
+                        // name="picture_as_pdf"
+                        name="save-alt"
+                        cursor="pointer"
+                      />
+                    </Box>
+                  </Touchable>
+                  {/* <Box
+                    paddingRight={5}
+                  />
+                  <Box
+                    padding={5}
+                  >
+                    <Icon
+                      // size="sm"
+                      // color="black"
+                      size="sm"
+                      color="black"
+                      name="email"
+                      cursor="pointer"
+                    />
+                  </Box> */}
+                </Dropdown>
+                {/* <Touchable
+                  // onPress={this.handleToggleMaximised}
+                  onPress={this.handlePress}
+                  withFeedback
+                  opacity={0}
+                  hoverProps={{
+                    style: {
+                      opacity: 1,
+                    },
+                  }}
+                >
+                  <Box
+                    padding={5}
+                    // backgroundColor="black"
+                    // opacity={0.5}
+                  >
+                    <Icon
+                      // size="sm"
+                      // color="black"
+                      size="lg"
+                      color="black"
+                      name="share"
+                      cursor="pointer"
+                    />
+                  </Box>
+                </Touchable> */}
+              </Box>
+            ) : null
+        }
         {hasContent( 'NORTH' ) ? (
           <Panel
             rootCode={rootCode}

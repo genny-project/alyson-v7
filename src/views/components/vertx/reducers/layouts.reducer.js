@@ -20,6 +20,10 @@ const themeBehaviourAttributes = {
     default: true,
     label: 'inheritable',
   },
+  PRI_IS_SHAREABLE: {
+    default: false,
+    label: 'shareable',
+  },
   PRI_HAS_QUESTION_GRP_INPUT: {
     default: false,
     label: 'renderQuestionGroupInput',

@@ -91,6 +91,7 @@ function Box({
   onLayout,
   onBlur,
   boxSizing,
+  onRef,
   componentID,
   componentCode,
   ...restProps
@@ -193,6 +194,7 @@ function Box({
       ]}
       onLayout={onLayout}
       onBlur={onBlur}
+      ref={onRef}
       data-component-type="BOX"
       data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
       data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
@@ -340,6 +342,7 @@ Box.propTypes = {
   boxSizing: oneOf(
     ['content-box', 'border-box']
   ),
+  onRef: func,
   componentID: string,
   componentCode: string,
 };
