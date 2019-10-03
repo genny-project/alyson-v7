@@ -5,6 +5,7 @@ import { push } from 'react-router-redux';
 import { prefixedLog } from '../../utils';
 import { store } from '../../redux';
 import * as actions from '../../redux/actions';
+import * as events from './events';
 
 const { deepParseJson } = require( 'deep-parse-json' );
 const ZstdCodec = require( 'zstd-codec' ).ZstdCodec;
@@ -149,6 +150,20 @@ class Vertx {
 
     if ( isAnswerMessage ) {
       message['is_answer_message'] = true;
+    }
+
+    if ( message.cache && !isCachedMessage ) {
+      console.warn( 'Caching Incoming Message...' ); // eslint-disable-line
+
+      const action = events['CacheActions'];
+
+      store.dispatch( action({ actions: [message] }));
+    }
+
+    if ( !isCachedMessage && message.exec != null && message.exec === false ) {
+      console.warn( 'Incoming Message: Do Not Exec' ); // eslint-disable-line
+
+      return;
     }
 
     if ( message.cmd_type && message.cmd_type === 'ROUTE_CHANGE' ) {

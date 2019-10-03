@@ -6,10 +6,13 @@ import { isArray, isString, isObject } from '../../../../utils';
 const injectActionIntoState = ({ item, state }) => {
   /* alter the state */
 
-  console.warn('adding action to cache', item.msg_id);
+  if ( item.cache ) {
+    console.warn('Adding action to cache...', item.cache);
 
-  if ( item.msg_id ) {
-    state[item.msg_id] = item;
+    state[item.cache] = [
+      ...( isArray( state[item.cache] ) ? state[item.cache] : []),
+      item,
+    ];
   }
 };
 
@@ -34,7 +37,7 @@ const reducer = ( state = {}, { type, payload }) => {
       return payload.actions.reduce(( newState, item ) => {
         // console.log( newState );
         try {
-          if ( isString( item.msg_id )) {
+          if ( isString( item.cache )) {
             injectActionIntoState({ item, state: newState });
           }
           else {

@@ -327,7 +327,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode, rootCode, types } = this.props;
+    const { index, questionGroup, form, parentGroupCode, rootCode, types, isClosed } = this.props;
     const {
       description,
       name,
@@ -397,7 +397,8 @@ class FormGroup extends Component {
       >
         <Text
           size="xl"
-          text={name}
+          // text={name}
+          text={isClosed ? name.substring( 0, 1 ) : name}
           bold
           componentID="GROUP-LABEL"
           componentCode={questionCode}

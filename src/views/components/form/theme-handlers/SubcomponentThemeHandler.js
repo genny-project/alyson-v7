@@ -10,6 +10,7 @@ class SubcomponentThemeHandler extends Component {
     editable: bool,
     disabled: bool,
     error: string,
+    closed: bool,
   }
 
   state = {
@@ -29,7 +30,7 @@ class SubcomponentThemeHandler extends Component {
   }
 
   render() {
-    const { children, subcomponentProps, editable, disabled, error } = this.props;
+    const { children, subcomponentProps, editable, disabled, error, closed } = this.props;
     const { subcomponents } = this.state;
 
     // integrate state
@@ -63,6 +64,7 @@ class SubcomponentThemeHandler extends Component {
         ...getObjectFromKey( 'disabled', { condition: editable === false || disabled }),
         ...getObjectFromKey( 'error', { condition: error }),
         ...getObjectFromKey( 'readonly', { condition: subcomponents[type] && subcomponents[type].readonly }),
+        ...getObjectFromKey( 'closed', { condition: closed }),
       };
     };
 

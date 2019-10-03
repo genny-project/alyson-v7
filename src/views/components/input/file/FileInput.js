@@ -471,6 +471,7 @@ class FileInput extends Component {
         editable={this.props.editable}
         disabled={isInputDisabled}
         error={this.props.error}
+        closed={this.props.isClosed}
       >
         {({
           componentProps,

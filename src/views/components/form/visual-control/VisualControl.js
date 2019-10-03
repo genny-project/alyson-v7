@@ -58,6 +58,7 @@ class VisualControl extends Component {
     required: bool,
     editable: bool,
     disabled: bool,
+    isClosed: bool,
     flexWrapper: bool,
     index: number,
     onBlur: func,
@@ -319,6 +320,7 @@ class VisualControl extends Component {
                   editable={this.props.editable}
                   disabled={this.props.disabled}
                   error={this.props.error}
+                  closed={this.props.isClosed}
                   identifier={this.props.ask.questionCode}
                 >
                   {({

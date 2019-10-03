@@ -114,7 +114,7 @@ class InputEvent extends Component {
                       <Text
                         color={color}
                         whiteSpace="nowrap"
-                        text={question.name}
+                        text={this.props.isClosed ? question.name.substring( 0, 1 ) : question.name}
                         {...restProps}
                         componentID="INPUT-FIELD"
                         componentCode={question.code}
