@@ -134,6 +134,8 @@ class Panel extends Component {
         // transitionTimingFunction='ease'
         {...specialStyle}
         onLayout={this.handleOnLayout}
+        componentID={`FRAME-PANEL-${location}`}
+        componentCode={rootCode}
       >
         {
           isExpandable

@@ -153,6 +153,9 @@ class InputText extends Component {
     numberOfLines: number,
     updateValueWhenFocused: bool,
     tabIndex: string,
+    fontStyle: oneOf(
+      ['normal', 'italic']
+    ),
   }
 
   state = {
@@ -367,6 +370,7 @@ class InputText extends Component {
       onPress,
       tabIndex,
       cursor,
+      fontStyle,
     } = this.props;
 
     const {
@@ -417,6 +421,7 @@ class InputText extends Component {
       color,
       outline,
       overflow,
+      fontStyle,
       ...editable === false ? { cursor: 'default' } : {},
       cursor,
     });
@@ -554,6 +559,7 @@ class InputText extends Component {
                 android: nativeProps,
               })}
               ref={this.handleRef}
+              data-component-type="INPUT-TEXT"
               {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
             />
           )

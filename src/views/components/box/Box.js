@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
 import { any, oneOf, oneOfType, string, number, array, func, bool, object, shape } from 'prop-types';
+import { isString } from '../../../utils';
 
 /** Ensure the props we're going to use were indeed passed through. */
 function filterOutUnspecifiedProps( props ) {
@@ -90,6 +91,9 @@ function Box({
   onLayout,
   onBlur,
   boxSizing,
+  onRef,
+  componentID,
+  componentCode,
   ...restProps
 }) {
   const boxStyle = filterOutUnspecifiedProps({
@@ -190,6 +194,10 @@ function Box({
       ]}
       onLayout={onLayout}
       onBlur={onBlur}
+      ref={onRef}
+      data-component-type="BOX"
+      data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
+      data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
     >
       {children}
     </View>
@@ -334,6 +342,9 @@ Box.propTypes = {
   boxSizing: oneOf(
     ['content-box', 'border-box']
   ),
+  onRef: func,
+  componentID: string,
+  componentCode: string,
 };
 
 export default Box;

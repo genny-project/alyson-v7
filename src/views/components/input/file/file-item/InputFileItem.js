@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { func, any, number, bool, oneOfType, string } from 'prop-types';
 // import prettierBytes from 'prettier-bytes';
-import { Box, Text, Icon, Image, Touchable, Link, Fragment } from '../../../../components';
+import { Box, Text, Icon, Image, Touchable, Link, Fragment /* PdfViewer */ } from '../../../../components';
 import { trimAndAppendDots, isInteger, isObject, isString } from '../../../../../utils';
 
 const fileTypes = {
@@ -48,6 +48,7 @@ class InputFileItem extends Component {
     backgroundColor: string,
     flexDirection: string,
     showName: bool,
+    fit: string,
   }
 
   // state = {
@@ -91,6 +92,7 @@ class InputFileItem extends Component {
       backgroundColor,
       flexDirection,
       showName,
+      fit,
       // ...restProps
     } = this.props;
 
@@ -119,12 +121,17 @@ class InputFileItem extends Component {
         // paddingBottom={15}
         backgroundColor={backgroundColor}
       >
+        {/* {
+          isString( uploadURL ) && isString( type ) && type.includes( 'pdf' ) ? (
+            <PdfViewer file={uploadURL} />
+          ) : null
+        } */}
         {hasImagePreview ? (
           <Image
             source={uploadURL || preview}
             width={imageHeight}
             height={imageWidth}
-            fit="cover"
+            fit={fit}
           />
         ) : (
           <Box>

@@ -81,6 +81,8 @@ class InputEvent extends Component {
               flex={1}
               justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
               flexDirection="row"
+              componentID="INPUT-WRAPPER"
+              componentCode={question.code}
               {...componentProps['input-wrapper']}
             >
               { hasIcon
@@ -88,6 +90,8 @@ class InputEvent extends Component {
                   <Icon
                     name={icon}
                     color="black"
+                    componentID="INPUT-ICON"
+                    componentCode={question.code}
                     {...restProps}
                     {...iconProps}
                   />
@@ -112,6 +116,8 @@ class InputEvent extends Component {
                         whiteSpace="nowrap"
                         text={this.props.isClosed ? question.name.substring( 0, 1 ) : question.name}
                         {...restProps}
+                        componentID="INPUT-FIELD"
+                        componentCode={question.code}
                         {...componentProps['input-field']}
                       />
                     ) : null
