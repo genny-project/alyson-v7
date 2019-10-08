@@ -153,7 +153,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
           ...state.frames[item.code],
           name: item.name,
           code: item.code,
-          links: [
+          links: item.code !== 'FRM_CONTENT' ? [
             ...( isObject( state.frames[item.code], { withProperty: 'links' }) &&
             isArray( state.frames[item.code].links )
               ? state.frames[item.code].links.filter( existingLink => {
@@ -223,6 +223,13 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
                     : null,
               };
             }),
+          ] : [
+            {
+              code: 'FRM_TABLE_VIEW',
+              panel: 'CENTRE',
+              type: 'frame',
+              weight: 1,
+            },
           ],
           created: item.created,
         },
@@ -362,11 +369,12 @@ const reduceAsks = ({ item, state }) => {
                   code: link.contextCode,
                   weight: link.weight,
                   type: nameTypes[link.name] ? nameTypes[link.name] : 'none',
-                  component: componentTypes[link.visualControlType]
-                    ? componentTypes[link.visualControlType]
-                    : componentTypes[link.hint]
-                      ? componentTypes[link.hint]
-                      : null,
+                  component:
+                    componentTypes[link.visualControlType]
+                      ? componentTypes[link.visualControlType]
+                      : componentTypes[link.hint]
+                        ? componentTypes[link.hint]
+                        : null,
                   dataType: isString( link.dataType )
                     ? link.dataType
                     : null,
