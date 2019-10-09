@@ -153,7 +153,7 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
           ...state.frames[item.code],
           name: item.name,
           code: item.code,
-          links: item.code !== 'FRM_CONTENT' ? [
+          links: [
             ...( isObject( state.frames[item.code], { withProperty: 'links' }) &&
             isArray( state.frames[item.code].links )
               ? state.frames[item.code].links.filter( existingLink => {
@@ -223,13 +223,6 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
                     : null,
               };
             }),
-          ] : [
-            {
-              code: 'FRM_TABLE_VIEW',
-              panel: 'CENTRE',
-              type: 'frame',
-              weight: 1,
-            },
           ],
           created: item.created,
         },
