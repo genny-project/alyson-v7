@@ -122,11 +122,10 @@ class FormGroup extends Component {
   }
 
   getStyling = ( componentType ) => {
-    const { types, questionGroup } = this.props;
+    const { questionGroup, data } = this.props;
     const { attributeCode } = questionGroup;
 
-    const baseEntityDefinition = types && types[attributeCode];
-    const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+    const dataType = dlv( data, `${attributeCode}.dataType` );
 
     // filter links for panel
     const inheritedLinks = [
@@ -327,7 +326,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode, rootCode, types, isClosed } = this.props;
+    const { index, questionGroup, form, parentGroupCode, rootCode, isClosed, data } = this.props;
     const {
       description,
       name,
@@ -342,8 +341,7 @@ class FormGroup extends Component {
 
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
-      const baseEntityDefinition = types && types[attributeCode];
-      const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+      const dataType = dlv( data, `${attributeCode}.dataType` );
 
       const themeLinks = [
         ...filterThemes(

@@ -293,9 +293,15 @@ class Form extends Component {
       return true;
     };
 
-    const isDifference = newQuestionGroup.childAsks.some(( childAsk, index ) => {
-      return compareTargetCode( childAsk, questionGroups[0].childAsks[index], 1 );
-    });
+    let isDifference = false;
+
+    if ( isArray( newQuestionGroup.childAsks, { ofMinLength: 1 })) {
+      isDifference = newQuestionGroup.childAsks.some(( childAsk, index ) => {
+        return compareTargetCode( childAsk, questionGroups[0].childAsks[index], 1 );
+      });
+    } else {
+      isDifference = compareTargetCode( newQuestionGroup, questionGroups[0], 1 );
+    }
 
     return isDifference;
   };

@@ -362,11 +362,12 @@ const reduceAsks = ({ item, state }) => {
                   code: link.contextCode,
                   weight: link.weight,
                   type: nameTypes[link.name] ? nameTypes[link.name] : 'none',
-                  component: componentTypes[link.visualControlType]
-                    ? componentTypes[link.visualControlType]
-                    : componentTypes[link.hint]
-                      ? componentTypes[link.hint]
-                      : null,
+                  component:
+                    componentTypes[link.visualControlType]
+                      ? componentTypes[link.visualControlType]
+                      : componentTypes[link.hint]
+                        ? componentTypes[link.hint]
+                        : null,
                   dataType: isString( link.dataType )
                     ? link.dataType
                     : null,
