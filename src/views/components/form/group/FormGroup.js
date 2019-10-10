@@ -108,7 +108,9 @@ class FormGroup extends Component {
     }, () => {});
   }
 
-  getInhertiableThemes = () => {
+  getInhertiableThemes = ( index, numberOfChildAsks ) => {
+    // console.log( 'index', index );
+
     return [
       ...isArray( this.props.inheritedThemes ) ? this.props.inheritedThemes : [],
       ...filterThemes(
@@ -116,6 +118,8 @@ class FormGroup extends Component {
         this.props.themes,
         {
           onlyInheritableThemes: true,
+          childIndex: index,
+          totalChildren: numberOfChildAsks,
         }
       ),
     ];
@@ -300,7 +304,9 @@ class FormGroup extends Component {
     );
   }
 
-  renderQuestionGroup = ( ask, index, form ) => {
+  renderQuestionGroup = ( ask, index, numberOfChildAsks, form ) => {
+    // if ( this.props.rootCode === 'QUE_TABLE_RESULTS_GRP' ) console.log({ index });
+
     return (
       React.createElement(
         FormGroup,
@@ -310,7 +316,7 @@ class FormGroup extends Component {
           parentGroupCode: this.props.questionGroup.questionCode,
           rootCode: this.props.rootCode,
           inheritedProps: this.props.inheritedProps,
-          inheritedThemes: this.getInhertiableThemes(),
+          inheritedThemes: this.getInhertiableThemes( index, numberOfChildAsks ),
           index: index,
           data: this.props.data,
           types: this.props.types,
@@ -456,7 +462,7 @@ class FormGroup extends Component {
         componentCode={questionCode}
         {...subcomponentProps['group-content-wrapper']}
       >
-        { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+        { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index, array ) => {
           if (
             isArray( ask.childAsks, { ofMinLength: 1 }) &&
             properties.renderChildAsks !== false
@@ -464,6 +470,7 @@ class FormGroup extends Component {
             return this.renderQuestionGroup(
               ask,
               index,
+              array.length,
               form
             );
           }
