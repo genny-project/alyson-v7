@@ -103,6 +103,7 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_CONTENT_SELECTED | Object | { "color": "blue" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently selected. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
 | PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
+| PRI_IS_SHAREABLE | Boolean | true | false | If attached to a Frame, will allow the Frame and it's children be be downloaded as a PDF. |
 | PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in a floating dropdown component. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group** and has either of the properties **PRI_IS_DROPDOWN** or **PRI_IS_EXPANDABLE**, then it will render the **Icon** as part of the in addition to the child asks. See *Question Group Inputs* for more detail. Defaults to true.|
 | PRI_HAS_QUESTION_GRP_ICON | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
@@ -244,6 +245,17 @@ The Context List is used to connect **Themes** to **Questions** and **Question G
 The field `visualControlType` can be used to specify a **Visual Control Component** or **Input Subcomponent** to apply the Theme to.
 
 The field `dataType` can be used to specify a **Question Data Type** to apply the Theme to.
+
+The field `selectorType` can be used to apply **Themes** to the first level of children of the **Question Group** the theme is linked to.
+
+| Name | selectorType Code | Description |
+| ------ | ---------- | ----------- |
+| First | `FIRST` | theme will be applied only to the first child |
+| Last | `LAST` | theme will be applied only to the last child |
+| Not First | `NOT_FIRST` | theme will be applied every child except the first child |
+| Not Last | `NOT_LAST` | theme will be applied every child except the last child |
+
+`selectorType` can also be an `integer`, in which case it will apply it to every `nth` child, where `n` is the value of `selectorType`.
 
 #### Link Structure
 ```

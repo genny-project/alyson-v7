@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray, isString, isObject } from '../../../../utils';
+import { isArray, isString, isObject, isInteger } from '../../../../utils';
 
 const initialState = {
   frames: {},
@@ -125,6 +125,13 @@ const componentTypes = {
   INPUT_SELECTED_WRAPPER: 'input-selected-wrapper',
   INPUT_SELECTED: 'input-selected',
   INPUT_PLACEHOLDER: 'input-placeholder',
+};
+
+const selectorTypes = {
+  FIRST: 'first',
+  LAST: 'last',
+  NOT_FIRST: 'not-first',
+  NOT_LAST: 'not-last',
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
@@ -371,6 +378,11 @@ const reduceAsks = ({ item, state }) => {
                   dataType: isString( link.dataType )
                     ? link.dataType
                     : null,
+                  selectorType: isInteger( link.selectorType )
+                    ? link.selectorType
+                    : isString( link.selectorType )
+                      ? selectorTypes[link.selectorType]
+                      : null,
                   created: link.created,
                 };
               })
