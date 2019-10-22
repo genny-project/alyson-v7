@@ -63,6 +63,7 @@ class InputEvent extends Component {
           return (
             <EventTouchable
               {...restProps}
+              onBlur={null}
               withFeedback
               eventType={messageType}
               code={question.code}
