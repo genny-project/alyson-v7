@@ -294,6 +294,8 @@ class FormGroup extends Component {
         {...additionalProps}
       >
         {( props ) => {
+          // console.log({ value: values && dlv( values, valuePath ), maskValue: props.value });
+
           return (
             <VisualControl
               {...props}
