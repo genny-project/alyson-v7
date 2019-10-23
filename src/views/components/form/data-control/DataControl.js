@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Component } from 'react';
 import { any, object, string, func } from 'prop-types';
 import validatorABN from 'au-bn-validator';
@@ -39,6 +40,35 @@ class DataControl extends Component {
     // value: '',
     // valueLength: 0,
     error: null,
+  }
+
+  componentDidMount() {
+    if ( this.props.value )
+      this.setState({
+        maskedValue: this.props.value,
+      });
+  }
+
+  componentDidUpdate( prevProps, prevState ) {
+    if (
+      ((
+        prevProps.value !== this.props.value &&
+        this.state.value !== this.props.value
+      ) ||
+        prevState.value !== this.state.value
+      ) &&
+      (
+        !this.state.maskedValue
+      )
+    ) {
+      this.updateValue( this.props.value );
+    }
+  }
+
+  updateValue = ( value ) => {
+    this.setState({
+      maskedValue: value,
+    });
   }
 
   handleBlur = () => {
