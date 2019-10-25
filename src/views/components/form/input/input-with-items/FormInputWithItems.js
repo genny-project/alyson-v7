@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { object, node } from 'prop-types';
+import { object, func, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes, isString, isInteger } from '../../../../../utils';
@@ -10,8 +10,8 @@ class FormInputWithItems extends Component {
     baseEntities: object,
     themes: object,
     // inheritedThemes: array,
-    inheritedProps: object,
-    children: node,
+    inheritedProps: array,
+    children: func,
   }
 
   state = {

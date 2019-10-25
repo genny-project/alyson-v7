@@ -26,7 +26,7 @@ class InputTag extends Component {
     itemStringKey: string,
     itemValueKey: string,
     itemIdKey: string,
-    value: array,
+    value: string,
     allowNewTags: bool,
     allowMultipleSelection: bool,
     testID: string,
@@ -297,14 +297,17 @@ class InputTag extends Component {
                   .concat( userCreatedTags )
                   .filter( this.handleFilter( inputValue ));
 
+                const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
+
                 return (
                   // WRAPPER
                   <InputTagBody
                     bodyProps={{
-                      ...getRootProps( undefined, { suppressRefError: true }),
+                      ...restRootProps,
                       flexDirection: 'column',
                       ...componentProps['input-wrapper'],
                     }}
+                    onRef={onRef}
                     componentID="INPUT-WRAPPER"
                     isOpen={isOpen}
                     handleToggleMenu={handleToggleMenu}

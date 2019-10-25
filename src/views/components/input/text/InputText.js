@@ -62,7 +62,7 @@ class InputText extends Component {
     onChangeText: func,
     onChangeState: func,
     onFocus: func,
-    onPress: func,
+    // onPress: func,
     onRef: func,
     onKeyPress: func,
     onLayout: func,
@@ -162,7 +162,7 @@ class InputText extends Component {
     isFocused: false,
     isHovering: false,
     valueLength: 0,
-    value: null,
+    value: undefined,
   }
 
   componentDidMount() {
@@ -367,7 +367,7 @@ class InputText extends Component {
       iconProps,
       numberOfLines,
       overflow,
-      onPress,
+      // onPress,
       tabIndex,
       cursor,
       fontStyle,
@@ -503,7 +503,7 @@ class InputText extends Component {
                 ios: nativeProps,
                 android: nativeProps,
               })}
-              ref={this.handleRef}
+              // ref={this.handleRef}
               {...( tabIndex != null ? { tabIndex: tabIndex } : null )}
               {...textStyle}
             />
@@ -520,7 +520,7 @@ class InputText extends Component {
               editable={!disabled}
               // editable={(
               //   editable == null ? disabled : editable
-          // )}
+              // )}
               keyboardType={keyboardType}
               maxLength={maxLength}
               name={this.props.name}
@@ -528,13 +528,13 @@ class InputText extends Component {
               numberOfLines={numberOfLines}
               onChange={this.handleChange}
               onChangeText={this.handleChangeText}
-              onChangeValue={this.handleChangeValue}
+              // onChangeValue={this.handleChangeValue}
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
               onMouseOver={this.handleMouseOver}
               onMouseOut={this.handleMouseOut}
               onKeyPress={onKeyPress}
-              onPress={onPress}
+              // onPress={onPress}
               onSelectionChange={onSelectionChange}
               onSubmitEditing={onSubmitEditing}
               placeholder={placeholder}

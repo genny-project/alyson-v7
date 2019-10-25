@@ -25,7 +25,7 @@ class DataControl extends Component {
 
   static propTypes = {
     children: any,
-    mask: object,
+    mask: string,
     keyfilter: string,
     ask: object,
     type: string,

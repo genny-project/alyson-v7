@@ -41,7 +41,6 @@ const Text = ({
   componentID,
   componentCode,
   fontStyle = 'normal',
-  ...restProps
 }) => {
   const style = {
     textDecorationLine: decoration,
@@ -72,7 +71,7 @@ const Text = ({
 
   return (
     <NativeText
-      {...restProps}
+      // {...restProps}
       style={[
         style,
       ]}

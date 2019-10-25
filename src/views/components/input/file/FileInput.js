@@ -68,9 +68,9 @@ class FileInput extends Component {
   };
 
   componentDidMount() {
-    const URL = process.env.ENV_FILE_UPLOAD_URL;
+    // const URL = process.env.ENV_FILE_UPLOAD_URL;
 
-    console.log( URL ); //eslint-disable-line
+    // console.log( URL ); //eslint-disable-line
 
     this.updateFilesFromProps();
   }

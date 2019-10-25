@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, bool, number, func } from 'prop-types';
+import { string, object, bool, number, func, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
@@ -52,7 +52,7 @@ class VisualControl extends Component {
     asks: object,
     attributes: object,
     inheritedProps: object,
-    inheritedThemes: object,
+    inheritedThemes: array,
     themes: object,
     error: string,
     required: bool,

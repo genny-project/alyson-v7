@@ -8,13 +8,14 @@ import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 class CheckBoxList extends React.Component {
   static defaultProps = {
     items: [],
-    value: [],
+    // value: [],
     multiSelect: true,
     numberOfColumns: 1,
   };
 
   static propTypes = {
-    value: array,
+    // value: array,
+    value: string,
     numberOfColumns: number,
     items: array,
     multiSelect: bool,

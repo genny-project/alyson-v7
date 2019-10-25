@@ -11,7 +11,7 @@ class InputCheckBoxNewNew extends React.Component {
   };
 
   static propTypes = {
-    value: oneOf( true, false, null ),
+    value: oneOf( [true, false, null] ),
     question: object,
     onChangeValue: func,
   };

@@ -16,7 +16,7 @@ class InputEvent extends Component {
     parentGroupCode: string,
     rootQuestionGroupCode: string,
     messageType: string,
-    iconProps: bool,
+    iconProps: object,
     onPress: func,
     icon: string,
     isClosed: bool,

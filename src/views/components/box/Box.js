@@ -170,7 +170,7 @@ function Box({
   });
 
   const webStyle = Platform.OS !== 'web' ? {} : filterOutUnspecifiedProps({
-    accessibilityRole,
+    // accessibilityRole,
     overflow,
     overflowX,
     overflowY,
@@ -179,8 +179,6 @@ function Box({
     transitionTimingFunction,
     transitionDelay,
   });
-
-  // if ( restProps && restProps.identifier === 'MENU' ) console.log( 'RENDER', onRef );
 
   return (
     <View
@@ -252,13 +250,27 @@ Box.propTypes = {
   paddingBottom: number,
   paddingX: number,
   paddingY: number,
-  margin: number,
-  marginX: number,
-  marginY: number,
-  marginTop: number,
-  marginRight: number,
-  marginBottom: number,
-  marginLeft: number,
+  margin: oneOfType(
+    [number, string]
+  ),
+  marginX: oneOfType(
+    [number, string]
+  ),
+  marginY: oneOfType(
+    [number, string]
+  ),
+  marginTop: oneOfType(
+    [number, string]
+  ),
+  marginRight: oneOfType(
+    [number, string]
+  ),
+  marginBottom: oneOfType(
+    [number, string]
+  ),
+  marginLeft: oneOfType(
+    [number, string]
+  ),
   backgroundColor: string,
   position: oneOf(
     ['fixed', 'absolute', 'relative', 'static', 'sticky']
