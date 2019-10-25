@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 import React, { Component } from 'react';
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState, convertFromHTML } from 'draft-js';
 
 import { stateToHTML } from 'draft-js-export-html';
 import { func, string, object, bool } from 'prop-types';
@@ -9,19 +10,52 @@ class RichEditor extends Component {
   static propTypes = {
     onChangeValue: func,
     testID: string,
+    value: string,
   };
 
   constructor( props ) {
     super( props );
     this.editor = React.createRef();
     this.state = { editorState: EditorState.createEmpty() };
+    // this.state = { editorState: EditorState.createWithContent( ContentState.createFromText( plcaeholder)) };
     this.handleFocus = () => this.editor.current.focus();
-    this.handleChange = editorState => this.setState({ editorState });
+    this.handleChange = editorState => {
+      this.setState({ editorState });
+    };
     this.onKeyCommand = this._handleKeyCommand.bind( this );
     this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind( this );
     this.handleToggleBlockType = this._toggleBlockType.bind( this );
     this.handleToggleInlineStyle = this._toggleInlineStyle.bind( this );
     this.handleBlur = this.handleBlur.bind( this );
+  }
+
+  componentDidMount() {
+    if ( this.props.value )
+      this.settingStateFromHtml( this.props.value );
+  }
+
+  componentDidUpdate( prevProps, prevState ) {
+    if (
+      ((
+        prevProps.value !== this.props.value &&
+        this.state.value !== this.props.value
+      ) ||
+        prevState.value !== this.state.value
+      )
+    ) {
+      this.settingStateFromHtml( this.props.value );
+    }
+  }
+
+  settingStateFromHtml = ( value ) => {
+    const text = `${value}`;
+    const contentHTML = convertFromHTML( text );
+    const state = ContentState.createFromBlockArray( contentHTML );
+    const test = EditorState.createWithContent( state );
+
+    this.setState({
+      editorState: test,
+    });
   }
 
   _handleKeyCommand( command, editorState ) {
@@ -69,6 +103,8 @@ class RichEditor extends Component {
   }
 
   render() {
+    // console.log( '*****FINAL******', this.state );
+    // console.log( '*********AGAIN*******', this.props );
     const { testID } = this.props;
     const { editorState } = this.state;
     // If the user changes block type before entering any text, we can
