@@ -1,10 +1,10 @@
 import { Component } from 'react';
-import { string, bool, node, object } from 'prop-types';
+import { string, bool, func, object } from 'prop-types';
 import { isObject, isString  } from '../../../../utils';
 
 class SubcomponentThemeHandler extends Component {
   static propTypes = {
-    children: node,
+    children: func,
     // onChangeState: func,
     subcomponentProps: object,
     editable: bool,

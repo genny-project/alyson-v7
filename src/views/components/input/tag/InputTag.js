@@ -26,7 +26,7 @@ class InputTag extends Component {
     itemStringKey: string,
     itemValueKey: string,
     itemIdKey: string,
-    value: array,
+    value: string,
     allowNewTags: bool,
     allowMultipleSelection: bool,
     testID: string,
@@ -141,10 +141,12 @@ class InputTag extends Component {
     const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
     const itemObject = isObject( item )
       ? item
-      : {
-        [this.props.itemStringKey]: itemString,
-        [this.props.itemValueKey]: itemId,
-      };
+      : item != null
+        ? {
+          [this.props.itemStringKey]: itemString,
+          [this.props.itemValueKey]: itemId,
+        }
+        : null;
 
     switch ( key ) {
       case 'ArrowDown':
@@ -162,14 +164,16 @@ class InputTag extends Component {
         );
         break;
       case 'Enter':
-        if ( this.props.allowMultipleSelection ) {
-          this.addItemToPreSelection( itemObject, selectMultipleItems );
-        }
-        else {
-          selectItem( itemObject );
-          handleCloseMenu();
-          if ( this.inputs && this.inputs['input'] ) {
-            this.inputs['input'].blur();
+        if ( isObject( itemObject )) {
+          if ( this.props.allowMultipleSelection ) {
+            this.addItemToPreSelection( itemObject, selectMultipleItems );
+          }
+          else {
+            selectItem( itemObject );
+            handleCloseMenu();
+            if ( this.inputs && this.inputs['input'] ) {
+              this.inputs['input'].blur();
+            }
           }
         }
         break;
@@ -297,14 +301,17 @@ class InputTag extends Component {
                   .concat( userCreatedTags )
                   .filter( this.handleFilter( inputValue ));
 
+                const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
+
                 return (
                   // WRAPPER
                   <InputTagBody
                     bodyProps={{
-                      ...getRootProps( undefined, { suppressRefError: true }),
+                      ...restRootProps,
                       flexDirection: 'column',
                       ...componentProps['input-wrapper'],
                     }}
+                    onRef={onRef}
                     componentID="INPUT-WRAPPER"
                     isOpen={isOpen}
                     handleToggleMenu={handleToggleMenu}

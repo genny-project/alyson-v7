@@ -225,7 +225,7 @@ StyleButton.propTypes = {
   onToggle: func,
   label: string,
   active: bool,
-  style: object,
+  style: string,
 };
 const BLOCK_TYPES = [
   { label: 'H1', style: 'header-one' },

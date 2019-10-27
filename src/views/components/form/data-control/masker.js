@@ -16,7 +16,7 @@ class Masker {
 
     const incomingCharacterArray = incomingValue.split( '' ); // array values from the incoming string
 
-    console.warn({ incomingCharacterArray, delimiterPositionsArray, delimiterPositions }); //eslint-disable-line
+    // console.warn({ incomingCharacterArray, delimiterPositionsArray, delimiterPositions }); //eslint-disable-line
     const newArr = [];
 
     // convert the incoming value into an array, then loop over each character

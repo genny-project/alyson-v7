@@ -40,7 +40,7 @@ class App extends Component {
       if ( values && (( !values.debug && !values.devmode && !values.devMode ) || values.debug === 'false' || values.devMode === 'false' || values.devMode === 'false' )) {
         localStorage.setItem( 'DEV_MODE', false ); // sync the values with local storage
       }
-      console.warn({ values }); // eslint-disable-line
+      // console.warn({ values }); // eslint-disable-line
     }
 
     /* Check in local Storgae */

@@ -277,7 +277,7 @@ class FormGroup extends Component {
         : 'default',
       testID: `${questionGroupCode}:${questionCode}` || '',
       ...contextList,
-      parentGroupCode: questionGroupCode,
+      parentGroupCode: questionGroupCode || questionCode,
       rootQuestionGroupCode: this.props.rootCode,
       inheritedProps: isObject( this.props.inheritedProps ) ? this.props.inheritedProps : null,
       inheritedThemes: this.getInhertiableThemes(),
@@ -521,6 +521,7 @@ class FormGroup extends Component {
 
             return (
               <Box
+                key={questionCode}
                 justifyContent="center"
                 flexDirection="column"
                 componentID="GROUP-WRAPPER"
@@ -587,6 +588,7 @@ class FormGroup extends Component {
           ) {
             return (
               <EventTouchable
+                key={questionCode}
                 withFeedback
                 code={question.code}
                 parentCode={parentGroupCode || questionCode}
@@ -612,8 +614,8 @@ class FormGroup extends Component {
           return (
             // WRAPPER ELEMENT
             <Box
-              key={name}
               zIndex={50 - index}
+              key={questionCode}
               {...defaultStyle.group}
               // padding={10}
               componentID="GROUP-WRAPPER"

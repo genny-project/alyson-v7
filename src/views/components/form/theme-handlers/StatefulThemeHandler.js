@@ -1,10 +1,10 @@
 import { Component } from 'react';
-import { array, node, func, bool, string } from 'prop-types';
+import { array, func, bool, string } from 'prop-types';
 import { isObject  } from '../../../../utils';
 
 class StatefulThemeHandler extends Component {
   static propTypes = {
-    children: node,
+    children: func,
     subcomponentTypes: array,
 //    onChangeState: func,
     getStyling: func,

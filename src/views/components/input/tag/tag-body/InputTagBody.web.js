@@ -8,15 +8,17 @@ class InputTagBody extends Component {
     bodyProps: object,
     isOpen: bool,
     handleToggleMenu: func,
+    onRef: func,
   }
 
   render() {
-    const { children, bodyProps, isOpen, handleToggleMenu } = this.props;
+    const { children, bodyProps, isOpen, handleToggleMenu, onRef } = this.props;
 
     return (
       <Box
         zIndex={1}
         {...bodyProps}
+        onRef={onRef}
       >
         <Box
           position="relative"
