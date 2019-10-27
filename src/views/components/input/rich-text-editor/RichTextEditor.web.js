@@ -5,6 +5,7 @@ import { Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState, con
 import { stateToHTML } from 'draft-js-export-html';
 import { func, string, object, bool } from 'prop-types';
 import style from './style.css'; //eslint-disable-line
+import { isObject, isArray } from './../../../../utils';
 
 class RichEditor extends Component {
   static propTypes = {
@@ -18,7 +19,10 @@ class RichEditor extends Component {
     this.editor = React.createRef();
     this.state = { editorState: EditorState.createEmpty() };
     // this.state = { editorState: EditorState.createWithContent( ContentState.createFromText( plcaeholder)) };
-    this.handleFocus = () => this.editor.current.focus();
+    this.handleFocus = () => {
+      this.editor.current.focus();
+      // this.setState({ isFocused: true });
+    };
     this.handleChange = editorState => {
       this.setState({ editorState });
     };
@@ -27,6 +31,10 @@ class RichEditor extends Component {
     this.handleToggleBlockType = this._toggleBlockType.bind( this );
     this.handleToggleInlineStyle = this._toggleInlineStyle.bind( this );
     this.handleBlur = this.handleBlur.bind( this );
+  }
+
+  state = {
+    // isFocused: false,
   }
 
   componentDidMount() {
@@ -50,12 +58,18 @@ class RichEditor extends Component {
   settingStateFromHtml = ( value ) => {
     const text = `${value}`;
     const contentHTML = convertFromHTML( text );
-    const state = ContentState.createFromBlockArray( contentHTML );
-    const test = EditorState.createWithContent( state );
 
-    this.setState({
-      editorState: test,
-    });
+    if (
+      isObject( contentHTML, { withProperty: 'contentBlocks' }) &&
+      isArray( contentHTML.contentBlocks )
+    ) {
+      const state = ContentState.createFromBlockArray( contentHTML );
+      const test = EditorState.createWithContent( state );
+
+      this.setState({
+        editorState: test,
+      });
+    }
   }
 
   _handleKeyCommand( command, editorState ) {
@@ -100,13 +114,17 @@ class RichEditor extends Component {
 
     // when data changes we send the value to the backend as an html
     this.props.onChangeValue( htmlOutput );
+
+    // this.setState({
+    //   isFocused: false,
+    // });
   }
 
   render() {
     // console.log( '*****FINAL******', this.state );
     // console.log( '*********AGAIN*******', this.props );
     const { testID } = this.props;
-    const { editorState } = this.state;
+    const { editorState /* , isFocused */  } = this.state;
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
     let className = 'RichEditor-editor';
@@ -139,6 +157,7 @@ class RichEditor extends Component {
           testid={`${testID}`}
         >
           <Editor
+            // onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             blockStyleFn={getBlockStyle}
             customStyleMap={styleMap}
@@ -146,7 +165,8 @@ class RichEditor extends Component {
             handleKeyCommand={this.onKeyCommand}
             keyBindingFn={this.mapKeyToEditorCommand}
             onChange={this.handleChange}
-            placeholder=" "
+            // placeholder={isFocused ? null : this.props.placeholder}
+            placeholder={null}
             ref={this.editor}
             spellCheck
           />
