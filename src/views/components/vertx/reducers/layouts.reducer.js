@@ -239,13 +239,11 @@ const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
 };
 
 const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
-  // console.log( 'injectThemeIntoState', item, state, state.themes );
+  // console.log( 'injectThemeIntoState', { item, state,shouldReplaceEntity });
   const attributes = {};
   const layoutProperties = {};
 
-  // console.log( item.baseEntityAttributes );
   item.baseEntityAttributes.forEach( attribute => {
-    // console.log( attribute );
     attributes[attribute.attributeCode] = attribute;
 
     if ( isObject( themeBehaviourAttributes[attribute.attributeCode] )) {
@@ -258,40 +256,36 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
     }
   });
 
-  // console.log( attributes );
-
-  const themeData = {
-    ...( dlv( attributes, 'PRI_CONTENT.value' )
-      ? { default: dlv( attributes, 'PRI_CONTENT.value' ) }
-      : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_ACTIVE.value' )
-      ? { active: dlv( attributes, 'PRI_CONTENT_ACTIVE.value' ) }
-      : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_HOVER.value' )
-      ? { hover: dlv( attributes, 'PRI_CONTENT_HOVER.value' ) }
-      : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_DISABLED.value' )
-      ? { disabled: dlv( attributes, 'PRI_CONTENT_DISABLED.value' ) }
-      : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_SELECTED.value' )
-      ? { selected: dlv( attributes, 'PRI_CONTENT_SELECTED.value' ) }
-      : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_READONLY.value' )
-      ? { readonly: dlv( attributes, 'PRI_CONTENT_READONLY.value' ) }
-      : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_CLOSED.value' )
-      ? { closed: dlv( attributes, 'PRI_CONTENT_CLOSED.value' ) }
-      : null ),
-    ...( dlv( attributes, 'PRI_CONTENT_ERROR.value' )
-      ? { error: dlv( attributes, 'PRI_CONTENT_ERROR.value' ) }
-      : null ),
-  };
-
   if ( shouldReplaceEntity === true ) {
     if ( state.themes[item.code] ) {
       delete state.themes[item.code];
     }
   }
+
+  const contentDefault = ( attribute, key ) => {
+    const existingAttributeData = dlv( state, `themes.${item.code}.data.${key}` );
+    const newAttributeData = dlv( attributes, `${attribute}.value` );
+
+    const dataObject = {
+      ...( isObject( existingAttributeData ) ? existingAttributeData : null ),
+      ...( isObject( newAttributeData ) ? newAttributeData : null ),
+    };
+
+    return isObject( dataObject, { notEmpty: true }) ? {
+      [key]: dataObject,
+    } : {};
+  };
+
+  const themeData = {
+    ...contentDefault( 'PRI_CONTENT', 'default' ),
+    ...contentDefault( 'PRI_CONTENT_ACTIVE', 'active' ),
+    ...contentDefault( 'PRI_CONTENT_HOVER', 'hover' ),
+    ...contentDefault( 'PRI_CONTENT_DISABLED', 'disabled' ),
+    ...contentDefault( 'PRI_CONTENT_SELECTED', 'selected' ),
+    ...contentDefault( 'PRI_CONTENT_READONLY', 'readonly' ),
+    ...contentDefault( 'PRI_CONTENT_CLOSED', 'closed' ),
+    ...contentDefault( 'PRI_CONTENT_ERROR', 'error' ),
+  };
 
   /* alter the state */
 
