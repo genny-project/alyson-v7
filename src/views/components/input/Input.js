@@ -30,6 +30,7 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
+import Unity from './unity';
 
 /* maps the component to  */
 
@@ -406,6 +407,10 @@ class Input extends Component {
             {...inputFieldProps}
             ref={input => ( this.input = input )}
           />
+        );
+      case 'unity':
+        return (
+          <Unity />
         );
 
       /* DEPRECATED DATATYPES */

@@ -73,3 +73,6 @@ dist
 
 # Pods
 ios/Pods
+
+#unity
+public/unity
