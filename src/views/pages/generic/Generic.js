@@ -4,6 +4,7 @@ import { object } from 'prop-types';
 // import queryString from 'query-string';
 // import { location } from '../../../utils';
 import { KeycloakConsumer, Redirect, Frame, Box, ActivityIndicator } from '../../components';
+import Unity from '../../components/input/unity'
 
 class Generic extends Component {
   static propTypes = {
@@ -57,10 +58,7 @@ class Generic extends Component {
     }
 
     return (
-      <Frame
-        rootCode="FRM_ROOT"
-        isRootFrame
-      />
+      <Unity />
     );
   }
 }
