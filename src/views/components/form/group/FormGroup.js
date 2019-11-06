@@ -614,7 +614,7 @@ class FormGroup extends Component {
           return (
             // WRAPPER ELEMENT
             <Box
-              zIndex={50 - index}
+              zIndex={100 - index}
               key={questionCode}
               {...defaultStyle.group}
               // padding={10}
