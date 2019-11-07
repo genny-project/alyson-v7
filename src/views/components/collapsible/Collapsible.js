@@ -9,6 +9,7 @@ class Collapsible extends Component {
     headerWrapperProps: {},
     headerIconProps: {},
     iconPlacement: 'right',
+    showIcon: true,
   }
 
   static propTypes = {
@@ -28,6 +29,8 @@ class Collapsible extends Component {
     color: string,
     backgroundColor: string,
     subcomponentProps: object,
+    showIcon: bool,
+    questionCode: string,
   }
 
   state = {
@@ -46,6 +49,8 @@ class Collapsible extends Component {
       isClosed,
       iconPlacement,
       subcomponentProps,
+      showIcon,
+      questionCode,
     } = this.props;
 
     const { isOpen } = this.state;
@@ -57,6 +62,8 @@ class Collapsible extends Component {
           flex={1}
           justifyContent="space-between"
           flexDirection={`row${iconPlacement === 'right' ? '' : '-reverse'}`}
+          componentID="GROUP-HEADER-WRAPPER"
+          componentCode={questionCode}
           {...subcomponentProps['group-header-wrapper']}
         >
           {/* header alt goes here */}
@@ -68,33 +75,43 @@ class Collapsible extends Component {
                   withFeedback
                   onPress={this.handlePress}
                   testID={testID}
+                  componentID="GROUP-CLICKABLE-WRAPPER"
+                  componentCode={questionCode}
                   {...subcomponentProps['group-clickable-wrapper']}
                 >
                   {renderHeader}
-                  <Box
-                    justifyContent="center"
-                    alignItems="center"
-                  >
+                  {showIcon ? (
                     <Box
-                      transform={[
-                        { rotate: isOpen ? '0deg' : '270deg' },
-                      ]}
-                      {...subcomponentProps['group-icon']}
+                      justifyContent="center"
+                      alignItems="center"
                     >
-                      <Icon
-                        name="keyboard_arrow_down"
-                        color="black"
-                        cursor="pointer"
+                      <Box
+                        transform={[
+                          { rotate: isOpen ? '0deg' : '270deg' },
+                        ]}
+                        componentID="GROUP-ICON"
+                        componentCode={questionCode}
                         {...subcomponentProps['group-icon']}
-                      />
+                      >
+                        <Icon
+                          name="keyboard_arrow_down"
+                          color="black"
+                          cursor="pointer"
+                          componentID="GROUP-ICON"
+                          componentCode={questionCode}
+                          {...subcomponentProps['group-icon']}
+                        />
+                      </Box>
                     </Box>
-                  </Box>
+                  ) : null }
                 </Touchable>
               ) : null
             }
         </Box>
 
         <Box
+          componentID="GROUP-CONTENT-WRAPPER"
+          componentCode={questionCode}
           {...subcomponentProps['group-content-wrapper']}
         >
           {isOpen && !isClosed ? (

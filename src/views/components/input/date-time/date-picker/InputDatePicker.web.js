@@ -191,6 +191,7 @@ class InputDatePicker extends PureComponent {
                   onPress={event => {
                     event.stopPropagation();
                   }}
+                  componentID="INPUT-ITEM-WRAPPER"
                   {...componentProps['input-item-wrapper']}
                 >
                   <Box
@@ -370,22 +371,22 @@ class InputDatePicker extends PureComponent {
                                 },
                                 justifyContent: 'center',
                                 withFeedback: true,
-                                onPress: event => {
-                                  if ( disabled )
-                                    event.stopPropagation();
-                                  else {
-                                    selectDay(
-                                      toggle,
-                                      selectItem,
-                                      day,
-                                    );
-                                  }
-                                },
                                 onMouseEnter: () => {
                                   setHighlightedIndex( monthIndex );
                                 },
                                 ...itemProps,
                               })}
+                              onPress={event => {
+                                if ( disabled )
+                                  event.stopPropagation();
+                                else {
+                                  selectDay(
+                                    toggle,
+                                    selectItem,
+                                    day,
+                                  );
+                                }
+                              }}
                             >
                               <Text
                                 align="center"

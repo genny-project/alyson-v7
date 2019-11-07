@@ -1,27 +1,75 @@
+/* eslint-disable max-len */
 import React, { Component } from 'react';
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState, convertFromHTML } from 'draft-js';
 
 import { stateToHTML } from 'draft-js-export-html';
 import { func, string, object, bool } from 'prop-types';
 import style from './style.css'; //eslint-disable-line
+import { isObject, isArray } from './../../../../utils';
 
 class RichEditor extends Component {
   static propTypes = {
     onChangeValue: func,
     testID: string,
+    value: string,
   };
 
   constructor( props ) {
     super( props );
     this.editor = React.createRef();
     this.state = { editorState: EditorState.createEmpty() };
-    this.handleFocus = () => this.editor.current.focus();
-    this.handleChange = editorState => this.setState({ editorState });
+    // this.state = { editorState: EditorState.createWithContent( ContentState.createFromText( plcaeholder)) };
+    this.handleFocus = () => {
+      this.editor.current.focus();
+      // this.setState({ isFocused: true });
+    };
+    this.handleChange = editorState => {
+      this.setState({ editorState });
+    };
     this.onKeyCommand = this._handleKeyCommand.bind( this );
     this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind( this );
     this.handleToggleBlockType = this._toggleBlockType.bind( this );
     this.handleToggleInlineStyle = this._toggleInlineStyle.bind( this );
     this.handleBlur = this.handleBlur.bind( this );
+  }
+
+  state = {
+    // isFocused: false,
+  }
+
+  componentDidMount() {
+    if ( this.props.value )
+      this.settingStateFromHtml( this.props.value );
+  }
+
+  componentDidUpdate( prevProps, prevState ) {
+    if (
+      ((
+        prevProps.value !== this.props.value &&
+        this.state.value !== this.props.value
+      ) ||
+        prevState.value !== this.state.value
+      )
+    ) {
+      this.settingStateFromHtml( this.props.value );
+    }
+  }
+
+  settingStateFromHtml = ( value ) => {
+    const text = `${value}`;
+    const contentHTML = convertFromHTML( text );
+
+    if (
+      isObject( contentHTML, { withProperty: 'contentBlocks' }) &&
+      isArray( contentHTML.contentBlocks )
+    ) {
+      const state = ContentState.createFromBlockArray( contentHTML );
+      const test = EditorState.createWithContent( state );
+
+      this.setState({
+        editorState: test,
+      });
+    }
   }
 
   _handleKeyCommand( command, editorState ) {
@@ -66,11 +114,17 @@ class RichEditor extends Component {
 
     // when data changes we send the value to the backend as an html
     this.props.onChangeValue( htmlOutput );
+
+    // this.setState({
+    //   isFocused: false,
+    // });
   }
 
   render() {
+    // console.log( '*****FINAL******', this.state );
+    // console.log( '*********AGAIN*******', this.props );
     const { testID } = this.props;
-    const { editorState } = this.state;
+    const { editorState /* , isFocused */  } = this.state;
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
     let className = 'RichEditor-editor';
@@ -103,6 +157,7 @@ class RichEditor extends Component {
           testid={`${testID}`}
         >
           <Editor
+            // onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             blockStyleFn={getBlockStyle}
             customStyleMap={styleMap}
@@ -110,7 +165,8 @@ class RichEditor extends Component {
             handleKeyCommand={this.onKeyCommand}
             keyBindingFn={this.mapKeyToEditorCommand}
             onChange={this.handleChange}
-            placeholder=" "
+            // placeholder={isFocused ? null : this.props.placeholder}
+            placeholder={null}
             ref={this.editor}
             spellCheck
           />
@@ -169,7 +225,7 @@ StyleButton.propTypes = {
   onToggle: func,
   label: string,
   active: bool,
-  style: object,
+  style: string,
 };
 const BLOCK_TYPES = [
   { label: 'H1', style: 'header-one' },

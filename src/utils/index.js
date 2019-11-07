@@ -24,3 +24,4 @@ export * from './dev-mode';
 export * from './document';
 export * from './file';
 export * from './form-data';
+export * from './save';

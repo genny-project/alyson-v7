@@ -73,6 +73,7 @@ class InputImage extends Component {
         width="100%"
         justifyContent="center"
         alignItems="center"
+        {...this.props.isClosed ? { height: '100%' } : {}}
       >
         <Box
           height={height}

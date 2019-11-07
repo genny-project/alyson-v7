@@ -2,6 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import { oneOf, string } from 'prop-types';
 import styles from './Icon.style';
+import { isString } from '../../../utils';
 
 const sizes = {
   xs: 16,
@@ -23,7 +24,14 @@ const colors = {
   yellow: 'yellow',
 };
 
-const Icon = ({ name, color = 'white', size = 'md', cursor = 'auto' }) => {
+const Icon = ({
+  name,
+  color = 'white',
+  size = 'md',
+  cursor = 'auto',
+  componentID,
+  componentCode,
+}) => {
   const style = {
     fontFamily: 'Material Icons',
     whiteSpace: 'nowrap',
@@ -42,6 +50,9 @@ const Icon = ({ name, color = 'white', size = 'md', cursor = 'auto' }) => {
         styles.wrapper,
         style,
       ]}
+      data-component-type="ICON"
+      data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
+      data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
     >
       {name && name !== 'undefined' && name.includes( '-' ) ? name.replace( /-/g, '_' ) : name}
 
@@ -54,6 +65,8 @@ Icon.propTypes = {
   color: string,
   size: oneOf( ['xs', 'sm', 'md', 'lg', 'xl'] ),
   cursor: oneOf( ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text'] ),
+  componentID: string,
+  componentCode: string,
 };
 
 export default Icon;

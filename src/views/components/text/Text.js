@@ -5,6 +5,7 @@ import capitalize from 'lodash.capitalize';
 import upperCase from 'lodash.uppercase';
 import lowerCase from 'lodash.lowercase';
 import { TEXT_SIZES } from '../../../constants';
+import { isString } from '../../../utils';
 
 const colors = {
   black: 'black',
@@ -37,7 +38,9 @@ const Text = ({
   transform,
   whiteSpace = 'normal',
   cursor,
-  ...restProps
+  componentID,
+  componentCode,
+  fontStyle = 'normal',
 }) => {
   const style = {
     textDecorationLine: decoration,
@@ -54,6 +57,7 @@ const Text = ({
     cursor,
     whiteSpace,
     alignSelf: alignSelf,
+    fontStyle,
   };
 
   let child = text || children;
@@ -67,10 +71,13 @@ const Text = ({
 
   return (
     <NativeText
-      {...restProps}
+      // {...restProps}
       style={[
         style,
       ]}
+      data-component-type="TEXT"
+      data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
+      data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
     >
       {child}
     </NativeText>
@@ -110,6 +117,11 @@ Text.propTypes = {
   ),
   alignSelf: oneOf(
     ['normal', 'auto', 'center', 'flex-start', 'flex-end']
+  ),
+  componentID: string,
+  componentCode: string,
+  fontStyle: oneOf(
+    ['normal', 'italic']
   ),
 };
 

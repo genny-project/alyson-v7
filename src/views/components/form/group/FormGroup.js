@@ -6,6 +6,7 @@ import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLin
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
 import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
+import DataControl from '../data-control';
 
 const components = [
   'group-wrapper',
@@ -36,7 +37,8 @@ class FormGroup extends Component {
     inheritedThemes: array,
     inheritedProps: object,
     index: number,
-    dataTypes: object,
+    data: object,
+    types: object,
     functions: object,
     inputRefs: object,
     themes: object,
@@ -106,7 +108,9 @@ class FormGroup extends Component {
     }, () => {});
   }
 
-  getInhertiableThemes = () => {
+  getInhertiableThemes = ( index, numberOfChildAsks ) => {
+    // console.log( 'index', index );
+
     return [
       ...isArray( this.props.inheritedThemes ) ? this.props.inheritedThemes : [],
       ...filterThemes(
@@ -114,17 +118,18 @@ class FormGroup extends Component {
         this.props.themes,
         {
           onlyInheritableThemes: true,
+          childIndex: index,
+          totalChildren: numberOfChildAsks,
         }
       ),
     ];
   }
 
   getStyling = ( componentType ) => {
-    const { dataTypes, questionGroup } = this.props;
+    const { questionGroup, data } = this.props;
     const { attributeCode } = questionGroup;
 
-    const baseEntityDefinition = dataTypes[attributeCode];
-    const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+    const dataType = dlv( data, `${attributeCode}.dataType` );
 
     // filter links for panel
     const inheritedLinks = [
@@ -209,11 +214,11 @@ class FormGroup extends Component {
     options = {},
   }) => {
     const {
-      dataTypes,
+      data,
+      types,
       functions,
       inputRefs,
     } = this.props;
-
     const {
       values,
       errors,
@@ -238,8 +243,9 @@ class FormGroup extends Component {
       // disabled,
     } = ask;
 
-    const baseEntityDefinition = dataTypes[attributeCode];
+    const baseEntityDefinition = data[attributeCode];
     const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+    const dataTypeObject = types[dataType];
 
     const { questionOnly } = options;
     const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
@@ -254,6 +260,8 @@ class FormGroup extends Component {
       ),
       value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
+      mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
+      validation: isObject( dataTypeObject ) ? dataTypeObject.validationList : null,
       error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
       onBlur: handleBlur( ask, valuePath ),
       required: mandatory,
@@ -269,7 +277,7 @@ class FormGroup extends Component {
         : 'default',
       testID: `${questionGroupCode}:${questionCode}` || '',
       ...contextList,
-      parentGroupCode: questionGroupCode,
+      parentGroupCode: questionGroupCode || questionCode,
       rootQuestionGroupCode: this.props.rootCode,
       inheritedProps: isObject( this.props.inheritedProps ) ? this.props.inheritedProps : null,
       inheritedThemes: this.getInhertiableThemes(),
@@ -280,15 +288,27 @@ class FormGroup extends Component {
     };
 
     return (
-      <VisualControl
+      <DataControl
         key={questionCode}
         {...inputProps}
         {...additionalProps}
-      />
+      >
+        {( props ) => {
+          // console.log({ value: values && dlv( values, valuePath ), maskValue: props.value });
+
+          return (
+            <VisualControl
+              {...props}
+            />
+          );
+        }}
+      </DataControl>
     );
   }
 
-  renderQuestionGroup = ( ask, index, form ) => {
+  renderQuestionGroup = ( ask, index, numberOfChildAsks, form ) => {
+    // if ( this.props.rootCode === 'QUE_TABLE_RESULTS_GRP' ) console.log({ index });
+
     return (
       React.createElement(
         FormGroup,
@@ -298,9 +318,10 @@ class FormGroup extends Component {
           parentGroupCode: this.props.questionGroup.questionCode,
           rootCode: this.props.rootCode,
           inheritedProps: this.props.inheritedProps,
-          inheritedThemes: this.getInhertiableThemes(),
+          inheritedThemes: this.getInhertiableThemes( index, numberOfChildAsks ),
           index: index,
-          dataTypes: this.props.dataTypes,
+          data: this.props.data,
+          types: this.props.types,
           functions: this.props.functions,
           inputRefs: this.props.inputRefs,
           asks: this.props.asks,
@@ -313,7 +334,7 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode, rootCode, dataTypes } = this.props;
+    const { index, questionGroup, form, parentGroupCode, rootCode, isClosed, data } = this.props;
     const {
       description,
       name,
@@ -328,8 +349,7 @@ class FormGroup extends Component {
 
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
-      const baseEntityDefinition = dataTypes[attributeCode];
-      const dataType = baseEntityDefinition && baseEntityDefinition.dataType;
+      const dataType = dlv( data, `${attributeCode}.dataType` );
 
       const themeLinks = [
         ...filterThemes(
@@ -377,12 +397,17 @@ class FormGroup extends Component {
       <Box
         // justifyContent="center"
         marginBottom={10}
+        componentID="GROUP-LABEL"
+        componentCode={questionCode}
         {...props}
       >
         <Text
           size="xl"
-          text={name}
+          // text={name}
+          text={isClosed ? name.substring( 0, 1 ) : name}
           bold
+          componentID="GROUP-LABEL"
+          componentCode={questionCode}
           {...props}
         />
       </Box>
@@ -391,6 +416,8 @@ class FormGroup extends Component {
     const descriptionComponent = ( props ) => (
       <Box
         marginBottom={10}
+        componentID="GROUP-DESCRIPTION"
+        componentCode={questionCode}
         {...props}
       >
         <Text
@@ -408,6 +435,8 @@ class FormGroup extends Component {
       return (
         <Box
           {...defaultStyle.group}
+          componentID="GROUP-HEADER-WRAPPER"
+          componentCode={questionCode}
           {...subcomponentProps['group-header-wrapper']}
         >
           { hasLabel ? labelComponent( subcomponentProps['group-label'] ) : null }
@@ -431,9 +460,11 @@ class FormGroup extends Component {
     const contentWrapperComponent = ( subcomponentProps ) => (
       <Box
         {...defaultStyle.group}
+        componentID="GROUP-CONTENT-WRAPPER"
+        componentCode={questionCode}
         {...subcomponentProps['group-content-wrapper']}
       >
-        { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index ) => {
+        { sort( childAsks, { paths: ['weight'], direction: 'desc' }).map(( ask, index, array ) => {
           if (
             isArray( ask.childAsks, { ofMinLength: 1 }) &&
             properties.renderChildAsks !== false
@@ -441,6 +472,7 @@ class FormGroup extends Component {
             return this.renderQuestionGroup(
               ask,
               index,
+              array.length,
               form
             );
           }
@@ -489,8 +521,11 @@ class FormGroup extends Component {
 
             return (
               <Box
+                key={questionCode}
                 justifyContent="center"
                 flexDirection="column"
+                componentID="GROUP-WRAPPER"
+                componentCode={questionCode}
                 {...subcomponentProps['group-wrapper']}
               >
                 { hasLabel && !properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
@@ -514,6 +549,12 @@ class FormGroup extends Component {
                   subcomponentProps={subcomponentProps}
                   isClosed={this.props.isClosed}
                   testID={`${parentGroupCode || questionCode}:${questionCode}`}
+                  showIcon={(
+                    properties.renderQuestionGroupIcon != null
+                      ? properties.renderQuestionGroupIcon
+                      : true
+                  )}
+                  questionCode={questionCode}
                   renderHeader={(
                     <Fragment>
                       { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
@@ -547,6 +588,7 @@ class FormGroup extends Component {
           ) {
             return (
               <EventTouchable
+                key={questionCode}
                 withFeedback
                 code={question.code}
                 parentCode={parentGroupCode || questionCode}
@@ -556,6 +598,8 @@ class FormGroup extends Component {
                 onMouseEnter={() => this.handleHover( true )}
                 onMouseLeave={() => this.handleHover( false )}
                 {...defaultStyle.group}
+                componentID="GROUP-WRAPPER"
+                componentCode={questionCode}
                 {...subcomponentProps['group-wrapper']}
                 {...this.state.hover ? this.getStyling()['hover'] : {}}
               >
@@ -570,10 +614,12 @@ class FormGroup extends Component {
           return (
             // WRAPPER ELEMENT
             <Box
-              key={name}
-              zIndex={50 - index}
+              zIndex={100 - index}
+              key={questionCode}
               {...defaultStyle.group}
               // padding={10}
+              componentID="GROUP-WRAPPER"
+              componentCode={questionCode}
               {...subcomponentProps['group-wrapper']}
             >
               {/* HEADER WRAPPER ELEMENT */}
@@ -592,7 +638,8 @@ class FormGroup extends Component {
 export { FormGroup };
 
 const mapStateToProps = state => ({
-  dataTypes: state.vertx.baseEntities.definitions.data,
+  data: state.vertx.baseEntities.definitions.data,
+  types: state.vertx.baseEntities.definitions.types,
   themes: state.vertx.layouts.themes,
   asks: state.vertx.layouts.asks,
 });

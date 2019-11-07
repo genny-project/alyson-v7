@@ -9,6 +9,7 @@ class Dropdown extends Component {
     headerWrapperProps: {},
     headerIconProps: {},
     iconPlacement: 'right',
+    showIcon: true,
   }
 
   static propTypes = {
@@ -28,6 +29,8 @@ class Dropdown extends Component {
     color: string,
     backgroundColor: string,
     subcomponentProps: object,
+    showIcon: bool,
+    questionCode: string,
   }
 
   render() {
@@ -39,6 +42,8 @@ class Dropdown extends Component {
       iconPlacement,
       disabled,
       color,
+      showIcon,
+      questionCode,
       // backgroundColor,
       subcomponentProps,
     } = this.props;
@@ -53,6 +58,8 @@ class Dropdown extends Component {
               <Box
                 justifyContent="center"
                 flexDirection="column"
+                componentID="GROUP-HEADER-WRAPPER"
+                componentCode={questionCode}
                 {...subcomponentProps['group-header-wrapper']}
               >
                 <Box
@@ -69,27 +76,34 @@ class Dropdown extends Component {
                         }}
                         data-testid={testID}
                         testID={testID}
+                        questionCode={questionCode}
                         {...subcomponentProps['group-clickable-wrapper']}
                       >
                         {renderHeader}
-                        <Box
-                          justifyContent="center"
-                          alignItems="center"
-                        >
+                        {showIcon ? (
                           <Box
-                            transform={[
-                              { rotate: isOpen ? '0deg' : '270deg' },
-                            ]}
-                            {...subcomponentProps['group-icon']}
+                            justifyContent="center"
+                            alignItems="center"
                           >
-                            <Icon
-                              name="keyboard_arrow_down"
-                              color="black"
-                              cursor="pointer"
+                            <Box
+                              transform={[
+                                { rotate: isOpen ? '0deg' : '270deg' },
+                              ]}
+                              componentID="GROUP-ICON"
+                              componentCode={questionCode}
                               {...subcomponentProps['group-icon']}
-                            />
+                            >
+                              <Icon
+                                name="keyboard_arrow_down"
+                                color="black"
+                                cursor="pointer"
+                                componentID="GROUP-ICON"
+                                componentCode={questionCode}
+                                {...subcomponentProps['group-icon']}
+                              />
+                            </Box>
                           </Box>
-                        </Box>
+                        ) : null}
                       </MenuButton>
                     ) : null }
                 </Box>

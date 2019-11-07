@@ -1,15 +1,16 @@
 import { Component } from 'react';
-import { string, bool, node, object } from 'prop-types';
+import { string, bool, func, object } from 'prop-types';
 import { isObject, isString  } from '../../../../utils';
 
 class SubcomponentThemeHandler extends Component {
   static propTypes = {
-    children: node,
+    children: func,
     // onChangeState: func,
     subcomponentProps: object,
     editable: bool,
     disabled: bool,
     error: string,
+    closed: bool,
   }
 
   state = {
@@ -29,7 +30,7 @@ class SubcomponentThemeHandler extends Component {
   }
 
   render() {
-    const { children, subcomponentProps, editable, disabled, error } = this.props;
+    const { children, subcomponentProps, editable, disabled, error, closed } = this.props;
     const { subcomponents } = this.state;
 
     // integrate state
@@ -63,6 +64,7 @@ class SubcomponentThemeHandler extends Component {
         ...getObjectFromKey( 'disabled', { condition: editable === false || disabled }),
         ...getObjectFromKey( 'error', { condition: error }),
         ...getObjectFromKey( 'readonly', { condition: subcomponents[type] && subcomponents[type].readonly }),
+        ...getObjectFromKey( 'closed', { condition: closed }),
       };
     };
 

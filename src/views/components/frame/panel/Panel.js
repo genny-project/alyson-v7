@@ -5,7 +5,7 @@ import { object, node, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { store } from '../../../../redux';
 import { Box, Fragment, Icon, Touchable } from '../../index';
-import { isObject } from '../../../../utils';
+import { isObject, Bridge } from '../../../../utils';
 
 class Panel extends Component {
   static defaultProps = {
@@ -28,7 +28,23 @@ class Panel extends Component {
       isObject( nextProps.controls, { withProperty: panelId }) &&
       nextProps.controls[panelId] !== nextState.display
     ) {
-      return { display: nextProps.controls[panelId] };
+
+      Bridge.sendFormattedEvent(
+        {
+          code: nextProps.location,
+          parentCode: nextProps.rootCode,
+          rootCode: nextProps.rootCode,
+          eventType: 'BTN_CLICK',
+          messageType: 'BTN',
+          value: {
+            state: nextState.display
+          },
+        }
+      );
+
+      return {
+        display: nextProps.controls[panelId]
+      };
     }
 
     return null;
@@ -101,7 +117,10 @@ class Panel extends Component {
 
     const Wrapper = isExpandable ? 'div' : Fragment;
 
-    const specialStyle = this.state.display === 'closed' ? { width: '0%' } : this.state.display === 'open' ? { width: '100%' } : {};
+    // const specialStyle = this.state.display === 'closed' ? { width: '0%' } : this.state.display === 'open' ? { width: '100%' } : {};
+    const specialStyle = {};
+
+    const closedProps = this.state.display === 'closed' ? inheritedProps['closed'] : null;
 
     return (
       <Box
@@ -109,12 +128,14 @@ class Panel extends Component {
         {...isExpandable ? { position: 'relative' } : {}}
         {...style}
         {...inheritedProps['default']}
-        {...this.state.display === 'closed' ? inheritedProps['closed'] : null}
+        {...closedProps}
         // transitionDuration='200ms'
         // transitionProperty='width'
         // transitionTimingFunction='ease'
         {...specialStyle}
         onLayout={this.handleOnLayout}
+        componentID={`FRAME-PANEL-${location}`}
+        componentCode={rootCode}
       >
         {
           isExpandable

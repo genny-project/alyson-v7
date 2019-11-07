@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, object, bool, number, func } from 'prop-types';
+import { string, object, bool, number, func, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
@@ -40,6 +40,7 @@ const subcomponents = [
   'input-item',
   'input-selected-wrapper',
   'input-selected',
+  'input-placeholder',
 ];
 
 class VisualControl extends Component {
@@ -51,12 +52,13 @@ class VisualControl extends Component {
     asks: object,
     attributes: object,
     inheritedProps: object,
-    inheritedThemes: object,
+    inheritedThemes: array,
     themes: object,
     error: string,
     required: bool,
     editable: bool,
     disabled: bool,
+    isClosed: bool,
     flexWrapper: bool,
     index: number,
     onBlur: func,
@@ -258,7 +260,8 @@ class VisualControl extends Component {
               flex={flexWrapper ? 1 : null}
               justifyContent="center"
               zIndex={100 - index}
-            // padding={5}
+              componentID="VCL-WRAPPER"
+              componentCode={this.props.ask.questionCode}
               {...componentProps['vcl-wrapper']}
             >
               {(
@@ -269,6 +272,7 @@ class VisualControl extends Component {
               >
                 <VisualControlLabel
                   question={this.props.question}
+                  questionCode={this.props.ask.questionCode}
                   {...componentProps['vcl-label']}
                 />
 
@@ -277,6 +281,7 @@ class VisualControl extends Component {
                   this.props.required
                 ) && (
                   <VisualControlRequired
+                    questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-required']}
                   />
                 )}
@@ -286,6 +291,7 @@ class VisualControl extends Component {
                   properties.renderVisualControlHint
                 ) && (
                   <VisualControlHint
+                    questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
                   />
                 )}
@@ -297,6 +303,7 @@ class VisualControl extends Component {
                 properties.renderVisualControlDescription
               ) && (
                 <VisualControlDescription
+                  questionCode={this.props.ask.questionCode}
                   {...componentProps['vcl-description']}
                 />
               )}
@@ -313,6 +320,7 @@ class VisualControl extends Component {
                   editable={this.props.editable}
                   disabled={this.props.disabled}
                   error={this.props.error}
+                  closed={this.props.isClosed}
                   identifier={this.props.ask.questionCode}
                 >
                   {({
@@ -350,6 +358,7 @@ class VisualControl extends Component {
               ) && (
                 <VisualControlError
                   error={this.props.error}
+                  questionCode={this.props.ask.questionCode}
                   {...componentProps['vcl-error']}
                 />
               )}

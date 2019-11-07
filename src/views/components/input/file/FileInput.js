@@ -4,10 +4,13 @@ import { bool, func, array, arrayOf, string, number, object } from 'prop-types';
 import { Box, Text, Touchable, Icon, Fragment, ActivityIndicator } from '../..';
 import InputFileItem from './file-item';
 import { isArray, isString, isObject, isInteger, Api, createFormDataFromFiles } from '../../../../utils';
+import InputFilePlaceholder from './file-placeholder';
+// import config from '../../../../config';
 import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 /* These are commented out to be revisited later */
 // import Camera from './Camera';
+
 class FileInput extends Component {
   static defaultProps = {
     multiple: true,
@@ -18,6 +21,7 @@ class FileInput extends Component {
     // maxNumberOfFiles: 3,
     // maxFileSize: 10000,
     // maxTotalFileSize: 100000,
+    placeholder: 'No File Selected',
   };
 
   // use VCL_INPUT to change restriction props
@@ -45,6 +49,7 @@ class FileInput extends Component {
     error: string,
     isClosed: bool,
     showName: bool,
+    placeholder: string,
   };
 
   constructor( props ) {
@@ -61,9 +66,9 @@ class FileInput extends Component {
   };
 
   componentDidMount() {
-    const URL = process.env.ENV_FILE_UPLOAD_URL;
+    // const URL = process.env.ENV_FILE_UPLOAD_URL;
 
-    console.log( URL ); //eslint-disable-line
+    // console.log( URL ); //eslint-disable-line
 
     this.updateFilesFromProps();
   }
@@ -128,7 +133,7 @@ class FileInput extends Component {
   };
 
   convertFilesToStateFormat = ( files ) => {
-    return files.map( file => {
+    return isArray( files ) ? files.map( file => {
       // if ( )
       return ({
         name: file.name,
@@ -137,7 +142,7 @@ class FileInput extends Component {
         size: file.size,
         uuid: file.uuid,
       });
-    });
+    }) : [];
   }
 
   updateFilesFromProps = () => {
@@ -386,6 +391,7 @@ class FileInput extends Component {
       editable,
       maxNumberOfFiles,
       showName,
+      placeholder,
     } = this.props;
     const {
       selectedFiles,
@@ -423,6 +429,7 @@ class FileInput extends Component {
         editable={this.props.editable}
         disabled={isInputDisabled}
         error={this.props.error}
+        closed={this.props.isClosed}
       >
         {({
           componentProps,
@@ -434,10 +441,12 @@ class FileInput extends Component {
               flexDirection="column"
               // height="auto"
               justifyContent="space-around"
+              componentID="INPUT-WRAPPER"
               {...componentProps['input-wrapper']}
             >
               <Box
                 flexWrap="wrap"
+                componentID="INPUT-SELECTED-WRAPPER"
                 {...componentProps['input-selected-wrapper']}
               >
                 {isArray( selectedFiles, { ofMinLength: 1 }) ? (
@@ -467,7 +476,10 @@ class FileInput extends Component {
                     );
                   })
                 ) : (
-                  <Text text="No File selected" />
+                  <InputFilePlaceholder
+                    text={placeholder}
+                    {...componentProps['input-placeholder']}
+                  />
                 )}
               </Box>
 
@@ -502,6 +514,7 @@ class FileInput extends Component {
                       alignItems="center"
                       justifyContent="center"
                       disabled={isInputDisabled}
+                      componentID="INPUT-FIELD"
                       onChangeState={updateState( 'input-field' )}
                       {...componentProps['input-field']}
                     >
@@ -511,6 +524,7 @@ class FileInput extends Component {
                             name={icon}
                             color="black"
                             {...iconProps}
+                            componentID="INPUT-ICON"
                             iconProps={componentProps['input-icon']}
                           />
                         ) : null
@@ -532,6 +546,7 @@ class FileInput extends Component {
                               <Text
                                 whiteSpace="nowrap"
                                 text="Add File"
+                                componentID="INPUT-FIELD"
                                 {...componentProps['input-field']}
                               />
                             ) : null

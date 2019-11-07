@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray, isObject, isString, sort  } from '../../index';
+import { isArray, isObject, isString, isInteger, sort  } from '../../index';
 
 const filterThemes = ( themeLinks, allThemes, options = {}) => {
   const {
@@ -9,6 +9,8 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     acceptTypes,
     onlyComponentThemes,
     dataType,
+    childIndex,
+    totalChildren,
   } = options;
 
   const themes = [];
@@ -53,13 +55,52 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
       return;
 
     if (
-      isString( dataType ) &&
+      isInteger( childIndex )
+    ) {
+      if (
+        isInteger( theme.selectorType ) &&
+        (( childIndex + 1 ) % theme.selectorType ) !== 0
+      ) {
+        return;
+      }
+
+      if (
+        isString( theme.selectorType, { isSameAs: 'first' }) &&
+        childIndex > 0
+      ) {
+        return;
+      }
+
+      if (
+        isString( theme.selectorType, { isSameAs: 'not-first' }) &&
+        childIndex < 1
+      ) {
+        return;
+      }
+
+      if (
+        isString( theme.selectorType, { isSameAs: 'last' }) &&
+        childIndex !== ( totalChildren - 1 )
+      ) {
+        return;
+      }
+
+      if (
+        isString( theme.selectorType, { isSameAs: 'not-last' }) &&
+        childIndex === ( totalChildren - 1 )
+      ) {
+        return;
+      }
+    }
+
+    if (
+      !onlyInheritableThemes &&
+      isString( theme.dataType ) &&
+      // isString( dataType ) &&
       !(
-        isString( theme.dataType ) &&
-        theme.dataType.toLowerCase() === dataType.toLowerCase() ||
-        theme.dataType == null
-      ))
-      return;
+        isString( dataType ) &&
+        dataType.toLowerCase() === theme.dataType.toLowerCase()
+      )) return;
 
     if (
       onlyComponentThemes &&

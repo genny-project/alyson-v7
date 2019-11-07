@@ -1,5 +1,5 @@
 import dlv from 'dlv';
-import { isArray, isString, isObject } from '../../../../utils';
+import { isArray, isString, isObject, isInteger } from '../../../../utils';
 
 const initialState = {
   frames: {},
@@ -20,6 +20,10 @@ const themeBehaviourAttributes = {
     default: true,
     label: 'inheritable',
   },
+  PRI_IS_SHAREABLE: {
+    default: false,
+    label: 'shareable',
+  },
   PRI_HAS_QUESTION_GRP_INPUT: {
     default: false,
     label: 'renderQuestionGroupInput',
@@ -27,6 +31,10 @@ const themeBehaviourAttributes = {
   PRI_HAS_QUESTION_GRP_LABEL: {
     default: false,
     label: 'renderQuestionGroupLabel',
+  },
+  PRI_HAS_QUESTION_GRP_ICON: {
+    default: true,
+    label: 'renderQuestionGroupIcon',
   },
   PRI_HAS_QUESTION_GRP_DESCRIPTION: {
     default: false,
@@ -116,6 +124,14 @@ const componentTypes = {
   INPUT_ITEM: 'input-item',
   INPUT_SELECTED_WRAPPER: 'input-selected-wrapper',
   INPUT_SELECTED: 'input-selected',
+  INPUT_PLACEHOLDER: 'input-placeholder',
+};
+
+const selectorTypes = {
+  FIRST: 'first',
+  LAST: 'last',
+  NOT_FIRST: 'not-first',
+  NOT_LAST: 'not-last',
 };
 
 const injectFrameIntoState = ({ item, state, shouldReplaceEntity }) => {
@@ -353,14 +369,20 @@ const reduceAsks = ({ item, state }) => {
                   code: link.contextCode,
                   weight: link.weight,
                   type: nameTypes[link.name] ? nameTypes[link.name] : 'none',
-                  component: componentTypes[link.visualControlType]
-                    ? componentTypes[link.visualControlType]
-                    : componentTypes[link.hint]
-                      ? componentTypes[link.hint]
-                      : null,
+                  component:
+                    componentTypes[link.visualControlType]
+                      ? componentTypes[link.visualControlType]
+                      : componentTypes[link.hint]
+                        ? componentTypes[link.hint]
+                        : null,
                   dataType: isString( link.dataType )
                     ? link.dataType
                     : null,
+                  selectorType: isInteger( link.selectorType )
+                    ? link.selectorType
+                    : isString( link.selectorType )
+                      ? selectorTypes[link.selectorType]
+                      : null,
                   created: link.created,
                 };
               })

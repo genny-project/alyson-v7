@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
 import { any, oneOf, oneOfType, string, number, array, func, bool, object, shape } from 'prop-types';
+import { isString } from '../../../utils';
 
 /** Ensure the props we're going to use were indeed passed through. */
 function filterOutUnspecifiedProps( props ) {
@@ -90,6 +91,9 @@ function Box({
   onLayout,
   onBlur,
   boxSizing,
+  onRef,
+  componentID,
+  componentCode,
   ...restProps
 }) {
   const boxStyle = filterOutUnspecifiedProps({
@@ -166,7 +170,7 @@ function Box({
   });
 
   const webStyle = Platform.OS !== 'web' ? {} : filterOutUnspecifiedProps({
-    accessibilityRole,
+    // accessibilityRole,
     overflow,
     overflowX,
     overflowY,
@@ -175,8 +179,6 @@ function Box({
     transitionTimingFunction,
     transitionDelay,
   });
-
-  // if ( restProps && restProps.identifier === 'MENU' ) console.log( 'RENDER', onRef );
 
   return (
     <View
@@ -190,6 +192,10 @@ function Box({
       ]}
       onLayout={onLayout}
       onBlur={onBlur}
+      ref={onRef}
+      data-component-type="BOX"
+      data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
+      data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
     >
       {children}
     </View>
@@ -244,13 +250,27 @@ Box.propTypes = {
   paddingBottom: number,
   paddingX: number,
   paddingY: number,
-  margin: number,
-  marginX: number,
-  marginY: number,
-  marginTop: number,
-  marginRight: number,
-  marginBottom: number,
-  marginLeft: number,
+  margin: oneOfType(
+    [number, string]
+  ),
+  marginX: oneOfType(
+    [number, string]
+  ),
+  marginY: oneOfType(
+    [number, string]
+  ),
+  marginTop: oneOfType(
+    [number, string]
+  ),
+  marginRight: oneOfType(
+    [number, string]
+  ),
+  marginBottom: oneOfType(
+    [number, string]
+  ),
+  marginLeft: oneOfType(
+    [number, string]
+  ),
   backgroundColor: string,
   position: oneOf(
     ['fixed', 'absolute', 'relative', 'static', 'sticky']
@@ -334,6 +354,9 @@ Box.propTypes = {
   boxSizing: oneOf(
     ['content-box', 'border-box']
   ),
+  onRef: func,
+  componentID: string,
+  componentCode: string,
 };
 
 export default Box;

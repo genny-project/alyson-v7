@@ -16,7 +16,7 @@ class InputEvent extends Component {
     parentGroupCode: string,
     rootQuestionGroupCode: string,
     messageType: string,
-    iconProps: bool,
+    iconProps: object,
     onPress: func,
     icon: string,
     isClosed: bool,
@@ -63,6 +63,7 @@ class InputEvent extends Component {
           return (
             <EventTouchable
               {...restProps}
+              onBlur={null}
               withFeedback
               eventType={messageType}
               code={question.code}
@@ -81,6 +82,8 @@ class InputEvent extends Component {
               flex={1}
               justifyContent={this.props.isClosed ? 'center' : 'flex-start'}
               flexDirection="row"
+              componentID="INPUT-WRAPPER"
+              componentCode={question.code}
               {...componentProps['input-wrapper']}
             >
               { hasIcon
@@ -88,6 +91,8 @@ class InputEvent extends Component {
                   <Icon
                     name={icon}
                     color="black"
+                    componentID="INPUT-ICON"
+                    componentCode={question.code}
                     {...restProps}
                     {...iconProps}
                   />
@@ -110,8 +115,10 @@ class InputEvent extends Component {
                       <Text
                         color={color}
                         whiteSpace="nowrap"
-                        text={question.name}
+                        text={this.props.isClosed ? question.name.substring( 0, 1 ) : question.name}
                         {...restProps}
+                        componentID="INPUT-FIELD"
+                        componentCode={question.code}
                         {...componentProps['input-field']}
                       />
                     ) : null

@@ -706,7 +706,8 @@ class DateTimeBase extends PureComponent {
               }) => {
                 return (
                   <Box
-                    {...getRootProps( undefined, { suppressRefError: true })}
+                    {...getRootProps({ refKey: 'onRef' })}
+                    componentID="INPUT-WRAPPER"
                     {...componentProps['input-wrapper']}
                   >
                     {isOpen ? (

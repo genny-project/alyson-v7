@@ -1,5 +1,5 @@
 import React, { Component, isValidElement } from 'react';
-import { string, integer, node } from 'prop-types';
+import { string, node, number } from 'prop-types';
 import { store } from '../../../redux';
 import * as actions from '../../../redux/actions';
 import { isDevMode } from '../../../utils';
@@ -16,28 +16,32 @@ class TestIdHandler extends Component {
   static propTypes = {
     children: node,
     testID: string,
-    timer: integer,
+    timer: number,
   }
 
   handleMouseOutDebounced = () => {
+    const { timer } = this.props;
+
     window.clearTimeout( timeoutMouseOverID );
 
     timeoutMouseOutID = window.setTimeout(
       () => {
         this.handleMouseOut();
       },
-      this.props.timer,
+      timer,
     );
   }
 
   handleMouseOverDebounced = () => {
+    const { timer } = this.props;
+
     window.clearTimeout( timeoutMouseOutID );
 
     timeoutMouseOverID = window.setTimeout(
       () => {
         this.handleMouseOver();
       },
-      this.props.timer,
+      timer,
     );
   }
 

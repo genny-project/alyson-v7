@@ -227,11 +227,12 @@ class InputAutocomplete extends Component {
               }) => {
                 return (
                   <Box
-                    {...getRootProps( undefined, { suppressRefError: true })}
+                    {...getRootProps({ refKey: 'onRef' })}
                     position="relative"
                     flex={1}
                     testID={`input-autocomplete ${testID}`}
                     {...componentProps['input-wrapper']}
+                    log
                   >
                     {/* autocomplete input field */}
 
@@ -284,7 +285,7 @@ class InputAutocomplete extends Component {
                         borderLeftWidth={2}
                         borderColor="#DDD"
                         borderStyle="solid"
-                        zIndex={5}
+                        zIndex={10}
                         {...componentProps['input-item-wrapper']}
                       >
                         {(

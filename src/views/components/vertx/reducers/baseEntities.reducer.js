@@ -54,11 +54,6 @@ const getDisplayValueField = ( item ) => {
 
   if ( item.valueString != null ) {
     try {
-      if ( item.baseEntityCode.startsWith( 'THM' )) {
-        // eslint-disable-next-line no-console
-        console.warn( item.valueString.toString());
-      }
-
       const object = JSON.parse( item.valueString.toString());
 
       return object;
