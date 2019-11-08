@@ -285,7 +285,7 @@ class InputAutocomplete extends Component {
                         borderLeftWidth={2}
                         borderColor="#DDD"
                         borderStyle="solid"
-                        zIndex={5}
+                        zIndex={10}
                         {...componentProps['input-item-wrapper']}
                       >
                         {(
