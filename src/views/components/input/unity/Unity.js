@@ -1,12 +1,23 @@
 import React from 'react';
 import Unity, { UnityContent } from 'react-unity-webgl';
+import queryString from 'query-string';
 
 class UnityComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    // creat an obj
+
+    // let foo = {
+    // dataUrl
+    //wasmCodeUrl
+    //wasmFrameworkUrl
+    //}
     this.unityContent = new UnityContent(
       '/unity/unison_webgl.json',
       '/unity/UnityLoader.js'
+      // queryString.parse(('https://raw.githubusercontent.com/genny-project/alyson-v7/baradUnity/public/unity/unison_webgl.json')),
+      // 'https://raw.githubusercontent.com/genny-project/alyson-v7/baradUnity/public/unity/UnityLoader.js'
     );
     this.unityContent.on('progress', progression => {
       this.setState({
