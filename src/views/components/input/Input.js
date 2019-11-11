@@ -410,7 +410,9 @@ class Input extends Component {
         );
       case 'unity':
         return (
-          <Unity />
+          <Unity
+            ref={input => ( this.input = input )}
+          />
         );
 
       /* DEPRECATED DATATYPES */
