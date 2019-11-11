@@ -1,7 +1,12 @@
 import React from 'react';
 import Unity, { UnityContent } from 'react-unity-webgl';
+import Proptypes from 'prop-types';
 
 class UnityComponent extends React.Component {
+  static propTypes = {
+    onChangeValue: Proptypes.func,
+  }
+
   constructor( props ) {
     super( props );
     this.unityContent = new UnityContent(
@@ -14,6 +19,8 @@ class UnityComponent extends React.Component {
       });
     });
     this.unityContent.on( 'ObjectClick', objectname => {
+      if ( this.props.onChangeValue )
+        this.props.onChangeValue( objectname );
       this.setState({
         objectname: objectname,
       });
@@ -26,6 +33,8 @@ class UnityComponent extends React.Component {
   }
 
   render() {
+    console.log( 'this object:', this );
+
     return (
       <div>
         <div>
