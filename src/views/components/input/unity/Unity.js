@@ -5,7 +5,6 @@ import Proptypes from 'prop-types';
 class UnityComponent extends React.Component {
   static propTypes = {
     onChangeValue: Proptypes.func,
-    onChange: Proptypes.func,
   }
 
   constructor( props ) {
@@ -31,7 +30,7 @@ class UnityComponent extends React.Component {
   }
 
   handleChange = ( event ) => {
-    console.log( 'InsideUnity', this.props.onChangeValue );
+    // console.log( 'InsideUnity', this.props.onChangeValue );
     if ( this.props.onChangeValue )
       this.props.onChangeValue( event );
   }

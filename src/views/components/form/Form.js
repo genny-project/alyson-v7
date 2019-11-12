@@ -549,8 +549,8 @@ class Form extends Component {
     value,
     sendOnChange,
   ) => {
-    console.log( 'handleChangeInsideForm-value', value );
-    console.log( 'handleChangeInsideForm-sendOnChange', sendOnChange );
+    // console.log( 'handleChangeInsideForm-value', value );
+    // console.log( 'handleChangeInsideForm-sendOnChange', sendOnChange );
 
     this.state.isUpdating = true; // eslint-disable-line
 
@@ -563,7 +563,7 @@ class Form extends Component {
     dset( this.values, valuePath, value );
 
     if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
-      console.log( 'inside sendonchange' );
+      // console.log( 'inside sendonchange' );
       this.sendAnswer({ ask, value, valuePath });
     }
   }

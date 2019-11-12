@@ -40,17 +40,17 @@ class FormInput extends Component {
   // }
 
   handleChangeDebounced = ( value, withSend ) => {
-    console.log( 'handleChangeDebounced' );
+    // console.log( 'handleChangeDebounced' );
     this.props.onChangeValue( value, withSend );
   };
 
   handleChangeValueWithSend = value => {
-    console.log( 'handleChangeValueWithSend' );
+    // console.log( 'handleChangeValueWithSend' );
     this.props.onChangeValue( value, true );
   };
 
   handleChangeValueWithSendAndDebounce = value => {
-    console.log( 'handleChangeValueWithSendAndDebounce' );
+    // console.log( 'handleChangeValueWithSendAndDebounce' );
     this.handleChangeDebounced( value, true );
   };
 
