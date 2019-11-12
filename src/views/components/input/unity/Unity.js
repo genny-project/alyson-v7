@@ -5,6 +5,7 @@ import Proptypes from 'prop-types';
 class UnityComponent extends React.Component {
   static propTypes = {
     onChangeValue: Proptypes.func,
+    onChange: Proptypes.func,
   }
 
   constructor( props ) {
@@ -19,11 +20,8 @@ class UnityComponent extends React.Component {
       });
     });
     this.unityContent.on( 'ObjectClick', objectname => {
-      if ( this.props.onChangeValue )
-        this.props.onChangeValue( objectname );
-      this.setState({
-        objectname: objectname,
-      });
+      // console.log( 'insideunitycontent' );
+      this.handleChange( objectname );
     });
   }
 
@@ -32,9 +30,13 @@ class UnityComponent extends React.Component {
     objectname: 'none',
   }
 
-  render() {
-    console.log( 'this object:', this );
+  handleChange = ( event ) => {
+    console.log( 'InsideUnity', this.props.onChangeValue );
+    if ( this.props.onChangeValue )
+      this.props.onChangeValue( event );
+  }
 
+  render() {
     return (
       <div>
         <div>

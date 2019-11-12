@@ -80,8 +80,10 @@ class DataControl extends Component {
   }
 
   handleChangeValue = ( value ) => {
+    console.log( 'handleChangeValue:', value );
     if ( !isString( this.state.error )) {
       if ( this.props.onChangeValue ) {
+        console.log( 'nested:', value );
         this.props.onChangeValue( value );
       }
     }

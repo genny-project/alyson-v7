@@ -84,7 +84,7 @@ class Input extends Component {
       dynamicWidth,
     };
 
-    console.log( 'thisprospinsideinput:', this.props.onChangeValue );
+    // console.log( 'thisprospinsideinput:', this );
 
     const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
