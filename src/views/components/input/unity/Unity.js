@@ -5,6 +5,7 @@ class UnityComponent extends React.Component {
   constructor(props) {
     super(props);
     this.unityContent = new UnityContent(
+      //'/unity/unison_webgl_genny.json',
       '/unity/unison_webgl.json',
       '/unity/UnityLoader.js'
     );
@@ -15,9 +16,9 @@ class UnityComponent extends React.Component {
       });
     });
 
-    this.unityContent.on('ObjectClick', objectname => {
+    this.unityContent.on('UnityEvent', eventname => {
       this.setState({
-        objectname: objectname,
+        eventname: eventname,
       });
     });
   }
@@ -32,7 +33,7 @@ class UnityComponent extends React.Component {
 
   state = {
     progression: null,
-    objectname: 'none',
+    eventname: 'none',
   }
 
   render() {
@@ -42,8 +43,9 @@ class UnityComponent extends React.Component {
           {`${this.state.progression * 100}%`}
         </div>
         <div>
-          {`Unity click: ${this.state.objectname}`}
+          {`UnityEvent: ${this.state.eventname}`}
         </div>
+
         <div>
           <button onClick={() => this.onClick('0')}>World View</button>
           <button onClick={() => this.onClick('1')}>Scene 1</button>

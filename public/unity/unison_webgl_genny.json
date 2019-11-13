@@ -1,9 +1,9 @@
 {
 "companyName": "DefaultCompany",
 "productName": "unison_unity",
-"dataUrl": "unison_webgl.data.unityweb",
-"wasmCodeUrl": "unison_webgl.wasm.code.unityweb",
-"wasmFrameworkUrl": "unison_webgl.wasm.framework.unityweb",
+"dataUrl": "http://alyson7.genny.life/unity/unison_webgl.data.unityweb",
+"wasmCodeUrl": "http://alyson7.genny.life/unity/unison_webgl.wasm.code.unityweb",
+"wasmFrameworkUrl": "http://alyson7.genny.life/unity/unison_webgl.wasm.framework.unityweb",
 "TOTAL_MEMORY": 268435456,
 "graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
 "webglContextAttributes": {"preserveDrawingBuffer": false},
