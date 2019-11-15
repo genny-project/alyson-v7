@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { number, bool, func, oneOf } from 'prop-types';
+import { number, bool, func, oneOf, string } from 'prop-types';
 import dlv from 'dlv';
 import { TEXT_SIZES } from '../../../../constants';
 import { isString, isInteger } from '../../../../utils';
@@ -25,6 +25,8 @@ class InputTextArea extends Component {
     size: oneOf(
       ['xs','sm','md','lg','xl']
     ),
+    value: string,
+
   }
 
   constructor( props ) {
@@ -34,13 +36,20 @@ class InputTextArea extends Component {
 
   state = {
     rows: null,
-    // isFocused: false,
-    // isHovering: false,
+    clientWidth: null,
   }
 
   componentDidMount() {
     this.tempElement.setAttribute( 'id', 'textArea-tempElement' );
     document.body.appendChild( this.tempElement );
+  }
+
+  componentDidUpdate( prevProps ) {
+    if (
+      prevProps.value !== this.props.value
+    ) {
+      this.updateWidth({ text: this.props.value, clientWidth: this.state.clientWidth  });
+    }
   }
 
   componentWillUnmount() {
@@ -50,10 +59,7 @@ class InputTextArea extends Component {
       document.body.removeChild( this.tempElement );
   }
 
-  handleChange = ( event ) => {
-    const text = dlv( event, 'nativeEvent.text' );
-    const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
-
+  updateWidth = ({ text, clientWidth }) => {
     const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
     const numberOfNewLines = [...text.matchAll( /\n/g )].length;
 
@@ -67,7 +73,24 @@ class InputTextArea extends Component {
 
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,
+      clientWidth,
     });
+  }
+
+  handleChange = ( event ) => {
+    const text = dlv( event, 'nativeEvent.text' );
+    const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
+
+    this.updateWidth({ text, clientWidth });
+  }
+
+  handleLayout = ( event ) => {
+    const text = this.props.value;
+    const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
+
+    if ( isString( text )) {
+      this.updateWidth({ text, clientWidth });
+    }
   }
 
   render() {
@@ -78,8 +101,6 @@ class InputTextArea extends Component {
 
     const {
       rows,
-      isFocused, // eslint-disable-line no-unused-vars
-      isHovering, // eslint-disable-line no-unused-vars
     } = this.state;
 
     return (
