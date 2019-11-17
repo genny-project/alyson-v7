@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { Platform } from 'react-native';
 import { detect } from 'detect-browser';
+import queryString from 'query-string';
 import config from '../../config';
 import { prefixedLog, isObject, isString, isArray } from '../../utils';
 import { store } from '../../redux';
@@ -48,6 +49,13 @@ class Bridge {
         version: browser.version,
       },
     };
+
+    if ( window ) {
+      const paramsFromWindow = window.location.search;
+      const values = queryString.parse( paramsFromWindow );
+
+      clientData['queryParameters'] = values;
+    }
 
     console.warn({ clientData }); // eslint-disable-line
 
