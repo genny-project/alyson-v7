@@ -38,10 +38,15 @@ class Bridge {
     const browser = detect();
 
     const clientData = {
-      platform: Platform.OS,
-      browser: browser.name,
-      os: browser.os,
-      version: browser.version,
+      platform: {
+        type: Platform.OS,
+        version: Platform.Version,
+      },
+      browser: {
+        name: browser.name,
+        os: browser.os,
+        version: browser.version,
+      },
     };
 
     // console.warn({ clientData });
