@@ -49,7 +49,7 @@ class Bridge {
       },
     };
 
-    // console.warn({ clientData });
+    console.warn({ clientData }); // eslint-disable-line
 
     axios
       .post( `${config.genny.host}/${config.genny.bridge.endpoints.events}/init?url=${origin}`, {
