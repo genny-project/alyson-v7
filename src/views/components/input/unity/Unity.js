@@ -16,9 +16,14 @@ class UnityComponent extends React.Component {
       });
     });
 
-    this.unityContent.on('UnityEvent', eventname => {
+    this.unityContent.on('unityEvent', eventname => {
       this.setState({
         eventname: eventname,
+      });
+    });
+    this.unityContent.on('unityAnswer', answername => {
+      this.setState({
+        answername: answername,
       });
     });
   }
@@ -34,6 +39,7 @@ class UnityComponent extends React.Component {
   state = {
     progression: null,
     eventname: 'none',
+    answername: 'none',
   }
 
   render() {
@@ -45,7 +51,9 @@ class UnityComponent extends React.Component {
         <div>
           {`UnityEvent: ${this.state.eventname}`}
         </div>
-
+        <div>
+          {`UnityAnswer: ${this.state.answername}`}
+        </div>
         <div>
           <button onClick={() => this.onClick('0')}>World View</button>
           <button onClick={() => this.onClick('1')}>Scene 1</button>
