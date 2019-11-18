@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Unity, { UnityContent } from 'react-unity-webgl';
-import { store } from '../../../../redux' ;
 import { Bridge } from '../../../../utils';
 
 class UnityComponent extends React.Component {
