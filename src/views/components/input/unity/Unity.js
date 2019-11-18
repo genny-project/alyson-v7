@@ -18,11 +18,11 @@ class UnityComponent extends React.Component {
       });
     });
 
-    this.unityContent.on( 'sendEvent', ( params ) => {
+    this.unityContent.on( 'unityEvent', ( params ) => {
       this.handleEvent( params );
     });
 
-    this.unityContent.on( 'sendAnswer', ( params ) => {
+    this.unityContent.on( 'unityAnswer', ( params ) => {
       // console.log( 'insideunitycontent' );
       this.handleChange( params );
     });
