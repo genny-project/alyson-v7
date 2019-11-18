@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
 import { Text } from '../index';
@@ -82,6 +83,8 @@ class Input extends Component {
       type,
       dynamicWidth,
     };
+
+    // console.log( 'thisprospinsideinput:', this );
 
     const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
@@ -410,7 +413,10 @@ class Input extends Component {
         );
       case 'unity':
         return (
-          <Unity />
+          <Unity
+            {...inputProps}
+            ref={input => ( this.input = input )}
+          />
         );
 
       /* DEPRECATED DATATYPES */
