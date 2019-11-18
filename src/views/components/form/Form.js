@@ -576,7 +576,7 @@ class Form extends Component {
 
   shouldSendAnswer = ({ value, valuePath }) => {
     const initialValue = dlv( this.state.initialValues, valuePath );
-    const lastSentValue = dlv( this.lastSentValue, valuePath );
+    const lastSentValue = dlv( this.lastSentValues, valuePath );
 
     if ( lastSentValue != null ) {
       if ( lastSentValue !== value ) {
