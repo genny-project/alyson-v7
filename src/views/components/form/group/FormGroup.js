@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
+import Unity from '../../input/unity';
 import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
 import DataControl from '../data-control';
@@ -347,6 +348,8 @@ class FormGroup extends Component {
 
     let properties = {};
 
+    console.warn({ Unity });
+
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
       const dataType = dlv( data, `${attributeCode}.dataType` );
@@ -608,6 +611,22 @@ class FormGroup extends Component {
                 {/* CONTENT WRAPPER ELEMENT */}
                 {contentWrapperComponent( subcomponentProps )}
               </EventTouchable>
+            );
+          }
+
+          if (
+            properties.renderAsUnityGroup
+          ) {
+            return (
+              <Unity
+                key={questionCode}
+                questionCode={questionCode}
+              >
+                {/* HEADER WRAPPER ELEMENT */}
+                {headerWrapperComponent( subcomponentProps )}
+                {/* CONTENT WRAPPER ELEMENT */}
+                {contentWrapperComponent( subcomponentProps )}
+              </Unity>
             );
           }
 

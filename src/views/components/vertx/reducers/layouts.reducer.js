@@ -88,6 +88,10 @@ const themeBehaviourAttributes = {
     default: true,
     label: 'renderChildAsks',
   },
+  PRI_IS_UNITY_GROUP: {
+    default: true,
+    label: 'renderAsUnityGroup',
+  },
 };
 
 const componentTypes = {
@@ -363,7 +367,16 @@ const reduceAsks = ({ item, state }) => {
                 const nameTypes = {
                   THEME: 'theme',
                   ICON: 'icon',
+                  UNITY: 'unity',
                 };
+
+                if ( isString( link.name, { isSameAs: 'UNITY' })) {
+                  return {
+                    sceneCode: link.contextCode,
+                    type: nameTypes[link.name],
+                    created: link.created,
+                  };
+                }
 
                 return {
                   code: link.contextCode,

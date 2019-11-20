@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Unity, { UnityContent } from 'react-unity-webgl';
-import { Bridge } from '../../../../utils';
+import dlv from 'dlv';
+import { Box } from '../../../components';
+import { Bridge, isArray, isString } from '../../../../utils';
 
 function UnityUI({ progression, objectClicked, onClick, selected }) {
   const scenes = ['World View', 'Scene 1', 'Scene 2', 'Scene 3', 'Scene 4'];
@@ -81,14 +83,52 @@ class UnityComponent extends React.Component {
     progression: null,
     objectClicked: 'none',
     selected: 'World View',
+    sceneCode: null,
   }
 
-  handleClick = ( SceneIndex ) => {
+  componentDidUpdate( nextProps ) {
+    // const askLinks = dlv( nextProps, `asks.${nextProps.ask.questionCode}.links` );
+
+    // console.warn({ askLinks, asks: nextProps.asks, nextProps, progression: this.state.progression });
+
+    // if ( isArray( askLinks, { ofMinLength: 1 })) {
+    //   askLinks.filter( link => link.type === 'unity' );
+
+    //   if ( isArray( askLinks, { ofMinLength: 1 })) {
+    //     const { sceneCode } = askLinks[0];
+
+    //     if ( isString( sceneCode )) {
+    //       if ( sceneCode !== this.state.sceneCode ) {
+    //         if ( this.state.progression === 1 ) {
+    //           this.updateScene( sceneCode );
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+  }
+
+  updateScene = ( sceneCode ) => {
+    console.warn( 'updateScene' );
+
+    this.setState({
+      sceneCode: sceneCode,
+    }, () => {
+      this.sendEventToUnity( sceneCode );
+    });
+  }
+
+  sendEventToUnity = ( SceneIndex ) => {
+    console.warn({ index: SceneIndex });
     this.unityContent.send(
       'Main Camera',
       'ChangeScene',
       SceneIndex
     );
+  }
+
+  handleClick = ( SceneIndex ) => {
+    this.updateScene( SceneIndex );
   }
 
   handleEvent = ( event ) => {
@@ -124,10 +164,15 @@ class UnityComponent extends React.Component {
   }
 
   render() {
+    const { children } = this.props;
     const { progression, objectClicked, selected } = this.state;
 
+    console.log({ children });
+
     return (
-      <div>
+      <Box
+        flexDirection="column"
+      >
         <UnityUI
           progression={progression}
           objectClicked={objectClicked}
@@ -137,7 +182,9 @@ class UnityComponent extends React.Component {
         <Unity
           unityContent={this.unityContent}
         />
-      </div> );
+        {children}
+      </Box>
+    );
   }
 }
 
