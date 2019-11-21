@@ -20,6 +20,11 @@ class UnityControl extends Component {
 
     console.warn({ askLinks, asks: nextProps.asks, nextProps, progression: unity && unity.progression, progression2: dlv( this, 'props.unity.progression' ) });
 
+    // doing three things
+    // 1. checking if there is a unity config link
+    // 2. checking if scene needs to be set
+    // 3. setting scene
+
     if ( isObject( unity )) {
       if ( isArray( askLinks, { ofMinLength: 1 })) {
         askLinks.filter( link => link.type === 'unity' );
