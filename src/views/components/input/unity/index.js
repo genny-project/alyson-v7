@@ -1,1 +1,1 @@
-export { default } from './Unity';
+export { default } from './UnityWrapper';

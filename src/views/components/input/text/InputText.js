@@ -214,6 +214,7 @@ class InputText extends Component {
   }
 
   handleChangeText = value => {
+    console.log( 'handlechangetext' );
     if ( this.props.editable === false || this.props.disabled )
       return null;
 

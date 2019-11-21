@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
-import Unity from '../../input/unity';
+import UnityWrapper from '../../input/unity';
+import UnityControl from '../../input/unity/control';
 import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
 import DataControl from '../data-control';
@@ -298,9 +299,14 @@ class FormGroup extends Component {
           // console.log({ value: values && dlv( values, valuePath ), maskValue: props.value });
 
           return (
-            <VisualControl
+            <UnityControl
               {...props}
-            />
+              asks={this.props.asks}
+            >
+              <VisualControl
+                {...props}
+              />
+            </UnityControl>
           );
         }}
       </DataControl>
@@ -347,8 +353,6 @@ class FormGroup extends Component {
     } = questionGroup;
 
     let properties = {};
-
-    console.warn({ Unity });
 
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
@@ -618,7 +622,7 @@ class FormGroup extends Component {
             properties.renderAsUnityGroup
           ) {
             return (
-              <Unity
+              <UnityWrapper
                 key={questionCode}
                 questionCode={questionCode}
               >
@@ -626,7 +630,7 @@ class FormGroup extends Component {
                 {headerWrapperComponent( subcomponentProps )}
                 {/* CONTENT WRAPPER ELEMENT */}
                 {contentWrapperComponent( subcomponentProps )}
-              </Unity>
+              </UnityWrapper>
             );
           }
 
