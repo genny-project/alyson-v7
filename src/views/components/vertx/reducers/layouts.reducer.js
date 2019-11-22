@@ -317,7 +317,7 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
   }
 };
 
-const reduceAsks = ({ item, state }) => {
+const reduceAsks = ({ item, state, shouldReplaceEntity }) => {
   let childAsks = {};
 
   if ( isArray( item.childAsks )) {
@@ -327,11 +327,13 @@ const reduceAsks = ({ item, state }) => {
       if ( isString( childItem.questionCode, { startsWith: 'QUE_' })) {
         childAsks = {
           ...childAsks,
-          ...reduceAsks({ item: childItem, state }),
+          ...reduceAsks({ item: childItem, state, shouldReplaceEntity }),
         };
       }
     });
   }
+
+  console.log( 'item.replace', item.replace, item.questionCode, item );
 
   return {
     ...childAsks,
@@ -351,7 +353,7 @@ const reduceAsks = ({ item, state }) => {
           links: [
             ...( isObject( state.asks[item.questionCode], { withProperty: 'links' }) &&
               isArray( state.asks[item.questionCode].links )
-              ? item.replace === true
+              ? shouldReplaceEntity === true
                 ? []
                 : state.asks[item.questionCode].links.filter(
                   existingLink =>
@@ -414,6 +416,8 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
 
   // TODO - shouldDeleteLinkedBaseEntities
 
+  console.log( 'shouldReplaceEntity', shouldReplaceEntity );
+
   if ( shouldReplaceEntity === true ) {
     if ( state.asks[item.questionCode] ) {
       delete state.asks[item.questionCode];
@@ -425,7 +429,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
       ...state,
       asks: {
         ...state.asks,
-        ...reduceAsks({ item, state }),
+        ...reduceAsks({ item, state, shouldReplaceEntity }),
       },
     };
   }

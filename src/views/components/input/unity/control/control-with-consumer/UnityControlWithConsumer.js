@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { object, string, node } from 'prop-types';
-import dlv from 'dlv';
 import { isString, isObject } from '../../../../../../utils';
 import UnityConsumer from '../../consumer';
 
@@ -11,11 +10,34 @@ class UnityControlWithConsumer extends Component {
     children: node,
   }
 
-  componentDidUpdate( nextProps ) {
-    const { unity } = this.props;
-    const { currentSceneCode } = nextProps;
+  componentDidMount() {
+    this.checkIfSetSceneRequired( this.props );
+  }
 
-    console.warn({ progression: unity && unity.progression, progression2: dlv( this, 'props.unity.progression' ) });
+  componentDidUpdate( nextProps ) {
+    // console.warn( this.props.questionCode, 'did update' );
+
+    this.checkIfSetSceneRequired( nextProps ) ;
+  }
+
+  componentWillUnmount() {
+    const { unity, currentSceneCode } = this.props;
+
+    if (
+      isObject( unity, { withProperty: 'unsetScene' }) &&
+      isString( currentSceneCode )
+    ) {
+      // console.warn( this.props.questionCode, 'unset' );
+
+      unity.unsetScene( this.props.questionCode );
+    }
+  }
+
+  checkIfSetSceneRequired = ( props ) => {
+    const { unity } = this.props;
+    const { currentSceneCode } = props;
+
+    // console.warn( this.props.questionCode, { unity, currentSceneCode });
 
     // 1. checking if scene needs to be set
 
@@ -28,7 +50,8 @@ class UnityControlWithConsumer extends Component {
         unity.progression === 1
       ) {
         if ( unity.setScene ) {
-          unity.setScene( currentSceneCode );
+          // console.warn( this.props.questionCode, 'setScene' );
+          unity.setScene({ questionCode: this.props.questionCode, sceneCode: currentSceneCode });
         }
       }
     }

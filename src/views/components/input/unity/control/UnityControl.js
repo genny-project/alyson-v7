@@ -13,12 +13,22 @@ class UnityControl extends Component {
     currentSceneCode: null,
   }
 
+  componentDidMount() {
+    this.checkLinksForSceneCode();
+  }
+
   componentDidUpdate( nextProps ) {
+    // console.warn( '-----------------' );
+
+    this.checkLinksForSceneCode();
+  }
+
+  checkLinksForSceneCode = () => {
     const { currentSceneCode } = this.state;
 
-    const askLinks = dlv( nextProps, `asks.${nextProps.ask.questionCode}.links` );
+    const askLinks = dlv( this.props, `asks.${this.props.ask.questionCode}.links` );
 
-    console.warn({ askLinks, asks: nextProps.asks, nextProps });
+    // console.warn( this.props.ask.questionCode, { askLinks, asks: this.props.asks, props: this.props });
 
     // 1. checking if there is a unity config link
 
@@ -28,6 +38,8 @@ class UnityControl extends Component {
       if ( isArray( askLinks, { ofMinLength: 1 })) {
         const { sceneCode } = askLinks[0];
 
+        // console.warn( this.props.ask.questionCode, { sceneCode, currentSceneCode });
+
         // 2. checking if the sceneCode is different from the one saved in the state
         if (
           isString( sceneCode ) && (
@@ -36,8 +48,16 @@ class UnityControl extends Component {
           )
         ) {
           this.updateSceneCode( sceneCode );
+
+          return;
         }
+
+        return;
       }
+    }
+
+    if ( currentSceneCode != null ) {
+      this.updateSceneCode( null );
     }
   }
 
@@ -51,15 +71,22 @@ class UnityControl extends Component {
     const { children } = this.props; // eslint-disable-line
     const { currentSceneCode } = this.state;
 
+    console.warn( '--------------' );
+
     if ( isString( currentSceneCode )) {
+      console.warn( this.props.ask.questionCode, 'render with consumer', currentSceneCode );
+
       return (
         <UnityControlWithConsumer
           currentSceneCode={currentSceneCode}
+          questionCode={this.props.ask.questionCode}
         >
           {children}
         </UnityControlWithConsumer>
       );
     }
+
+    console.warn( this.props.ask.questionCode, 'render children', currentSceneCode );
 
     return children;
   }

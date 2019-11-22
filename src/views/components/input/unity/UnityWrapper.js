@@ -1,54 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Unity, { UnityContent } from 'react-unity-webgl';
-import dlv from 'dlv';
 import { Box } from '../..';
-import { Bridge, isArray, isString } from '../../../../utils';
+import { Bridge, isObject } from '../../../../utils';
 import UnityProvider from './provider';
-
-// function UnityUI({ progression, objectClicked, onClick, selected }) {
-//   const scenes = ['World View', 'Scene 1', 'Scene 2', 'Scene 3', 'Scene 4'];
-
-//   return (
-//     <div>
-//       <ul
-//         style={{ display: 'flex',
-//           justifyContent: 'start',
-//           alignItems: 'center' }}
-//       >
-//         {scenes.map(( scene, index  ) => (
-//           <li key={scene}>
-//             <button
-//               style={{
-//                 border: 'none',
-//                 background: 'transparent',
-//                 fontSize: '18px',
-//                 fontWeight: 'bold',
-//                 textDecoration: 'none',
-//                 listStyleType: 'none',
-//                 color: `${selected === scene ? { color: 'tomato' } : { color: 'null' }}`,
-//               }}
-//               onClick={() => {
-//                 onClick( index.toString());
-//               }}
-//             >
-//               {scene}
-//             </button>
-//           </li>
-//         ))}
-//       </ul>
-//       <div>
-//         {`${progression * 100}%`}
-//       </div>
-//       <div>
-//         {`UnityEvent: ${objectClicked}`}
-//       </div>
-//       <div>
-//         {`UnityAnswer: ${objectClicked}`}
-//       </div>
-//     </div>
-//   );
-// }
 
 class UnityWrapper extends React.Component {
   constructor( props ) {
@@ -67,34 +22,69 @@ class UnityWrapper extends React.Component {
 
     this.unityContent.on( 'unityEvent', ( params ) => {
       this.handleEvent( params );
-      this.setState({
-        objectClicked: params,
-      });
+      // this.setState({
+      //   objectClicked: params,
+      // });
     });
 
     this.unityContent.on( 'unityAnswer', ( params ) => {
       // console.log( 'insideunitycontent' );
       this.handleChange( params );
-      this.setState({
-        objectClicked: params,
-      });
+      // this.setState({
+      //   objectClicked: params,
+      // });
     });
   }
 
+  sceneContexts = {}
+
   state = {
     progression: null,
-    objectClicked: 'none',
-    selected: 'World View',
     currentSceneCode: null,
   }
 
-  updateScene = ( sceneCode ) => {
-    // console.warn( 'updateScene' );
+  updateScene = ( sceneContext ) => {
+    // console.warn( 'updateScene', sceneContext, this.sceneContexts );
 
-    this.setState({
-      currentSceneCode: sceneCode,
-    }, () => {
-      this.sendEventToUnity( sceneCode );
+    const { questionCode, sceneCode } = sceneContext;
+
+    const updatedSceneContexts = {
+      ...this.sceneContexts,
+    };
+
+    // check if sceneContext questionCode is already stored
+    if ( isObject( updatedSceneContexts, { withProperty: questionCode })) {
+    // check if sceneContext sceneCode is same as stored value
+      if ( updatedSceneContexts[questionCode] !== sceneCode ) {
+        // if different, update
+        updatedSceneContexts[questionCode] = sceneCode;
+      }
+      else {
+        // if same, no update
+        // console.warn( 'no update' );
+
+        return;
+      }
+    }
+    else {
+      // if not stored, update
+      updatedSceneContexts[questionCode] = sceneCode;
+    }
+
+    // if only one sceneContext, then update currentSceneCode
+
+    const shouldUpdateCurrentSceneCode = Object.keys( updatedSceneContexts ).length === 1;
+
+    // console.warn( 'UPDATE STATE' );
+
+    this.sceneContexts = updatedSceneContexts,
+
+    this.setState( state => ({
+      currentSceneCode: shouldUpdateCurrentSceneCode ? sceneCode : state.currentSceneCode,
+    }), () => {
+      // console.warn( 'UPDATE CALLBACK', this.state.currentSceneCode, updatedSceneContexts );
+
+      this.sendEventToUnity( this.state.currentSceneCode );
     });
   }
 
@@ -143,14 +133,50 @@ class UnityWrapper extends React.Component {
     }
   }
 
-  handleSetScene = ( sceneCode ) => {
-    console.warn( 'handleSetScene', sceneCode );
-    this.updateScene( sceneCode );
+  handleSetScene = ( sceneContext ) => {
+    // console.warn( 'handleSetScene', sceneCode );
+    this.updateScene( sceneContext );
+  }
+
+  handleUnsetScene = ( questionCode ) => {
+    // console.warn( 'handleUnsetScene', questionCode );
+
+    const updatedSceneContexts = {
+      ...this.sceneContexts,
+    };
+
+    // check if question code is in sceneContexts
+    if ( isObject( updatedSceneContexts, { withProperty: questionCode })) {
+      // remove it
+      delete updatedSceneContexts[questionCode];
+    }
+    else {
+      // do nothing
+      return;
+    }
+
+    // console.warn( 'updatedSceneContexts', questionCode, updatedSceneContexts );
+
+    // check number of remaining values
+    const numberOfCurrentSceneCodes = Object.keys( updatedSceneContexts ).length === 1;
+
+    this.sceneContexts = updatedSceneContexts,
+
+    this.setState( state => ({
+      currentSceneCode: numberOfCurrentSceneCodes === 0
+        // if there are now 0 values, update currentSceneCode to null
+        ? null
+        : numberOfCurrentSceneCodes === 1
+          // if there is now 1 value, update currentSceneCode to match it
+          ? numberOfCurrentSceneCodes[0]
+          // if there is now 2+ values, dont update currentScene code
+          : state.currentSceneCode,
+    }));
   }
 
   render() {
     const { children } = this.props;
-    const { progression, objectClicked, selected, currentSceneCode } = this.state;
+    const { progression, currentSceneCode } = this.state;
 
     // console.warn({ progression });
 
@@ -159,6 +185,7 @@ class UnityWrapper extends React.Component {
         value={{
           currentSceneCode: currentSceneCode,
           setScene: this.handleSetScene,
+          unsetScene: this.handleUnsetScene,
           progression: progression,
         }}
       >
