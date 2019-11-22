@@ -1,71 +1,68 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
 import dlv from 'dlv';
-import { isArray, isString, isObject } from '../../../../../utils';
-import UnityConsumer from '../../../input/unity/consumer';
+import { isArray, isString } from '../../../../../utils';
+import UnityControlWithConsumer from './control-with-consumer';
 
 class UnityControl extends Component {
-  static defaultProps = {
-  }
-
   static propTypes = {
-    unity: object,
     asks: object,
   }
 
+  state = {
+    currentSceneCode: null,
+  }
+
   componentDidUpdate( nextProps ) {
-    const { unity } = this.props;
+    const { currentSceneCode } = this.state;
 
     const askLinks = dlv( nextProps, `asks.${nextProps.ask.questionCode}.links` );
 
-    console.warn({ askLinks, asks: nextProps.asks, nextProps, progression: unity && unity.progression, progression2: dlv( this, 'props.unity.progression' ) });
+    console.warn({ askLinks, asks: nextProps.asks, nextProps });
 
-    // doing three things
     // 1. checking if there is a unity config link
-    // 2. checking if scene needs to be set
-    // 3. setting scene
 
-    if ( isObject( unity )) {
+    if ( isArray( askLinks, { ofMinLength: 1 })) {
+      askLinks.filter( link => link.type === 'unity' );
+
       if ( isArray( askLinks, { ofMinLength: 1 })) {
-        askLinks.filter( link => link.type === 'unity' );
+        const { sceneCode } = askLinks[0];
 
-        if ( isArray( askLinks, { ofMinLength: 1 })) {
-          const { sceneCode } = askLinks[0];
-
-          if ( isString( sceneCode )) {
-            if ( sceneCode !== unity.currentSceneCode ) {
-              if ( unity.progression === 1 ) {
-                this.updateScene( sceneCode, unity.setScene );
-              }
-            }
-          }
+        // 2. checking if the sceneCode is different from the one saved in the state
+        if (
+          isString( sceneCode ) && (
+            !isString( currentSceneCode ) ||
+            currentSceneCode !== sceneCode
+          )
+        ) {
+          this.updateSceneCode( sceneCode );
         }
       }
     }
   }
 
-  updateScene = ( sceneCode, callback ) => {
-    console.warn( 'updateScene', sceneCode, callback );
-    if ( callback )
-      callback( sceneCode );
+  updateSceneCode = ( code ) => {
+    this.setState({
+      currentSceneCode: code,
+    });
   }
 
   render() {
     const { children } = this.props; // eslint-disable-line
+    const { currentSceneCode } = this.state;
 
-    // console.warn({ ...this.props.unity });
+    if ( isString( currentSceneCode )) {
+      return (
+        <UnityControlWithConsumer
+          currentSceneCode={currentSceneCode}
+        >
+          {children}
+        </UnityControlWithConsumer>
+      );
+    }
 
     return children;
   }
 }
 
-export default props => (
-  <UnityConsumer>
-    { unity => (
-      <UnityControl
-        {...props}
-        unity={unity}
-      />
-    )}
-  </UnityConsumer>
-);
+export default UnityControl;
