@@ -6,7 +6,7 @@ import UnityControlWithConsumer from './control-with-consumer';
 
 class UnityControl extends Component {
   static propTypes = {
-    asks: object,
+    ask: object,
   }
 
   state = {
@@ -17,7 +17,7 @@ class UnityControl extends Component {
     this.checkLinksForSceneCode();
   }
 
-  componentDidUpdate( nextProps ) {
+  componentDidUpdate() {
     // console.warn( '-----------------' );
 
     this.checkLinksForSceneCode();
@@ -71,10 +71,10 @@ class UnityControl extends Component {
     const { children } = this.props; // eslint-disable-line
     const { currentSceneCode } = this.state;
 
-    console.warn( '--------------' );
+    // console.warn( '--------------' );
 
     if ( isString( currentSceneCode )) {
-      console.warn( this.props.ask.questionCode, 'render with consumer', currentSceneCode );
+      // console.warn( this.props.ask.questionCode, 'render with consumer', currentSceneCode );
 
       return (
         <UnityControlWithConsumer
@@ -86,7 +86,7 @@ class UnityControl extends Component {
       );
     }
 
-    console.warn( this.props.ask.questionCode, 'render children', currentSceneCode );
+    // console.warn( this.props.ask.questionCode, 'render children', currentSceneCode );
 
     return children;
   }

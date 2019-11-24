@@ -8,6 +8,7 @@ class UnityControlWithConsumer extends Component {
     unity: object,
     currentSceneCode: string,
     children: node,
+    questionCode: string,
   }
 
   componentDidMount() {

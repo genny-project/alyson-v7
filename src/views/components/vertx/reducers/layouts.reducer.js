@@ -333,8 +333,6 @@ const reduceAsks = ({ item, state, shouldReplaceEntity }) => {
     });
   }
 
-  console.log( 'item.replace', item.replace, item.questionCode, item );
-
   return {
     ...childAsks,
     ...state.asks[item.questionCode],
@@ -415,8 +413,6 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
   /* alter the state */
 
   // TODO - shouldDeleteLinkedBaseEntities
-
-  console.log( 'shouldReplaceEntity', shouldReplaceEntity );
 
   if ( shouldReplaceEntity === true ) {
     if ( state.asks[item.questionCode] ) {
