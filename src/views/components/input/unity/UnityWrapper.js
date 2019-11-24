@@ -21,18 +21,13 @@ class UnityWrapper extends React.Component {
     });
 
     this.unityContent.on( 'unityEvent', ( params ) => {
+      console.warn( 'unityEvent', { params }); // eslint-disable-line
       this.handleEvent( params );
-      // this.setState({
-      //   objectClicked: params,
-      // });
     });
 
     this.unityContent.on( 'unityAnswer', ( params ) => {
-      // console.log( 'insideunitycontent' );
+      console.warn( 'unityAnswer', { params }); // eslint-disable-line
       this.handleChange( params );
-      // this.setState({
-      //   objectClicked: params,
-      // });
     });
   }
 
@@ -175,7 +170,7 @@ class UnityWrapper extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, renderHeader } = this.props;
     const { progression, currentSceneCode } = this.state;
 
     // console.warn({ progression });
@@ -189,26 +184,19 @@ class UnityWrapper extends React.Component {
           progression: progression,
         }}
       >
-        <Box
-          flexDirection="column"
-        >
-          {/* <UnityUI
-            progression={progression}
-            objectClicked={objectClicked}
-            onClick={this.handleClick}
-            selected={selected}
-          /> */}
-          <Box>
-            <Unity
-              unityContent={this.unityContent}
-            />
-          </Box>
-          <Box
-            flexDirection="column"
-          >
-            {children}
-          </Box>
+        {renderHeader}
+        {/* <UnityUI
+          progression={progression}
+          objectClicked={objectClicked}
+          onClick={this.handleClick}
+          selected={selected}
+        /> */}
+        <Box>
+          <Unity
+            unityContent={this.unityContent}
+          />
         </Box>
+        {children}
       </UnityProvider>
     );
   }

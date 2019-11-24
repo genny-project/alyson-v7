@@ -622,15 +622,59 @@ class FormGroup extends Component {
             properties.renderAsUnityGroup
           ) {
             return (
-              <UnityWrapper
+              <Box
                 key={questionCode}
-                questionCode={questionCode}
+                justifyContent="center"
+                flexDirection="column"
+                componentID="GROUP-WRAPPER"
+                componentCode={questionCode}
+                {...subcomponentProps['group-wrapper']}
               >
-                {/* HEADER WRAPPER ELEMENT */}
-                {headerWrapperComponent( subcomponentProps )}
-                {/* CONTENT WRAPPER ELEMENT */}
-                {contentWrapperComponent( subcomponentProps )}
-              </UnityWrapper>
+                { hasLabel && !properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
+                { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
+                {(
+                  question &&
+                  properties.renderQuestionGroupInput &&
+                  !properties.renderQuestionGroupInputInsideClickable
+                ) ? (
+                    this.renderInput({
+                      ask: questionGroup,
+                      questionGroupCode: parentGroupCode,
+                      index,
+                      form,
+                      additionalProps: {
+                        flexWrapper: true,
+                      },
+                    })
+                  ) : null }
+                <UnityWrapper
+                  key={questionCode}
+                  questionCode={questionCode}
+                  renderHeader={(
+                    <Fragment>
+                      { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
+                      {(
+                        question &&
+                        properties.renderQuestionGroupInput &&
+                        properties.renderQuestionGroupInputInsideClickable
+                      ) ? (
+                          this.renderInput({
+                            ask: questionGroup,
+                            questionGroupCode: parentGroupCode,
+                            index,
+                            form,
+                            additionalProps: {
+                              flexWrapper: true,
+                            },
+                          })
+                        ) : null }
+                    </Fragment>
+                  )}
+                >
+                  {/* CONTENT WRAPPER ELEMENT */}
+                  {contentWrapperComponent( subcomponentProps )}
+                </UnityWrapper>
+              </Box>
             );
           }
 
