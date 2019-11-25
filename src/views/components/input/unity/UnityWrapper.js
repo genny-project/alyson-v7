@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Unity, { UnityContent } from 'react-unity-webgl';
-import { Box } from '../..';
+import { Box, ActivityIndicator, Text } from '../../../components';
 import { Bridge, isObject } from '../../../../utils';
 import UnityProvider from './provider';
 
@@ -20,14 +20,20 @@ class UnityWrapper extends React.Component {
       });
     });
 
-    this.unityContent.on( 'unityEvent', ( params ) => {
-      console.warn( 'unityEvent', { params }); // eslint-disable-line
-      this.handleEvent( params );
+    this.unityContent.on( 'loaded', () => {
+      this.setState({
+        isLoading: false,
+      });
     });
 
-    this.unityContent.on( 'unityAnswer', ( params ) => {
-      console.warn( 'unityAnswer', { params }); // eslint-disable-line
-      this.handleChange( params );
+    this.unityContent.on( 'unityEvent', ( data ) => {
+      console.warn( 'unityEvent', { data }); // eslint-disable-line
+      this.handleEvent( data );
+    });
+
+    this.unityContent.on( 'unityAnswer', ( data ) => {
+      console.warn( 'unityAnswer', { data }); // eslint-disable-line
+      this.handleChange( data );
     });
   }
 
@@ -36,6 +42,7 @@ class UnityWrapper extends React.Component {
   state = {
     progression: null,
     currentSceneCode: null,
+    isLoading: true,
   }
 
   updateScene = ( sceneContext ) => {
@@ -50,9 +57,11 @@ class UnityWrapper extends React.Component {
     // check if sceneContext questionCode is already stored
     if ( isObject( updatedSceneContexts, { withProperty: questionCode })) {
     // check if sceneContext sceneCode is same as stored value
-      if ( updatedSceneContexts[questionCode] !== sceneCode ) {
+      if ( updatedSceneContexts[questionCode].sceneCode !== sceneCode ) {
         // if different, update
-        updatedSceneContexts[questionCode] = sceneCode;
+        updatedSceneContexts[questionCode] = {
+          ...sceneContext,
+        };
       }
       else {
         // if same, no update
@@ -63,7 +72,9 @@ class UnityWrapper extends React.Component {
     }
     else {
       // if not stored, update
-      updatedSceneContexts[questionCode] = sceneCode;
+      updatedSceneContexts[questionCode] = {
+        ...sceneContext,
+      };
     }
 
     // if only one sceneContext, then update currentSceneCode
@@ -121,10 +132,16 @@ class UnityWrapper extends React.Component {
     }
   }
 
-  handleChange = ( event ) => {
-    if ( this.props.onChangeValue )
-    {
-      this.props.onChangeValue( event );
+  handleChange = ( data ) => {
+    const sceneContextsKeys = Object.keys( this.sceneContexts );
+
+    if ( sceneContextsKeys.length === 1 ) {
+      if ( this.props.onChangeValue ) {
+        this.props.onChangeValue( data, this.sceneContexts[sceneContextsKeys[0]] );
+      }
+    }
+    else {
+      console.warn( 'Error: Invalid unity scene contexts' ); // eslint-disable-line
     }
   }
 
@@ -171,9 +188,7 @@ class UnityWrapper extends React.Component {
 
   render() {
     const { children, renderHeader } = this.props;
-    const { progression, currentSceneCode } = this.state;
-
-    // console.warn({ progression });
+    const { progression, currentSceneCode, isLoading } = this.state;
 
     return (
       <UnityProvider
@@ -185,16 +200,34 @@ class UnityWrapper extends React.Component {
         }}
       >
         {renderHeader}
-        {/* <UnityUI
-          progression={progression}
-          objectClicked={objectClicked}
-          onClick={this.handleClick}
-          selected={selected}
-        /> */}
-        <Box>
+        <Box
+          position="relative"
+        >
           <Unity
             unityContent={this.unityContent}
           />
+          {
+            isLoading ? (
+              <Box
+                position="absolute"
+                top={0}
+                bottom={0}
+                width="100%"
+                // opacity={0.75}
+                backgroundColor="white"
+                justifyContent="center"
+                alignItems="center"
+                flexDirection="column"
+              >
+                <ActivityIndicator size="large" />
+                <Box padding={5} />
+                <Text
+                  align="center"
+                  text="Loading..."
+                />
+              </Box>
+            ) : null
+          }
         </Box>
         {children}
       </UnityProvider>

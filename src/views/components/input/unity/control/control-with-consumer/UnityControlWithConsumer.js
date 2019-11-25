@@ -9,6 +9,8 @@ class UnityControlWithConsumer extends Component {
     currentSceneCode: string,
     children: node,
     questionCode: string,
+    ask: object,
+    valuePath: string,
   }
 
   componentDidMount() {
@@ -35,7 +37,7 @@ class UnityControlWithConsumer extends Component {
   }
 
   checkIfSetSceneRequired = ( props ) => {
-    const { unity } = this.props;
+    const { unity, ask, valuePath, questionCode } = this.props;
     const { currentSceneCode } = props;
 
     // console.warn( this.props.questionCode, { unity, currentSceneCode });
@@ -51,8 +53,12 @@ class UnityControlWithConsumer extends Component {
         unity.progression === 1
       ) {
         if ( unity.setScene ) {
-          // console.warn( this.props.questionCode, 'setScene' );
-          unity.setScene({ questionCode: this.props.questionCode, sceneCode: currentSceneCode });
+          unity.setScene({
+            questionCode,
+            sceneCode: currentSceneCode,
+            ask,
+            valuePath,
+          });
         }
       }
     }

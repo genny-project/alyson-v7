@@ -549,9 +549,6 @@ class Form extends Component {
     value,
     sendOnChange,
   ) => {
-    // console.log( 'handleChangeInsideForm-value', value );
-    // console.log( 'handleChangeInsideForm-sendOnChange', sendOnChange );
-
     this.state.isUpdating = true; // eslint-disable-line
 
     if ( value == null )

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { object, string } from 'prop-types';
 import dlv from 'dlv';
 import { isArray, isString } from '../../../../../utils';
 import UnityControlWithConsumer from './control-with-consumer';
@@ -7,6 +7,7 @@ import UnityControlWithConsumer from './control-with-consumer';
 class UnityControl extends Component {
   static propTypes = {
     ask: object,
+    valuePath: string,
   }
 
   state = {
@@ -68,7 +69,7 @@ class UnityControl extends Component {
   }
 
   render() {
-    const { children } = this.props; // eslint-disable-line
+    const { children, ask, valuePath } = this.props; // eslint-disable-line
     const { currentSceneCode } = this.state;
 
     // console.warn( '--------------' );
@@ -79,7 +80,9 @@ class UnityControl extends Component {
       return (
         <UnityControlWithConsumer
           currentSceneCode={currentSceneCode}
-          questionCode={this.props.ask.questionCode}
+          questionCode={ask.questionCode}
+          ask={ask}
+          valuePath={valuePath}
         >
           {children}
         </UnityControlWithConsumer>

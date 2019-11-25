@@ -207,6 +207,41 @@ class FormGroup extends Component {
     };
   }
 
+  handleChangeFromUnity = ( form ) => ( data, { questionCode, ask, valuePath }) => {
+    const {
+      functions,
+    } = this.props;
+    const {
+      setFieldValue,
+      setFieldTouched,
+    } = form;
+    const {
+      handleChange,
+    } = functions;
+
+    // questionCode comes from Unity Scene
+
+    // ask: needs to come from Question. sent with Unity Context to Unity Wrapper?
+
+    // console.log({ ask: this.props.asks });
+
+    // valuePath: needs to come from Question. sent with Unity Context to Unity Wrapper?
+
+    // value
+    // sendValueOnChange
+
+    handleChange(
+      questionCode,
+      setFieldValue,
+      setFieldTouched,
+      ask,
+      valuePath,
+    )(
+      data,
+      true
+    );
+  }
+
   renderInput = ({
     ask,
     questionGroupCode,
@@ -260,6 +295,7 @@ class FormGroup extends Component {
         ask,
         valuePath,
       ),
+      valuePath,
       value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
       mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
@@ -591,34 +627,6 @@ class FormGroup extends Component {
           }
 
           if (
-            properties.renderQuestionGroupInput
-          ) {
-            return (
-              <EventTouchable
-                key={questionCode}
-                withFeedback
-                code={question.code}
-                parentCode={parentGroupCode || questionCode}
-                rootCode={rootCode}
-                targetCode={targetCode}
-                width="100%"
-                onMouseEnter={() => this.handleHover( true )}
-                onMouseLeave={() => this.handleHover( false )}
-                {...defaultStyle.group}
-                componentID="GROUP-WRAPPER"
-                componentCode={questionCode}
-                {...subcomponentProps['group-wrapper']}
-                {...this.state.hover ? this.getStyling()['hover'] : {}}
-              >
-                {/* HEADER WRAPPER ELEMENT */}
-                {headerWrapperComponent( subcomponentProps )}
-                {/* CONTENT WRAPPER ELEMENT */}
-                {contentWrapperComponent( subcomponentProps )}
-              </EventTouchable>
-            );
-          }
-
-          if (
             properties.renderAsUnityGroup
           ) {
             return (
@@ -650,6 +658,7 @@ class FormGroup extends Component {
                 <UnityWrapper
                   key={questionCode}
                   questionCode={questionCode}
+                  onChangeValue={this.handleChangeFromUnity( form )}
                   renderHeader={(
                     <Fragment>
                       { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
@@ -675,6 +684,34 @@ class FormGroup extends Component {
                   {contentWrapperComponent( subcomponentProps )}
                 </UnityWrapper>
               </Box>
+            );
+          }
+
+          if (
+            properties.renderQuestionGroupInput
+          ) {
+            return (
+              <EventTouchable
+                key={questionCode}
+                withFeedback
+                code={question.code}
+                parentCode={parentGroupCode || questionCode}
+                rootCode={rootCode}
+                targetCode={targetCode}
+                width="100%"
+                onMouseEnter={() => this.handleHover( true )}
+                onMouseLeave={() => this.handleHover( false )}
+                {...defaultStyle.group}
+                componentID="GROUP-WRAPPER"
+                componentCode={questionCode}
+                {...subcomponentProps['group-wrapper']}
+                {...this.state.hover ? this.getStyling()['hover'] : {}}
+              >
+                {/* HEADER WRAPPER ELEMENT */}
+                {headerWrapperComponent( subcomponentProps )}
+                {/* CONTENT WRAPPER ELEMENT */}
+                {contentWrapperComponent( subcomponentProps )}
+              </EventTouchable>
             );
           }
 
