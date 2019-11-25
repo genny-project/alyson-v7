@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
-import { node, func } from 'prop-types';
+import { node } from 'prop-types';
 import MenuConsumer from '../consumer';
+import { isObject } from '../../../../utils';
 
 class MenuItem extends Component {
   static propTypes = {
     children: node.isRequired,
-    onPress: func,
-  }
-
-  handlePress = ( event ) => {
-    if ( this.props.onPress ) this.props.onPress( event );
   }
 
   render() {
-    const { children, ...restProps } = this.props;
+    const { children } = this.props;
 
     return (
       <MenuConsumer>
-        {({ handlePressItem }) => {
+        {( props ) => {
           return (
-            children({
-              ...restProps,
-              handlePressItem,
+            React.cloneElement( children, {
+              ...children.props,
+              onPress: isObject( props, { withProperty: 'handlePressItem' }) ? props.handlePressItem : null,
             })
           );
         }}

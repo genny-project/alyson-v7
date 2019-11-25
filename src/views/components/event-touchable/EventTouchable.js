@@ -42,8 +42,9 @@ const EventTouchable = ({
       );
     }
 
-    if ( onPress )
+    if ( onPress ) {
       onPress( event );
+    }
   };
 
   if ( typeof children === 'function' ) {

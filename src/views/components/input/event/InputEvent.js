@@ -37,7 +37,7 @@ class InputEvent extends Component {
       rootQuestionGroupCode,
       icon,
       iconProps,
-      onPress, // eslint-disable-line no-unused-vars
+      // onPress, // eslint-disable-line no-unused-vars
       onChangeState,
       color,
       iconOnly,
@@ -48,8 +48,6 @@ class InputEvent extends Component {
     const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
 
     // get eventType from somewhere in the question
-
-    console.log( 'input event', { onPress: this.props.onPress });
 
     return (
       <SubcomponentThemeHandler

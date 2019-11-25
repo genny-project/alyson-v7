@@ -3,7 +3,7 @@ import { string, object, bool, number, func, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, getPropsFromThemes, objectMerge } from '../../../../utils';
-import { Box /* Tooltip */ } from '../../../components';
+import { Box, Fragment, MenuItem } from '../../../components';
 import FormInput from '../input';
 import { StatefulThemeHandler, StatelessThemeHandler } from '../theme-handlers';
 import VisualControlLabel from './visual-control-label';
@@ -66,6 +66,7 @@ class VisualControl extends Component {
     onChange: func,
     onChangeValue: func,
     type: string,
+    rootQuestionGroupCode: string,
   }
 
   state = {
@@ -328,25 +329,31 @@ class VisualControl extends Component {
                     inputProps,
                     subcomponentProps,
                   }) => {
+                    const WrapperElement =
+                      properties.dropdownItem
+                        ? MenuItem : Fragment;
+
                     return (
-                      <FormInput
-                        {...restProps}
-                        {...componentProps['vcl-input']}
-                        inputFieldProps={inputProps}
-                        subcomponentProps={subcomponentProps}
-                        onBlur={onBlur}
-                        iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
-                        iconOnly={(
-                        properties.renderVisualControlInput != null
-                          ? !properties.renderVisualControlInput
-                          : false
-                      )}
-                        useAttributeNameAsValue={isObject( properties, { withProperty: 'useAttributeNameAsValue' }) ? properties.useAttributeNameAsValue : null}
-                        useQuestionNameAsValue={isObject( properties, { withProperty: 'useQuestionNameAsValue' }) ? properties.useQuestionNameAsValue : null}
-                        inheritedProps={this.getInhertiableThemes()}
-                        padding={3}
-                        onChangeState={onChangeState}
-                      />
+                      <WrapperElement>
+                        <FormInput
+                          {...restProps}
+                          {...componentProps['vcl-input']}
+                          inputFieldProps={inputProps}
+                          subcomponentProps={subcomponentProps}
+                          onBlur={onBlur}
+                          iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
+                          iconOnly={(
+                          properties.renderVisualControlInput != null
+                            ? !properties.renderVisualControlInput
+                            : false
+                        )}
+                          useAttributeNameAsValue={isObject( properties, { withProperty: 'useAttributeNameAsValue' }) ? properties.useAttributeNameAsValue : null}
+                          useQuestionNameAsValue={isObject( properties, { withProperty: 'useQuestionNameAsValue' }) ? properties.useQuestionNameAsValue : null}
+                          inheritedProps={this.getInhertiableThemes()}
+                          padding={3}
+                          onChangeState={onChangeState}
+                        />
+                      </WrapperElement>
                     );
                   }}
                 </StatefulThemeHandler>
