@@ -33,6 +33,10 @@ class Dropdown extends Component {
     questionCode: string,
   }
 
+  handlePress = () => {
+    console.log( 'dropdown onPress' );
+  }
+
   render() {
     const {
       children,
@@ -120,6 +124,7 @@ class Dropdown extends Component {
                       React.cloneElement( child, {
                         ...child.props,
                         isOpen: isOpen,
+                        onPress: this.handleOnPress,
                       })
                     ))
                   )}

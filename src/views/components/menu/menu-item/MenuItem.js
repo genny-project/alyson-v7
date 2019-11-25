@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { node, func,integer } from 'prop-types';
-import { Touchable } from '../../index';
+import { node, func } from 'prop-types';
 import MenuConsumer from '../consumer';
 
 class MenuItem extends Component {
   static propTypes = {
     children: node.isRequired,
     onPress: func,
-    id: integer,
   }
 
   handlePress = ( event ) => {
@@ -15,23 +13,16 @@ class MenuItem extends Component {
   }
 
   render() {
-    const { children, id, ...restProps } = this.props;
+    const { children, ...restProps } = this.props;
 
     return (
       <MenuConsumer>
-        {({ setRef, handlePressItem }) => {
+        {({ handlePressItem }) => {
           return (
-            <Touchable
-              {...restProps}
-              withFeedback
-              onPress={event => {
-                handlePressItem();
-                this.handlePress( event );
-              }}
-              onRef={ref => setRef( ref, id )}
-            >
-              {children}
-            </Touchable>
+            children({
+              ...restProps,
+              handlePressItem,
+            })
           );
         }}
       </MenuConsumer>

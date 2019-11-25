@@ -49,6 +49,8 @@ class InputEvent extends Component {
 
     // get eventType from somewhere in the question
 
+    console.log( 'input event', { onPress: this.props.onPress });
+
     return (
       <SubcomponentThemeHandler
         subcomponentProps={this.props.subcomponentProps}

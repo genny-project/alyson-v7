@@ -43,6 +43,8 @@ class MenuContent extends Component {
 
     // console.log( this.input );
 
+    console.log( 'menucontent', { onPress: this.props.onPress, children: this.props.children });
+
     return (
       <MenuConsumer>
         {({
