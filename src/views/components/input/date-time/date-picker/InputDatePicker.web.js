@@ -371,22 +371,22 @@ class InputDatePicker extends PureComponent {
                                 },
                                 justifyContent: 'center',
                                 withFeedback: true,
-                                onPress: event => {
-                                  if ( disabled )
-                                    event.stopPropagation();
-                                  else {
-                                    selectDay(
-                                      toggle,
-                                      selectItem,
-                                      day,
-                                    );
-                                  }
-                                },
                                 onMouseEnter: () => {
                                   setHighlightedIndex( monthIndex );
                                 },
                                 ...itemProps,
                               })}
+                              onPress={event => {
+                                if ( disabled )
+                                  event.stopPropagation();
+                                else {
+                                  selectDay(
+                                    toggle,
+                                    selectItem,
+                                    day,
+                                  );
+                                }
+                              }}
                             >
                               <Text
                                 align="center"

@@ -52,6 +52,10 @@ class Form extends Component {
   componentDidUpdate( prevProps, prevState ) {
     const { questionGroupCode } = this.props;
     const { questionGroups } = this.state;
+    // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+    // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP"
+    // )
+    //   console.warn('update', {questionGroupCode, questionGroups, newGroups: this.getQuestionGroups()})
 
     const checkIfSetNeeded = () => {
       return (
@@ -64,6 +68,10 @@ class Form extends Component {
       questionGroupCode !== prevProps.questionGroupCode ||
       isArray( questionGroups, { ofExactLength: 0 })
     ) {
+      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
+      //   console.warn('update1', questionGroupCode)
+
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
@@ -72,25 +80,41 @@ class Form extends Component {
           if ( checkIfSetNeeded ) {
             this.setInitialValues();
             this.setValidationList();
+
+            return;
           }
         });
       }
     }
 
-    else if (
+    if (
       isArray( this.state.missingBaseEntities, { ofMinLength: 1 })
     ) {
+      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
+      //   console.warn('update2', questionGroupCode, this.state.missingBaseEntities)
+
       if (
         this.checkIfNewBaseEntities( this.props )
       ) {
+        // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+        // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
+        //   console.warn('update2checked')
+
         this.setInitialValues();
         this.setValidationList();
+
+        return;
       }
     }
 
-    else if (
+    if (
       this.checkForUpdatedQuestionTargets( this.props )
     ) {
+      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
+      //   console.warn('update3', questionGroupCode)
+
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
@@ -99,17 +123,51 @@ class Form extends Component {
           if ( checkIfSetNeeded ) {
             this.setInitialValues();
             this.setValidationList();
+
+            return;
           }
         });
       }
     }
 
-    else if (
+    if (
       this.checkForUpdatedAttributeValues( this.props )
     ) {
+      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
+      //   console.warn('update4', questionGroupCode)
+
       this.setInitialValues();
       this.setValidationList();
+
+      return;
     }
+
+    if (
+      this.checkForRemovedQuestions( this.props )
+    ) {
+      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
+      // console.warn('update5', questionGroupCode)
+
+      const newGroups = this.getQuestionGroups();
+
+      if ( newGroups.length > 0 ) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ questionGroups: newGroups, missingBaseEntities: [] }, () => {
+          if ( checkIfSetNeeded ) {
+            this.setInitialValues();
+            this.setValidationList();
+
+            return;
+          }
+        });
+      }
+    }
+
+    // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
+    // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
+    //   console.warn('no-update')
   }
 
   setInitialValues = () => {
@@ -358,6 +416,46 @@ class Form extends Component {
     return isDifference;
   }
 
+  checkForRemovedQuestions = ( newProps ) => {
+    // console.warn( 'checkForRemovedQuestions');
+
+    const { questionGroups } = this.state;
+    const newQuestionGroup = newProps.asks[newProps.questionGroupCode];
+
+    // console.warn( 'checkForRemovedQuestions', { questionGroups, currentQuestionGroup: questionGroups[0], newQuestionGroup});
+
+    if ( !isArray( questionGroups, { ofMinLength: 1 })) {
+      return false;
+    }
+
+    const compareChildAskCount = ( currentAsk, nextAsk, level ) => {
+      const currentChildAsks = isArray( currentAsk.childAsks ) ? currentAsk.childAsks.length : 0;
+      const nextChildAsks = isArray( nextAsk.childAsks ) ? nextAsk.childAsks.length : 0;
+
+      // console.warn( 'compare', level, { currentChildAsks, nextChildAsks });
+
+      if ( currentChildAsks === nextChildAsks ) {
+        if ( currentChildAsks === 0 ) {
+          return false;
+        }
+
+        return currentAsk.childAsks.some(( childAsk, index ) => {
+          return compareChildAskCount( childAsk, nextAsk.childAsks[index], level + 1 );
+        });
+      }
+
+      return true;
+    };
+
+    let isDifference = false;
+
+    isDifference = compareChildAskCount( questionGroups[0], newQuestionGroup, 1 );
+
+    // console.warn({ isDifference });
+
+    return isDifference;
+  };
+
   checkIfFullWidth = ( questionGroups ) => {
     return questionGroups.some( questionGroup => {
       return isObject( questionGroup.contextList, { withProperty: 'fullWidth' })
@@ -478,7 +576,7 @@ class Form extends Component {
 
   shouldSendAnswer = ({ value, valuePath }) => {
     const initialValue = dlv( this.state.initialValues, valuePath );
-    const lastSentValue = dlv( this.lastSentValue, valuePath );
+    const lastSentValue = dlv( this.lastSentValues, valuePath );
 
     if ( lastSentValue != null ) {
       if ( lastSentValue !== value ) {

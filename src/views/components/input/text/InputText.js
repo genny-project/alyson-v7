@@ -294,6 +294,12 @@ class InputText extends Component {
       // this.props.onChangeValue( this.state.value );
   }
 
+  handleLayout = ( event ) => {
+    // console.log( 'handleLayout', { event });
+    if ( this.props.onLayout )
+      this.props.onLayout( event );
+  }
+
   render() {
     const {
       autoCapitalize,
@@ -528,6 +534,7 @@ class InputText extends Component {
               numberOfLines={numberOfLines}
               onChange={this.handleChange}
               onChangeText={this.handleChangeText}
+              onLayout={this.handleLayout}
               // onChangeValue={this.handleChangeValue}
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}

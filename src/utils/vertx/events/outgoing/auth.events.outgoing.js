@@ -1,9 +1,10 @@
-export const AUTH_INIT = token => ({
+export const AUTH_INIT = ( token, data ) => ({
   event_type: 'AUTH_INIT',
   msg_type: 'EVT_MSG',
   token,
   data: {
     code: 'AUTH_INIT',
+    ...data,
   },
 });
 
