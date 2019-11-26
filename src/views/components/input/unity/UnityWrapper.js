@@ -5,15 +5,17 @@ import { Box, ActivityIndicator, Text } from '../../../components';
 import { Bridge, isObject } from '../../../../utils';
 import UnityProvider from './provider';
 
+// const buildPath = '/unity/unison_webgl.json';
+const buildPath = '/unity/safeTrafficTown.json';
+// const buildPath = '';
+
 class UnityWrapper extends React.Component {
   constructor( props ) {
     super( props );
     this.unityContent = new UnityContent(
       // '/unity/unison_webgl_genny.json',
 
-      // '/unity/unison_webgl.json',
-      '/unity/safeTrafficTown.json',
-
+      buildPath,
       '/unity/UnityLoader.js'
     );
 
@@ -26,6 +28,14 @@ class UnityWrapper extends React.Component {
     this.unityContent.on( 'loaded', () => {
       this.setState({
         isLoading: false,
+      });
+    });
+
+    this.unityContent.on( 'error', message => {
+      console.warn( 'error', { message }); // eslint-disable-line
+
+      this.setState({
+        error: message.message,
       });
     });
 
@@ -46,6 +56,7 @@ class UnityWrapper extends React.Component {
     progression: null,
     currentSceneCode: null,
     isLoading: true,
+    error: null,
   }
 
   updateScene = ( sceneContext ) => {
@@ -193,7 +204,7 @@ class UnityWrapper extends React.Component {
 
   render() {
     const { children, renderHeader } = this.props;
-    const { progression, currentSceneCode, isLoading } = this.state;
+    const { progression, currentSceneCode, isLoading, error } = this.state;
 
     return (
       <UnityProvider
@@ -212,7 +223,7 @@ class UnityWrapper extends React.Component {
             unityContent={this.unityContent}
           />
           {
-            isLoading ? (
+            isLoading || error ? (
               <Box
                 position="absolute"
                 top={0}
@@ -224,14 +235,36 @@ class UnityWrapper extends React.Component {
                 alignItems="center"
                 flexDirection="column"
               >
-                <ActivityIndicator size="large" />
-                <Box padding={5} />
-                <Text
-                  align="center"
-                  text="Loading..."
-                />
+
+                <Box
+                  justifyContent="center"
+                  alignItems="center"
+                  backgroundColor={error ? '#fce8e6' : 'none'}
+                  padding={10}
+                  flexDirection="column"
+                  maxWidth="calc(100% - 20px)"
+                >
+                  {error
+                    ? (
+                      <Text
+                        color="red"
+                        text="An error has occurred in Unity:"
+                      />
+                    )
+                    : <ActivityIndicator size="large" />}
+                  <Box
+                    padding={5}
+                  />
+                  <Text
+                    width="100%"
+                    text={error ? error : 'Loading...'}
+                    color={error ? 'red' : 'black'}
+                    textAlign="center"
+                  />
+                </Box>
               </Box>
-            ) : null
+            )
+              : null
           }
         </Box>
         {children}
