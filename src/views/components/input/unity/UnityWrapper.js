@@ -10,7 +10,10 @@ class UnityWrapper extends React.Component {
     super( props );
     this.unityContent = new UnityContent(
       // '/unity/unison_webgl_genny.json',
-      '/unity/unison_webgl.json',
+
+      // '/unity/unison_webgl.json',
+      '/unity/safeTrafficTown.json',
+
       '/unity/UnityLoader.js'
     );
 
@@ -107,17 +110,19 @@ class UnityWrapper extends React.Component {
     this.updateScene( SceneIndex );
   }
 
-  handleEvent = ( event ) => {
-    const { ask = {}, parentGroupCode } = this.props;
-    const { question = {}, disabled } = ask;
-    const { code } = question;
+  handleEvent = ( event = {}) => {
+    // const { ask = {}, parentGroupCode } = this.props;
+    // const { question = {}, disabled } = ask;
+    // const { code } = question;
 
-    if ( disabled ) {
-      event.preventDefault();
-      event.stopPropagation();
+    // if ( disabled ) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
 
-      return false;
-    }
+    //   return false;
+    // }
+
+    const { code, parentGroupCode } = event;
 
     if (
       code &&
