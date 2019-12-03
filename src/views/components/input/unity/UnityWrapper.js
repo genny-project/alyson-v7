@@ -16,7 +16,10 @@ class UnityWrapper extends React.Component {
       // '/unity/unison_webgl_genny.json',
 
       buildPath,
-      '/unity/UnityLoader.js'
+      '/unity/UnityLoader.js',
+      {
+        adjustOnWindowResize: false,
+      },
     );
 
     this.unityContent.on( 'progress', progression => {
@@ -218,9 +221,12 @@ class UnityWrapper extends React.Component {
         {renderHeader}
         <Box
           position="relative"
+          overflow="hidden"
         >
           <Unity
             unityContent={this.unityContent}
+            // height="300px"
+            // width="450px"
           />
           {
             isLoading || error ? (
