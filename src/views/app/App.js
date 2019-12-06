@@ -6,7 +6,7 @@ import AuthenticatedApp from './authenticated';
 import Routing from '../routing';
 import store from '../../redux/store';
 import { location, setTitle } from '../../utils';
-import { DebugDisplay, Favicon } from '../components';
+import { DebugDisplay, Favicon, Fragment, Chess, Match, List, Fill } from '../components';
 
 class App extends Component {
   constructor( props ) {
@@ -77,12 +77,146 @@ class App extends Component {
     setTitle( projectName );
 
     return (
-      <AuthenticatedApp>
-        <Routing />
-        <Favicon />
-        {this.getDisplayDevMode()}
-      </AuthenticatedApp>
+      <div
+        style={{
+          overflow: 'auto',
+          height: '100%',
+          width: '100%',
+          padding: '40px',
+        }}
+      >
+        <h1>
+          Drag and Drop Tests
+        </h1>
+        <h3>
+          List
+        </h3>
+        <List
+          items={
+            [
+              {
+                id: 1,
+                text: 'Write a cool JS library',
+              },
+              {
+                id: 2,
+                text: 'Make it generic enough',
+              },
+              {
+                id: 3,
+                text: 'Write README',
+              },
+              {
+                id: 4,
+                text: 'Create some examples',
+              },
+              {
+                id: 5,
+                text:
+                  'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
+              },
+              {
+                id: 6,
+                text: '???',
+              },
+              {
+                id: 7,
+                text: 'PROFIT',
+              },
+            ]
+          }
+        />
+        <div style={{ padding: '10px' }} />
+        <h3>
+          Fill
+        </h3>
+        <Fill
+          content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
+          items={[
+            {
+              id: 1,
+              name: 'food',
+            },
+            {
+              id: 2,
+              name: 'yellow',
+            },
+            {
+              id: 3,
+              name: 'Southeast Asia',
+            },
+            {
+              id: 4,
+              name: 'Australia',
+            },
+            {
+              id: 5,
+              name: 'South America',
+            },
+            {
+              id: 6,
+              name: 'warmer',
+            },
+            {
+              id: 6,
+              name: 'driest',
+            },
+          ]}
+        />
+        <div style={{ padding: '10px' }} />
+        <h3>
+          Match
+        </h3>
+        <Match
+          groups={[
+            {
+              id: 1,
+              name: 'Red',
+            },
+            {
+              id: 2,
+              name: 'Orange',
+            },
+            {
+              id: 3,
+              name: 'Yellow',
+            },
+            {
+              id: 4,
+              name: 'Green',
+            },
+          ]}
+          items={[
+            {
+              id: 1,
+              name: 'Apple',
+            },
+            {
+              id: 2,
+              name: 'Banana',
+            },
+            {
+              id: 3,
+              name: 'Orange',
+            },
+            {
+              id: 4,
+              name: 'Pear',
+            },
+          ]}
+        />
+        {/* <div style={{ padding: '10px' }} />
+        <Chess /> */}
+      </div>
     );
+
+    // return (
+    //   <AuthenticatedApp>
+    //     <Routing />
+    //     <Favicon />
+    //     {this.getDisplayDevMode()}
+    //   </AuthenticatedApp>
+    // );
   }
 }
 
