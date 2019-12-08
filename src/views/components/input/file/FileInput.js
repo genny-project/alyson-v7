@@ -206,6 +206,7 @@ class FileInput extends Component {
 
     axios.post( URL, formData, {
       headers: headers,
+      timeout: 10000,
     })
     .then(( response ) => {
       // handle success
@@ -286,6 +287,7 @@ class FileInput extends Component {
 
     axios.delete( URL, {
       headers: headers,
+      timeout: 10000,
     })
     .then(( response ) => {
       // handle success
