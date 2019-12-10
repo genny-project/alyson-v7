@@ -84,5 +84,5 @@ export * from './login';
 export * from './form';
 export * from './menu';
 export * from './drag-drop-list';
-export * from './drag-drop-fill';
 export * from './drag-drop-match';
+export * from './drag-drop';

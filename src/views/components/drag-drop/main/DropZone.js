@@ -1,15 +1,17 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
+import { string, node } from 'prop-types';
 import { Square } from './Square';
-import { /* canMoveKnight, */ moveItem } from './Game';
-import ItemTypes from './ItemTypes';
+import { moveItem } from './Game';
 import Overlay from './Overlay';
+import { isInteger } from '../../../../utils';
 
-export const BoardSquare = ({ x = null, children, name }) => {
+export const DropZone = ({ x = null, children, name, code /* moveItem */ }) => {
   const [{ isOver }, drop] = useDrop({
-    accept: ItemTypes.KNIGHT,
+    // accept: ItemTypes.KNIGHT,
+    accept: code,
     drop: ( e ) => {
-      moveItem( x, e.label );
+      moveItem( x, e.label, code );
     },
     collect: monitor => ({
       isOver: !!monitor.isOver(),
@@ -22,16 +24,22 @@ export const BoardSquare = ({ x = null, children, name }) => {
       ref={drop}
       style={{
         position: 'relative',
-        width: '100%',
-        height: '100%',
       }}
     >
       <Square
         name={name}
+        backgroundColor={isInteger( x ) ? 'white' : null}
       >
         {children}
       </Square>
       {isOver && <Overlay color="yellow" />}
     </div>
   );
+};
+
+DropZone.propTypes = {
+  x: string,
+  children: node,
+  name: string,
+  code: string,
 };

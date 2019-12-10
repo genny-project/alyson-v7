@@ -6,7 +6,7 @@ import AuthenticatedApp from './authenticated';
 import Routing from '../routing';
 import store from '../../redux/store';
 import { location, setTitle } from '../../utils';
-import { DebugDisplay, Favicon, Fragment, Chess, Match, List, Fill } from '../components';
+import { DebugDisplay, Favicon, Fragment, Chess, Match, List, DragDrop } from '../components';
 
 class App extends Component {
   constructor( props ) {
@@ -88,10 +88,49 @@ class App extends Component {
         <h1>
           Drag and Drop Tests
         </h1>
+        {/* <h3>
+          Generic Drag and Drop Component
+        </h3>
+        <DragDrop
+          code="CODE_1"
+          content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
+          items={[
+            {
+              id: 1,
+              name: 'food',
+            },
+            {
+              id: 2,
+              name: 'yellow',
+            },
+            {
+              id: 3,
+              name: 'Southeast Asia',
+            },
+            {
+              id: 4,
+              name: 'Australia',
+            },
+            {
+              id: 5,
+              name: 'South America',
+            },
+            {
+              id: 6,
+              name: 'warmer',
+            },
+            {
+              id: 6,
+              name: 'driest',
+            },
+          ]}
+        />
+        <div style={{ padding: '10px' }} /> */}
         <h3>
           List
         </h3>
         <List
+          code="CODE_2"
           items={
             [
               {
@@ -130,7 +169,9 @@ class App extends Component {
         <h3>
           Fill
         </h3>
-        <Fill
+        <DragDrop
+          bumpItems
+          code="CODE_3"
           content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
           items={[
             {
@@ -168,6 +209,47 @@ class App extends Component {
           Match
         </h3>
         <Match
+          code="CODE_4"
+          groups={[
+            {
+              id: 1,
+              name: 'Red',
+            },
+            {
+              id: 2,
+              name: 'Orange',
+            },
+            {
+              id: 3,
+              name: 'Yellow',
+            },
+            {
+              id: 4,
+              name: 'Green',
+            },
+          ]}
+          items={[
+            {
+              id: 1,
+              name: 'Apple',
+            },
+            {
+              id: 2,
+              name: 'Banana',
+            },
+            {
+              id: 3,
+              name: 'Orange',
+            },
+            {
+              id: 4,
+              name: 'Pear',
+            },
+          ]}
+        />
+        <DragDrop
+          code="CODE_4"
+          // content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
           groups={[
             {
               id: 1,
