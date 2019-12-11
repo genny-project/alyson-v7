@@ -11,8 +11,8 @@ import DateTimeBase from '../date-time-base';
 
 class InputDatePicker extends PureComponent {
   static defaultProps = {
-    // displayFormat: 'DD/MM/YYYY',
-    displayFormat: 'Do-MMMM-YYYY',
+    displayFormat: 'DD/MM/YYYY',
+    // displayFormat: 'Do-MMMM-YYYY',
     calendarHeaderColor: 'white',
     calendarHeaderTextColor: 'black',
     placeholder: 'Please select a date...', // eslint-disable-line
@@ -108,8 +108,6 @@ class InputDatePicker extends PureComponent {
           const monthValue = [months[getMonth( date )]];
           const yearValue = [years[years.findIndex( year => year === getYear( date ))]];
 
-          // console.log( 'input-field', componentProps['input-field'] );
-
           return (
             <Fragment>
               <Box
@@ -127,6 +125,7 @@ class InputDatePicker extends PureComponent {
                   // placeholder,
                     onRef: onRef,
                     dynamicWidth: true,
+                    ignoreOnChange: true,
                     ...componentProps['input-field'],
                   })}
                   onChange={null}
