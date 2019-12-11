@@ -1,5 +1,7 @@
 /* eslint-disable new-cap */
 import axios from 'axios';
+import { Platform } from 'react-native';
+import { detect } from 'detect-browser';
 import config from '../../config';
 import { prefixedLog, isObject, isString, isArray } from '../../utils';
 import { store } from '../../redux';
@@ -33,6 +35,17 @@ class Bridge {
 
     const origin = window.location ? window.location.origin : 'http://localhost:3000';
 
+    const browser = detect();
+
+    const clientData = {
+      platform: Platform.OS,
+      browser: browser.name,
+      os: browser.os,
+      version: browser.version,
+    };
+
+    // console.warn({ clientData });
+
     axios
       .post( `${config.genny.host}/${config.genny.bridge.endpoints.events}/init?url=${origin}`, {
         method: 'POST',
@@ -44,7 +57,7 @@ class Bridge {
         },
       })
       .then(() => {
-        Vertx.sendMessage( events.AUTH_INIT( token ));
+        Vertx.sendMessage( events.AUTH_INIT( token, clientData ));
       });
   }
 
@@ -210,7 +223,7 @@ class Bridge {
         return allMatchingCacheAction;
       }
       // eslint-disable-next-line no-console
-      console.warn( `No Matches Found for '${actionId}'` );
+      console.warn( `Checking Action Cache; No Matches Found for '${actionId}'` );
 
       return false;
     }
