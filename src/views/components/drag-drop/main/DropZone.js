@@ -1,17 +1,35 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import { string, node } from 'prop-types';
-import { Square } from './Square';
-import { moveItem } from './Game';
-import Overlay from './Overlay';
+import { string, node, func } from 'prop-types';
 import { isInteger } from '../../../../utils';
+import { Box } from '../../../components';
 
-export const DropZone = ({ x = null, children, name, code /* moveItem */ }) => {
+const squareStyle = {
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: 60,
+};
+
+const nameStyle = {
+  borderStyle: 'solid',
+  borderColor: 'gray',
+  borderWidth: 1,
+  padding: '0px',
+  cursor: 'move',
+  minWidth: 100,
+  minHeight: 35,
+};
+
+const squareWithChildrenStyle = {
+  padding: 0,
+};
+
+export const DropZone = ({ x = null, children, name, code, setItemPos }) => {
   const [{ isOver }, drop] = useDrop({
     // accept: ItemTypes.KNIGHT,
     accept: code,
     drop: ( e ) => {
-      moveItem( x, e.label, code );
+      setItemPos( x, e.label, code );
     },
     collect: monitor => ({
       isOver: !!monitor.isOver(),
@@ -26,13 +44,27 @@ export const DropZone = ({ x = null, children, name, code /* moveItem */ }) => {
         position: 'relative',
       }}
     >
-      <Square
-        name={name}
+      <Box
+        {...squareStyle}
         backgroundColor={isInteger( x ) ? 'white' : null}
+        flexWrap={children != null && !name ? 'wrap' : null}
+        {...( name ? nameStyle : {})}
+        {...( children != null ? squareWithChildrenStyle : {})}
       >
         {children}
-      </Square>
-      {isOver && <Overlay color="yellow" />}
+      </Box>
+      {isOver && (
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          height="100%"
+          width="100%"
+          zIndex={1}
+          opacity={0.5}
+          backgroundColor="yellow"
+        />
+      )}
     </div>
   );
 };
@@ -42,4 +74,5 @@ DropZone.propTypes = {
   children: node,
   name: string,
   code: string,
+  setItemPos: func,
 };

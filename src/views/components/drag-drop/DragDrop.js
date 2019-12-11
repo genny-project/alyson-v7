@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { string, array, bool } from 'prop-types';
+import { string, array, bool, func } from 'prop-types';
 import { DropZone } from './main/DropZone';
 import { Item } from './main/Item';
-import { observeItem, setItems } from './main/Game';
 import { isString, isArray } from '../../../utils';
 import { Box, Text } from '../../components';
 
-const DragDrop = ({ content, groups, items, code, bumpItems }) => {
-  console.warn({ code });
+const DragDrop = ({ content, groups, items, code, bumpItems, onChange }) => {
   const initialPositions = {};
 
   items.forEach( item => {
@@ -18,12 +16,31 @@ const DragDrop = ({ content, groups, items, code, bumpItems }) => {
 
   const [itemPos, setItemPos] = useState( initialPositions );
 
-  useEffect(() => setItems( itemPos, code, { bump: bumpItems }));
-  useEffect(() => observeItem( newPos => {
-    setItemPos( newPos );
-  }, code ));
+  useEffect(() => onChange( itemPos ));
 
-  const  renderDropZone = ( i, name ) => {
+  const moveItem = ( toX, name ) => {
+    const itemPosNew = {
+      ...itemPos,
+    };
+
+    if ( bumpItems ) {
+      Object.keys( itemPosNew ).forEach( itemKey => {
+        if (
+          toX != null &&
+          itemPosNew[itemKey] === toX &&
+          itemKey !== name
+        ) {
+          itemPosNew[itemKey] = null;
+        }
+      });
+    }
+
+    itemPosNew[name] = toX;
+
+    setItemPos( itemPosNew );
+  };
+
+  const renderDropZone = ( i, name ) => {
     return (
       <DropZone
         x={i}
@@ -31,6 +48,7 @@ const DragDrop = ({ content, groups, items, code, bumpItems }) => {
           // y={y}
         name={name}
         code={code}
+        setItemPos={moveItem}
       >
         {renderItem( i )}
       </DropZone>
@@ -153,4 +171,5 @@ DragDrop.propTypes = {
   groups: array,
   code: string,
   bumpItems: bool,
+  onChange: func,
 };

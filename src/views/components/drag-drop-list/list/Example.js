@@ -32,13 +32,15 @@ const Container = ({ items }) => {
       ( dragIndex, hoverIndex ) => {
         const dragCard = cards[dragIndex];
 
+        const newObj = update( cards, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, dragCard],
+          ],
+        });
+
         setCards(
-          update( cards, {
-            $splice: [
-              [dragIndex, 1],
-              [hoverIndex, 0, dragCard],
-            ],
-          }),
+          newObj,
         );
       },
       [cards],

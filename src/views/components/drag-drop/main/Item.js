@@ -21,7 +21,6 @@ export const Item = ({ label = 'Item', code }) => {
   const [{ isDragging }, drag] = useDrag({
     item: {
       label,
-      // type: ItemTypes.KNIGHT,
       type: code,
     },
     collect: monitor => ({
