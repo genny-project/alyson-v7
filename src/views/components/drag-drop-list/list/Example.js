@@ -2,32 +2,18 @@ import React, { useState, useCallback } from 'react';
 import update from 'immutability-helper';
 import Card from './Card';
 import { Fragment } from '../../../components';
+import { shuffleArray } from '../../../../utils';
 
 const style = {
   width: 400,
 };
 
-const shuffle = ( array ) => {
-  var currentIndex = array.length; var temporaryValue; var randomIndex;
-
-    // While there remain elements to shuffle...
-  while ( currentIndex !== 0 ) {
-      // Pick a remaining element...
-    randomIndex = Math.floor( Math.random() * currentIndex );
-    currentIndex -= 1;
-
-      // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-};
-
 const Container = ({ items }) => {
   {
-    const [cards, setCards] = useState( shuffle( items ));
+    const [cards, setCards] = useState( shuffleArray( items ));
+
+    console.warn({ items, cards });
+
     const moveCard = useCallback(
       ( dragIndex, hoverIndex ) => {
         const dragCard = cards[dragIndex];

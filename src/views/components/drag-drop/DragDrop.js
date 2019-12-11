@@ -1,54 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { string, array, bool, func } from 'prop-types';
-import { DropZone } from './main/DropZone';
-import { Item } from './main/Item';
-import { isString, isArray } from '../../../utils';
+import { string, array, bool, func, object } from 'prop-types';
+import { DropZone } from './drop-zone/DropZone';
+import { DragDropItem } from './drag-drop-item/DragDropItem';
+import { isString, isArray, isObject, shuffleArray } from '../../../utils';
 import { Box, Text } from '../../components';
 
-const DragDrop = ({ content, groups, items, code, bumpItems, onChange }) => {
-  const initialPositions = {};
+const setupItems = ( items, shuffleItems ) => shuffleItems ? shuffleArray( items ) : items;
 
-  items.forEach( item => {
-    initialPositions[item.name] = null;
-  });
-
-  const [itemPos, setItemPos] = useState( initialPositions );
+const DragDrop = ({
+  content,
+  groups,
+  items,
+  code,
+  bumpItems,
+  onChange,
+  componentProps = {},
+  shuffleItems,
+}) => {
+  const [itemPos, setItemPos] = useState( setupItems( items.map( i => ({ ...i, position: null })), shuffleItems ));
 
   useEffect(() => onChange( itemPos ));
 
   const moveItem = ( toX, name ) => {
-    const itemPosNew = {
-      ...itemPos,
-    };
+    const itemPosNew = [];
 
-    if ( bumpItems ) {
-      Object.keys( itemPosNew ).forEach( itemKey => {
-        if (
-          toX != null &&
-          itemPosNew[itemKey] === toX &&
-          itemKey !== name
-        ) {
-          itemPosNew[itemKey] = null;
-        }
-      });
-    }
-
-    itemPosNew[name] = toX;
+    itemPos.forEach( item => {
+      if ( item.name === name ) {
+        item['position'] = toX;
+      }
+      else if (
+        bumpItems &&
+        toX !== null &&
+        item.position === toX
+      ) {
+        item['position'] = null;
+      }
+      itemPosNew.push(
+        item
+      );
+    });
 
     setItemPos( itemPosNew );
   };
 
-  const renderDropZone = ( i, name ) => {
+  const renderDropZone = ( i, name, props ) => {
     return (
       <DropZone
         x={i}
         key={i}
-          // y={y}
         name={name}
         code={code}
         setItemPos={moveItem}
+        {...props}
       >
         {renderItem( i )}
       </DropZone>
@@ -58,14 +63,16 @@ const DragDrop = ({ content, groups, items, code, bumpItems, onChange }) => {
   const renderItem = ( x ) => {
     const items = [];
 
-    Object.keys( itemPos ).forEach( itemKey => {
-      const shouldRenderItem = itemPos[itemKey] === x;
+    itemPos.forEach( item => {
+      if ( !isObject( item )) return;
+
+      const shouldRenderItem = item['position'] === x;
 
       if ( shouldRenderItem ) {
         items.push(
-          <Item
-            key={itemKey}
-            label={itemKey}
+          <DragDropItem
+            key={item.name}
+            label={item.name}
             code={code}
           />
         );
@@ -110,16 +117,16 @@ const DragDrop = ({ content, groups, items, code, bumpItems, onChange }) => {
     });
   }
   else {
-    squares.push(
-      <Box>
-        <Text
-          text="No Content Found"
-        />
-      </Box>
-    );
+    // squares.push(
+    //   <Box>
+    //     <Text
+    //       text="No Content Found"
+    //     />
+    //   </Box>
+    // );
   }
 
-  space.push( renderDropZone( null, null ));
+  space.push( renderDropZone( null, null,  componentProps['input-item-wrapper'] ));
 
   //
 
@@ -149,6 +156,7 @@ const DragDrop = ({ content, groups, items, code, bumpItems, onChange }) => {
         backgroundColor="green"
         padding={10}
         // INPUT_ITEM_WRAPPER
+
       >
         {/* INPUT_ITEM */}
         {space}
@@ -172,4 +180,5 @@ DragDrop.propTypes = {
   code: string,
   bumpItems: bool,
   onChange: func,
+  componentProps: object,
 };

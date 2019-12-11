@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 import { string } from 'prop-types';
-import { Fragment, Text } from '../../../components';
+import { Fragment, Text } from '../..';
 
 const knightStyle = {
   fontWeight: 'bold',
@@ -17,7 +17,7 @@ const style = {
   color: 'black',
 };
 
-export const Item = ({ label = 'Item', code }) => {
+export const DragDropItem = ({ label = 'Item', code }) => {
   const [{ isDragging }, drag] = useDrag({
     item: {
       label,
@@ -47,7 +47,7 @@ export const Item = ({ label = 'Item', code }) => {
   );
 };
 
-Item.propTypes = {
+DragDropItem.propTypes = {
   label: string,
   code: string,
 };

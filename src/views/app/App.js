@@ -88,49 +88,11 @@ class App extends Component {
         <h1>
           Drag and Drop Tests
         </h1>
-        {/* <h3>
-          Generic Drag and Drop Component
-        </h3>
-        <DragDrop
-          code="CODE_1"
-          content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
-          items={[
-            {
-              id: 1,
-              name: 'food',
-            },
-            {
-              id: 2,
-              name: 'yellow',
-            },
-            {
-              id: 3,
-              name: 'Southeast Asia',
-            },
-            {
-              id: 4,
-              name: 'Australia',
-            },
-            {
-              id: 5,
-              name: 'South America',
-            },
-            {
-              id: 6,
-              name: 'warmer',
-            },
-            {
-              id: 6,
-              name: 'driest',
-            },
-          ]}
-        />
-        <div style={{ padding: '10px' }} /> */}
         <h3>
           List
         </h3>
         <List
-          code="CODE_2"
+          code="CODE_1"
           items={
             [
               {
@@ -164,6 +126,48 @@ class App extends Component {
               },
             ]
           }
+        />
+        <div style={{ padding: '10px' }} />
+        <DragDrop
+          onChange={( e ) => console.log( 'handleChange', e )}
+          code="CODE_2"
+          componentProps={{
+            ['input-item-wrapper']: {
+              flexDirection: 'column',
+            },
+          }}
+          shuffleItems
+          items={[
+            {
+              id: 1,
+              name: 'Write a cool JS library',
+            },
+            {
+              id: 2,
+              name: 'Make it generic enough',
+            },
+            {
+              id: 3,
+              name: 'Write README',
+            },
+            {
+              id: 4,
+              name: 'Create some examples',
+            },
+            {
+              id: 5,
+              name:
+                'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
+            },
+            {
+              id: 6,
+              name: '???',
+            },
+            {
+              id: 7,
+              name: 'PROFIT',
+            },
+          ]}
         />
         <div style={{ padding: '10px' }} />
         <h3>

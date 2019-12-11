@@ -24,7 +24,7 @@ const squareWithChildrenStyle = {
   padding: 0,
 };
 
-export const DropZone = ({ x = null, children, name, code, setItemPos }) => {
+export const DropZone = ({ x = null, children, name, code, setItemPos, ...restProps }) => {
   const [{ isOver }, drop] = useDrop({
     // accept: ItemTypes.KNIGHT,
     accept: code,
@@ -50,6 +50,7 @@ export const DropZone = ({ x = null, children, name, code, setItemPos }) => {
         flexWrap={children != null && !name ? 'wrap' : null}
         {...( name ? nameStyle : {})}
         {...( children != null ? squareWithChildrenStyle : {})}
+        {...restProps}
       >
         {children}
       </Box>
