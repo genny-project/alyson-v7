@@ -283,7 +283,7 @@ class FormGroup extends Component {
       inheritedThemes: this.getInhertiableThemes(),
       ask,
       isClosed: this.props.isClosed,
-      placeholder: placeholder || question.placeholder || question.name,
+      placeholder: placeholder || question.placeholder,
       index,
     };
 
