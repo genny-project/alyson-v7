@@ -83,5 +83,4 @@ export * from './toggle';
 export * from './login';
 export * from './form';
 export * from './menu';
-export * from './drag-drop-list';
 export * from './drag-drop';

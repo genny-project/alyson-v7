@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import update from 'immutability-helper';
 import { string, array, bool, func, object } from 'prop-types';
 import { DropZone } from './drop-zone/DropZone';
 import { DragDropItem } from './drag-drop-item/DragDropItem';
 import { isString, isArray, isObject, shuffleArray } from '../../../utils';
 import { Box, Text } from '../../components';
 
-const setupItems = ( items, shuffleItems ) => shuffleItems ? shuffleArray( items ) : items;
+const setupItems = ( items, shuffleItems ) => {
+  shuffleItems ? shuffleArray( items ) : items;
+
+  return items.map( i => ({ ...i, position: null }));
+};
 
 const DragDrop = ({
   content,
@@ -18,8 +23,9 @@ const DragDrop = ({
   onChange,
   componentProps = {},
   shuffleItems,
+  canReorderItems,
 }) => {
-  const [itemPos, setItemPos] = useState( setupItems( items.map( i => ({ ...i, position: null })), shuffleItems ));
+  const [itemPos, setItemPos] = useState( setupItems( items, shuffleItems ));
 
   useEffect(() => onChange( itemPos ));
 
@@ -45,6 +51,24 @@ const DragDrop = ({
     setItemPos( itemPosNew );
   };
 
+  const moveCard = useCallback(
+    ( dragIndex, hoverIndex ) => {
+      const dragCard = itemPos[dragIndex];
+
+      const newObj = update( itemPos, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard],
+        ],
+      });
+
+      setItemPos(
+        newObj,
+      );
+    },
+    [itemPos],
+  );
+
   const renderDropZone = ( i, name, props ) => {
     return (
       <DropZone
@@ -53,6 +77,7 @@ const DragDrop = ({
         name={name}
         code={code}
         setItemPos={moveItem}
+        canReorderItems={canReorderItems}
         {...props}
       >
         {renderItem( i )}
@@ -63,7 +88,7 @@ const DragDrop = ({
   const renderItem = ( x ) => {
     const items = [];
 
-    itemPos.forEach( item => {
+    itemPos.forEach(( item, index ) => {
       if ( !isObject( item )) return;
 
       const shouldRenderItem = item['position'] === x;
@@ -71,9 +96,13 @@ const DragDrop = ({
       if ( shouldRenderItem ) {
         items.push(
           <DragDropItem
+            index={index}
             key={item.name}
             label={item.name}
             code={code}
+            id={item.id}
+            canReorderItems={canReorderItems}
+            moveCard={moveCard}
           />
         );
       };
@@ -106,7 +135,7 @@ const DragDrop = ({
 
       if ( index + 1 < array.length ) {
         squares.push(
-          renderDropZone( index, 'box' )
+          renderDropZone( index, null )
         );
       }
     });
@@ -126,7 +155,7 @@ const DragDrop = ({
     // );
   }
 
-  space.push( renderDropZone( null, null,  componentProps['input-item-wrapper'] ));
+  space.push( renderDropZone( null, null, componentProps['input-item-wrapper'] ));
 
   //
 
@@ -137,26 +166,31 @@ const DragDrop = ({
       borderStyle="solid"
       borderWidth={1}
       flexDirection="column"
+      {...componentProps['input-wrapper']}
       // INPUT_WRAPPER
     >
-      <Box
-        backgroundColor="red"
-        flexWrap="wrap"
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
-        padding={10}
-        // INPUT_SELECTED_WRAPPER
-      >
-        {/* INPUT_SELECTED */}
-        {/* INPUT_PLACEHOLDER */}
-        {squares}
-      </Box>
+      {
+        isArray( squares, { ofMinLength: 1 }) ? (
+          <Box
+            backgroundColor="red"
+            flexWrap="wrap"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            padding={10}
+            {...componentProps['input-selected-wrapper']}
+            // INPUT_SELECTED_WRAPPER
+          >
+            {/* INPUT_SELECTED */}
+            {/* INPUT_PLACEHOLDER */}
+            {squares}
+          </Box>
+        ) : null
+      }
       <Box
         backgroundColor="green"
         padding={10}
         // INPUT_ITEM_WRAPPER
-
       >
         {/* INPUT_ITEM */}
         {space}
@@ -174,11 +208,13 @@ export default props => (
 );
 
 DragDrop.propTypes = {
-  content: string,
-  items: array,
-  groups: array,
-  code: string,
-  bumpItems: bool,
+  items: array, // list of objects to be rendered as draggable items
+  groups: array, // list of objects to be rendered as dropzones
+  content: string, // string which will be rendered with optional dropzones
+  code: string, // unique id for the drag and drop components
+  bumpItems: bool, // clears group of previous item when a new item is dropped
+  shuffleItems: bool, // randomises the order of items when component loads
   onChange: func,
-  componentProps: object,
+  componentProps: object, // object containing theme data
+  canReorderItems: bool, // turns objects into dropzones so the list can be reordered by dropping
 };

@@ -6,7 +6,7 @@ import AuthenticatedApp from './authenticated';
 import Routing from '../routing';
 import store from '../../redux/store';
 import { location, setTitle } from '../../utils';
-import { DebugDisplay, Favicon, Fragment, Chess, List, DragDrop } from '../components';
+import { DebugDisplay, Favicon, Fragment, Chess, DragDrop } from '../components';
 
 class App extends Component {
   constructor( props ) {
@@ -91,43 +91,6 @@ class App extends Component {
         <h3>
           List
         </h3>
-        <List
-          code="CODE_1"
-          items={
-            [
-              {
-                id: 1,
-                text: 'Write a cool JS library',
-              },
-              {
-                id: 2,
-                text: 'Make it generic enough',
-              },
-              {
-                id: 3,
-                text: 'Write README',
-              },
-              {
-                id: 4,
-                text: 'Create some examples',
-              },
-              {
-                id: 5,
-                text:
-                  'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
-              },
-              {
-                id: 6,
-                text: '???',
-              },
-              {
-                id: 7,
-                text: 'PROFIT',
-              },
-            ]
-          }
-        />
-        <div style={{ padding: '10px' }} />
         <DragDrop
           onChange={( e ) => console.log( 'handleChange', e )}
           code="CODE_2"
@@ -137,6 +100,7 @@ class App extends Component {
             },
           }}
           shuffleItems
+          canReorderItems
           items={[
             {
               id: 1,
@@ -253,6 +217,18 @@ class App extends Component {
               name: 'Pear',
             },
           ]}
+          componentProps={{
+            ['input-wrapper']: {
+              flexDirection: 'row',
+            },
+            ['input-item-wrapper']: {
+              flexDirection: 'column',
+            },
+            ['input-selected-wrapper']: {
+              flexDirection: 'column',
+              flex: 1,
+            },
+          }}
         />
         {/* <div style={{ padding: '10px' }} />
         <Chess /> */}
