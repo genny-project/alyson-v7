@@ -23,6 +23,7 @@ class InputTextWithDynamicWidth extends Component {
       ['xs','sm','md','lg','xl']
     ),
     dynamicWidth: bool,
+    ignoreOnChange: bool, // only check width of text passed from value prop
     width: oneOfType(
       [string, number]
     ),
@@ -141,7 +142,9 @@ class InputTextWithDynamicWidth extends Component {
   handleChange = ( event ) => {
     const text = dlv( event, 'nativeEvent.text' );
 
-    this.updateWidth( text );
+    if ( !this.props.ignoreOnChange ) {
+      this.updateWidth( text );
+    }
   }
 
   render() {

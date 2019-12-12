@@ -229,7 +229,7 @@ class DateTimeBase extends PureComponent {
         // eslint-disable-next-line
         this.state.timer = setTimeout(() => {
           this.props.onChangeValue( date );
-        }, 1000 );
+        }, 10000 );
       }
     });
   }
@@ -661,14 +661,14 @@ class DateTimeBase extends PureComponent {
   render() {
     const {
       displayFormat,
-      value,
+      // value,
       // testID,
       onChangeValue, // eslint-disable-line no-unused-vars
       children,
       subcomponentProps,
     } = this.props;
 
-    const { isCalendarOpen } = this.state;
+    const { isCalendarOpen, value } = this.state;
 
     return (
       // STATE HOLDER
@@ -685,13 +685,16 @@ class DateTimeBase extends PureComponent {
         }) => {
           return (
             <Downshift
-              defaultInputValue={value}
+              // defaultInputValue={this.state.value}
+              defaultInputValue={value ? format( value, displayFormat ) : null}
               onChange={this.handleChange}
               itemToString={date => {
-                return date ? format( date, displayFormat ) : '';
+                const newValue = date ? format( date, displayFormat ) : '';
+
+                return newValue;
               }}
               isOpen={isCalendarOpen}
-              selectedItem={this.state.value}
+              selectedItem={value}
             >
               {({
                 getInputProps,
