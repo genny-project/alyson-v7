@@ -156,7 +156,8 @@ class InputDatePicker extends PureComponent {
                     zIndex={5}
                   >
                     <Icon
-                      name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
+                      // name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
+                      name="keyboard-arrow-down"
                       color="black"
                       size="md"
                     />
