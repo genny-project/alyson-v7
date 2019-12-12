@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { Platform } from 'react-native';
 import { detect } from 'detect-browser';
+import queryString from 'query-string';
 import config from '../../config';
 import { prefixedLog, isObject, isString, isArray } from '../../utils';
 import { store } from '../../redux';
@@ -38,13 +39,25 @@ class Bridge {
     const browser = detect();
 
     const clientData = {
-      platform: Platform.OS,
-      browser: browser.name,
-      os: browser.os,
-      version: browser.version,
+      platform: {
+        type: Platform.OS,
+        version: Platform.Version,
+      },
+      browser: {
+        name: browser.name,
+        os: browser.os,
+        version: browser.version,
+      },
     };
 
-    // console.warn({ clientData });
+    if ( window ) {
+      const paramsFromWindow = window.location.search;
+      const values = queryString.parse( paramsFromWindow );
+
+      clientData['queryParameters'] = values;
+    }
+
+    console.warn({ clientData }); // eslint-disable-line
 
     axios
       .post( `${config.genny.host}/${config.genny.bridge.endpoints.events}/init?url=${origin}`, {

@@ -132,6 +132,12 @@ class FileInput extends Component {
     return files;
   };
 
+  clearFilesFromInput = () => {
+    const input = this.inputFileNew.current;
+
+    input.value = null;
+  };
+
   convertFilesToStateFormat = ( files ) => {
     return isArray( files ) ? files.map( file => {
       // if ( )
@@ -247,6 +253,8 @@ class FileInput extends Component {
         deleting: false,
         selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
       }), () => {
+        this.clearFilesFromInput();
+
         if ( this.props.onChangeValue ) {
           this.props.onChangeValue( this.state.selectedFiles ); // send the URl to Genny system
         }
@@ -265,6 +273,7 @@ class FileInput extends Component {
   };
 
   handleAddFile = () => {
+    console.warn( 'handleAddFile' ); // eslint-disable-line
     const allFiles = this.getFilesFromInput();
     const allFilesArray = Array.from( allFiles );
     const { maxNumberOfFiles, maxFileSize, maxTotalFileSize } = this.props;
@@ -561,6 +570,7 @@ class FileInput extends Component {
                       name="fileupload"
                       style={{ display: 'none' }}
                       accept={this.props.allowedFileTypes.toString( ',' )}
+                      id="file-input-id"
                     />
                   </Fragment>
                 ) : null
