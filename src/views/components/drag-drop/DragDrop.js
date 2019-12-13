@@ -65,8 +65,15 @@ const DragDrop = ({
         };
       });
 
-      console.warn({ valueItemKeys, selectedItemKeys });
+      // check if the objects have the same key value pairs
 
+      const isMatch = Object.keys( selectedItemKeys ).every( key => {
+        return selectedItemKeys[key] === value[key];
+      });
+
+      console.warn({ valueItemKeys, selectedItemKeys, isMatch });
+
+      // return !isMatch // figure out how to use isMatch
       return false;
     };
 
