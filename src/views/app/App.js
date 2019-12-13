@@ -76,172 +76,172 @@ class App extends Component {
 
     setTitle( projectName );
 
-    return (
-      <div
-        style={{
-          overflow: 'auto',
-          height: '100%',
-          width: '100%',
-          padding: '40px',
-        }}
-      >
-        <h1>
-          Drag and Drop Tests
-        </h1>
-        <h3>
-          List
-        </h3>
-        <DragDrop
-          onChange={( e ) => console.log( 'handleChange', e )}
-          code="CODE_2"
-          componentProps={{
-            ['input-item-wrapper']: {
-              flexDirection: 'column',
-            },
-          }}
-          shuffleItems
-          canReorderItems
-          items={[
-            {
-              id: 1,
-              name: 'Write a cool JS library',
-            },
-            {
-              id: 2,
-              name: 'Make it generic enough',
-            },
-            {
-              id: 3,
-              name: 'Write README',
-            },
-            {
-              id: 4,
-              name: 'Create some examples',
-            },
-            {
-              id: 5,
-              name:
-                'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
-            },
-            {
-              id: 6,
-              name: '???',
-            },
-            {
-              id: 7,
-              name: 'PROFIT',
-            },
-          ]}
-        />
-        <div style={{ padding: '10px' }} />
-        <h3>
-          Fill
-        </h3>
-        <DragDrop
-          bumpItems
-          onChange={( e ) => console.log( 'handleChange', e )}
-          code="CODE_3"
-          content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
-          items={[
-            {
-              id: 1,
-              name: 'food',
-            },
-            {
-              id: 2,
-              name: 'yellow',
-            },
-            {
-              id: 3,
-              name: 'Southeast Asia',
-            },
-            {
-              id: 4,
-              name: 'Australia',
-            },
-            {
-              id: 5,
-              name: 'South America',
-            },
-            {
-              id: 6,
-              name: 'warmer',
-            },
-            {
-              id: 6,
-              name: 'driest',
-            },
-          ]}
-        />
-        <div style={{ padding: '10px' }} />
-        <h3>
-          Match
-        </h3>
-        <DragDrop
-          onChange={( e ) => console.log( 'handleChange', e )}
-          code="CODE_4"
-          // content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
-          groups={[
-            {
-              id: 1,
-              name: 'Red',
-            },
-            {
-              id: 2,
-              name: 'Orange',
-            },
-            {
-              id: 3,
-              name: 'Yellow',
-            },
-            {
-              id: 4,
-              name: 'Green',
-            },
-          ]}
-          items={[
-            {
-              id: 1,
-              name: 'Apple',
-            },
-            {
-              id: 2,
-              name: 'Banana',
-            },
-            {
-              id: 3,
-              name: 'Orange',
-            },
-            {
-              id: 4,
-              name: 'Pear',
-            },
-          ]}
-          componentProps={{
-            ['input-wrapper']: {
-              flexDirection: 'row',
-            },
-            ['input-item-wrapper']: {
-              flexDirection: 'column',
-            },
-            ['input-selected-wrapper']: {
-              flexDirection: 'column',
-              flex: 1,
-            },
-          }}
-        />
-        {/* <div style={{ padding: '10px' }} />
-        <Chess /> */}
-      </div>
-    );
-
     // return (
-    //   <AuthenticatedApp>
-    //     <Routing />
-    //     <Favicon />
-    //     {this.getDisplayDevMode()}
-    //   </AuthenticatedApp>
+    //   <div
+    //     style={{
+    //       overflow: 'auto',
+    //       height: '100%',
+    //       width: '100%',
+    //       padding: '40px',
+    //     }}
+    //   >
+    //     <h1>
+    //       Drag and Drop Tests
+    //     </h1>
+    //     <h3>
+    //       List
+    //     </h3>
+    //     <DragDrop
+    //       onChange={( e ) => console.log( 'handleChange', e )}
+    //       code="CODE_2"
+    //       componentProps={{
+    //         ['input-item-wrapper']: {
+    //           flexDirection: 'column',
+    //         },
+    //       }}
+    //       shuffleItems
+    //       canReorderItems
+    //       items={[
+    //         {
+    //           id: 1,
+    //           name: 'Write a cool JS library',
+    //         },
+    //         {
+    //           id: 2,
+    //           name: 'Make it generic enough',
+    //         },
+    //         {
+    //           id: 3,
+    //           name: 'Write README',
+    //         },
+    //         {
+    //           id: 4,
+    //           name: 'Create some examples',
+    //         },
+    //         {
+    //           id: 5,
+    //           name:
+    //             'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
+    //         },
+    //         {
+    //           id: 6,
+    //           name: '???',
+    //         },
+    //         {
+    //           id: 7,
+    //           name: 'PROFIT',
+    //         },
+    //       ]}
+    //     />
+    //     <div style={{ padding: '10px' }} />
+    //     <h3>
+    //       Fill
+    //     </h3>
+    //     <DragDrop
+    //       bumpItems
+    //       onChange={( e ) => console.log( 'handleChange', e )}
+    //       code="CODE_3"
+    //       content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
+    //       items={[
+    //         {
+    //           id: 1,
+    //           name: 'food',
+    //         },
+    //         {
+    //           id: 2,
+    //           name: 'yellow',
+    //         },
+    //         {
+    //           id: 3,
+    //           name: 'Southeast Asia',
+    //         },
+    //         {
+    //           id: 4,
+    //           name: 'Australia',
+    //         },
+    //         {
+    //           id: 5,
+    //           name: 'South America',
+    //         },
+    //         {
+    //           id: 6,
+    //           name: 'warmer',
+    //         },
+    //         {
+    //           id: 6,
+    //           name: 'driest',
+    //         },
+    //       ]}
+    //     />
+    //     <div style={{ padding: '10px' }} />
+    //     <h3>
+    //       Match
+    //     </h3>
+    //     <DragDrop
+    //       onChange={( e ) => console.log( 'handleChange', e )}
+    //       code="CODE_4"
+    //       // content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
+    //       groups={[
+    //         {
+    //           id: 1,
+    //           name: 'Red',
+    //         },
+    //         {
+    //           id: 2,
+    //           name: 'Orange',
+    //         },
+    //         {
+    //           id: 3,
+    //           name: 'Yellow',
+    //         },
+    //         {
+    //           id: 4,
+    //           name: 'Green',
+    //         },
+    //       ]}
+    //       items={[
+    //         {
+    //           id: 1,
+    //           name: 'Apple',
+    //         },
+    //         {
+    //           id: 2,
+    //           name: 'Banana',
+    //         },
+    //         {
+    //           id: 3,
+    //           name: 'Orange',
+    //         },
+    //         {
+    //           id: 4,
+    //           name: 'Pear',
+    //         },
+    //       ]}
+    //       componentProps={{
+    //         ['input-wrapper']: {
+    //           flexDirection: 'row',
+    //         },
+    //         ['input-item-wrapper']: {
+    //           flexDirection: 'column',
+    //         },
+    //         ['input-selected-wrapper']: {
+    //           flexDirection: 'column',
+    //           flex: 1,
+    //         },
+    //       }}
+    //     />
+    //     {/* <div style={{ padding: '10px' }} />
+    //     <Chess /> */}
+    //   </div>
     // );
+
+    return (
+      <AuthenticatedApp>
+        <Routing />
+        <Favicon />
+        {this.getDisplayDevMode()}
+      </AuthenticatedApp>
+    );
   }
 }
 

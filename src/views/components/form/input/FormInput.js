@@ -79,6 +79,9 @@ class FormInput extends Component {
       case 'menu':
       case 'checkboxmultiple':
       case 'radio':
+      case 'fill':
+      case 'dndfill':
+      case 'dragdropfill':
         return (
           <FormInputWithItems
             {...inputProps}

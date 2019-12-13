@@ -16,24 +16,72 @@ const setupItems = ( items, shuffleItems ) => {
 
 const DragDrop = ({
   content,
-  groups,
+  groups = [],
   items,
+  itemStringKey = 'label',
+  itemValueKey = 'value',
   code,
   bumpItems,
-  onChange,
+  onChangeValue,
   componentProps = {},
   shuffleItems,
   canReorderItems,
+  value = [],
+  ...restProps
 }) => {
-  const [itemPos, setItemPos] = useState( setupItems( items, shuffleItems ));
+  const selectedDropZones = {};
 
-  useEffect(() => onChange( itemPos ));
+  // groups.forEach(( group, index ) => {
+  //   selectedDropZones[group[itemValueKey]] = group[item]
+  // });
+
+  const [itemPos, setItemPos] = useState( setupItems( items, shuffleItems )); // set up initial item array
+
+  useEffect(() => {
+    const selectedItems = itemPos.filter( item => item.position != null );
+    const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: selectedDropZones[item.position]['value'] }));
+
+    console.log( 'onChange', selectedItemForSend, value );
+
+    const shouldSendValue = ( newValue, currentValue ) => {
+      if ( !isArray( newValue )) return false;
+      if ( !isArray( currentValue )) return false;
+      if ( selectedItemForSend.length !== value.length ) return true;
+
+      let selectedItemKeys = {};
+      let valueItemKeys = {};
+
+      selectedItemForSend.forEach( item => {
+        selectedItemKeys = {
+          ...selectedItemKeys,
+          ...item,
+        };
+      });
+
+      value.forEach( item => {
+        valueItemKeys = {
+          ...valueItemKeys,
+          ...item,
+        };
+      });
+
+      console.warn({ valueItemKeys, selectedItemKeys });
+
+      return false;
+    };
+
+    if ( shouldSendValue( selectedItemForSend, value )) {
+      if ( onChangeValue ) {
+        onChangeValue( selectedItemForSend );
+      };
+    }
+  });
 
   const moveItem = ( toX, name ) => {
     const itemPosNew = [];
 
     itemPos.forEach( item => {
-      if ( item.name === name ) {
+      if ( item[itemStringKey] === name ) {
         item['position'] = toX;
       }
       else if (
@@ -97,10 +145,10 @@ const DragDrop = ({
         items.push(
           <DragDropItem
             index={index}
-            key={item.name}
-            label={item.name}
+            key={item[itemStringKey]}
+            label={item[itemStringKey]}
             code={code}
-            id={item.id}
+            id={item[itemValueKey]}
             canReorderItems={canReorderItems}
             moveCard={moveCard}
           />
@@ -118,25 +166,42 @@ const DragDrop = ({
   let split = null;
 
   if ( isString( content )) {
-    split = content.split( '{{BOX}}' );
+    split = content.split( '{{' );
 
-    split.forEach(( text, index, array ) => {
-      text.split( ' ' ).forEach( string => {
-        squares.push(
-          <Box
-            marginRight={5}
-          >
-            <Text
-              text={string}
-            />
-          </Box>
-        );
-      });
+    split.forEach(( string, index ) => {
+      const endOfOption = string.indexOf( '}}' );
 
-      if ( index + 1 < array.length ) {
+      const optionLabel = endOfOption > 0
+        ? string.slice( 0, endOfOption )
+        : null;
+
+      const contentString = endOfOption > 0
+        ? string.slice( endOfOption + 2, string.length )
+        : string;
+
+      if ( optionLabel ) {
         squares.push(
           renderDropZone( index, null )
         );
+
+        selectedDropZones[index] = {
+          [itemStringKey]: optionLabel,
+          [itemValueKey]: optionLabel,
+        };
+      }
+
+      if ( contentString ) {
+        contentString.split( ' ' ).forEach( string => {
+          squares.push(
+            <Box
+              marginRight={5}
+            >
+              <Text
+                text={string}
+              />
+            </Box>
+          );
+        });
       }
     });
   }
@@ -146,6 +211,8 @@ const DragDrop = ({
     });
   }
   else {
+    // Add placeholder sub component
+
     // squares.push(
     //   <Box>
     //     <Text
@@ -209,12 +276,14 @@ export default props => (
 
 DragDrop.propTypes = {
   items: array, // list of objects to be rendered as draggable items
+  itemStringKey: string,
+  itemValueKey: string,
   groups: array, // list of objects to be rendered as dropzones
   content: string, // string which will be rendered with optional dropzones
   code: string, // unique id for the drag and drop components
   bumpItems: bool, // clears group of previous item when a new item is dropped
   shuffleItems: bool, // randomises the order of items when component loads
-  onChange: func,
+  onChangeValue: func,
   componentProps: object, // object containing theme data
   canReorderItems: bool, // turns objects into dropzones so the list can be reordered by dropping
 };

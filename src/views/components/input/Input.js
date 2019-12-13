@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
-import { Text } from '../index';
+import { Text, DragDrop } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
 import InputDatePicker from './date-time/date-picker';
@@ -405,6 +405,163 @@ class Input extends Component {
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'fill':
+      case 'dndfill':
+      case 'dragdropfill':
+        console.warn( this.props.items );
+
+        return (
+          <DragDrop
+            {...inputProps}
+            ref={input => ( this.input = input )}
+            bumpItems
+            onChange={( e ) => console.log( 'handleChange', e )}
+            code="CODE_3"
+            content="Bananas are among the most important {{OPT_001}} crops on the planet. They come from a family of plants called Musa that are native to {{OPT_002}} and grown in many of the {{OPT_003}} areas of the world."
+            items={[
+              {
+                value: 'ITM_FOOD',
+                label: 'food',
+              },
+              {
+                value: 'ITM_YELLOW',
+                label: 'yellow',
+              },
+              {
+                value: 'ITM_SOUTHEAST_ASIA',
+                label: 'Southeast Asia',
+              },
+              {
+                value: 'ITM_AUSTRALIA',
+                label: 'Australia',
+              },
+              {
+                value: 'ITM_SOUTH_AMERICA',
+                label: 'South America',
+              },
+              {
+                value: 'ITM_WARMER',
+                label: 'warmer',
+              },
+              {
+                value: 'ITM_DRIEST',
+                label: 'driest',
+              },
+            ]}
+          />
+        );
+
+      case 'match':
+      case 'dndmatch':
+      case 'dragdropmatch':
+        return (
+          <DragDrop
+            {...inputProps}
+            ref={input => ( this.input = input )}
+            onChangeValue={( e ) => console.log( 'handleChange', e )}
+            code="CODE_4"
+            // content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
+            groups={[
+              {
+                id: 1,
+                name: 'Red',
+              },
+              {
+                id: 2,
+                name: 'Orange',
+              },
+              {
+                id: 3,
+                name: 'Yellow',
+              },
+              {
+                id: 4,
+                name: 'Green',
+              },
+            ]}
+            items={[
+              {
+                id: 1,
+                name: 'Apple',
+              },
+              {
+                id: 2,
+                name: 'Banana',
+              },
+              {
+                id: 3,
+                name: 'Orange',
+              },
+              {
+                id: 4,
+                name: 'Pear',
+              },
+            ]}
+            componentProps={{
+              ['input-wrapper']: {
+                flexDirection: 'row',
+              },
+              ['input-item-wrapper']: {
+                flexDirection: 'column',
+              },
+              ['input-selected-wrapper']: {
+                flexDirection: 'column',
+                flex: 1,
+              },
+            }}
+          />
+        );
+
+      case 'list':
+      case 'dndlist':
+      case 'dragdroplist':
+        return (
+          <DragDrop
+            {...inputProps}
+            ref={input => ( this.input = input )}
+            onChange={( e ) => console.log( 'handleChange', e )}
+            code="CODE_2"
+            componentProps={{
+              ['input-item-wrapper']: {
+                flexDirection: 'column',
+              },
+            }}
+            shuffleItems
+            canReorderItems
+            items={[
+              {
+                id: 1,
+                name: 'Write a cool JS library',
+              },
+              {
+                id: 2,
+                name: 'Make it generic enough',
+              },
+              {
+                id: 3,
+                name: 'Write README',
+              },
+              {
+                id: 4,
+                name: 'Create some examples',
+              },
+              {
+                id: 5,
+                name:
+                  'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
+              },
+              {
+                id: 6,
+                name: '???',
+              },
+              {
+                id: 7,
+                name: 'PROFIT',
+              },
+            ]}
           />
         );
 
