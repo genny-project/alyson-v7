@@ -30,6 +30,7 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
+import Progress from './progress';
 
 /* maps the component to  */
 
@@ -405,6 +406,15 @@ class Input extends Component {
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'progress':
+        return (
+          <Progress
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => this.input = input}
           />
         );
 
