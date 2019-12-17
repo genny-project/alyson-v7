@@ -43,7 +43,7 @@ const ProgressBar = ( inputFieldProps ) => {
                       backgroundColor={
                         isSection
                           ? parseInt( value, 10 ) > ( 100 / sections ) * ( section / 2 )
-                            ? color
+                            ? '#5cb85c'
                             : '#ddd'
                           : null
                       }
