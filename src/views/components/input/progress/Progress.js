@@ -63,7 +63,7 @@ const ProgressBar = ( inputFieldProps ) => {
               <Box
                 width={value}
                 height="100%"
-                backgroundColor={color}
+                backgroundColor="#5cb85c"
                 position="absolute"
                 top={0}
                 left={0}
