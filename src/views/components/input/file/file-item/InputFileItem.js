@@ -129,8 +129,8 @@ class InputFileItem extends Component {
         {hasImagePreview ? (
           <Image
             source={uploadURL || preview}
-            width={imageHeight}
-            height={imageWidth}
+            width={imageWidth}
+            height={imageHeight}
             fit={fit}
           />
         ) : (

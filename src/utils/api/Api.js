@@ -4,7 +4,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 import config from '../../config';
 import store from '../../redux/store';
-import { isObject } from '../../utils';
+import { isObject, isArray } from '../../utils';
 
 class Api {
   observableCall = ( options = {}) => {
@@ -142,32 +142,46 @@ class Api {
     });
   }
 
-  getPublicLayouts = () => {
-    const { data } = store.getState().keycloak;
+  postMediaFile = async ( options = {}) => {
+    const token = store.getState().keycloak.accessToken;
+    const keycloakData = store.getState().keycloak.data;
+    const mediaURL = `${keycloakData.ENV_MEDIA_PROXY_URL}`;
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `bearer ${token}`,
+    };
 
-    const publicLayoutUrl = (
-      ( process.env.ENV_LAYOUT_PUBLICURL ) ||
-      ( data && data.ENV_LAYOUT_PUBLICURL ) ||
-      'http://localhost:2224'
-    );
+    const result = await this.promiseCall({
+      method: 'POST',
+      url: mediaURL,
+      headers: headers,
+      timeout: 10000,
+      ...options,
+    });
 
-    const directory = (
-      ( process.env.ENV_LAYOUT_QUERY_DIRECTORY ) ||
-      ( data && data.ENV_LAYOUT_QUERY_DIRECTORY )
-    );
-
-    if ( !directory ) {
-      // eslint-disable-next-line no-console
-      console.warn( `Unable to fetch public layouts from ${publicLayoutUrl} - no directory set. (process.env.ENV_LAYOUT_QUERY_DIRECTORY)` );
-
-      throw new Error( `Unable to fetch public layouts from ${publicLayoutUrl} - no directory set. (process.env.ENV_LAYOUT_QUERY_DIRECTORY)` );
+    if ( isArray( result.data.files )) {
+      result.data.files.forEach( file => {
+        file['url'] = `${mediaURL}/${file.uuid}`;
+      });
     }
 
-    const query = queryString.stringify({ directory });
+    return result;
+  }
 
-    return this.observableCall({
-      url: `${publicLayoutUrl}/public?${query}`,
+  deleteMediaFile = async ( fileURL ) => {
+    const token = store.getState().keycloak.accessToken;
+    const headers = {
+      Authorization: `bearer ${token}`,
+    };
+
+    const result = await this.promiseCall({
+      method: 'DELETE',
+      url: fileURL,
+      headers: headers,
+      timeout: 10000,
     });
+
+    return result;
   }
 }
 
