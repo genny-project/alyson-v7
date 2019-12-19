@@ -81,6 +81,7 @@ class InputDatePicker extends PureComponent {
                 // placeholder,
                   onRef: onRef,
                   dynamicWidth: true,
+                  ignoreOnChange: true,
                 })}
                 onChange={null}
                 onFocus={close}
