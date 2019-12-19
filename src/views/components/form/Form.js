@@ -657,8 +657,10 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath }))
+    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
+      // console.log( 'inside sendonchange' );
       this.sendAnswer({ ask, value, valuePath });
+    }
   }
 
   handleFocusNextInput = ( questionGroupCode, currentFocusedIndex ) => () => {

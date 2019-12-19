@@ -152,6 +152,7 @@ class FormInput extends Component {
               return (
                 <Input
                   {...inputProps}
+                  onChangeValue={this.handleChangeValueWithSend}
                     // value={field.value}
                   ref={input => ( this.input = input )}
                 />

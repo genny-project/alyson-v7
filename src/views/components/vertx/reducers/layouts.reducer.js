@@ -88,6 +88,10 @@ const themeBehaviourAttributes = {
     default: true,
     label: 'renderChildAsks',
   },
+  PRI_IS_UNITY_GROUP: {
+    default: true,
+    label: 'renderAsUnityGroup',
+  },
 };
 
 const componentTypes = {
@@ -307,7 +311,7 @@ const injectThemeIntoState = ({ item, state, shouldReplaceEntity }) => {
   }
 };
 
-const reduceAsks = ({ item, state }) => {
+const reduceAsks = ({ item, state, shouldReplaceEntity }) => {
   let childAsks = {};
 
   if ( isArray( item.childAsks )) {
@@ -317,7 +321,7 @@ const reduceAsks = ({ item, state }) => {
       if ( isString( childItem.questionCode, { startsWith: 'QUE_' })) {
         childAsks = {
           ...childAsks,
-          ...reduceAsks({ item: childItem, state }),
+          ...reduceAsks({ item: childItem, state, shouldReplaceEntity }),
         };
       }
     });
@@ -341,7 +345,7 @@ const reduceAsks = ({ item, state }) => {
           links: [
             ...( isObject( state.asks[item.questionCode], { withProperty: 'links' }) &&
               isArray( state.asks[item.questionCode].links )
-              ? item.replace === true
+              ? shouldReplaceEntity === true
                 ? []
                 : state.asks[item.questionCode].links.filter(
                   existingLink =>
@@ -357,7 +361,16 @@ const reduceAsks = ({ item, state }) => {
                 const nameTypes = {
                   THEME: 'theme',
                   ICON: 'icon',
+                  UNITY: 'unity',
                 };
+
+                if ( isString( link.name, { isSameAs: 'UNITY' })) {
+                  return {
+                    sceneCode: link.contextCode,
+                    type: nameTypes[link.name],
+                    created: link.created,
+                  };
+                }
 
                 return {
                   code: link.contextCode,
@@ -406,7 +419,7 @@ const injectAskIntoState = ({ item, state, shouldReplaceEntity }) => {
       ...state,
       asks: {
         ...state.asks,
-        ...reduceAsks({ item, state }),
+        ...reduceAsks({ item, state, shouldReplaceEntity }),
       },
     };
   }

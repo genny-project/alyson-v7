@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
 import { Text } from '../index';
@@ -30,7 +31,11 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
+<<<<<<< HEAD
+import Unity from './unity';
+=======
 import Progress from './progress';
+>>>>>>> v3.1.0
 
 /* maps the component to  */
 
@@ -82,6 +87,8 @@ class Input extends Component {
       type,
       dynamicWidth,
     };
+
+    // console.log( 'thisprospinsideinput:', this );
 
     const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
@@ -405,6 +412,13 @@ class Input extends Component {
           <ColourPicker
             {...inputProps}
             {...inputFieldProps}
+            ref={input => ( this.input = input )}
+          />
+        );
+      case 'unity':
+        return (
+          <Unity
+            {...inputProps}
             ref={input => ( this.input = input )}
           />
         );
