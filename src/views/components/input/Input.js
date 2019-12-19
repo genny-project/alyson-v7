@@ -31,11 +31,8 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
-<<<<<<< HEAD
 import Unity from './unity';
-=======
 import Progress from './progress';
->>>>>>> v3.1.0
 
 /* maps the component to  */
 
