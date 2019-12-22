@@ -108,6 +108,8 @@ class InputDatePicker extends PureComponent {
           const monthValue = [months[getMonth( date )]];
           const yearValue = [years[years.findIndex( year => year === getYear( date ))]];
 
+          console.log('datePicker====>', inputValue)
+
           return (
             <Fragment>
               <Box
@@ -121,7 +123,7 @@ class InputDatePicker extends PureComponent {
                     type: 'text',
                   // editable: false,
                     updateValueWhenFocused: true,
-                    value: inputValue || displayFormat,
+                    value: inputValue || displayFormat.toLowerCase(),
                   // placeholder,
                     onRef: onRef,
                     dynamicWidth: true,
