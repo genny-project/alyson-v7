@@ -28,7 +28,7 @@ class InputText extends Component {
     clearTextOnFocus: false,
     keyboardType: 'default',
     multiline: false,
-    placeholder: 'Type here...',
+    //placeholder: 'Type here...',
     secureTextEntry: false,
     selectTextOnFocus: false,
     spellCheck: true,
