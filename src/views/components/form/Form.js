@@ -645,12 +645,10 @@ class Form extends Component {
     valuePath,
   ) => (
     value,
-    sendOnChange,
+    //sendOnChange,
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
-
-    console.log( value );
-
+    console.log( 'meow meow', this );
     if ( value == null )
       return;
 
@@ -659,10 +657,8 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    this.sendAnswer({ ask, value, valuePath });
-
-    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
-      // console.log( 'inside sendonchange' );
+    if ( this.shouldSendAnswer({ value, valuePath })) {
+      console.log( '----cyrus is awesome----' );
       this.sendAnswer({ ask, value, valuePath });
     }
   }

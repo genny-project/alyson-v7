@@ -135,10 +135,8 @@ class InputTag extends Component {
     handleCloseMenu,
     handleOpenMenu,
     isOpen,
-    isO,
     selectItem,
   }) => {
-    console.log( 'hehehehheeheh ',isO );
     const itemString = isObject( item ) ? item[this.props.itemStringKey] : item;
     const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
     const itemObject = isObject( item )
@@ -202,6 +200,7 @@ class InputTag extends Component {
   }
 
   render() {
+    console.log( 'inside input tag', this );
     const {
       items,
       value,
@@ -263,7 +262,6 @@ class InputTag extends Component {
             >
 
               {({
-                lk,
                 getRootProps,
                 getInputProps,
                 getRemoveButtonProps,
