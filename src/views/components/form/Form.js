@@ -657,7 +657,12 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    if ( this.shouldSendAnswer({ value, valuePath })) {
+    if ( isArray( value, { ofMinLength: 1 })) {
+      console.log( 'trigerred' );
+      this.sendAnswer({ ask, value, valuePath });
+    }
+
+    else if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
       console.log( '----cyrus is awesome----' );
       this.sendAnswer({ ask, value, valuePath });
     }
