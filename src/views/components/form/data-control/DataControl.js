@@ -82,6 +82,7 @@ class DataControl extends Component {
   handleChangeValue = ( value ) => {
     if ( !isString( this.state.error )) {
       if ( this.props.onChangeValue ) {
+        console.log(  this.props.onChangeValue );
         this.props.onChangeValue( value );
       }
     }

@@ -135,8 +135,10 @@ class InputTag extends Component {
     handleCloseMenu,
     handleOpenMenu,
     isOpen,
+    isO,
     selectItem,
   }) => {
+    console.log( 'hehehehheeheh ',isO );
     const itemString = isObject( item ) ? item[this.props.itemStringKey] : item;
     const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
     const itemObject = isObject( item )
@@ -259,7 +261,9 @@ class InputTag extends Component {
                 selectedItems.filter( i => i[itemValueKey] !== newItem[itemValueKey] )
               ))}
             >
+
               {({
+                lk,
                 getRootProps,
                 getInputProps,
                 getRemoveButtonProps,

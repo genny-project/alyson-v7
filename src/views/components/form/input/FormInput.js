@@ -51,6 +51,8 @@ class FormInput extends Component {
 
   handleChangeValueWithSendAndDebounce = value => {
     // console.log( 'handleChangeValueWithSendAndDebounce' );
+    console.log( 12342 );
+    console.log( value );
     this.handleChangeDebounced( value, true );
   };
 
@@ -84,6 +86,8 @@ class FormInput extends Component {
             {...inputProps}
           >
             {({ items }) => {
+              {console.log( inputProps );}
+
               return (
                 <Input
                   {...inputProps}

@@ -649,6 +649,8 @@ class Form extends Component {
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
 
+    console.log( value );
+
     if ( value == null )
       return;
 
@@ -656,6 +658,8 @@ class Form extends Component {
     setFieldTouched( valuePath, true );
 
     dset( this.values, valuePath, value );
+
+    this.sendAnswer({ ask, value, valuePath });
 
     if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
       // console.log( 'inside sendonchange' );
