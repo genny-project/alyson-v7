@@ -648,7 +648,6 @@ class Form extends Component {
     sendOnChange,
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
-    console.log( 'meow meow', this );
     if ( value == null )
       return;
 
@@ -658,14 +657,12 @@ class Form extends Component {
     dset( this.values, valuePath, value );
 
     if ( isArray( value, { ofMinLength: 1 })) {
-      console.log( 'trigerred' );
       if  ( this.shouldSendAnswer({ value, valuePath })) {
         this.sendAnswer({ ask, value, valuePath });
       }
     }
 
     else if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
-      console.log( '----cyrus is awesome----' );
       this.sendAnswer({ ask, value, valuePath });
     }
   }
