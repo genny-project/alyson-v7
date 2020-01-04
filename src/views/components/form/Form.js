@@ -645,7 +645,7 @@ class Form extends Component {
     valuePath,
   ) => (
     value,
-    //sendOnChange,
+    // sendOnChange,
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
     console.log( 'meow meow', this );

@@ -200,7 +200,6 @@ class InputTag extends Component {
   }
 
   render() {
-    console.log( 'inside input tag', this );
     const {
       items,
       value,
