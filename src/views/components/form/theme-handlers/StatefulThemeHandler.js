@@ -109,4 +109,3 @@ class StatefulThemeHandler extends Component {
 }
 
 export default StatefulThemeHandler;
-

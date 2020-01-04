@@ -648,7 +648,6 @@ class Form extends Component {
     sendOnChange,
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
-
     if ( value == null )
       return;
 
@@ -657,8 +656,13 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
-      // console.log( 'inside sendonchange' );
+    if ( isArray( value, { ofMinLength: 1 })) {
+      if  ( this.shouldSendAnswer({ value, valuePath })) {
+        this.sendAnswer({ ask, value, valuePath });
+      }
+    }
+
+    else if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
       this.sendAnswer({ ask, value, valuePath });
     }
   }

@@ -106,6 +106,7 @@ class InputTagInputField extends Component {
             onKeyPress={this.handleKeyPress}
             onFocus={() => {
               onFocusInput();
+              console.log( 'heeee heheee ' );
               this.handleState( 'focus' );
             }}
             testID={`input-tag ${testID}`}
@@ -122,7 +123,7 @@ class InputTagInputField extends Component {
           >
             <Icon
               name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
-              color="black"
+              color="blue"
               size="md"
               {...iconProps}
             />
