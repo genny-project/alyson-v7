@@ -659,7 +659,9 @@ class Form extends Component {
 
     if ( isArray( value, { ofMinLength: 1 })) {
       console.log( 'trigerred' );
-      this.sendAnswer({ ask, value, valuePath });
+      if  ( this.shouldSendAnswer({ value, valuePath })) {
+        this.sendAnswer({ ask, value, valuePath });
+      }
     }
 
     else if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
