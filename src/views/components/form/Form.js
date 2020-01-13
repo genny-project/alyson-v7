@@ -656,13 +656,7 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    if ( isArray( value, { ofMinLength: 1 })) {
-      if  ( this.shouldSendAnswer({ value, valuePath })) {
-        this.sendAnswer({ ask, value, valuePath });
-      }
-    }
-
-    else if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
+    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
       this.sendAnswer({ ask, value, valuePath });
     }
   }

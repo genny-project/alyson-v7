@@ -79,10 +79,10 @@ class DataControl extends Component {
     }
   }
 
-  handleChangeValue = ( value ) => {
+  handleChangeValue = ( value, sendOnChange ) => {
     if ( !isString( this.state.error )) {
       if ( this.props.onChangeValue ) {
-        this.props.onChangeValue( value );
+        this.props.onChangeValue( value, sendOnChange );
       }
     }
   }

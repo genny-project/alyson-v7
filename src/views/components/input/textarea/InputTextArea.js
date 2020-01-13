@@ -45,7 +45,6 @@ class InputTextArea extends Component {
   }
 
   componentDidUpdate( prevProps ) {
-    console.warn( prevProps.value, this.props.value, this.props );
     if (
       prevProps.value !== this.props.value
     ) {
@@ -61,7 +60,6 @@ class InputTextArea extends Component {
   }
 
   updateWidth = ({ text, clientWidth }) => {
-    console.warn( 'updateWidth', { text });
     const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
     const numberOfNewLines = [...text.matchAll( /\n/g )].length;
 
@@ -104,8 +102,6 @@ class InputTextArea extends Component {
     const {
       rows,
     } = this.state;
-
-    console.warn({ rows });
 
     return (
       <Input
