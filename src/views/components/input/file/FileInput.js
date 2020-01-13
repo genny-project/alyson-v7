@@ -440,7 +440,6 @@ class FileInput extends Component {
         disabled={isInputDisabled}
         error={this.props.error}
         closed={this.props.isClosed}
-        testID={this.props.testID}
       >
         {({
           componentProps,
