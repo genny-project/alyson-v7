@@ -9,7 +9,7 @@ const ProgressBar = ( inputFieldProps ) => {
   const {
     sections,
     value,
-    color = '#888',
+    color = '#888', // eslint-disable-line
     height = 20,
     showValue,
   } = inputFieldProps;
