@@ -106,7 +106,6 @@ class InputTagInputField extends Component {
             onKeyPress={this.handleKeyPress}
             onFocus={() => {
               onFocusInput();
-              console.log( 'heeee heheee ' );
               this.handleState( 'focus' );
             }}
             testID={`input-tag ${testID}`}
