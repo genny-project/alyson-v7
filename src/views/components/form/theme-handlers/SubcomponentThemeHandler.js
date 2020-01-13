@@ -31,13 +31,11 @@ class SubcomponentThemeHandler extends Component {
   }
 
   render() {
-    // console.log( 'Inside of SubComponentThemeHandler---->', this.props.testID );
     const { children, subcomponentProps, editable, disabled, error, closed, testID } = this.props;
     const { subcomponents } = this.state;
 
     // integrate state
     const getPropsByType = ( type, conditions ) => {
-      // console.log( 'triggered' );
       if ( !isObject( subcomponentProps )) return {};
 
       const typeThemes = subcomponentProps[type];

@@ -391,7 +391,6 @@ class FileInput extends Component {
   // };
 
   render() {
-    // console.log( 'Inisde of FileInput---->', this.props.testID );
     const {
       multiple,
       subcomponentProps,
