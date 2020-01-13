@@ -50,6 +50,7 @@ class FileInput extends Component {
     isClosed: bool,
     showName: bool,
     placeholder: string,
+    testID: string,
   };
 
   constructor( props ) {
@@ -526,6 +527,7 @@ class FileInput extends Component {
                       componentID="INPUT-FIELD"
                       onChangeState={updateState( 'input-field' )}
                       {...componentProps['input-field']}
+                      testID={this.props.testID}
                     >
                       { hasIcon
                         ? (
