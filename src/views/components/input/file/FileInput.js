@@ -50,6 +50,7 @@ class FileInput extends Component {
     isClosed: bool,
     showName: bool,
     placeholder: string,
+    testID: string,
   };
 
   constructor( props ) {
@@ -390,6 +391,7 @@ class FileInput extends Component {
   // };
 
   render() {
+    // console.log( 'Inisde of FileInput---->', this.props.testID );
     const {
       multiple,
       subcomponentProps,
@@ -439,6 +441,7 @@ class FileInput extends Component {
         disabled={isInputDisabled}
         error={this.props.error}
         closed={this.props.isClosed}
+        testID={this.props.testID}
       >
         {({
           componentProps,
@@ -526,6 +529,7 @@ class FileInput extends Component {
                       componentID="INPUT-FIELD"
                       onChangeState={updateState( 'input-field' )}
                       {...componentProps['input-field']}
+                      testID={this.props.testID}
                     >
                       { hasIcon
                         ? (

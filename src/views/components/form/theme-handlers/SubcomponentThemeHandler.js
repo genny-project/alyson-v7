@@ -11,6 +11,7 @@ class SubcomponentThemeHandler extends Component {
     disabled: bool,
     error: string,
     closed: bool,
+    testID: string,
   }
 
   state = {
@@ -30,11 +31,13 @@ class SubcomponentThemeHandler extends Component {
   }
 
   render() {
-    const { children, subcomponentProps, editable, disabled, error, closed } = this.props;
+    // console.log( 'Inside of SubComponentThemeHandler---->', this.props.testID );
+    const { children, subcomponentProps, editable, disabled, error, closed, testID } = this.props;
     const { subcomponents } = this.state;
 
     // integrate state
     const getPropsByType = ( type, conditions ) => {
+      // console.log( 'triggered' );
       if ( !isObject( subcomponentProps )) return {};
 
       const typeThemes = subcomponentProps[type];
@@ -65,6 +68,7 @@ class SubcomponentThemeHandler extends Component {
         ...getObjectFromKey( 'error', { condition: error }),
         ...getObjectFromKey( 'readonly', { condition: subcomponents[type] && subcomponents[type].readonly }),
         ...getObjectFromKey( 'closed', { condition: closed }),
+        ...getObjectFromKey( 'testID', { condition: testID }),
       };
     };
 
@@ -93,4 +97,3 @@ class SubcomponentThemeHandler extends Component {
 }
 
 export default SubcomponentThemeHandler;
-

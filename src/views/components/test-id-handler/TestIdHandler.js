@@ -54,6 +54,7 @@ class TestIdHandler extends Component {
   }
 
   render() {
+    // console.log( 'test-id:', this.props.testID );
     const {
       children,
     } = this.props;
