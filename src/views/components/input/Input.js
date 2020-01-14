@@ -379,7 +379,7 @@ class Input extends Component {
       case 'texteditor':
         return <RichTextEditor {...inputProps} />;
 
-      case 'htmleditor':
+      case 'html-editor':
         return <HtmlEditor {...inputProps} />;
 
       case 'event':
