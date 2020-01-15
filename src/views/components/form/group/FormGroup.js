@@ -58,11 +58,22 @@ class FormGroup extends Component {
   /* eslint-disable react/sort-comp */
 
   componentDidMount() {
+    const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP';
+
+    if ( shouldLog ) console.warn( 'mount', JSON.stringify( this.props.questionGroup.attributeCode ));
+
     this.getThemes();
   }
 
   componentDidUpdate( nextProps ) {
+    const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP';
+
+    if ( shouldLog ) console.log( '=======================================================' );
+    if ( shouldLog ) console.warn( 'update', JSON.stringify( this.props.questionGroup.attributeCode ));
+
     if (  isObject( dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}` ))) {
+      // if ( shouldLog ) console.warn({ links: dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}.links` ) });
+
       if ( checkForNewLayoutLinks(
         /* Valid links are added to the state key that matches their
         link type, so check all the state arrays together */
@@ -105,7 +116,12 @@ class FormGroup extends Component {
     /* check if the stateKey is valid  */
     this.setState({
       ['themes']: [
-        ...links,
+        ...links.sort(( a, b ) => {
+          if ( a.code < b.code ) { return -1; }
+          if ( a.code > b.code ) { return 1; }
+
+          return 0;
+        }),
       ],
     }, () => {});
   }
@@ -154,13 +170,23 @@ class FormGroup extends Component {
           component: componentType,
           dataType: dataType,
           acceptTypes: ['group'],
+          log: this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP',
         },
       ),
     ];
 
+    const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP';
+
+    // if ( shouldLog ) console.warn({ state: JSON.stringify( this.state.themes ), links: JSON.stringify( panelLinks ) });
+
+    // if ( shouldLog ) console.log( JSON.stringify({  ['THM_TABLE_CONTENT']: isObject( this.props.themes['THM_TABLE_CONTENT'] ), ['THM_WIDTH_100_PERCENT_NO_INHERIT']: isObject( this.props.themes['THM_WIDTH_100_PERCENT_NO_INHERIT'] ) }));
     // get props from theme links
-    const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
-    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+    const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes, shouldLog );
+    const themeProps = getPropsFromThemes( panelLinks, this.props.themes,  );
+
+    // if (
+    //   this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP'
+    // ) console.warn({ inheritedThemeProps, themeProps });
 
     const combinedThemeProps = objectMerge(
       isObject( this.props.inheritedProps ) ? this.props.inheritedProps : {},
@@ -529,6 +555,10 @@ class FormGroup extends Component {
         })}
       </Box>
     );
+
+    const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP';
+
+    if ( shouldLog ) console.warn( 'render', JSON.stringify( this.props.questionGroup.attributeCode ));
 
     if (
       !isArray( childAsks, { ofMinLength: 1 })
