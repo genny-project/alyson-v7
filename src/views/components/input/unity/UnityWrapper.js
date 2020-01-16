@@ -2,7 +2,7 @@
 import React from 'react';
 import Unity, { UnityContent } from 'react-unity-webgl';
 import { Box, ActivityIndicator, Text } from '../../../components';
-import { Bridge, isObject } from '../../../../utils';
+import { Bridge, isObject, isString } from '../../../../utils';
 import UnityProvider from './provider';
 
 // const buildPath = '/unity/unison_webgl.json';
@@ -107,17 +107,36 @@ class UnityWrapper extends React.Component {
     }), () => {
       // console.warn( 'UPDATE CALLBACK', this.state.currentSceneCode, updatedSceneContexts );
 
-      this.sendEventToUnity( this.state.currentSceneCode );
+      this.sendEventToUnity( 'changeScene', this.state.currentSceneCode );
     });
   }
 
-  sendEventToUnity = ( SceneIndex ) => {
-    // console.warn({ index: SceneIndex });
-    this.unityContent.send(
-      'Main Camera',
-      'ChangeScene',
-      SceneIndex
-    );
+  sendEventToUnity = ( method, params ) => {
+    if (
+      !isString( method ) ||
+      params == null
+    ) {
+      const invalidMethodAndParams = !isString( method ) && params == null;
+
+      console.warn( // eslint-disable-line
+        `Error sendingEventToUnity, argument${invalidMethodAndParams ? 's' : ''} ${!isString( method ) ? '"method" ' : ''}${invalidMethodAndParams ? 'and ' : ''}${params == null ? '"params" ' : ''}${invalidMethodAndParams ? 'are' : 'is'} invalid`,
+        {
+          ...( !isString( method ) ? { method } : {}),
+          ...( params == null ? { params } : {}),
+        }
+      );
+    }
+
+    if (
+      isString( method ) &&
+      params != null
+    ) {
+      this.unityContent.send(
+        'reactObject',
+        method,
+        params,
+      );
+    }
   }
 
   handleClick = ( SceneIndex ) => {
@@ -205,6 +224,12 @@ class UnityWrapper extends React.Component {
     }));
   }
 
+  handleButtonPress = ( method, params ) => {
+    this.sendEventToUnity(
+      method, params,
+    );
+  }
+
   render() {
     const { children, renderHeader } = this.props;
     const { progression, currentSceneCode, isLoading, error } = this.state;
@@ -219,6 +244,44 @@ class UnityWrapper extends React.Component {
         }}
       >
         {renderHeader}
+
+        {/* Control Panel */}
+        <Box>
+          <div>
+            <button
+              onClick={() => this.handleButtonPress(
+                'toggleTrees',
+                null,
+              )}
+            >
+              Toggle trees
+            </button>
+            <button
+              onClick={() => this.handleButtonPress(
+                'spawnObjectReact',
+                '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
+              )}
+            >
+              Place a speed sign
+            </button>
+            <button
+              onClick={() => this.handleButtonPress(
+                'spawnObjectReact',
+                '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+              )}
+            >
+              Place a traffic controller sign
+            </button>
+            <button
+              onClick={() => this.handleButtonPress(
+                'twoPointReact',
+                '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }'
+              )}
+            >
+              Place a line of bollards
+            </button>
+          </div>
+        </Box>
         <Box
           position="relative"
           overflow="hidden"
