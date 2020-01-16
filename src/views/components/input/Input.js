@@ -33,6 +33,7 @@ import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
 import Unity from './unity';
 import Progress from './progress';
+import HtmlEditor from './html-editor';
 
 /* maps the component to  */
 
@@ -377,6 +378,10 @@ class Input extends Component {
       case 'editor':
       case 'texteditor':
         return <RichTextEditor {...inputProps} />;
+
+      case 'html-editor':
+      case 'htmleditor':
+        return <HtmlEditor {...inputProps} />;
 
       case 'event':
       case 'buttonevent':
