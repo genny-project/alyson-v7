@@ -7,7 +7,7 @@ RUN rm -f .env
 RUN apk add git
 RUN npm install react-navigation
 RUN npm install
-RUN npm audit fix
+# RUN npm audit fix
 RUN npm run build:web
 
 WORKDIR /app

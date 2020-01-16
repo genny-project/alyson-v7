@@ -40,7 +40,6 @@ class FormInput extends Component {
   // }
 
   handleChangeDebounced = ( value, withSend ) => {
-    // console.log( 'handleChangeDebounced' );
     this.props.onChangeValue( value, withSend );
   };
 

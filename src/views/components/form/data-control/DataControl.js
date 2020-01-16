@@ -79,10 +79,10 @@ class DataControl extends Component {
     }
   }
 
-  handleChangeValue = ( value ) => {
+  handleChangeValue = ( value, sendOnChange ) => {
     if ( !isString( this.state.error )) {
       if ( this.props.onChangeValue ) {
-        this.props.onChangeValue( value );
+        this.props.onChangeValue( value, sendOnChange );
       }
     }
   }
@@ -234,7 +234,7 @@ class DataControl extends Component {
         onBlur: this.handleBlur,
         value: useMaskedValue ? maskedValue : this.props.value,
         updateValueWhenFocused: useMaskedValue ? true : null,
-        placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
+        // placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
       })
     );

@@ -32,6 +32,8 @@ import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
 import Unity from './unity';
+import Progress from './progress';
+import HtmlEditor from './html-editor';
 
 /* maps the component to  */
 
@@ -377,6 +379,10 @@ class Input extends Component {
       case 'texteditor':
         return <RichTextEditor {...inputProps} />;
 
+      case 'html-editor':
+      case 'htmleditor':
+        return <HtmlEditor {...inputProps} />;
+
       case 'event':
       case 'buttonevent':
       case 'form previous submit':
@@ -416,6 +422,15 @@ class Input extends Component {
           <Unity
             {...inputProps}
             ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'progress':
+        return (
+          <Progress
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => this.input = input}
           />
         );
 
