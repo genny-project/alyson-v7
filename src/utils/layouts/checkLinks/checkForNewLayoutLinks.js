@@ -46,11 +46,20 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
   // if ( showLog ) console.log( 'list of links', currentArray, updatedArray );
   // Need to take into account panel as well.
   // const toAdd = newLinks.filter( item => !currentLinks.includes( item ));
-  const toAdd = updatedArray.filter( ni =>
-    currentArray.filter( ci => ni.code === ci.code && ni.panel === ci.panel ).length < 1 );
+  const compareThemes = ( currentItem, newItem ) => {
+    return (
+      newItem.code === currentItem.code &&
+      newItem.panel === currentItem.panel &&
+      newItem.component === currentItem.component &&
+      newItem.dataType === currentItem.dataType
+    );
+  };
+
+  const toAdd = updatedArray.filter( newItem =>
+    currentArray.filter( currentItem => compareThemes( currentItem, newItem )).length < 1 );
   // const toRemove = currentLinks.filter( item => !newLinks.includes( item ));
-  const toRemove = currentArray.filter( ci =>
-    updatedArray.filter( ni => ni.code === ci.code && ni.panel === ci.panel ).length < 1 );
+  const toRemove = currentArray.filter( currentItem =>
+    updatedArray.filter( newItem => compareThemes( currentItem, newItem )).length < 1 );
 
   // if ( showLog ) console.log( 'tos', toAdd, toRemove );
 
