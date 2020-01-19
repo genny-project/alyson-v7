@@ -12,14 +12,28 @@ const squareStyle = {
 };
 
 const nameStyle = {
-  borderStyle: 'solid',
-  borderColor: 'gray',
-  borderWidth: 1,
+  // borderStyle: 'solid', ***
+  // borderColor: 'gray', ***
+  // borderWidth: 1, ***
   padding: '0px',
 };
 
 const squareWithChildrenStyle = {
   padding: 0,
+};
+
+const knightStyle = {
+  fontWeight: 'bold',
+};
+
+const style = {
+  borderStyle: 'dashed',
+  borderWidth: 1,
+  borderColor: 'gray',
+  backgroundColor: 'white',
+  padding: 10,
+  float: 'left',
+  color: 'black',
 };
 
 export const DropZone = ({
@@ -48,23 +62,31 @@ export const DropZone = ({
       style={{
         position: 'relative',
         display: 'flex',
-        flex: 1,
+        // flex: 1, ***
+        width: '100%', // ***
       }}
     >
       <Box
         {...squareStyle}
         width="100%"
-        backgroundColor={isInteger( x ) ? 'white' : null}
+        // backgroundColor={isInteger( x ) ? 'white' : null} ***
         flexWrap={children != null && !name ? 'wrap' : null}
         {...( name ? nameStyle : {})}
         {...( children != null ? squareWithChildrenStyle : {})}
         {...restProps}
+        justifyContent="flex-start" // ***
       >
         {
           name ? (
-            <Text
-              text={name}
-            />
+            <Box
+              {...style} // ***
+              {...knightStyle} // ***
+              width="50%" // ***
+            >
+              <Text
+                text={name}
+              />
+            </Box>
           ) : null
         }
         {children}

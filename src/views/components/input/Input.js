@@ -419,97 +419,115 @@ class Input extends Component {
             ref={input => ( this.input = input )}
             bumpItems
             onChange={( e ) => console.log( 'handleChange', e )}
-            code="CODE_3"
+            code={this.props.ask.questionCode}
             content="Bananas are among the most important {{OPT_001}} crops on the planet. They come from a family of plants called Musa that are native to {{OPT_002}} and grown in many of the {{OPT_003}} areas of the world."
-            items={[
-              {
-                value: 'ITM_FOOD',
-                label: 'food',
-              },
-              {
-                value: 'ITM_YELLOW',
-                label: 'yellow',
-              },
-              {
-                value: 'ITM_SOUTHEAST_ASIA',
-                label: 'Southeast Asia',
-              },
-              {
-                value: 'ITM_AUSTRALIA',
-                label: 'Australia',
-              },
-              {
-                value: 'ITM_SOUTH_AMERICA',
-                label: 'South America',
-              },
-              {
-                value: 'ITM_WARMER',
-                label: 'warmer',
-              },
-              {
-                value: 'ITM_DRIEST',
-                label: 'driest',
-              },
-            ]}
+            // items={[
+            //   {
+            //     value: 'ITM_FOOD',
+            //     label: 'food',
+            //   },
+            //   {
+            //     value: 'ITM_YELLOW',
+            //     label: 'yellow',
+            //   },
+            //   {
+            //     value: 'ITM_SOUTHEAST_ASIA',
+            //     label: 'Southeast Asia',
+            //   },
+            //   {
+            //     value: 'ITM_AUSTRALIA',
+            //     label: 'Australia',
+            //   },
+            //   {
+            //     value: 'ITM_SOUTH_AMERICA',
+            //     label: 'South America',
+            //   },
+            //   {
+            //     value: 'ITM_WARMER',
+            //     label: 'warmer',
+            //   },
+            //   {
+            //     value: 'ITM_DRIEST',
+            //     label: 'driest',
+            //   },
+            // ]}
+            items={this.props.items}
           />
         );
 
       case 'match':
       case 'dndmatch':
       case 'dragdropmatch':
+        console.warn( this.props.items );
+
         return (
           <DragDrop
             {...inputProps}
             ref={input => ( this.input = input )}
             onChangeValue={( e ) => console.log( 'handleChange', e )}
             code="CODE_4"
+            bumpItems
             // content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
             groups={[
               {
-                id: 1,
-                name: 'Red',
+                value: 'ZNE_ONE',
+                label: 'Red',
               },
               {
-                id: 2,
-                name: 'Orange',
+                value: 'ZNE_TWO',
+                label: 'Orange',
               },
               {
-                id: 3,
-                name: 'Yellow',
+                value: 'ZNE_THREE',
+                label: 'Yellow',
               },
               {
-                id: 4,
-                name: 'Green',
+                value: 'ZNE_FOUR',
+                label: 'Green',
               },
             ]}
-            items={[
-              {
-                id: 1,
-                name: 'Apple',
-              },
-              {
-                id: 2,
-                name: 'Banana',
-              },
-              {
-                id: 3,
-                name: 'Orange',
-              },
-              {
-                id: 4,
-                name: 'Pear',
-              },
-            ]}
+            // items={[
+            //   {
+            //     id: 1,
+            //     name: 'Apple',
+            //   },
+            //   {
+            //     id: 2,
+            //     name: 'Banana',
+            //   },
+            //   {
+            //     id: 3,
+            //     name: 'Orange',
+            //   },
+            //   {
+            //     id: 4,
+            //     name: 'Pear',
+            //   },
+            // ]}
+            items={this.props.items}
             componentProps={{
               ['input-wrapper']: {
                 flexDirection: 'row',
               },
-              ['input-item-wrapper']: {
-                flexDirection: 'column',
-              },
               ['input-selected-wrapper']: {
                 flexDirection: 'column',
                 flex: 1,
+              },
+              ['input-selected-dropzone']: {
+                backgroundColor: 'blue',
+              },
+              ['input-selected']: {
+
+              },
+              ['input-item-wrapper']: {
+                backgroundColor: 'green',
+                padding: 10,
+              },
+              ['input-item-dropzone']: {
+                flexDirection: 'column',
+              },
+              ['input-item']: {
+
               },
             }}
           />

@@ -24,6 +24,7 @@ export const DragDropItem = ({
   moveCard,
   index,
   canReorderItems,
+  selected,
 }) => {
   let ref = useRef( null );
   const [, drop] = useDrop({
@@ -101,6 +102,7 @@ export const DragDropItem = ({
           position: 'relative',
           minWidth: canReorderItems ? '100%' : null,
           cursor: 'move',
+          width: selected ? '50%' : null, // ***
         }}
       >
         <Box
@@ -137,4 +139,5 @@ DragDropItem.propTypes = {
   canReorderItems: bool,
   id: number,
   index: number,
+  selected: bool,
 };

@@ -3,12 +3,15 @@ import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import { string, array, bool, func, object } from 'prop-types';
+import dlv from 'dlv';
 import { DropZone } from './drop-zone/DropZone';
 import { DragDropItem } from './drag-drop-item/DragDropItem';
 import { isString, isArray, isObject, shuffleArray } from '../../../utils';
 import { Box, Text } from '../../components';
 
 const setupItems = ( items, shuffleItems ) => {
+  if ( !isArray( items )) return [];
+
   shuffleItems ? shuffleArray( items ) : items;
 
   return items.map( i => ({ ...i, position: null }));
@@ -17,7 +20,7 @@ const setupItems = ( items, shuffleItems ) => {
 const DragDrop = ({
   content,
   groups = [],
-  items,
+  items = [],
   itemStringKey = 'label',
   itemValueKey = 'value',
   code,
@@ -31,17 +34,27 @@ const DragDrop = ({
 }) => {
   const selectedDropZones = {};
 
-  // groups.forEach(( group, index ) => {
-  //   selectedDropZones[group[itemValueKey]] = group[item]
-  // });
+  if ( isArray( groups )) {
+    groups.forEach(( group, index ) => {
+      selectedDropZones[index] = group[itemValueKey];
+    });
+  }
 
   const [itemPos, setItemPos] = useState( setupItems( items, shuffleItems )); // set up initial item array
 
-  useEffect(() => {
-    const selectedItems = itemPos.filter( item => item.position != null );
-    const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: selectedDropZones[item.position]['value'] }));
+  if ( items.length !== itemPos.length ) {
+    setItemPos( setupItems( items, shuffleItems ));
+  }
 
-    console.log( 'onChange', selectedItemForSend, value );
+  // console.error({ items, setupitems: setupItems( items, shuffleItems ), itemPos  });
+
+  useEffect(() => {
+    // console.log( 'useEffect', selectedDropZones, itemPos );
+
+    const selectedItems = itemPos.filter( item => item.position != null );
+    const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: dlv( selectedDropZones, `${item.position}` ) }));
+
+    // console.log( 'onChange', selectedItemForSend, value );
 
     const shouldSendValue = ( newValue, currentValue ) => {
       if ( !isArray( newValue )) return false;
@@ -71,7 +84,7 @@ const DragDrop = ({
         return selectedItemKeys[key] === value[key];
       });
 
-      console.warn({ valueItemKeys, selectedItemKeys, isMatch });
+      // console.warn({ valueItemKeys, selectedItemKeys, isMatch });
 
       // return !isMatch // figure out how to use isMatch
       return false;
@@ -158,6 +171,7 @@ const DragDrop = ({
             id={item[itemValueKey]}
             canReorderItems={canReorderItems}
             moveCard={moveCard}
+            selected={x != null}
           />
         );
       };
@@ -214,7 +228,7 @@ const DragDrop = ({
   }
   else if  ( isArray( groups )) {
     groups.forEach(( group, index ) => {
-      squares.push( renderDropZone( index, group.name ));
+      squares.push( renderDropZone( index, group[itemStringKey], componentProps['input-selected-dropzone'] ));
     });
   }
   else {
@@ -229,7 +243,7 @@ const DragDrop = ({
     // );
   }
 
-  space.push( renderDropZone( null, null, componentProps['input-item-wrapper'] ));
+  space.push( renderDropZone( null, null, componentProps['input-item-dropzone'] ));
 
   //
 
@@ -241,7 +255,6 @@ const DragDrop = ({
       borderWidth={1}
       flexDirection="column"
       {...componentProps['input-wrapper']}
-      // INPUT_WRAPPER
     >
       {
         isArray( squares, { ofMinLength: 1 }) ? (
@@ -253,7 +266,6 @@ const DragDrop = ({
             alignItems="center"
             padding={10}
             {...componentProps['input-selected-wrapper']}
-            // INPUT_SELECTED_WRAPPER
           >
             {/* INPUT_SELECTED */}
             {/* INPUT_PLACEHOLDER */}
@@ -262,9 +274,8 @@ const DragDrop = ({
         ) : null
       }
       <Box
-        backgroundColor="green"
-        padding={10}
         // INPUT_ITEM_WRAPPER
+        {...componentProps['input-item-wrapper']}
       >
         {/* INPUT_ITEM */}
         {space}
