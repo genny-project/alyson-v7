@@ -259,6 +259,7 @@ class InputTag extends Component {
                 selectedItems.filter( i => i[itemValueKey] !== newItem[itemValueKey] )
               ))}
             >
+
               {({
                 getRootProps,
                 getInputProps,

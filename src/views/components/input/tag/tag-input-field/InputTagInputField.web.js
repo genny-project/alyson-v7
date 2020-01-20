@@ -121,8 +121,8 @@ class InputTagInputField extends Component {
             zIndex={5}
           >
             <Icon
-              name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
-              color="black"
+              name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
+              color="blue"
               size="md"
               {...iconProps}
             />

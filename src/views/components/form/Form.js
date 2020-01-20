@@ -93,7 +93,6 @@ class Form extends Component {
       // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
       // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
       //   console.warn('update2', questionGroupCode, this.state.missingBaseEntities)
-
       if (
         this.checkIfNewBaseEntities( this.props )
       ) {
@@ -107,14 +106,12 @@ class Form extends Component {
         return;
       }
     }
-
     if (
       this.checkForUpdatedQuestionTargets( this.props )
     ) {
       // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
       // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
       //   console.warn('update3', questionGroupCode)
-
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
@@ -149,7 +146,6 @@ class Form extends Component {
       // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
       // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
       // console.warn('update5', questionGroupCode)
-
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
@@ -324,21 +320,39 @@ class Form extends Component {
     const compareTargetCode = ( newAsk, existingAsk, level ) => {
       if ( !newAsk && !existingAsk ) return false;
       if ( !newAsk || !existingAsk ) return true;
-      if ( !newAsk.question && !existingAsk.question ) return false;
-      if ( !newAsk.question || !existingAsk.question ) return true;
 
-      const newQuestionCode = newAsk.questionCode;
-      const newTargetCode = newAsk.targetCode;
+      const newAskQuestion = newAsk.question;
+      const newAskChildren = isArray(  newAsk.childAsks, { ofMinLength: 1 });
+      const existingAskQuestion = existingAsk.question;
+      const existingAskChildren = isArray(  existingAsk.childAsks, { ofMinLength: 1 });
 
-      const existingQuestionCode = existingAsk.questionCode;
-      const existingTargetCode = existingAsk.targetCode;
+      if (
+        !newAskQuestion &&
+        !newAskChildren &&
+        !existingAskQuestion &&
+        !existingAskChildren
+      ) return false;
+      if ((
+        !newAskQuestion &&
+        !newAskChildren ) || (
+        !existingAskQuestion &&
+        !existingAskChildren
+      )) return true;
 
-      const isMatch = (
-        newQuestionCode === existingQuestionCode &&
-        newTargetCode === existingTargetCode
-      );
+      if ( newAskQuestion && existingAskQuestion ) {
+        const newQuestionCode = newAsk.questionCode;
+        const newTargetCode = newAsk.targetCode;
 
-      if ( isMatch ) return false;
+        const existingQuestionCode = existingAsk.questionCode;
+        const existingTargetCode = existingAsk.targetCode;
+
+        const isMatch = (
+          newQuestionCode === existingQuestionCode &&
+          newTargetCode === existingTargetCode
+        );
+
+        if ( isMatch ) return false;
+      }
 
       if ( isArray(  newAsk.childAsks, { ofMinLength: 1 })) {
         const isChildMatch = newAsk.childAsks.some(( childAsk, index ) => {
@@ -648,7 +662,6 @@ class Form extends Component {
     sendOnChange,
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
-
     if ( value == null )
       return;
 
@@ -657,8 +670,9 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath }))
+    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
       this.sendAnswer({ ask, value, valuePath });
+    }
   }
 
   handleFocusNextInput = ( questionGroupCode, currentFocusedIndex ) => () => {

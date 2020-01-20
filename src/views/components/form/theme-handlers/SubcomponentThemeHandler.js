@@ -93,4 +93,3 @@ class SubcomponentThemeHandler extends Component {
 }
 
 export default SubcomponentThemeHandler;
-

@@ -358,6 +358,7 @@ class Touchable extends Component {
           data-component-type="TEXT"
           data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
           data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
+          testID={this.props.testID}
         >
           {children}
         </Element>
