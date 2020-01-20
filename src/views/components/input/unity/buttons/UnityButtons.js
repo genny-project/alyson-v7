@@ -1,16 +1,23 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { object, string } from 'prop-types';
 import { Box, Text, Touchable } from '../../../../components';
 import UnityConsumer from '../consumer';
 
 class UnityButtons extends Component {
+  static defaultProps = {
+    backgroundColor: '#ddd',
+    color: 'white',
+  }
+
   static propTypes = {
     unity: object,
+    backgroundColor: string,
+    color: string,
   }
 
   render() {
-    const { unity } = this.props;
+    const { unity, backgroundColor, color } = this.props;
 
     const buttons = [
       {
@@ -36,12 +43,15 @@ class UnityButtons extends Component {
     ];
 
     return (
-      <Box>
-        {buttons.map( button => {
+      <Box width="100%">
+        {buttons.map(( button, index, array ) => {
           return (
             <Box
               key={button.label}
               padding={5}
+              backgroundColor={backgroundColor}
+              borderRadius={5}
+              marginRight={index + 1 >= array.length ? null : 5}
             >
               <Touchable
                 withFeedback
@@ -51,6 +61,8 @@ class UnityButtons extends Component {
                 )}
               >
                 <Text
+                  size="xs"
+                  color={color}
                   text={button.label}
                 />
               </Touchable>
