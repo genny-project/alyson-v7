@@ -31,7 +31,7 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
-import Unity from './unity';
+import UnityButtons from './unity/buttons'; // TEMP
 import Progress from './progress';
 import HtmlEditor from './html-editor';
 
@@ -417,9 +417,11 @@ class Input extends Component {
             ref={input => ( this.input = input )}
           />
         );
-      case 'unity':
+
+      case 'unitybuttons':
+      case 'unity-buttons':
         return (
-          <Unity
+          <UnityButtons
             {...inputProps}
             ref={input => ( this.input = input )}
           />

@@ -241,47 +241,10 @@ class UnityWrapper extends React.Component {
           setScene: this.handleSetScene,
           unsetScene: this.handleUnsetScene,
           progression: progression,
+          sendEventToUnity: this.sendEventToUnity,
         }}
       >
         {renderHeader}
-
-        {/* Control Panel */}
-        <Box>
-          <div>
-            <button
-              onClick={() => this.handleButtonPress(
-                'toggleTrees',
-                null,
-              )}
-            >
-              Toggle trees
-            </button>
-            <button
-              onClick={() => this.handleButtonPress(
-                'spawnObjectReact',
-                '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
-              )}
-            >
-              Place a speed sign
-            </button>
-            <button
-              onClick={() => this.handleButtonPress(
-                'spawnObjectReact',
-                '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
-              )}
-            >
-              Place a traffic controller sign
-            </button>
-            <button
-              onClick={() => this.handleButtonPress(
-                'twoPointReact',
-                '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }'
-              )}
-            >
-              Place a line of bollards
-            </button>
-          </div>
-        </Box>
         <Box
           position="relative"
           overflow="hidden"

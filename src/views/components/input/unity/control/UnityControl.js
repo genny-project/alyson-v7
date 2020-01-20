@@ -19,8 +19,6 @@ class UnityControl extends Component {
   }
 
   componentDidUpdate() {
-    // console.warn( '-----------------' );
-
     this.checkLinksForSceneCode();
   }
 
