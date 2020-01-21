@@ -1,21 +1,7 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { string, func, bool, number } from 'prop-types';
-import { Fragment, Text, Box } from '../../../components';
-
-const knightStyle = {
-  fontWeight: 'bold',
-};
-
-const style = {
-  borderStyle: 'dashed',
-  borderWidth: 1,
-  borderColor: 'gray',
-  backgroundColor: 'white',
-  padding: 10,
-  float: 'left',
-  color: 'black',
-};
+import { string, func, bool, number, oneOfType } from 'prop-types';
+import { Fragment, Text, Box, Icon } from '../../../components';
 
 export const DragDropItem = ({
   id,
@@ -24,7 +10,11 @@ export const DragDropItem = ({
   moveCard,
   index,
   canReorderItems,
-  selected,
+  // selected,
+  backgroundColor,
+  width,
+  marginRight,
+  ...restProps
 }) => {
   let ref = useRef( null );
   const [, drop] = useDrop({
@@ -102,17 +92,37 @@ export const DragDropItem = ({
           position: 'relative',
           minWidth: canReorderItems ? '100%' : null,
           cursor: 'move',
-          width: selected ? '50%' : null, // ***
+          width: width,
         }}
       >
         <Box
           opacity={canReorderItems && isDragging ? 0 : 1}
-          {...style}
-          {...knightStyle}
+
+          // borderStyle="dashed"
+          // borderWidth={1}
+          // borderColor="gray"
+          padding={10}
+          // float="left"
+          color="black"
+
+          backgroundColor={backgroundColor}
+          width={`calc( 100%${marginRight ? ` - ${marginRight}px` : ''} )`}
+          alignItems="center"
+          {...restProps}
         >
+          <Icon
+            name="drag_indicator"
+            color="#ddd"
+            size="sm"
+            cursor="move"
+          />
+          <Box
+            padding={5}
+          />
           <Text
             bold
             text={label}
+            size="xs"
           />
         </Box>
         { canReorderItems && isDragging && (
@@ -140,4 +150,9 @@ DragDropItem.propTypes = {
   id: number,
   index: number,
   selected: bool,
+  backgroundColor: string,
+  width: oneOfType(
+    [string, number]
+  ),
+  marginRight: number,
 };

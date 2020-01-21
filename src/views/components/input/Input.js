@@ -418,6 +418,8 @@ class Input extends Component {
           />
         );
 
+      /*
+
       case 'fill':
       case 'dndfill':
       case 'dragdropfill':
@@ -465,83 +467,96 @@ class Input extends Component {
           />
         );
 
+      */
+
       case 'match':
       case 'dndmatch':
       case 'dragdropmatch':
-        console.warn( this.props.items );
+        // console.warn( JSON.stringify( this.props.items ));
 
         return (
           <DragDrop
             {...inputProps}
             ref={input => ( this.input = input )}
-            onChangeValue={( e ) => console.log( 'handleChange', e )}
+            // onChangeValue={( e ) => console.log( 'handleChange', e )}
             code="CODE_4"
-            bumpItems
+            // bumpItems
+            zoneItemLimit={3}
             // content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
             groups={[
               {
                 value: 'ZNE_ONE',
-                label: 'Red',
-              },
-              {
-                value: 'ZNE_TWO',
-                label: 'Orange',
-              },
-              {
-                value: 'ZNE_THREE',
-                label: 'Yellow',
-              },
-              {
-                value: 'ZNE_FOUR',
-                label: 'Green',
+                label: '',
               },
             ]}
-            // items={[
-            //   {
-            //     id: 1,
-            //     name: 'Apple',
-            //   },
-            //   {
-            //     id: 2,
-            //     name: 'Banana',
-            //   },
-            //   {
-            //     id: 3,
-            //     name: 'Orange',
-            //   },
-            //   {
-            //     id: 4,
-            //     name: 'Pear',
-            //   },
-            // ]}
-            items={this.props.items}
+            // items={this.props.items}
+            items={[
+              {
+                label: 'A) A hand-held light wand',
+                value: 'SEL_DRAGDROP_ITEM_ONE',
+                weight: 1,
+              },
+              {
+                label: 'B) Good approach sight distance',
+                value: 'SEL_DRAGDROP_ITEM_TWO',
+                weight: 2,
+              },
+              {
+                label: 'C) Knowledge of the local area',
+                value: 'SEL_DRAGDROP_ITEM_THREE',
+                weight: 3,
+              },
+              {
+                label: 'D) An escape route / path',
+                value: 'SEL_DRAGDROP_ITEM_FOUR',
+                weight: 4,
+              },
+              {
+                label: 'E) A light tower to illuminate them',
+                value: 'SEL_DRAGDROP_ITEM_FIVE',
+                weight: 5,
+              },
+              {
+                label: 'F) Conspicuous clothing',
+                value: 'SEL_DRAGDROP_ITEM_SIX',
+                weight: 6,
+              },
+            ]}
             componentProps={{
               ['input-wrapper']: {
-                flexDirection: 'row',
+                flexDirection: 'column',
+                // flexDirection: 'row',
               },
               ['input-selected-wrapper']: {
-                flexDirection: 'column',
+                // flexDirection: 'column',
+                backgroundColor: '#ddd',
+                flexDirection: 'row',
                 flex: 1,
               },
               ['input-selected-dropzone']: {
-                backgroundColor: 'blue',
+                // backgroundColor: 'blue',
               },
               ['input-selected']: {
-
+                backgroundColor: 'white',
+                // width: '50%',
               },
               ['input-item-wrapper']: {
-                backgroundColor: 'green',
+                // backgroundColor: 'green',
                 padding: 10,
               },
               ['input-item-dropzone']: {
-                flexDirection: 'column',
+                flexDirection: 'row',
               },
               ['input-item']: {
-
+                backgroundColor: 'white',
+                marginRight: 5,
+                marginBottom: 5,
               },
             }}
           />
         );
+
+      /*
 
       case 'list':
       case 'dndlist':
@@ -592,6 +607,8 @@ class Input extends Component {
             ]}
           />
         );
+
+      */
 
       case 'unitybuttons':
       case 'unity-buttons':

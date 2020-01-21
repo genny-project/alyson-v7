@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
-import { string, array, bool, func, object } from 'prop-types';
+import { string, array, bool, func, object, number } from 'prop-types';
 import dlv from 'dlv';
 import { DropZone } from './drop-zone/DropZone';
 import { DragDropItem } from './drag-drop-item/DragDropItem';
@@ -29,8 +29,9 @@ const DragDrop = ({
   componentProps = {},
   shuffleItems,
   canReorderItems,
+  zoneItemLimit,
   value = [],
-  ...restProps
+  // ...restProps,
 }) => {
   const selectedDropZones = {};
 
@@ -80,9 +81,13 @@ const DragDrop = ({
 
       // check if the objects have the same key value pairs
 
+      /*
+
       const isMatch = Object.keys( selectedItemKeys ).every( key => {
         return selectedItemKeys[key] === value[key];
       });
+
+      */
 
       // console.warn({ valueItemKeys, selectedItemKeys, isMatch });
 
@@ -99,6 +104,15 @@ const DragDrop = ({
 
   const moveItem = ( toX, name ) => {
     const itemPosNew = [];
+    const currentPositions = {};
+
+    itemPos.forEach( item => {
+      if ( item.position != null ) {
+        currentPositions[item.position] = [
+
+        ];
+      }
+    });
 
     itemPos.forEach( item => {
       if ( item[itemStringKey] === name ) {
@@ -111,6 +125,7 @@ const DragDrop = ({
       ) {
         item['position'] = null;
       }
+
       itemPosNew.push(
         item
       );
@@ -146,6 +161,7 @@ const DragDrop = ({
         code={code}
         setItemPos={moveItem}
         canReorderItems={canReorderItems}
+        zoneItemLimit={i == null ? null : zoneItemLimit}
         {...props}
       >
         {renderItem( i )}
@@ -160,6 +176,7 @@ const DragDrop = ({
       if ( !isObject( item )) return;
 
       const shouldRenderItem = item['position'] === x;
+      const isSelected = x != null;
 
       if ( shouldRenderItem ) {
         items.push(
@@ -171,7 +188,9 @@ const DragDrop = ({
             id={item[itemValueKey]}
             canReorderItems={canReorderItems}
             moveCard={moveCard}
-            selected={x != null}
+            selected={isSelected}
+            {...componentProps['input-item']}
+            {...( isSelected ? componentProps['input-selected'] : {})}
           />
         );
       };
@@ -249,7 +268,7 @@ const DragDrop = ({
 
   return (
     <Box
-      width={600}
+      width="100%"
       borderColor="gray"
       borderStyle="solid"
       borderWidth={1}
@@ -259,7 +278,6 @@ const DragDrop = ({
       {
         isArray( squares, { ofMinLength: 1 }) ? (
           <Box
-            backgroundColor="red"
             flexWrap="wrap"
             flexDirection="row"
             justifyContent="center"
@@ -304,4 +322,6 @@ DragDrop.propTypes = {
   onChangeValue: func,
   componentProps: object, // object containing theme data
   canReorderItems: bool, // turns objects into dropzones so the list can be reordered by dropping
+  zoneItemLimit: number,
+  value: array,
 };

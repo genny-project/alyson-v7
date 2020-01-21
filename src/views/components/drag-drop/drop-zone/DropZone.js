@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import { string, node, func, bool } from 'prop-types';
-import { isInteger } from '../../../../utils';
+import { string, node, func, bool, number } from 'prop-types';
 import { Box, Text } from '../../../components';
 
 const squareStyle = {
@@ -43,8 +42,15 @@ export const DropZone = ({
   code,
   setItemPos,
   canReorderItems,
+  zoneItemLimit,
   ...restProps
 }) => {
+  const canDrop = (
+    !zoneItemLimit ||
+    !children ||
+    ( zoneItemLimit && children && zoneItemLimit > children.length )
+  );
+
   const [{ isOver, isOverCurrent }, drop] = useDrop({
     accept: code,
     drop: ( e ) => {
@@ -54,6 +60,7 @@ export const DropZone = ({
       isOver: !!monitor.isOver(),
       isOverCurrent: monitor.isOver({ shallow: true }),
     }),
+    canDrop: () => canDrop,
   });
 
   return (
@@ -91,7 +98,7 @@ export const DropZone = ({
         }
         {children}
       </Box>
-      {( canReorderItems ? isOverCurrent : isOver ) && (
+      {( canReorderItems ? isOverCurrent : ( isOver && canDrop )) && (
         <Box
           position="absolute"
           top={0}
@@ -114,4 +121,5 @@ DropZone.propTypes = {
   code: string,
   setItemPos: func,
   canReorderItems: bool,
+  zoneItemLimit: number,
 };
