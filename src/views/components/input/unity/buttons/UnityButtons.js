@@ -46,6 +46,7 @@ class UnityButtons extends Component {
       <Box
         width="100%"
         padding={5}
+        flexWrap="wrap"
       >
         {buttons.map(( button, index, array ) => {
           return (
@@ -55,6 +56,7 @@ class UnityButtons extends Component {
               backgroundColor="#395268"
               borderRadius={10}
               marginRight={index + 1 >= array.length ? null : 5}
+              marginBottom={5}
             >
               <Touchable
                 withFeedback

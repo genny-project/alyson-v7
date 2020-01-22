@@ -18,6 +18,7 @@ class VisualControlLabel extends Component {
 
     return (
       <Box
+        flex={1}
         {...restProps}
       >
         <Text

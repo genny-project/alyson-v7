@@ -63,8 +63,6 @@ class UnityWrapper extends React.Component {
   }
 
   updateScene = ( sceneContext ) => {
-    // console.warn( 'updateScene', sceneContext, this.sceneContexts );
-
     const { questionCode, sceneCode } = sceneContext;
 
     const updatedSceneContexts = {
@@ -189,8 +187,6 @@ class UnityWrapper extends React.Component {
   }
 
   handleUnsetScene = ( questionCode ) => {
-    // console.warn( 'handleUnsetScene', questionCode );
-
     const updatedSceneContexts = {
       ...this.sceneContexts,
     };
@@ -208,7 +204,7 @@ class UnityWrapper extends React.Component {
     // console.warn( 'updatedSceneContexts', questionCode, updatedSceneContexts );
 
     // check number of remaining values
-    const numberOfCurrentSceneCodes = Object.keys( updatedSceneContexts ).length === 1;
+    const numberOfCurrentSceneCodes = Object.keys( updatedSceneContexts ).length;
 
     this.sceneContexts = updatedSceneContexts,
 
