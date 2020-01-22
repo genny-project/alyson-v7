@@ -199,7 +199,6 @@ class DataControl extends Component {
   render() {
     const { children, mask, keyfilter, ...restProps } = this.props;
     const {
-      maskedValue,
       error,
     } = this.state;
 
@@ -232,7 +231,7 @@ class DataControl extends Component {
         onChangeValue: this.handleChangeValue,
         onChangeText: this.handleChangeText,
         onBlur: this.handleBlur,
-        value: useMaskedValue ? maskedValue : this.props.value,
+        value: this.props.value,
         updateValueWhenFocused: useMaskedValue ? true : null,
         // placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
