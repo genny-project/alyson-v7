@@ -197,8 +197,13 @@ class DataControl extends Component {
   }
 
   render() {
+    // if ( this.props.valuePath === 'QUE_INTERN_S1_GRP.QUE_GENDER' ) {
+    //   console.log( 'Inisde of Data Control--->', this );
+    // }
+
     const { children, mask, keyfilter, ...restProps } = this.props;
     const {
+      maskedValue,
       error,
     } = this.state;
 
@@ -217,7 +222,7 @@ class DataControl extends Component {
 
     /* things to do
       1/ key restrict -> onChangeText, only allow certain keypresses to pass through
-      2/ mask -> onChangeText, force each character to fit predescribed pattern
+      2/ mask -> onChangeText, force each character to fit predescribed patterns
       3/ realtime validation -> onChangeText, run regex to check if field is valid
       4/ filter errors for child
       5/ stop onChangeValue and onBlur events from passing upwards if value is not a valid answer
@@ -225,13 +230,33 @@ class DataControl extends Component {
 
     const useMaskedValue = mask != null || keyfilter != null;
 
+    // console.log( 'Before Value inside Datacontrol---->', { value, useMaskedValue, maskedValue });
+
+    // if ( this.props.mask === 'dropdown' ) {
+    //   var value = ;
+    //   console.log( 'initial-->', this.props.value );
+    // } else {
+    //   console.log( 'final--->' );
+
+    // }
+
+    const value = () => {
+      if ( this.props.mask === 'dropdown' ) {
+        return this.props.value;
+      }
+
+      return useMaskedValue ? maskedValue : this.props.value;
+    };
+
+    // console.log( 'After Value inside Datacontrol---->', { value, useMaskedValue, maskedValue });
+
     return (
       children({
         ...restProps,
         onChangeValue: this.handleChangeValue,
         onChangeText: this.handleChangeText,
         onBlur: this.handleBlur,
-        value: this.props.value,
+        value: value,
         updateValueWhenFocused: useMaskedValue ? true : null,
         // placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
