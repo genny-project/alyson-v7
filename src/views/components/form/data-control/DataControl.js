@@ -240,13 +240,15 @@ class DataControl extends Component {
 
     // }
 
-    const value = () => {
+    const valueFinal = () => {
       if ( this.props.mask === 'dropdown' ) {
         return this.props.value;
       }
 
       return useMaskedValue ? maskedValue : this.props.value;
     };
+
+    console.log( '********DATACONTROL******', valueFinal());
 
     // console.log( 'After Value inside Datacontrol---->', { value, useMaskedValue, maskedValue });
 
@@ -256,7 +258,7 @@ class DataControl extends Component {
         onChangeValue: this.handleChangeValue,
         onChangeText: this.handleChangeText,
         onBlur: this.handleBlur,
-        value: value,
+        value: valueFinal(),
         updateValueWhenFocused: useMaskedValue ? true : null,
         // placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
