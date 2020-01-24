@@ -197,10 +197,6 @@ class DataControl extends Component {
   }
 
   render() {
-    // if ( this.props.valuePath === 'QUE_INTERN_S1_GRP.QUE_GENDER' ) {
-    //   console.log( 'Inisde of Data Control--->', this );
-    // }
-
     const { children, mask, keyfilter, ...restProps } = this.props;
     const {
       maskedValue,
@@ -230,16 +226,6 @@ class DataControl extends Component {
 
     const useMaskedValue = mask != null || keyfilter != null;
 
-    // console.log( 'Before Value inside Datacontrol---->', { value, useMaskedValue, maskedValue });
-
-    // if ( this.props.mask === 'dropdown' ) {
-    //   var value = ;
-    //   console.log( 'initial-->', this.props.value );
-    // } else {
-    //   console.log( 'final--->' );
-
-    // }
-
     const valueFinal = () => {
       if ( this.props.mask === 'dropdown' ) {
         return this.props.value;
@@ -247,10 +233,6 @@ class DataControl extends Component {
 
       return useMaskedValue ? maskedValue : this.props.value;
     };
-
-    console.log( '********DATACONTROL******', valueFinal());
-
-    // console.log( 'After Value inside Datacontrol---->', { value, useMaskedValue, maskedValue });
 
     return (
       children({
