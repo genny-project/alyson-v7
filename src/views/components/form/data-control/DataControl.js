@@ -218,7 +218,7 @@ class DataControl extends Component {
 
     /* things to do
       1/ key restrict -> onChangeText, only allow certain keypresses to pass through
-      2/ mask -> onChangeText, force each character to fit predescribed pattern
+      2/ mask -> onChangeText, force each character to fit predescribed patterns
       3/ realtime validation -> onChangeText, run regex to check if field is valid
       4/ filter errors for child
       5/ stop onChangeValue and onBlur events from passing upwards if value is not a valid answer
@@ -226,13 +226,21 @@ class DataControl extends Component {
 
     const useMaskedValue = mask != null || keyfilter != null;
 
+    const valueFinal = () => {
+      if ( this.props.mask === 'dropdown' ) {
+        return this.props.value;
+      }
+
+      return useMaskedValue ? maskedValue : this.props.value;
+    };
+
     return (
       children({
         ...restProps,
         onChangeValue: this.handleChangeValue,
         onChangeText: this.handleChangeText,
         onBlur: this.handleBlur,
-        value: useMaskedValue ? maskedValue : this.props.value,
+        value: valueFinal(),
         updateValueWhenFocused: useMaskedValue ? true : null,
         // placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
