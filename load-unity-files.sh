@@ -7,7 +7,14 @@ echo "creating unity_temp directory..."
 mkdir "unity_temp"
 echo "cloning unison project..."
 git clone https://github.com/OutcomeLife/stt-unity.git unity_temp
-cd alyson-v7/public
+cd unity_temp
+echo "initialising git lfs..."
+git lfs install
+echo "resetting unison project..."
+git reset --hard origin/master
+echo "pulling unison project..."
+git pull
+cd ../alyson-v7/public
 echo "deleting unity directory in alyson-v7/public..."
 rm -rf unity
 echo "creating unity directory..."
