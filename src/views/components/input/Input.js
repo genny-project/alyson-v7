@@ -78,6 +78,10 @@ class Input extends Component {
   };
 
   render() {
+    // if ( this.props.question.code === 'QUE_SELECT_EDU_PROVIDER' ) {
+    //   console.log( '<-----Props inside Input---->', this );
+    // }
+
     const { type, dynamicWidth, inputFieldProps, ...restProps } = this.props;
 
     const inputProps = {
@@ -85,8 +89,6 @@ class Input extends Component {
       type,
       dynamicWidth,
     };
-
-    // console.log( 'thisprospinsideinput:', this );
 
     const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
