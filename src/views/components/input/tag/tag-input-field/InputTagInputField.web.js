@@ -32,7 +32,6 @@ class InputTagInputField extends Component {
   }
 
   handleKeyPress = ( event ) => {
-    // console.log( '1. keypress inside whatever', event.nativeEvent.key );
     if ( this.props.onKeyPress ) this.props.onKeyPress( event.nativeEvent.key );
   }
 
@@ -57,8 +56,6 @@ class InputTagInputField extends Component {
   }
 
   render() {
-    // console.log( '2. Inside of the InputTagInputField====>', this.props.inputValue );
-
     const {
       onPress,
       getInputProps,
