@@ -32,7 +32,7 @@ class InputTagInputField extends Component {
   }
 
   handleKeyPress = ( event ) => {
-    // console.log( 'keypress', event.nativeEvent.key );
+    // console.log( '1. keypress inside whatever', event.nativeEvent.key );
     if ( this.props.onKeyPress ) this.props.onKeyPress( event.nativeEvent.key );
   }
 
@@ -57,6 +57,8 @@ class InputTagInputField extends Component {
   }
 
   render() {
+    // console.log( '2. Inside of the InputTagInputField====>', this.props.inputValue );
+
     const {
       onPress,
       getInputProps,
@@ -97,10 +99,10 @@ class InputTagInputField extends Component {
               ...restProps,
               type: 'text',
               width: '100%',
-              value: ( allowMultipleSelection ? inputValue : isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || '',
+              value: ( allowMultipleSelection ? inputValue : ( isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || inputValue ) || '',
               ...stateBasedProps,
             })}
-            disabled={!allowMultipleSelection}
+            // disabled={!allowMultipleSelection}
             cursor={allowMultipleSelection ? 'cursor' : 'pointer'}
             updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
