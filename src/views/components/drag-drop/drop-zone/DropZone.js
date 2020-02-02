@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import { string, node, func, bool, number } from 'prop-types';
+import { string, node, func, bool, number, object } from 'prop-types';
 import { Box, Text } from '../../../components';
 
 const squareStyle = {
@@ -43,12 +43,17 @@ export const DropZone = ({
   setItemPos,
   canReorderItems,
   zoneItemLimit,
+  fullWidth = true,
+  overlayProps,
+  disabled = false,
   ...restProps
 }) => {
   const canDrop = (
-    !zoneItemLimit ||
-    !children ||
-    ( zoneItemLimit && children && zoneItemLimit > children.length )
+    (
+      !zoneItemLimit ||
+      !children ||
+      ( zoneItemLimit && children && zoneItemLimit > children.length )
+    )
   );
 
   const [{ isOver, isOverCurrent }, drop] = useDrop({
@@ -60,7 +65,7 @@ export const DropZone = ({
       isOver: !!monitor.isOver(),
       isOverCurrent: monitor.isOver({ shallow: true }),
     }),
-    canDrop: () => canDrop,
+    canDrop: () => canDrop && !disabled,
   });
 
   return (
@@ -70,7 +75,7 @@ export const DropZone = ({
         position: 'relative',
         display: 'flex',
         // flex: 1, ***
-        width: '100%', // ***
+        ...( fullWidth === true ? { width: '100%' } : {}),
       }}
     >
       <Box
@@ -98,7 +103,7 @@ export const DropZone = ({
         }
         {children}
       </Box>
-      {( canReorderItems ? isOverCurrent : ( isOver && canDrop )) && (
+      {( canReorderItems ? isOverCurrent : ( isOver && canDrop )) && !disabled && (
         <Box
           position="absolute"
           top={0}
@@ -108,6 +113,7 @@ export const DropZone = ({
           zIndex={1}
           opacity={0.5}
           backgroundColor="yellow"
+          {...overlayProps}
         />
       )}
     </div>
@@ -122,4 +128,7 @@ DropZone.propTypes = {
   setItemPos: func,
   canReorderItems: bool,
   zoneItemLimit: number,
+  fullWidth: bool,
+  overlayProps: object,
+  disabled: bool,
 };

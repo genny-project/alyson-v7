@@ -31,7 +31,8 @@ const DragDrop = ({
   canReorderItems,
   zoneItemLimit,
   value = [],
-  // ...restProps,
+  ask,
+  ...restProps
 }) => {
   const selectedDropZones = {};
 
@@ -43,6 +44,8 @@ const DragDrop = ({
 
   const [itemPos, setItemPos] = useState( setupItems( items, shuffleItems )); // set up initial item array
 
+  if ( restProps.log ) console.log( itemPos );
+
   if ( items.length !== itemPos.length ) {
     setItemPos( setupItems( items, shuffleItems ));
   }
@@ -50,7 +53,7 @@ const DragDrop = ({
   // console.error({ items, setupitems: setupItems( items, shuffleItems ), itemPos  });
 
   useEffect(() => {
-    // console.log( 'useEffect', selectedDropZones, itemPos );
+    if ( restProps.log ) console.log( ask.questionCode, 'useEffect', selectedDropZones, itemPos );
 
     const selectedItems = itemPos.filter( item => item.position != null );
     const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: dlv( selectedDropZones, `${item.position}` ) }));
@@ -58,6 +61,7 @@ const DragDrop = ({
     // console.log( 'onChange', selectedItemForSend, value );
 
     const shouldSendValue = ( newValue, currentValue ) => {
+      if ( restProps.log )console.log( 'shouldSendValue', { newValue, currentValue });
       if ( !isArray( newValue )) return false;
       if ( !isArray( currentValue )) return false;
       if ( selectedItemForSend.length !== value.length ) return true;
@@ -81,19 +85,25 @@ const DragDrop = ({
 
       // check if the objects have the same key value pairs
 
-      /*
+      // /*
 
       const isMatch = Object.keys( selectedItemKeys ).every( key => {
-        return selectedItemKeys[key] === value[key];
+        // if ( restProps.log ) console.warn( 'compare', selectedItemKeys[key], valueItemKeys[key] );
+
+        return selectedItemKeys[key] === valueItemKeys[key];
       });
 
-      */
+      // */
 
-      // console.warn({ valueItemKeys, selectedItemKeys, isMatch });
+      // if ( restProps.log ) console.warn({ isMatch });
 
-      // return !isMatch // figure out how to use isMatch
-      return false;
+      return !isMatch;
+      // return false;
     };
+
+    // if no dropzones and canReorderItems
+
+    // then send
 
     if ( shouldSendValue( selectedItemForSend, value )) {
       if ( onChangeValue ) {
@@ -152,30 +162,40 @@ const DragDrop = ({
     [itemPos],
   );
 
-  const renderDropZone = ( i, name, props ) => {
+  const renderDropZone = ( i, name, dropzoneProps, overlayProps ) => {
+  // const renderDropZone = ( zone, name, dropzoneProps, overlayProps ) => {
     return (
       <DropZone
         x={i}
         key={i}
+        // key={zone}
+        // zoneId={zone}
         name={name}
         code={code}
+        // questionCode={ask.questionCode}
         setItemPos={moveItem}
         canReorderItems={canReorderItems}
         zoneItemLimit={i == null ? null : zoneItemLimit}
-        {...props}
+        disabled={!isArray( groups, { ofMinLength: 1 }) && !isString( content )}
+        {...dropzoneProps}
+        overlayProps={overlayProps}
       >
         {renderItem( i )}
+        {/* {renderItem( zone )} */}
       </DropZone>
     );
   };
 
   const renderItem = ( x ) => {
+//  const renderItem = ( zone ) => {
     const items = [];
 
     itemPos.forEach(( item, index ) => {
       if ( !isObject( item )) return;
 
       const shouldRenderItem = item['position'] === x;
+      // const shouldRenderItem = item['zone'] === zone;
+
       const isSelected = x != null;
 
       if ( shouldRenderItem ) {
@@ -191,6 +211,7 @@ const DragDrop = ({
             selected={isSelected}
             {...componentProps['input-item']}
             {...( isSelected ? componentProps['input-selected'] : {})}
+            overlayProps={componentProps['input-item-overlay']}
           />
         );
       };
@@ -204,6 +225,8 @@ const DragDrop = ({
   const squares = [];
   const space = [];
   let split = null;
+
+  console.warn( ask.questionCode, { groups, selectedDropZones, content });
 
   if ( isString( content )) {
     split = content.split( '{{' );
@@ -221,13 +244,11 @@ const DragDrop = ({
 
       if ( optionLabel ) {
         squares.push(
-          renderDropZone( index, null )
+          renderDropZone( index, null, componentProps['input-selected-dropzone'], componentProps['input-selected-overlay']  )
+          // renderDropZone( index, null, componentProps['input-selected-dropzone'], componentProps['input-selected-overlay']  )
         );
 
-        selectedDropZones[index] = {
-          [itemStringKey]: optionLabel,
-          [itemValueKey]: optionLabel,
-        };
+        selectedDropZones[index] = optionLabel;
       }
 
       if ( contentString ) {
@@ -245,9 +266,9 @@ const DragDrop = ({
       }
     });
   }
-  else if  ( isArray( groups )) {
+  else if ( isArray( groups, { ofMinLength: 1 })) {
     groups.forEach(( group, index ) => {
-      squares.push( renderDropZone( index, group[itemStringKey], componentProps['input-selected-dropzone'] ));
+      squares.push( renderDropZone( index, group[itemStringKey], componentProps['input-selected-dropzone'], componentProps['input-selected-overlay'] ));
     });
   }
   else {
@@ -262,9 +283,7 @@ const DragDrop = ({
     // );
   }
 
-  space.push( renderDropZone( null, null, componentProps['input-item-dropzone'] ));
-
-  //
+  space.push( renderDropZone( null, null, componentProps['input-item-dropzone'], componentProps['input-item-overlay'] ));
 
   return (
     <Box
@@ -324,4 +343,5 @@ DragDrop.propTypes = {
   canReorderItems: bool, // turns objects into dropzones so the list can be reordered by dropping
   zoneItemLimit: number,
   value: array,
+  ask: object,
 };

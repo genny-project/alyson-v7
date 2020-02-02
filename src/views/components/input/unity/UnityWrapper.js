@@ -168,16 +168,32 @@ class UnityWrapper extends React.Component {
     }
   }
 
-  handleChange = ( data ) => {
+  handleChange = ( unityData ) => {
     const sceneContextsKeys = Object.keys( this.sceneContexts );
 
-    if ( sceneContextsKeys.length === 1 ) {
-      if ( this.props.onChangeValue ) {
-        this.props.onChangeValue( data, this.sceneContexts[sceneContextsKeys[0]] );
+    function isJson( str ) {
+      try {
+        JSON.parse( str );
+      } catch ( e ) {
+        return false;
       }
+
+      return true;
     }
-    else {
-      console.warn( 'Error: Invalid unity scene contexts' ); // eslint-disable-line
+
+    if ( isJson( unityData )) {
+      const { data } = JSON.parse( unityData );
+
+      console.warn({ data });
+
+      if ( sceneContextsKeys.length === 1 ) {
+        if ( this.props.onChangeValue ) {
+          this.props.onChangeValue( data, this.sceneContexts[sceneContextsKeys[0]] );
+        }
+      }
+      else {
+        console.warn( 'Error: Invalid unity scene contexts' ); // eslint-disable-line
+      }
     }
   }
 

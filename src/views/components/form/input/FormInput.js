@@ -84,6 +84,9 @@ class FormInput extends Component {
       case 'match':
       case 'dndmatch':
       case 'dragdropmatch':
+      case 'list':
+      case 'dndlist':
+      case 'dragdroplist':
         return (
           <FormInputWithItems
             {...inputProps}

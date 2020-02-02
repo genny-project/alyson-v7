@@ -34,6 +34,7 @@ import ColourPicker from './colour-picker';
 import UnityButtons from './unity/buttons'; // TEMP
 import Progress from './progress';
 import HtmlEditor from './html-editor';
+import InputJSON from './json';
 
 /* maps the component to  */
 
@@ -418,56 +419,60 @@ class Input extends Component {
           />
         );
 
-      /*
-
       case 'fill':
       case 'dndfill':
       case 'dragdropfill':
-        console.warn( this.props.items );
-
         return (
           <DragDrop
             {...inputProps}
             ref={input => ( this.input = input )}
             bumpItems
-            onChange={( e ) => console.log( 'handleChange', e )}
+            // onChange={( e ) => console.log( 'handleChange', e )}
             code={this.props.ask.questionCode}
             content="Bananas are among the most important {{OPT_001}} crops on the planet. They come from a family of plants called Musa that are native to {{OPT_002}} and grown in many of the {{OPT_003}} areas of the world."
-            // items={[
-            //   {
-            //     value: 'ITM_FOOD',
-            //     label: 'food',
-            //   },
-            //   {
-            //     value: 'ITM_YELLOW',
-            //     label: 'yellow',
-            //   },
-            //   {
-            //     value: 'ITM_SOUTHEAST_ASIA',
-            //     label: 'Southeast Asia',
-            //   },
-            //   {
-            //     value: 'ITM_AUSTRALIA',
-            //     label: 'Australia',
-            //   },
-            //   {
-            //     value: 'ITM_SOUTH_AMERICA',
-            //     label: 'South America',
-            //   },
-            //   {
-            //     value: 'ITM_WARMER',
-            //     label: 'warmer',
-            //   },
-            //   {
-            //     value: 'ITM_DRIEST',
-            //     label: 'driest',
-            //   },
-            // ]}
             items={this.props.items}
+            componentProps={{
+              ['input-wrapper']: {
+                backgroundColor: '#00ffff',
+                padding: 5,
+              },
+              ['input-selected-wrapper']: {
+                backgroundColor: 'ff00ff',
+                padding: 5,
+              },
+              ['input-selected-dropzone']: {
+                backgroundColor: '#ffff00',
+                padding: 5,
+                fullWidth: false,
+              },
+              ['input-selected-overlay']: {
+                backgroundColor: 'red',
+                opacity: 1,
+              },
+              ['input-selected']: {
+                backgroundColor: '#0000ff',
+                padding: 5,
+              },
+              ['input-item-wrapper']: {
+                backgroundColor: '#00ff00',
+                padding: 5,
+              },
+              ['input-item-dropzone']: {
+                backgroundColor: '#ff0000',
+                padding: 5,
+              },
+              ['input-item-overlay']: {
+                backgroundColor: 'blue',
+                opacity: 1,
+              },
+              ['input-item']: {
+                backgroundColor: '#ffaaaa',
+                padding: 5,
+                margin: 5,
+              },
+            }}
           />
         );
-
-      */
 
       case 'match':
       case 'dndmatch':
@@ -482,10 +487,13 @@ class Input extends Component {
             code="CODE_4"
             // bumpItems
             zoneItemLimit={3}
-            // content="Bananas are among the most important {{BOX}} crops on the planet. They come from a family of plants called Musa that are native to {{BOX}} and grown in many of the {{BOX}} areas of the world."
             groups={[
               {
                 value: 'ZNE_ONE',
+                label: '',
+              },
+              {
+                value: 'ZNE_TWO',
                 label: '',
               },
             ]}
@@ -536,6 +544,10 @@ class Input extends Component {
               ['input-selected-dropzone']: {
                 // backgroundColor: 'blue',
               },
+              ['input-selected-overlay']: {
+                backgroundColor: 'red',
+                opacity: 1,
+              },
               ['input-selected']: {
                 backgroundColor: 'white',
                 // width: '50%',
@@ -547,8 +559,15 @@ class Input extends Component {
               ['input-item-dropzone']: {
                 flexDirection: 'row',
               },
+              ['input-item-overlay']: {
+                backgroundColor: 'blue',
+                opacity: 1,
+              },
               ['input-item']: {
                 backgroundColor: 'white',
+                borderStyle: 'dotted',
+                borderWidth: 1,
+                borderColor: 'black',
                 marginRight: 5,
                 marginBottom: 5,
               },
@@ -556,66 +575,119 @@ class Input extends Component {
           />
         );
 
-      /*
-
       case 'list':
       case 'dndlist':
       case 'dragdroplist':
+        console.warn( 'list items', this.props.items );
+
         return (
           <DragDrop
             {...inputProps}
             ref={input => ( this.input = input )}
-            onChange={( e ) => console.log( 'handleChange', e )}
+            // onChange={( e ) => console.log( 'handleChange', e )}
             code="CODE_2"
+            shuffleItems
+            log
+            canReorderItems
+            // items={[
+            //   {
+            //     value: 'SEL_DRAGDROP_ITEM_ONE',
+            //     label: 'Write a cool JS library',
+            //     weight: 1,
+            //   },
+            //   {
+            //     value: 'SEL_DRAGDROP_ITEM_TWO',
+            //     label: 'Make it generic enough',
+            //     weight: 2,
+            //   },
+            //   {
+            //     value: 'SEL_DRAGDROP_ITEM_THREE',
+            //     label: 'Write README',
+            //     weight: 4,
+            //   },
+            //   {
+            //     value: 'SEL_DRAGDROP_ITEM_FOUR',
+            //     label: 'Create some examples',
+            //     weight: 4,
+            //   },
+            //   {
+            //     value: 'SEL_DRAGDROP_ITEM_FIVE',
+            //     label: 'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
+            //     weight: 5,
+            //   },
+            //   {
+            //     value: 'SEL_DRAGDROP_ITEM_SIX',
+            //     label: '???',
+            //     weight: 6,
+            //   },
+            //   {
+            //     value: 'SEL_DRAGDROP_ITEM_SEVEN',
+            //     label: 'PROFIT',
+            //     weight: 7,
+            //   },
+            // ]}
+            items={this.props.items}
             componentProps={{
+              ['input-wrapper']: {
+                backgroundColor: '#00ffff',
+                padding: 5,
+              },
+              ['input-selected-wrapper']: {
+                backgroundColor: 'ff00ff',
+                padding: 5,
+              },
+              ['input-selected-dropzone']: {
+                backgroundColor: '#ffff00',
+                padding: 5,
+                fullWidth: false,
+              },
+              ['input-selected-overlay']: {
+                backgroundColor: 'red',
+                opacity: 1,
+              },
+              ['input-selected']: {
+                backgroundColor: '#0000ff',
+                padding: 5,
+              },
               ['input-item-wrapper']: {
+                backgroundColor: '#00ff00',
+                padding: 5,
                 flexDirection: 'column',
               },
+              ['input-item-dropzone']: {
+                backgroundColor: '#ff0000',
+                padding: 5,
+              },
+              ['input-item-overlay']: {
+                backgroundColor: 'blue',
+                opacity: 1,
+              },
+              ['input-item']: {
+                backgroundColor: '#ffaaaa',
+                padding: 5,
+                margin: 5,
+              },
             }}
-            shuffleItems
-            canReorderItems
-            items={[
-              {
-                id: 1,
-                name: 'Write a cool JS library',
-              },
-              {
-                id: 2,
-                name: 'Make it generic enough',
-              },
-              {
-                id: 3,
-                name: 'Write README',
-              },
-              {
-                id: 4,
-                name: 'Create some examples',
-              },
-              {
-                id: 5,
-                name:
-                  'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
-              },
-              {
-                id: 6,
-                name: '???',
-              },
-              {
-                id: 7,
-                name: 'PROFIT',
-              },
-            ]}
           />
         );
-
-      */
 
       case 'unitybuttons':
       case 'unity-buttons':
         return (
           <UnityButtons
             {...inputProps}
+            {...inputFieldProps}
             ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'json':
+        return (
+          <InputJSON
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => ( this.input = input )}
+            onChangeState={this.handleStateChange}
           />
         );
 

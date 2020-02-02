@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { string, func, bool, number, oneOfType } from 'prop-types';
+import { string, func, bool, number, oneOfType, object } from 'prop-types';
 import { Fragment, Text, Box, Icon } from '../../../components';
 
 export const DragDropItem = ({
@@ -13,7 +13,7 @@ export const DragDropItem = ({
   // selected,
   backgroundColor,
   width,
-  marginRight,
+  overlayProps,
   ...restProps
 }) => {
   let ref = useRef( null );
@@ -82,6 +82,30 @@ export const DragDropItem = ({
     ref = drag;
   }
 
+  const calculateMargin = () => {
+    let marginLeftValue = 0;
+    let marginRightValue = 0;
+
+    if ( restProps.margin ) {
+      marginLeftValue = restProps.margin;
+      marginRightValue = restProps.margin;
+    }
+    if ( restProps.marginX ) {
+      marginLeftValue = restProps.marginX;
+      marginRightValue = restProps.marginX;
+    }
+    if ( restProps.marginLeft ) {
+      marginLeftValue = restProps.marginLeft;
+    }
+    if ( restProps.marginRight ) {
+      marginRightValue = restProps.marginRight;
+    }
+
+    const marginValue = marginLeftValue + marginRightValue;
+
+    return `calc( 100% - ${marginValue}px)`;
+  };
+
   return (
     <Fragment>
       <div
@@ -106,7 +130,7 @@ export const DragDropItem = ({
           color="black"
 
           backgroundColor={backgroundColor}
-          width={`calc( 100%${marginRight ? ` - ${marginRight}px` : ''} )`}
+          width={calculateMargin()}
           alignItems="center"
           {...restProps}
         >
@@ -135,6 +159,7 @@ export const DragDropItem = ({
             zIndex={1}
             opacity={0.5}
             backgroundColor="yellow"
+            {...overlayProps}
           />
         )}
       </div>
@@ -155,4 +180,5 @@ DragDropItem.propTypes = {
     [string, number]
   ),
   marginRight: number,
+  overlayProps: object,
 };
