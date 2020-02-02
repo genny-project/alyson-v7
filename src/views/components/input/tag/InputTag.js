@@ -17,6 +17,7 @@ class InputTag extends Component {
     itemValueKey: 'value',
     itemIdKey: 'id',
     allowNewTags: true,
+    allowInvalidSelection: false,
   }
 
   static propTypes = {
@@ -29,6 +30,7 @@ class InputTag extends Component {
     value: string,
     allowNewTags: bool,
     allowMultipleSelection: bool,
+    allowInvalidSelection: bool,
     testID: string,
     onBlur: func,
     nonTabable: bool,
@@ -208,6 +210,9 @@ class InputTag extends Component {
   }
 
   render() {
+//    const placeholder = this.props.placeholder;
+
+//    console.log( 'Holder--->', { placeholder });
     const {
       items,
       value,
@@ -215,6 +220,7 @@ class InputTag extends Component {
       itemValueKey,
       allowNewTags,
       allowMultipleSelection,
+      allowInvalidSelection,
       testID,
       onBlur, // eslint-disable-line no-unused-vars
       nonTabable,
@@ -247,10 +253,15 @@ class InputTag extends Component {
                     const item = isObject( i )
                       ? items.filter( x => x[itemValueKey] === i[itemValueKey] ).length > 0
                         ? items.filter( x => x[itemValueKey] === i[itemValueKey] )[0]
-                        : i
+                        : allowInvalidSelection
+                          ? i
+                          : this.props.placeholder
                       : items.filter( x => x[itemValueKey] === i ).length > 0
                         ? items.filter( x => x[itemValueKey] === i )[0]
-                        : { [itemStringKey]: i, [itemValueKey]: i };
+                        : allowInvalidSelection
+                          ? { [itemStringKey]: i, [itemValueKey]: i }
+                          : this.props.placeholder
+                         ;
 
                     return item;
                   })
@@ -298,7 +309,7 @@ class InputTag extends Component {
                     );
                   });
 
-                  if ( !isMatch ) {
+                  if ( !isMatch && allowInvalidSelection ) {
                     userCreatedTags.push( selectedItem );
                   }
                 });
