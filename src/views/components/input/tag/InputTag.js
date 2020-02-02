@@ -136,6 +136,8 @@ class InputTag extends Component {
     handleOpenMenu,
     isOpen,
     selectItem,
+    selectedItems,
+    removeItem,
   }) => {
     const itemString = isObject( item ) ? item[this.props.itemStringKey] : item;
     const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
@@ -179,6 +181,14 @@ class InputTag extends Component {
         break;
       case 'Tab':
         if ( handleCloseMenu ) handleCloseMenu();
+        break;
+
+      case 'Backspace':
+        if ( isArray( selectedItems, { ofMinLength: 1 }) && !this.props.allowMultipleSelection ) {
+//          console.log( 'Backspace-->',  { selectedItems });
+          removeItem( selectedItems[0] );
+        }
+
         break;
 
       default:
@@ -390,6 +400,7 @@ class InputTag extends Component {
                           allowMultipleSelection={allowMultipleSelection}
                           onRef={this.handleRef}
                           onKeyPress={( key ) => {
+  //                          console.log( 'inside-->', { highlightedIndex, filteredItems, selectedItems });
                             this.handleKeyPress({
                               key,
                               setHighlightedIndex,
@@ -403,6 +414,8 @@ class InputTag extends Component {
                               handleOpenMenu,
                               isOpen,
                               selectItem,
+                              removeItem,
+                              selectedItems,
                             });
                           }}
                           nonTabable={nonTabable}
