@@ -210,9 +210,6 @@ class InputTag extends Component {
   }
 
   render() {
-//    const placeholder = this.props.placeholder;
-
-//    console.log( 'Holder--->', { placeholder });
     const {
       items,
       value,

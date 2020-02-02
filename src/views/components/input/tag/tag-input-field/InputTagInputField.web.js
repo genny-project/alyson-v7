@@ -75,8 +75,6 @@ class InputTagInputField extends Component {
     } = this.props;
     const selectedItem = selectedItems.map( item => item.label ).join();
 
-//    console.log( 'selected Item inside of InputTagInputField--->', selectedItem );
-
     return (
       <Touchable
         onPress={() => {
