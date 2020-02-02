@@ -93,7 +93,6 @@ class InputTag extends Component {
   }
 
   handleChange = selectedItems => {
-    // console.log( 'handleChange', selectedItems );
     if ( this.props.onChangeValue ) {
       this.props.onChangeValue( selectedItems.map( i => i[this.props.itemValueKey]
         ? i[this.props.itemValueKey]
@@ -185,7 +184,6 @@ class InputTag extends Component {
 
       case 'Backspace':
         if ( isArray( selectedItems, { ofMinLength: 1 }) && !this.props.allowMultipleSelection ) {
-//          console.log( 'Backspace-->',  { selectedItems });
           removeItem( selectedItems[0] );
         }
 
@@ -400,7 +398,6 @@ class InputTag extends Component {
                           allowMultipleSelection={allowMultipleSelection}
                           onRef={this.handleRef}
                           onKeyPress={( key ) => {
-  //                          console.log( 'inside-->', { highlightedIndex, filteredItems, selectedItems });
                             this.handleKeyPress({
                               key,
                               setHighlightedIndex,
