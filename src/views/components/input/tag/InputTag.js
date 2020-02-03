@@ -246,22 +246,28 @@ class InputTag extends Component {
               itemToString={this.itemToString}
               selectedItems={
                 isArray( value )
-                  ? value.map( i => {
-                    const item = isObject( i )
-                      ? items.filter( x => x[itemValueKey] === i[itemValueKey] ).length > 0
-                        ? items.filter( x => x[itemValueKey] === i[itemValueKey] )[0]
-                        : allowInvalidSelection
-                          ? i
-                          : this.props.placeholder
-                      : items.filter( x => x[itemValueKey] === i ).length > 0
-                        ? items.filter( x => x[itemValueKey] === i )[0]
-                        : allowInvalidSelection
-                          ? { [itemStringKey]: i, [itemValueKey]: i }
-                          : this.props.placeholder
-                         ;
+                  ? value
+                    .filter( v => {
+                      return allowInvalidSelection
+                        ? true
+                        : items.filter( i  => {
+                          isObject( v )
+                            ? i[itemValueKey] === v[itemValueKey]
+                            : i[itemValueKey] === v;}
+                        ).length > 0;
+                    })
+                    .map( v => {
+                      const item = isObject( v )
+                        ? items.filter( i => i[itemValueKey] === v[itemValueKey] ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v[itemValueKey] )[0]
+                          : v
+                        : items.filter( i => i[itemValueKey] === v ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v )[0]
+                          : { [itemStringKey]: v, [itemValueKey]: v }
+                          ;
 
-                    return item;
-                  })
+                      return item;
+                    })
                   : null
               }
               addItemFunction={(( selectedItems, newItem ) => {
