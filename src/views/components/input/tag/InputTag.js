@@ -17,6 +17,7 @@ class InputTag extends Component {
     itemValueKey: 'value',
     itemIdKey: 'id',
     allowNewTags: true,
+    allowInvalidSelection: false,
   }
 
   static propTypes = {
@@ -29,6 +30,7 @@ class InputTag extends Component {
     value: string,
     allowNewTags: bool,
     allowMultipleSelection: bool,
+    allowInvalidSelection: bool,
     testID: string,
     onBlur: func,
     nonTabable: bool,
@@ -93,7 +95,6 @@ class InputTag extends Component {
   }
 
   handleChange = selectedItems => {
-    // console.log( 'handleChange', selectedItems );
     if ( this.props.onChangeValue ) {
       this.props.onChangeValue( selectedItems.map( i => i[this.props.itemValueKey]
         ? i[this.props.itemValueKey]
@@ -136,6 +137,8 @@ class InputTag extends Component {
     handleOpenMenu,
     isOpen,
     selectItem,
+    selectedItems,
+    removeItem,
   }) => {
     const itemString = isObject( item ) ? item[this.props.itemStringKey] : item;
     const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
@@ -181,6 +184,13 @@ class InputTag extends Component {
         if ( handleCloseMenu ) handleCloseMenu();
         break;
 
+      case 'Backspace':
+        if ( isArray( selectedItems, { ofMinLength: 1 }) && !this.props.allowMultipleSelection ) {
+          removeItem( selectedItems[0] );
+        }
+
+        break;
+
       default:
         if ( maxIndex > 0 ) {
           setHighlightedIndex( 0 );
@@ -207,6 +217,7 @@ class InputTag extends Component {
       itemValueKey,
       allowNewTags,
       allowMultipleSelection,
+      allowInvalidSelection,
       testID,
       onBlur, // eslint-disable-line no-unused-vars
       nonTabable,
@@ -235,17 +246,28 @@ class InputTag extends Component {
               itemToString={this.itemToString}
               selectedItems={
                 isArray( value )
-                  ? value.map( i => {
-                    const item = isObject( i )
-                      ? items.filter( x => x[itemValueKey] === i[itemValueKey] ).length > 0
-                        ? items.filter( x => x[itemValueKey] === i[itemValueKey] )[0]
-                        : i
-                      : items.filter( x => x[itemValueKey] === i ).length > 0
-                        ? items.filter( x => x[itemValueKey] === i )[0]
-                        : { [itemStringKey]: i, [itemValueKey]: i };
+                  ? value
+                    .filter( v => {
+                      return allowInvalidSelection
+                        ? true
+                        : items.filter( i  => {
+                          isObject( v )
+                            ? i[itemValueKey] === v[itemValueKey]
+                            : i[itemValueKey] === v;}
+                        ).length > 0;
+                    })
+                    .map( v => {
+                      const item = isObject( v )
+                        ? items.filter( i => i[itemValueKey] === v[itemValueKey] ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v[itemValueKey] )[0]
+                          : v
+                        : items.filter( i => i[itemValueKey] === v ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v )[0]
+                          : { [itemStringKey]: v, [itemValueKey]: v }
+                          ;
 
-                    return item;
-                  })
+                      return item;
+                    })
                   : null
               }
               addItemFunction={(( selectedItems, newItem ) => {
@@ -290,7 +312,7 @@ class InputTag extends Component {
                     );
                   });
 
-                  if ( !isMatch ) {
+                  if ( !isMatch && allowInvalidSelection ) {
                     userCreatedTags.push( selectedItem );
                   }
                 });
@@ -403,6 +425,8 @@ class InputTag extends Component {
                               handleOpenMenu,
                               isOpen,
                               selectItem,
+                              removeItem,
+                              selectedItems,
                             });
                           }}
                           nonTabable={nonTabable}

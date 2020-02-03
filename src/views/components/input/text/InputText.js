@@ -309,7 +309,7 @@ class InputText extends Component {
       blurOnSubmit,
       clearTextOnFocus,
       defaultValue,
-      // disabled,
+      disabled,
       keyboardType,
       maxLength,
       multiline,
@@ -523,7 +523,7 @@ class InputText extends Component {
               blurOnSubmit={blurOnSubmit}
               clearTextOnFocus={clearTextOnFocus}
               defaultValue={defaultValue}
-              editable={editable}
+              editable={!disabled}
               // editable={(
               //   editable == null ? disabled : editable
               // )}

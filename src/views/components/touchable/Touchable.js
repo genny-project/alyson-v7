@@ -192,6 +192,8 @@ class Touchable extends Component {
   }
 
   render() {
+//    console.log( 'Props inside Touchable---->', this );
+
     const {
       withFeedback,
       children,
