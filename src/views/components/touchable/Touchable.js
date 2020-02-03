@@ -291,7 +291,7 @@ class Touchable extends Component {
       flexShrink,
       flexDirection,
       flexWrap,
-      backgroundColor,
+      backgroundColor: disabled ? '#ddd' : backgroundColor, // TODO - remove ternary when state based themes are fixed from back end
       position: (
         (
           position === 'sticky' &&
