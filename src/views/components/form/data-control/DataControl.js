@@ -227,7 +227,7 @@ class DataControl extends Component {
     const useMaskedValue = mask != null || keyfilter != null;
 
     const valueFinal = () => {
-      if ( this.props.mask === 'dropdown' ) {
+      if ( this.props.mask === 'dropdown' || 'Tag' ) {
         return this.props.value;
       }
 
