@@ -251,7 +251,7 @@ class InputTag extends Component {
                       return allowInvalidSelection
                         ? true
                         : items.filter( i  => {
-                          isObject( v )
+                          return isObject( v )
                             ? i[itemValueKey] === v[itemValueKey]
                             : i[itemValueKey] === v;}
                         ).length > 0;
