@@ -1,10 +1,10 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import { object, string } from 'prop-types';
-import { Box, Text, Touchable } from '../../../../components';
+import { Text, Touchable } from '../../..';
 import UnityConsumer from '../consumer';
 
-class UnityButtons extends Component {
+class UnityButton extends Component {
   static defaultProps = {
     backgroundColor: '#ddd',
     color: 'white',
@@ -101,7 +101,7 @@ class UnityButtons extends Component {
 export default props => (
   <UnityConsumer>
     { unity => (
-      <UnityButtons
+      <UnityButton
         {...props}
         unity={unity}
       />

@@ -31,7 +31,7 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
-import UnityButtons from './unity/buttons'; // TEMP
+import UnityButton from './unity/button'; // TEMP
 import Progress from './progress';
 import HtmlEditor from './html-editor';
 import InputJSON from './json';
@@ -86,8 +86,6 @@ class Input extends Component {
       type,
       dynamicWidth,
     };
-
-    // console.log( 'thisprospinsideinput:', this );
 
     const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
@@ -427,10 +425,7 @@ class Input extends Component {
             {...inputProps}
             ref={input => ( this.input = input )}
             bumpItems
-            // onChange={( e ) => console.log( 'handleChange', e )}
-            code={this.props.ask.questionCode}
             content="Bananas are among the most important {{OPT_001}} crops on the planet. They come from a family of plants called Musa that are native to {{OPT_002}} and grown in many of the {{OPT_003}} areas of the world."
-            items={this.props.items}
             componentProps={{
               ['input-wrapper']: {
                 backgroundColor: '#00ffff',
@@ -477,15 +472,10 @@ class Input extends Component {
       case 'match':
       case 'dndmatch':
       case 'dragdropmatch':
-        // console.warn( JSON.stringify( this.props.items ));
-
         return (
           <DragDrop
             {...inputProps}
             ref={input => ( this.input = input )}
-            // onChangeValue={( e ) => console.log( 'handleChange', e )}
-            code="CODE_4"
-            // bumpItems
             zoneItemLimit={3}
             groups={[
               {
@@ -495,39 +485,6 @@ class Input extends Component {
               {
                 value: 'ZNE_TWO',
                 label: '',
-              },
-            ]}
-            // items={this.props.items}
-            items={[
-              {
-                label: 'A) A hand-held light wand',
-                value: 'SEL_DRAGDROP_ITEM_ONE',
-                weight: 1,
-              },
-              {
-                label: 'B) Good approach sight distance',
-                value: 'SEL_DRAGDROP_ITEM_TWO',
-                weight: 2,
-              },
-              {
-                label: 'C) Knowledge of the local area',
-                value: 'SEL_DRAGDROP_ITEM_THREE',
-                weight: 3,
-              },
-              {
-                label: 'D) An escape route / path',
-                value: 'SEL_DRAGDROP_ITEM_FOUR',
-                weight: 4,
-              },
-              {
-                label: 'E) A light tower to illuminate them',
-                value: 'SEL_DRAGDROP_ITEM_FIVE',
-                weight: 5,
-              },
-              {
-                label: 'F) Conspicuous clothing',
-                value: 'SEL_DRAGDROP_ITEM_SIX',
-                weight: 6,
               },
             ]}
             componentProps={{
@@ -578,55 +535,12 @@ class Input extends Component {
       case 'list':
       case 'dndlist':
       case 'dragdroplist':
-        console.warn( 'list items', this.props.items );
-
         return (
           <DragDrop
             {...inputProps}
             ref={input => ( this.input = input )}
-            // onChange={( e ) => console.log( 'handleChange', e )}
-            code="CODE_2"
             shuffleItems
-            log
             canReorderItems
-            // items={[
-            //   {
-            //     value: 'SEL_DRAGDROP_ITEM_ONE',
-            //     label: 'Write a cool JS library',
-            //     weight: 1,
-            //   },
-            //   {
-            //     value: 'SEL_DRAGDROP_ITEM_TWO',
-            //     label: 'Make it generic enough',
-            //     weight: 2,
-            //   },
-            //   {
-            //     value: 'SEL_DRAGDROP_ITEM_THREE',
-            //     label: 'Write README',
-            //     weight: 4,
-            //   },
-            //   {
-            //     value: 'SEL_DRAGDROP_ITEM_FOUR',
-            //     label: 'Create some examples',
-            //     weight: 4,
-            //   },
-            //   {
-            //     value: 'SEL_DRAGDROP_ITEM_FIVE',
-            //     label: 'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
-            //     weight: 5,
-            //   },
-            //   {
-            //     value: 'SEL_DRAGDROP_ITEM_SIX',
-            //     label: '???',
-            //     weight: 6,
-            //   },
-            //   {
-            //     value: 'SEL_DRAGDROP_ITEM_SEVEN',
-            //     label: 'PROFIT',
-            //     weight: 7,
-            //   },
-            // ]}
-            items={this.props.items}
             componentProps={{
               ['input-wrapper']: {
                 backgroundColor: '#00ffff',
@@ -674,7 +588,7 @@ class Input extends Component {
       case 'unitybuttons':
       case 'unity-buttons':
         return (
-          <UnityButtons
+          <UnityButton
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}

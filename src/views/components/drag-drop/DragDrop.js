@@ -14,7 +14,7 @@ const setupItems = ( items, shuffleItems ) => {
 
   shuffleItems ? shuffleArray( items ) : items;
 
-  return items.map( i => ({ ...i, position: null }));
+  return items.map( i => ({ ...i, zone: null, position: null }));
 };
 
 const DragDrop = ({
@@ -23,7 +23,6 @@ const DragDrop = ({
   items = [],
   itemStringKey = 'label',
   itemValueKey = 'value',
-  code,
   bumpItems,
   onChangeValue,
   componentProps = {},
@@ -34,17 +33,9 @@ const DragDrop = ({
   ask,
   ...restProps
 }) => {
-  const selectedDropZones = {};
-
-  if ( isArray( groups )) {
-    groups.forEach(( group, index ) => {
-      selectedDropZones[index] = group[itemValueKey];
-    });
-  }
-
   const [itemPos, setItemPos] = useState( setupItems( items, shuffleItems )); // set up initial item array
 
-  if ( restProps.log ) console.log( itemPos );
+  const selectedDropZones = {};
 
   if ( items.length !== itemPos.length ) {
     setItemPos( setupItems( items, shuffleItems ));
@@ -53,15 +44,17 @@ const DragDrop = ({
   // console.error({ items, setupitems: setupItems( items, shuffleItems ), itemPos  });
 
   useEffect(() => {
-    if ( restProps.log ) console.log( ask.questionCode, 'useEffect', selectedDropZones, itemPos );
+    // if ( restProps.log ) console.log( ask.questionCode, 'useEffect', selectedDropZones, itemPos );
 
-    const selectedItems = itemPos.filter( item => item.position != null );
-    const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: dlv( selectedDropZones, `${item.position}` ) }));
+    const selectedItems = itemPos.filter( item => item.zone != null );
+    // const selectedItems = itemPos.filter( item => item.position != null );
+    const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: dlv( selectedDropZones, `${item.zone}` ) }));
+    // const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: dlv( selectedDropZones, `${item.position}` ) }));
 
-    // console.log( 'onChange', selectedItemForSend, value );
+    console.log({ itemPos, selectedItems, selectedItemForSend, selectedDropZones });
 
     const shouldSendValue = ( newValue, currentValue ) => {
-      if ( restProps.log )console.log( 'shouldSendValue', { newValue, currentValue });
+      // if ( restProps.log ) console.log( 'shouldSendValue', { newValue, currentValue });
       if ( !isArray( newValue )) return false;
       if ( !isArray( currentValue )) return false;
       if ( selectedItemForSend.length !== value.length ) return true;
@@ -113,12 +106,13 @@ const DragDrop = ({
   });
 
   const moveItem = ( toX, name ) => {
+    console.log( 'move Item' );
     const itemPosNew = [];
-    const currentPositions = {};
+    const currentZones = {};
 
     itemPos.forEach( item => {
-      if ( item.position != null ) {
-        currentPositions[item.position] = [
+      if ( item.zone != null ) {
+        currentZones[item.zone] = [
 
         ];
       }
@@ -126,14 +120,14 @@ const DragDrop = ({
 
     itemPos.forEach( item => {
       if ( item[itemStringKey] === name ) {
-        item['position'] = toX;
+        item['zone'] = toX;
       }
       else if (
         bumpItems &&
         toX !== null &&
-        item.position === toX
+        item.zone === toX
       ) {
-        item['position'] = null;
+        item['zone'] = null;
       }
 
       itemPosNew.push(
@@ -146,6 +140,7 @@ const DragDrop = ({
 
   const moveCard = useCallback(
     ( dragIndex, hoverIndex ) => {
+      console.log( 'move Card' );
       const dragCard = itemPos[dragIndex];
 
       const newObj = update( itemPos, {
@@ -162,49 +157,43 @@ const DragDrop = ({
     [itemPos],
   );
 
-  const renderDropZone = ( i, name, dropzoneProps, overlayProps ) => {
-  // const renderDropZone = ( zone, name, dropzoneProps, overlayProps ) => {
+  const renderDropZone = ({ zoneId, index, name, dropzoneProps, overlayProps }) => {
     return (
       <DropZone
-        x={i}
-        key={i}
-        // key={zone}
-        // zoneId={zone}
+        x={index}
+        key={index}
+        zoneId={zoneId}
         name={name}
-        code={code}
-        // questionCode={ask.questionCode}
+        questionCode={ask.questionCode}
         setItemPos={moveItem}
         canReorderItems={canReorderItems}
-        zoneItemLimit={i == null ? null : zoneItemLimit}
+        zoneItemLimit={index == null ? null : zoneItemLimit}
         disabled={!isArray( groups, { ofMinLength: 1 }) && !isString( content )}
         {...dropzoneProps}
         overlayProps={overlayProps}
       >
-        {renderItem( i )}
-        {/* {renderItem( zone )} */}
+        {renderItem({ zoneId, zoneIndex: index })}
       </DropZone>
     );
   };
 
-  const renderItem = ( x ) => {
-//  const renderItem = ( zone ) => {
+  const renderItem = ({ zoneId, zoneIndex }) => {
     const items = [];
 
-    itemPos.forEach(( item, index ) => {
+    itemPos.forEach( item => {
       if ( !isObject( item )) return;
 
-      const shouldRenderItem = item['position'] === x;
-      // const shouldRenderItem = item['zone'] === zone;
+      const shouldRenderItem = item['zone'] === zoneId;
 
-      const isSelected = x != null;
+      const isSelected = zoneIndex != null;
 
       if ( shouldRenderItem ) {
         items.push(
           <DragDropItem
-            index={index}
+            index={items.length}
             key={item[itemStringKey]}
             label={item[itemStringKey]}
-            code={code}
+            questionCode={ask.questionCode}
             id={item[itemValueKey]}
             canReorderItems={canReorderItems}
             moveCard={moveCard}
@@ -220,13 +209,11 @@ const DragDrop = ({
     return items.length > 0 ? items : null;
   };
 
-  //
-
   const squares = [];
   const space = [];
   let split = null;
 
-  console.warn( ask.questionCode, { groups, selectedDropZones, content });
+  // console.warn( ask.questionCode, { groups, selectedDropZones, content });
 
   if ( isString( content )) {
     split = content.split( '{{' );
@@ -244,11 +231,16 @@ const DragDrop = ({
 
       if ( optionLabel ) {
         squares.push(
-          renderDropZone( index, null, componentProps['input-selected-dropzone'], componentProps['input-selected-overlay']  )
-          // renderDropZone( index, null, componentProps['input-selected-dropzone'], componentProps['input-selected-overlay']  )
+          renderDropZone({
+            zoneId: optionLabel,
+            index,
+            name: null,
+            dropzoneProps: componentProps['input-selected-dropzone'],
+            overlayProps: componentProps['input-selected-overlay'],
+          })
         );
 
-        selectedDropZones[index] = optionLabel;
+        selectedDropZones[optionLabel] = optionLabel;
       }
 
       if ( contentString ) {
@@ -268,7 +260,15 @@ const DragDrop = ({
   }
   else if ( isArray( groups, { ofMinLength: 1 })) {
     groups.forEach(( group, index ) => {
-      squares.push( renderDropZone( index, group[itemStringKey], componentProps['input-selected-dropzone'], componentProps['input-selected-overlay'] ));
+      selectedDropZones[group[itemValueKey]] = group[itemValueKey];
+
+      squares.push( renderDropZone({
+        zoneId: group[itemValueKey],
+        index,
+        name: group[itemStringKey],
+        dropzoneProps: componentProps['input-selected-dropzone'],
+        overlayProps: componentProps['input-selected-overlay'],
+      }));
     });
   }
   else {
@@ -283,7 +283,13 @@ const DragDrop = ({
     // );
   }
 
-  space.push( renderDropZone( null, null, componentProps['input-item-dropzone'], componentProps['input-item-overlay'] ));
+  space.push( renderDropZone({
+    zoneId: null,
+    index: null,
+    name: null,
+    dropzoneProps: componentProps['input-item-dropzone'],
+    overlayProps: componentProps['input-item-overlay'],
+  }));
 
   return (
     <Box
@@ -335,7 +341,6 @@ DragDrop.propTypes = {
   itemValueKey: string,
   groups: array, // list of objects to be rendered as dropzones
   content: string, // string which will be rendered with optional dropzones
-  code: string, // unique id for the drag and drop components
   bumpItems: bool, // clears group of previous item when a new item is dropped
   shuffleItems: bool, // randomises the order of items when component loads
   onChangeValue: func,

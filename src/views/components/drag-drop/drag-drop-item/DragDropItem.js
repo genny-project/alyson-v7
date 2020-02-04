@@ -6,7 +6,7 @@ import { Fragment, Text, Box, Icon } from '../../../components';
 export const DragDropItem = ({
   id,
   label = 'Item',
-  code,
+  questionCode,
   moveCard,
   index,
   canReorderItems,
@@ -18,8 +18,9 @@ export const DragDropItem = ({
 }) => {
   let ref = useRef( null );
   const [, drop] = useDrop({
-    accept: code,
+    accept: questionCode,
     hover( item, monitor ) {
+      // console.log( 'hover Item' );
       if ( !ref.current ) {
         return;
       }
@@ -66,7 +67,7 @@ export const DragDropItem = ({
 
   const [{ isDragging }, drag] = useDrag({
     item: {
-      type: code,
+      type: questionCode,
       id,
       label,
       index,
@@ -169,7 +170,7 @@ export const DragDropItem = ({
 
 DragDropItem.propTypes = {
   label: string,
-  code: string,
+  questionCode: string,
   moveCard: func,
   canReorderItems: bool,
   id: number,

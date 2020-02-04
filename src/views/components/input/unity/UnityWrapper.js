@@ -184,7 +184,7 @@ class UnityWrapper extends React.Component {
     if ( isJson( unityData )) {
       const { data } = JSON.parse( unityData );
 
-      console.warn({ data });
+      // console.warn({ data });
 
       if ( sceneContextsKeys.length === 1 ) {
         if ( this.props.onChangeValue ) {

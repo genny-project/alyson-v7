@@ -36,10 +36,10 @@ const style = {
 };
 
 export const DropZone = ({
-  x = null,
+  zoneId,
   children,
   name,
-  code,
+  questionCode,
   setItemPos,
   canReorderItems,
   zoneItemLimit,
@@ -57,9 +57,9 @@ export const DropZone = ({
   );
 
   const [{ isOver, isOverCurrent }, drop] = useDrop({
-    accept: code,
+    accept: questionCode,
     drop: ( e ) => {
-      setItemPos( x, e.label, code );
+      setItemPos( zoneId, e.label, questionCode );
     },
     collect: monitor => ({
       isOver: !!monitor.isOver(),
@@ -121,10 +121,10 @@ export const DropZone = ({
 };
 
 DropZone.propTypes = {
-  x: string,
+  zoneId: string,
   children: node,
   name: string,
-  code: string,
+  questionCode: string,
   setItemPos: func,
   canReorderItems: bool,
   zoneItemLimit: number,
