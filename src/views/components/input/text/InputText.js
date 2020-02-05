@@ -188,6 +188,13 @@ class InputText extends Component {
     ) {
       this.updateValue( this.props.value );
     }
+    else if (
+      this.state.value == null &&
+      this.props.value == null &&
+      this.input
+    ) {
+      this.input.clear();
+    }
   }
 
   updateValue = ( value ) => {
