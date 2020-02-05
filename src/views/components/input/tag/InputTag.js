@@ -55,8 +55,9 @@ class InputTag extends Component {
   }
 
   shouldComponentUpdate( nextProps ) {
-    if ( nextProps.items !== this.props.items )
+    if ( nextProps.items !== this.props.items ) {
       return true;
+    }
 
     return false;
   }
@@ -66,24 +67,55 @@ class InputTag extends Component {
   }
 
   addItemToPreSelection = ( item, callback ) => {
-    const { itemValueKey } = this.props;
+    const { itemValueKey, allowInvalidSelection, items } = this.props;
 
     this.setState(
       ({ preSelected }) => ({
         preSelected: preSelected.filter( i => i[itemValueKey] === item[itemValueKey] ).length > 0
-          ? preSelected.filter( i => i[itemValueKey] !== item[itemValueKey] )
-          : [...preSelected, item],
+          ? preSelected
+            .filter( v => (
+              allowInvalidSelection
+                ? true
+                : items.filter( i  => {
+                  return isObject( v )
+                    ? i[itemValueKey] === v[itemValueKey]
+                    : i[itemValueKey] === v;}
+                ).length > 0
+            ))
+            .filter( i => i[itemValueKey] !== item[itemValueKey] )
+          : [
+            ...preSelected.filter( v => (
+              allowInvalidSelection
+                ? true
+                : items.filter( i  => {
+                  return isObject( v )
+                    ? i[itemValueKey] === v[itemValueKey]
+                    : i[itemValueKey] === v;}
+                ).length > 0
+            )),
+            item,
+          ],
       }), () => {
         if ( callback ) callback( this.state.preSelected );
       });
   }
 
   removeItemToPreSelection = ( item ) => {
-    const { itemValueKey } = this.props;
+    const { itemValueKey, allowInvalidSelection, items } = this.props;
 
     this.setState(
       ({ preSelected }) => ({
-        preSelected: preSelected.filter( i => i[itemValueKey] !== item[itemValueKey] ),
+        preSelected: preSelected
+        .filter( v => (
+          allowInvalidSelection
+            ? true
+            : items.filter( i  => {
+              return isObject( v )
+                ? i[itemValueKey] === v[itemValueKey]
+                : i[itemValueKey] === v;}
+            ).length > 0
+        ))
+          .filter( i => i[itemValueKey] !== item[itemValueKey] ),
       })
     );
   }
@@ -95,11 +127,23 @@ class InputTag extends Component {
   }
 
   handleChange = selectedItems => {
-    if ( this.props.onChangeValue ) {
-      this.props.onChangeValue( selectedItems.map( i => i[this.props.itemValueKey]
-        ? i[this.props.itemValueKey]
-        : i
-      ));
+    const { allowInvalidSelection, items, itemValueKey, onChangeValue } = this.props;
+
+    if ( onChangeValue ) {
+      onChangeValue( selectedItems
+        .filter( v => (
+          allowInvalidSelection
+            ? true
+            : items.filter( i  => {
+              return isObject( v )
+                ? i[itemValueKey] === v[itemValueKey]
+                : i[itemValueKey] === v;}
+            ).length > 0
+        ))
+        .map( i => i[itemValueKey]
+          ? i[itemValueKey]
+          : i
+        ));
     }
   }
 
