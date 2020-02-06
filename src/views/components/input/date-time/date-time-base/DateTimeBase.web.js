@@ -94,7 +94,7 @@ class DateTimeBase extends PureComponent {
 
   componentDidUpdate( prevProps ) {
     if (
-      this.props.value != null &&
+      // this.props.value != null &&
       prevProps.value !== this.props.value
     ) {
       this.setSelectedItem();
@@ -102,7 +102,7 @@ class DateTimeBase extends PureComponent {
   }
 
   setSelectedItem = () => {
-    if ( this.props.value ) {
+    if ( isString( this.props.value ) || this.props.value === null ) {
       this.setState({
         value: this.props.value,
       });

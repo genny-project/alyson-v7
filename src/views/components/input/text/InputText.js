@@ -156,6 +156,7 @@ class InputText extends Component {
     fontStyle: oneOf(
       ['normal', 'italic']
     ),
+    isUsingMask: bool,
   }
 
   state = {
@@ -166,6 +167,11 @@ class InputText extends Component {
   }
 
   componentDidMount() {
+    // if ( this.props.ask.questionCode === 'QUE_FIRSTNAME' ) console.warn({
+    //   ts: this.state.value,
+    //   tp: this.props.value,
+    // });
+
     if ( this.props.value )
       this.setState({
         value: this.props.value,
@@ -174,6 +180,13 @@ class InputText extends Component {
   }
 
   componentDidUpdate( prevProps, prevState ) {
+    // if ( this.props.ask.questionCode === 'QUE_FIRSTNAME' ) console.warn({
+    //   ps: prevState.value,
+    //   ts: this.state.value,
+    //   pp: prevProps.value,
+    //   tp: this.props.value,
+    // });
+
     if (
       ((
         prevProps.value !== this.props.value &&
@@ -186,7 +199,26 @@ class InputText extends Component {
         this.props.updateValueWhenFocused
       )
     ) {
-      this.updateValue( this.props.value );
+      this.updateValue(
+        this.props.isUsingMask ||
+        this.props.value !== prevProps.value || (
+          this.props.value === prevProps.value &&
+          this.props.value === null
+        )
+          ? this.props.value
+          : this.state.value
+      );
+
+      return;
+    }
+    if (
+      this.state.value == null &&
+      this.props.value == null &&
+      this.input
+    ) {
+      this.input.clear();
+
+      return;
     }
   }
 

@@ -312,7 +312,7 @@ class InputTag extends Component {
 
                       return item;
                     })
-                  : null
+                  : []
               }
               addItemFunction={(( selectedItems, newItem ) => {
                 return selectedItems.filter( i => (
@@ -367,6 +367,7 @@ class InputTag extends Component {
                       ? [inputValue] : [] )
                   .concat( userCreatedTags )
                   .filter( this.handleFilter( inputValue ));
+                  // .slice( 0, 10 );
 
                 const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
 
@@ -487,7 +488,7 @@ class InputTag extends Component {
                           >
                             {(
                               isArray( filteredItems ) ||
-                                inputValue.length > 0
+                                inputValue.length > 3
                             ) ? (
                                 filteredItems
                                   .map(( item, index ) => {

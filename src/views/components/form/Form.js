@@ -212,8 +212,8 @@ class Form extends Component {
         const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
         // console.log('ask', ask, value, value || null);
 
-        if ( value !== null || ask.mandatory )
-          askValue = value !== null ? value : null;
+        if ( value != null || ask.mandatory )
+          askValue = value != null ? value : null;
       }
 
       const childValues = {};
