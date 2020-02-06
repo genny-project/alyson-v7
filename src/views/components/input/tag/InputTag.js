@@ -312,7 +312,7 @@ class InputTag extends Component {
 
                       return item;
                     })
-                  : null
+                  : []
               }
               addItemFunction={(( selectedItems, newItem ) => {
                 return selectedItems.filter( i => (

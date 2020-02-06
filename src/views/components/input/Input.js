@@ -149,6 +149,7 @@ class Input extends Component {
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
+            onChangeState={this.handleStateChange}
           />
         );
 

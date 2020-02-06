@@ -115,6 +115,13 @@ class FileInput extends Component {
       //   return true;
       // }
 
+      if (
+        value === null &&
+        value !== prevProps.value
+      ) {
+        return true;
+      }
+
       return false;
     };
 
