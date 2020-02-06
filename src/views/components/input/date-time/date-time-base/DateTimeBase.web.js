@@ -229,7 +229,7 @@ class DateTimeBase extends PureComponent {
         // eslint-disable-next-line
         this.state.timer = setTimeout(() => {
           this.props.onChangeValue( date );
-        }, 10000 );
+        }, 1000 );
       }
     });
   }
