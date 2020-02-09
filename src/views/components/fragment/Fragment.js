@@ -3,7 +3,9 @@ import { node, string } from 'prop-types';
 
 const Fragment = ({ children, key }) => {
   return (
-    <ReactFragment key={key}>
+    <ReactFragment
+      key={key}
+    >
       {children}
     </ReactFragment>
   );

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
+import UnityWrapper from '../../input/unity';
+import UnityControl from '../../input/unity/control';
 import { StatelessThemeHandler } from '../theme-handlers';
 import VisualControl from '../visual-control';
 import DataControl from '../data-control';
@@ -205,6 +207,41 @@ class FormGroup extends Component {
     };
   }
 
+  handleChangeFromUnity = ( form ) => ( data, { questionCode, ask, valuePath }) => {
+    const {
+      functions,
+    } = this.props;
+    const {
+      setFieldValue,
+      setFieldTouched,
+    } = form;
+    const {
+      handleChange,
+    } = functions;
+
+    // questionCode comes from Unity Scene
+
+    // ask: needs to come from Question. sent with Unity Context to Unity Wrapper?
+
+    // console.log({ ask: this.props.asks });
+
+    // valuePath: needs to come from Question. sent with Unity Context to Unity Wrapper?
+
+    // value
+    // sendValueOnChange
+
+    handleChange(
+      questionCode,
+      setFieldValue,
+      setFieldTouched,
+      ask,
+      valuePath,
+    )(
+      data,
+      true
+    );
+  }
+
   renderInput = ({
     ask,
     questionGroupCode,
@@ -258,6 +295,7 @@ class FormGroup extends Component {
         ask,
         valuePath,
       ),
+      valuePath,
       value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
       mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
@@ -283,7 +321,7 @@ class FormGroup extends Component {
       inheritedThemes: this.getInhertiableThemes(),
       ask,
       isClosed: this.props.isClosed,
-      placeholder: placeholder || question.placeholder || question.name,
+      placeholder: placeholder || question.placeholder,
       index,
     };
 
@@ -297,9 +335,14 @@ class FormGroup extends Component {
           // console.log({ value: values && dlv( values, valuePath ), maskValue: props.value });
 
           return (
-            <VisualControl
+            <UnityControl
               {...props}
-            />
+              asks={this.props.asks}
+            >
+              <VisualControl
+                {...props}
+              />
+            </UnityControl>
           );
         }}
       </DataControl>
@@ -579,6 +622,67 @@ class FormGroup extends Component {
                   {/* CONTENT WRAPPER ELEMENT */}
                   {contentWrapperComponent( subcomponentProps )}
                 </WrapperElement>
+              </Box>
+            );
+          }
+
+          if (
+            properties.renderAsUnityGroup
+          ) {
+            return (
+              <Box
+                key={questionCode}
+                justifyContent="center"
+                flexDirection="column"
+                componentID="GROUP-WRAPPER"
+                componentCode={questionCode}
+                {...subcomponentProps['group-wrapper']}
+              >
+                { hasLabel && !properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
+                { hasDescription ? descriptionComponent( subcomponentProps['group-description'] ) : null }
+                {(
+                  question &&
+                  properties.renderQuestionGroupInput &&
+                  !properties.renderQuestionGroupInputInsideClickable
+                ) ? (
+                    this.renderInput({
+                      ask: questionGroup,
+                      questionGroupCode: parentGroupCode,
+                      index,
+                      form,
+                      additionalProps: {
+                        flexWrapper: true,
+                      },
+                    })
+                  ) : null }
+                <UnityWrapper
+                  key={questionCode}
+                  questionCode={questionCode}
+                  onChangeValue={this.handleChangeFromUnity( form )}
+                  renderHeader={(
+                    <Fragment>
+                      { hasLabel && properties.renderQuestionGroupLabelInsideClickable ? labelComponent( subcomponentProps['group-label'] ) : null }
+                      {(
+                        question &&
+                        properties.renderQuestionGroupInput &&
+                        properties.renderQuestionGroupInputInsideClickable
+                      ) ? (
+                          this.renderInput({
+                            ask: questionGroup,
+                            questionGroupCode: parentGroupCode,
+                            index,
+                            form,
+                            additionalProps: {
+                              flexWrapper: true,
+                            },
+                          })
+                        ) : null }
+                    </Fragment>
+                  )}
+                >
+                  {/* CONTENT WRAPPER ELEMENT */}
+                  {contentWrapperComponent( subcomponentProps )}
+                </UnityWrapper>
               </Box>
             );
           }

@@ -17,6 +17,7 @@ class InputTag extends Component {
     itemValueKey: 'value',
     itemIdKey: 'id',
     allowNewTags: true,
+    allowInvalidSelection: false,
   }
 
   static propTypes = {
@@ -29,6 +30,7 @@ class InputTag extends Component {
     value: string,
     allowNewTags: bool,
     allowMultipleSelection: bool,
+    allowInvalidSelection: bool,
     testID: string,
     onBlur: func,
     nonTabable: bool,
@@ -53,8 +55,9 @@ class InputTag extends Component {
   }
 
   shouldComponentUpdate( nextProps ) {
-    if ( nextProps.items !== this.props.items )
+    if ( nextProps.items !== this.props.items ) {
       return true;
+    }
 
     return false;
   }
@@ -64,24 +67,55 @@ class InputTag extends Component {
   }
 
   addItemToPreSelection = ( item, callback ) => {
-    const { itemValueKey } = this.props;
+    const { itemValueKey, allowInvalidSelection, items } = this.props;
 
     this.setState(
       ({ preSelected }) => ({
         preSelected: preSelected.filter( i => i[itemValueKey] === item[itemValueKey] ).length > 0
-          ? preSelected.filter( i => i[itemValueKey] !== item[itemValueKey] )
-          : [...preSelected, item],
+          ? preSelected
+            .filter( v => (
+              allowInvalidSelection
+                ? true
+                : items.filter( i  => {
+                  return isObject( v )
+                    ? i[itemValueKey] === v[itemValueKey]
+                    : i[itemValueKey] === v;}
+                ).length > 0
+            ))
+            .filter( i => i[itemValueKey] !== item[itemValueKey] )
+          : [
+            ...preSelected.filter( v => (
+              allowInvalidSelection
+                ? true
+                : items.filter( i  => {
+                  return isObject( v )
+                    ? i[itemValueKey] === v[itemValueKey]
+                    : i[itemValueKey] === v;}
+                ).length > 0
+            )),
+            item,
+          ],
       }), () => {
         if ( callback ) callback( this.state.preSelected );
       });
   }
 
   removeItemToPreSelection = ( item ) => {
-    const { itemValueKey } = this.props;
+    const { itemValueKey, allowInvalidSelection, items } = this.props;
 
     this.setState(
       ({ preSelected }) => ({
-        preSelected: preSelected.filter( i => i[itemValueKey] !== item[itemValueKey] ),
+        preSelected: preSelected
+        .filter( v => (
+          allowInvalidSelection
+            ? true
+            : items.filter( i  => {
+              return isObject( v )
+                ? i[itemValueKey] === v[itemValueKey]
+                : i[itemValueKey] === v;}
+            ).length > 0
+        ))
+          .filter( i => i[itemValueKey] !== item[itemValueKey] ),
       })
     );
   }
@@ -93,12 +127,23 @@ class InputTag extends Component {
   }
 
   handleChange = selectedItems => {
-    // console.log( 'handleChange', selectedItems );
-    if ( this.props.onChangeValue ) {
-      this.props.onChangeValue( selectedItems.map( i => i[this.props.itemValueKey]
-        ? i[this.props.itemValueKey]
-        : i
-      ));
+    const { allowInvalidSelection, items, itemValueKey, onChangeValue } = this.props;
+
+    if ( onChangeValue ) {
+      onChangeValue( selectedItems
+        .filter( v => (
+          allowInvalidSelection
+            ? true
+            : items.filter( i  => {
+              return isObject( v )
+                ? i[itemValueKey] === v[itemValueKey]
+                : i[itemValueKey] === v;}
+            ).length > 0
+        ))
+        .map( i => i[itemValueKey]
+          ? i[itemValueKey]
+          : i
+        ));
     }
   }
 
@@ -136,6 +181,8 @@ class InputTag extends Component {
     handleOpenMenu,
     isOpen,
     selectItem,
+    selectedItems,
+    removeItem,
   }) => {
     const itemString = isObject( item ) ? item[this.props.itemStringKey] : item;
     const itemId = isObject( item ) ? item[this.props.itemValueKey] : item;
@@ -181,6 +228,13 @@ class InputTag extends Component {
         if ( handleCloseMenu ) handleCloseMenu();
         break;
 
+      case 'Backspace':
+        if ( isArray( selectedItems, { ofMinLength: 1 }) && !this.props.allowMultipleSelection ) {
+          removeItem( selectedItems[0] );
+        }
+
+        break;
+
       default:
         if ( maxIndex > 0 ) {
           setHighlightedIndex( 0 );
@@ -207,6 +261,7 @@ class InputTag extends Component {
       itemValueKey,
       allowNewTags,
       allowMultipleSelection,
+      allowInvalidSelection,
       testID,
       onBlur, // eslint-disable-line no-unused-vars
       nonTabable,
@@ -235,18 +290,29 @@ class InputTag extends Component {
               itemToString={this.itemToString}
               selectedItems={
                 isArray( value )
-                  ? value.map( i => {
-                    const item = isObject( i )
-                      ? items.filter( x => x[itemValueKey] === i[itemValueKey] ).length > 0
-                        ? items.filter( x => x[itemValueKey] === i[itemValueKey] )[0]
-                        : i
-                      : items.filter( x => x[itemValueKey] === i ).length > 0
-                        ? items.filter( x => x[itemValueKey] === i )[0]
-                        : { [itemStringKey]: i, [itemValueKey]: i };
+                  ? value
+                    .filter( v => {
+                      return allowInvalidSelection
+                        ? true
+                        : items.filter( i  => {
+                          return isObject( v )
+                            ? i[itemValueKey] === v[itemValueKey]
+                            : i[itemValueKey] === v;}
+                        ).length > 0;
+                    })
+                    .map( v => {
+                      const item = isObject( v )
+                        ? items.filter( i => i[itemValueKey] === v[itemValueKey] ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v[itemValueKey] )[0]
+                          : v
+                        : items.filter( i => i[itemValueKey] === v ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v )[0]
+                          : { [itemStringKey]: v, [itemValueKey]: v }
+                          ;
 
-                    return item;
-                  })
-                  : null
+                      return item;
+                    })
+                  : []
               }
               addItemFunction={(( selectedItems, newItem ) => {
                 return selectedItems.filter( i => (
@@ -259,6 +325,7 @@ class InputTag extends Component {
                 selectedItems.filter( i => i[itemValueKey] !== newItem[itemValueKey] )
               ))}
             >
+
               {({
                 getRootProps,
                 getInputProps,
@@ -289,7 +356,7 @@ class InputTag extends Component {
                     );
                   });
 
-                  if ( !isMatch ) {
+                  if ( !isMatch && allowInvalidSelection ) {
                     userCreatedTags.push( selectedItem );
                   }
                 });
@@ -300,6 +367,7 @@ class InputTag extends Component {
                       ? [inputValue] : [] )
                   .concat( userCreatedTags )
                   .filter( this.handleFilter( inputValue ));
+                  // .slice( 0, 10 );
 
                 const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
 
@@ -402,6 +470,8 @@ class InputTag extends Component {
                               handleOpenMenu,
                               isOpen,
                               selectItem,
+                              removeItem,
+                              selectedItems,
                             });
                           }}
                           nonTabable={nonTabable}
@@ -418,7 +488,7 @@ class InputTag extends Component {
                           >
                             {(
                               isArray( filteredItems ) ||
-                                inputValue.length > 0
+                                inputValue.length > 3
                             ) ? (
                                 filteredItems
                                   .map(( item, index ) => {

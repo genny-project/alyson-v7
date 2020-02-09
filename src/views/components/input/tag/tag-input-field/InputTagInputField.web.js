@@ -32,7 +32,6 @@ class InputTagInputField extends Component {
   }
 
   handleKeyPress = ( event ) => {
-    // console.log( 'keypress', event.nativeEvent.key );
     if ( this.props.onKeyPress ) this.props.onKeyPress( event.nativeEvent.key );
   }
 
@@ -97,10 +96,10 @@ class InputTagInputField extends Component {
               ...restProps,
               type: 'text',
               width: '100%',
-              value: ( allowMultipleSelection ? inputValue : isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || '',
+              value: ( allowMultipleSelection ? inputValue : ( isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || inputValue ) || '',
               ...stateBasedProps,
             })}
-            disabled={!allowMultipleSelection}
+            // disabled={!allowMultipleSelection}
             cursor={allowMultipleSelection ? 'cursor' : 'pointer'}
             updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
@@ -121,8 +120,8 @@ class InputTagInputField extends Component {
             zIndex={5}
           >
             <Icon
-              name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
-              color="black"
+              name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
+              color="blue"
               size="md"
               {...iconProps}
             />

@@ -212,8 +212,8 @@ class Form extends Component {
         const value = dlv( attributes, `${ask.targetCode}.${ask.attributeCode}.value` );
         // console.log('ask', ask, value, value || null);
 
-        if ( value !== null || ask.mandatory )
-          askValue = value !== null ? value : null;
+        if ( value != null || ask.mandatory )
+          askValue = value != null ? value : null;
       }
 
       const childValues = {};
@@ -648,7 +648,6 @@ class Form extends Component {
     sendOnChange,
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
-
     if ( value == null )
       return;
 
@@ -657,8 +656,9 @@ class Form extends Component {
 
     dset( this.values, valuePath, value );
 
-    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath }))
+    if ( sendOnChange && this.shouldSendAnswer({ value, valuePath })) {
       this.sendAnswer({ ask, value, valuePath });
+    }
   }
 
   handleFocusNextInput = ( questionGroupCode, currentFocusedIndex ) => () => {

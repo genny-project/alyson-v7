@@ -192,6 +192,8 @@ class Touchable extends Component {
   }
 
   render() {
+//    console.log( 'Props inside Touchable---->', this );
+
     const {
       withFeedback,
       children,
@@ -289,7 +291,7 @@ class Touchable extends Component {
       flexShrink,
       flexDirection,
       flexWrap,
-      backgroundColor,
+      backgroundColor: disabled ? '#ddd' : backgroundColor, // TODO - remove ternary when state based themes are fixed from back end
       position: (
         (
           position === 'sticky' &&
@@ -358,6 +360,7 @@ class Touchable extends Component {
           data-component-type="TEXT"
           data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
           data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
+          testID={this.props.testID}
         >
           {children}
         </Element>

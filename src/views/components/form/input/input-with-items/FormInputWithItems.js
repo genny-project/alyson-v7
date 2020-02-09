@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { object, func, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes, isString, isInteger } from '../../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, filterThemes, getPropsFromThemes, isString, isInteger, sort } from '../../../../../utils';
 
 class FormInputWithItems extends Component {
   static propTypes = {
@@ -212,7 +212,9 @@ class FormInputWithItems extends Component {
 
     const itemsWithThemes = this.getThemesForItems( items );
 
-    return children({ items: itemsWithThemes });
+    return children({
+      items: sort( itemsWithThemes, { paths: ['weight'], direction: 'desc' }),
+    });
   }
 }
 

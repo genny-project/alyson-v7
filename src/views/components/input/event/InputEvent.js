@@ -63,6 +63,7 @@ class InputEvent extends Component {
           return (
             <EventTouchable
               {...restProps}
+              disabled={!this.props.editable || this.props.disabled}
               onBlur={null}
               withFeedback
               eventType={messageType}

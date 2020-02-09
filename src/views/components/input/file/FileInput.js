@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { bool, func, array, arrayOf, string, number, object } from 'prop-types';
-import axios from 'axios';
 // import prettierBytes from 'prettier-bytes';
 import { Box, Text, Touchable, Icon, Fragment, ActivityIndicator } from '../..';
 import InputFileItem from './file-item';
+import { isArray, isString, isObject, isInteger, Api, createFormDataFromFiles } from '../../../../utils';
 import InputFilePlaceholder from './file-placeholder';
-import { isArray, isString, isObject, isInteger } from '../../../../utils';
-import store from '../../../../redux/store';
 // import config from '../../../../config';
 import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
@@ -52,6 +50,7 @@ class FileInput extends Component {
     isClosed: bool,
     showName: bool,
     placeholder: string,
+    testID: string,
   };
 
   constructor( props ) {
@@ -116,6 +115,13 @@ class FileInput extends Component {
       //   return true;
       // }
 
+      if (
+        value === null &&
+        value !== prevProps.value
+      ) {
+        return true;
+      }
+
       return false;
     };
 
@@ -132,6 +138,12 @@ class FileInput extends Component {
     const { files } = input;
 
     return files;
+  };
+
+  clearFilesFromInput = () => {
+    const input = this.inputFileNew.current;
+
+    input.value = null;
   };
 
   convertFilesToStateFormat = ( files ) => {
@@ -165,7 +177,10 @@ class FileInput extends Component {
 
     this.setState( state => ({
       selectedFiles: [
-        ...state.selectedFiles.filter( file => !fileNames.includes( file.name )),
+        ...state.selectedFiles.filter( file =>
+          isArray( fileNames, { ofMinLength: 1 }) &&
+          !fileNames.includes( file.name )
+        ),
         ...formattedFiles,
       ],
     }));
@@ -175,44 +190,24 @@ class FileInput extends Component {
     console.log('This method will send files to the backend'); //eslint-disable-line
   }
 
-  uploadFile( formData ) {
-    const token = store.getState().keycloak.accessToken;
-    const keycloakData = store.getState().keycloak.data;
-
-    const URL = `${keycloakData.ENV_MEDIA_PROXY_URL}`;
-
-    if ( !isString( URL, { ofMinLength: 1 })) {
-      console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
-
-      return;
-    }
-
-    const headers = {
-      'Content-Type': 'multipart/form-data',
-      'Authorization': `bearer ${token}`,
-    };
-
+  uploadFile = async formData => {
     this.setState({
       uploading: true,
       error: null,
     });
 
-    axios.post( URL, formData, {
-      headers: headers,
-    })
-    .then(( response ) => {
-      // handle success
-      console.log( "FILE_UPLOAD_SUCCESS" ); // eslint-disable-line
-      console.warn({ response }); // eslint-disable-line
+    try {
+      const response = await Api.postMediaFile({
+        data: formData,
+      });
+      console.log( "FILE_UPLOAD_SUCCESS", response ); // eslint-disable-line
 
       if ( isArray( response.data.files )) {
-        const formattedUrls = response.data.files.map( file => ({ name: file.name, url: `${URL}/${file.uuid}`, uuid: file.uuid }));
-
         this.setState( state => ({
           uploading: false,
           selectedFiles: [
             ...state.selectedFiles.map( file => {
-              const matchingFileWithURL = formattedUrls.find( fileWithURL => (
+              const matchingFileWithURL = response.data.files.find( fileWithURL => (
                 fileWithURL.name === file.name
               ));
               // check if file name matches
@@ -223,7 +218,7 @@ class FileInput extends Component {
                 return {
                   ...file,
                   uploadURL: matchingFileWithURL.url,
-                  id: matchingFileWithURL.uuid,
+                  uuid: matchingFileWithURL.uuid,
                 };
               }
 
@@ -243,65 +238,45 @@ class FileInput extends Component {
           }
         });
       }
-    })
-    .catch(( response ) => {
-      // handle error
-      console.log( response, "FILE_UPLOAD_FAILURE" ); // eslint-disable-line
+    } catch ( error ) {
+      console.error( 'FILE_UPLOAD_FAILURE', error );
       this.setState( state => ({
         uploading: false,
         selectedFiles: [
           ...state.selectedFiles.filter( file => isObject( file, { withProperty: 'uploadURL' })),
         ],
-        error: response.message,
+        error: error,
       }));
-    });
-  }
-
-  deleteFile( file ) {
-    const token = store.getState().keycloak.accessToken;
-    const URL = file.uploadURL;
-
-    if ( !isString( URL, { ofMinLength: 1 })) {
-      console.warn( 'variable \'ENV_FILE_UPLOAD_URL\' is not defined' ); // eslint-disable-line
-
-      return;
     }
+  };
 
-    const headers = {
-      // 'Content-Type': 'multipart/form-data',
-      Authorization: `bearer ${token}`,
-    };
-
+  deleteFile = async ( file ) => {
     this.setState({
       deleting: true,
       error: null,
     });
 
-    axios.delete( URL, {
-      headers: headers,
-    })
-    .then(( response ) => {
-      // handle success
-      console.log( "FILE_DELETE_SUCCESS" ); // eslint-disable-line
-      console.warn({ response }); // eslint-disable-line
+    try {
+      const response = await Api.deleteMediaFile( file.uploadURL );
+      console.log( "FILE_DELETE_SUCCESS", response ); // eslint-disable-line
 
       this.setState( state => ({
         deleting: false,
         selectedFiles: state.selectedFiles.filter( item => item.name !== file.name ),
       }), () => {
+        this.clearFilesFromInput();
+
         if ( this.props.onChangeValue ) {
           this.props.onChangeValue( this.state.selectedFiles ); // send the URl to Genny system
         }
       });
-    })
-    .catch(( response ) => {
-      // handle error
-      console.log( response, "FILE_DELETE_FAILURE" ); // eslint-disable-line
+    } catch ( error ) {
+      console.error( 'FILE_DELETE_FAILURE', error );
       this.setState({
         deleting: false,
-        error: response.message,
+        error: error,
       });
-    });
+    }
   }
 
   handleClickOnHiddenButton = () => {
@@ -309,6 +284,7 @@ class FileInput extends Component {
   };
 
   handleAddFile = () => {
+    console.warn( 'handleAddFile' ); // eslint-disable-line
     const allFiles = this.getFilesFromInput();
     const allFilesArray = Array.from( allFiles );
     const { maxNumberOfFiles, maxFileSize, maxTotalFileSize } = this.props;
@@ -395,7 +371,9 @@ class FileInput extends Component {
           formData.append( 'file', pair );
         }
 
-        this.uploadFile( formData );
+        const formData2 = createFormDataFromFiles( allFiles );
+
+        this.uploadFile( formData2 );
       }
       else {
         console.warn( 'Invalid: file size exceeds limit' ); // eslint-disable-line
@@ -443,7 +421,7 @@ class FileInput extends Component {
     } = this.state;
 
     const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
-    const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
+    const hasText = !iconOnly && isObject( question, { withProperty: 'name' }) && isString( question.name, { isNotSameAs: ' ' });
     const isInputDisabled = this.props.disabled ||
       isInteger( maxNumberOfFiles ) && selectedFiles.length >= maxNumberOfFiles;
 
@@ -559,6 +537,7 @@ class FileInput extends Component {
                       componentID="INPUT-FIELD"
                       onChangeState={updateState( 'input-field' )}
                       {...componentProps['input-field']}
+                      testID={this.props.testID}
                     >
                       { hasIcon
                         ? (
@@ -603,6 +582,7 @@ class FileInput extends Component {
                       name="fileupload"
                       style={{ display: 'none' }}
                       accept={this.props.allowedFileTypes.toString( ',' )}
+                      id="file-input-id"
                     />
                   </Fragment>
                 ) : null

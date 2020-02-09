@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
 import { Text } from '../index';
@@ -30,6 +31,9 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
+import Unity from './unity';
+import Progress from './progress';
+import HtmlEditor from './html-editor';
 
 /* maps the component to  */
 
@@ -145,6 +149,7 @@ class Input extends Component {
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
+            onChangeState={this.handleStateChange}
           />
         );
 
@@ -373,6 +378,10 @@ class Input extends Component {
       case 'texteditor':
         return <RichTextEditor {...inputProps} />;
 
+      case 'html-editor':
+      case 'htmleditor':
+        return <HtmlEditor {...inputProps} />;
+
       case 'event':
       case 'buttonevent':
       case 'form previous submit':
@@ -405,6 +414,22 @@ class Input extends Component {
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
+          />
+        );
+      case 'unity':
+        return (
+          <Unity
+            {...inputProps}
+            ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'progress':
+        return (
+          <Progress
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => this.input = input}
           />
         );
 

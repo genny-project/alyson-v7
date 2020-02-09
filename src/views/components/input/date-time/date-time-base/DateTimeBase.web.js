@@ -94,7 +94,7 @@ class DateTimeBase extends PureComponent {
 
   componentDidUpdate( prevProps ) {
     if (
-      this.props.value != null &&
+      // this.props.value != null &&
       prevProps.value !== this.props.value
     ) {
       this.setSelectedItem();
@@ -102,7 +102,7 @@ class DateTimeBase extends PureComponent {
   }
 
   setSelectedItem = () => {
-    if ( this.props.value ) {
+    if ( isString( this.props.value ) || this.props.value === null ) {
       this.setState({
         value: this.props.value,
       });
@@ -661,14 +661,14 @@ class DateTimeBase extends PureComponent {
   render() {
     const {
       displayFormat,
-      value,
+      // value,
       // testID,
       onChangeValue, // eslint-disable-line no-unused-vars
       children,
       subcomponentProps,
     } = this.props;
 
-    const { isCalendarOpen } = this.state;
+    const { isCalendarOpen, value } = this.state;
 
     return (
       // STATE HOLDER
@@ -685,13 +685,16 @@ class DateTimeBase extends PureComponent {
         }) => {
           return (
             <Downshift
-              defaultInputValue={value}
+              // defaultInputValue={this.state.value}
+              defaultInputValue={value ? format( value, displayFormat ) : null}
               onChange={this.handleChange}
               itemToString={date => {
-                return date ? format( date, displayFormat ) : '';
+                const newValue = date ? format( date, displayFormat ) : '';
+
+                return newValue;
               }}
               isOpen={isCalendarOpen}
-              selectedItem={this.state.value}
+              selectedItem={value}
             >
               {({
                 getInputProps,
