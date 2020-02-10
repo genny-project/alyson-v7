@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { node, string } from 'prop-types';
+import { node, string, func } from 'prop-types';
 import { Touchable, Area  } from '../../index';
 import MenuConsumer from '../consumer';
 
@@ -7,10 +7,11 @@ class MenuButton extends Component {
   static propTypes = {
     children: node.isRequired,
     testID: string,
+    onPress: func,
   }
 
   render() {
-    const { children, testID, ...restProps } = this.props;
+    const { children, testID, onPress, ...restProps } = this.props;
 
     return (
       <MenuConsumer>
@@ -28,6 +29,7 @@ class MenuButton extends Component {
                     onPress={( event ) => {
                       props.updateArea();
                       handleToggle( event );
+                      onPress();
                     }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"

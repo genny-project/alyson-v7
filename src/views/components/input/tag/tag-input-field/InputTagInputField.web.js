@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { object, func, bool, string, node, array } from 'prop-types';
 import { isString } from '../../../../../utils';
-import { Box, Input, Icon, Touchable } from '../../../index';
+import { Box, Input, Icon, /* Touchable, */ MenuButton } from '../../../index';
 
 class InputTagInputField extends Component {
   static propTypes = {
@@ -76,7 +76,7 @@ class InputTagInputField extends Component {
     const selectedItem = selectedItems.map( item => item.label ).join();
 
     return (
-      <Touchable
+      <MenuButton
         onPress={() => {
           // console.log( 'touchable press', this.state.focusing, this.state.focused, isOpen );
           this.state.focusing ? null : onPress();
@@ -86,6 +86,17 @@ class InputTagInputField extends Component {
         }}
         accessibilityRole="link"
       >
+
+        {/* {<Touchable
+          onPress={() => {
+            // console.log( 'touchable press', this.state.focusing, this.state.focused, isOpen );
+            this.state.focusing ? null : onPress();
+            this.setState({
+              focusing: false,
+            });
+          }}
+          accessibilityRole="link"
+        > */}
         <Box
           zIndex={10}
           position="relative"
@@ -99,7 +110,7 @@ class InputTagInputField extends Component {
               value: ( allowMultipleSelection ? inputValue : ( isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || inputValue ) || '',
               ...stateBasedProps,
             })}
-            // disabled={!allowMultipleSelection}
+              // disabled={!allowMultipleSelection}
             cursor={allowMultipleSelection ? 'cursor' : 'pointer'}
             updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
@@ -128,7 +139,8 @@ class InputTagInputField extends Component {
           </Box>
           {children}
         </Box>
-      </Touchable>
+        {/* </Touchable> */}
+      </MenuButton>
     );
   }
 }

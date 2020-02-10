@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { node, bool } from 'prop-types';
-import { Box } from '../../../index';
+import { /* Box, */ MenuContent } from '../../../index';
 
 class InputTagSuggestionContainer extends Component {
   static propTypes = {
@@ -14,31 +14,39 @@ class InputTagSuggestionContainer extends Component {
     if ( !isOpen ) return null;
 
     return (
-      <Box
-        flexDirection="column"
-        position="absolute"
+      <MenuContent
+        ref={input => this.input = input}
         backgroundColor="white"
-        top={30}
-        left={0}
-        width="100%"
-        zIndex={100}
-        // borderWidth={2}
-        // borderStyle="solid"
-        // borderColor="#DDD"
-        cleanStyleObject
-        maxHeight="11rem"
+        maxHeight="50vh"
         overflow="auto"
-        shadowColor="#000"
-        shadowOpacity={0.4}
-        shadowRadius={5}
-        shadowOffset={{
-          width: 0,
-          height: 0,
-        }}
         {...restProps}
       >
+        {/* <Box
+          flexDirection="column"
+          position="absolute"
+          backgroundColor="white"
+          top={30}
+          left={0}
+          width="100%"
+          zIndex={100}
+          // borderWidth={2}
+          // borderStyle="solid"
+          // borderColor="#DDD"
+          cleanStyleObject
+          maxHeight="11rem"
+          overflow="auto"
+          shadowColor="#000"
+          shadowOpacity={0.4}
+          shadowRadius={5}
+          shadowOffset={{
+            width: 0,
+            height: 0,
+          }}
+          {...restProps}
+        > */}
         {children}
-      </Box>
+        {/* </Box> */}
+      </MenuContent>
     );
   }
 }
