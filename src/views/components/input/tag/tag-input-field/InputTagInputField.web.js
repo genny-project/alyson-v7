@@ -75,6 +75,8 @@ class InputTagInputField extends Component {
     } = this.props;
     const selectedItem = selectedItems.map( item => item.label ).join();
 
+    // console.log( restProps );
+
     return (
       <MenuButton
         onPress={() => {
@@ -83,20 +85,10 @@ class InputTagInputField extends Component {
           this.setState({
             focusing: false,
           });
+          console.log( 'menu callback focus' );
         }}
         accessibilityRole="link"
       >
-
-        {/* {<Touchable
-          onPress={() => {
-            // console.log( 'touchable press', this.state.focusing, this.state.focused, isOpen );
-            this.state.focusing ? null : onPress();
-            this.setState({
-              focusing: false,
-            });
-          }}
-          accessibilityRole="link"
-        > */}
         <Box
           zIndex={10}
           position="relative"
@@ -115,9 +107,11 @@ class InputTagInputField extends Component {
             updateValueWhenFocused
             onKeyPress={this.handleKeyPress}
             onFocus={() => {
+              console.log( 'input focus' );
               onFocusInput();
               this.handleState( 'focus' );
             }}
+            onBlur={() => {console.log( 'input blur' );}}
             testID={`input-tag ${testID}`}
             {...( nonTabable ? { tabIndex: '-1' } : null )}
             blurOnSubmit={allowMultipleSelection ? false : true}
@@ -139,7 +133,6 @@ class InputTagInputField extends Component {
           </Box>
           {children}
         </Box>
-        {/* </Touchable> */}
       </MenuButton>
     );
   }

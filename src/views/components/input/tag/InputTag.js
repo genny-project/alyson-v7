@@ -121,6 +121,7 @@ class InputTag extends Component {
   }
 
   handleRef = ( ref, id ) => {
+    console.log( 'handle ref' );
     if ( ref ) {
       this.inputs[id] = ref;
     }
@@ -462,9 +463,9 @@ class InputTag extends Component {
                                   setHighlightedIndex( -1 );
                                   handleOpenMenu();
                                 }}
-                                onFocusTouchable={() => {
-                                  if ( this.inputs && this.inputs['input'] ) this.inputs['input'].focus();
-                                }}
+                                // onFocusTouchable={() => {
+                                //   if ( this.inputs && this.inputs['input'] ) this.inputs['input'].focus();
+                                // }}
                                 selectedItems={selectedItems}
                                 allowMultipleSelection={allowMultipleSelection}
                                 onRef={this.handleRef}
@@ -499,8 +500,8 @@ class InputTag extends Component {
                                   {...componentProps['input-item-wrapper']}
                                 >
                                   {(
-                                    isArray( filteredItems ) ||
-                                      inputValue.length > 3
+                                    isArray( filteredItems, { ofMinLength: 1 }) ||
+                                      isString( inputValue, { ofMinLength: 3 })
                                   ) ? (
                                       filteredItems
                                         .map(( item, index ) => {
@@ -572,13 +573,14 @@ class InputTag extends Component {
                                       >
                                         <Text
                                           align="center"
-                                          color="grey"
+                                          color="black"
                                           size="xs"
                                         >
-                                          {inputValue.length > 0
+                                          {/* { isString( inputValue, { ofMinLength: 1 })
                                             ? 'No results'
                                             : 'Please type...'
-                                          }
+                                          } */}
+                                          No items to show
                                         </Text>
                                       </Box>
                                     )}
