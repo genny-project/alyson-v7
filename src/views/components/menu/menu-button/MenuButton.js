@@ -29,7 +29,7 @@ class MenuButton extends Component {
                     onPress={( event ) => {
                       props.updateArea();
                       handleToggle( event );
-                      onPress();
+                      onPress ? onPress() : null;
                     }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"
