@@ -135,7 +135,7 @@ class MenuWrapper extends Component {
           buttonArea: buttonArea,
         }}
       >
-        {children( this.state )}
+        {children({ ...this.state, handleOpen: this.handleOpen })}
       </MenuProvider>
     );
   }

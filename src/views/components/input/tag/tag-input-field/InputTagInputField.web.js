@@ -86,56 +86,46 @@ class InputTagInputField extends Component {
             focusing: false,
           });
         }}
-        onFocus={() => {
-          console.log( 'touchable focus' );
-        }}
         accessibilityRole="link"
+        width="100%"
       >
-        <Box
-          zIndex={10}
-          position="relative"
-          flexDirection="row"
-        >
-          <Input
-            {...getInputProps({
-              ...restProps,
+        <Input
+          {...getInputProps({
+            ...restProps,
 
-              type: 'text',
-              width: '100%',
-              value: ( allowMultipleSelection ? inputValue : ( isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || inputValue ) || '',
-              ...stateBasedProps,
-            })}
+            type: 'text',
+            width: '100%',
+            value: ( allowMultipleSelection ? inputValue : ( isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || inputValue ) || '',
+            ...stateBasedProps,
+          })}
               // disabled={!allowMultipleSelection}
-            cursor={allowMultipleSelection ? 'cursor' : 'pointer'}
-            updateValueWhenFocused
-            onKeyPress={this.handleKeyPress}
-            onFocus={() => {
-              console.log( 'input focus' );
-              onFocusInput();
-              this.handleState( 'focus' );
-            }}
-            onBlur={() => {console.log( 'input blur' );}}
-            testID={`input-tag ${testID}`}
-            {...( nonTabable ? { tabIndex: '-1' } : null )}
-            blurOnSubmit={allowMultipleSelection ? false : true}
-            onChangeState={this.props.onChangeState}
+          cursor={allowMultipleSelection ? 'cursor' : 'pointer'}
+          updateValueWhenFocused
+          onKeyPress={this.handleKeyPress}
+          onFocus={() => {
+            onFocusInput();
+            this.handleState( 'focus' );
+          }}
+          testID={`input-tag ${testID}`}
+          {...( nonTabable ? { tabIndex: '-1' } : null )}
+          blurOnSubmit={allowMultipleSelection ? false : true}
+          onChangeState={this.props.onChangeState}
+        />
+        <Box
+          position="absolute"
+          height="100%"
+          alignItems="center"
+          right={10}
+          zIndex={5}
+        >
+          <Icon
+            name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
+            color="blue"
+            size="md"
+            {...iconProps}
           />
-          <Box
-            position="absolute"
-            height="100%"
-            alignItems="center"
-            right={10}
-            zIndex={5}
-          >
-            <Icon
-              name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
-              color="blue"
-              size="md"
-              {...iconProps}
-            />
-          </Box>
-          {children}
         </Box>
+        {children}
       </MenuButton>
     );
   }

@@ -19,6 +19,7 @@ class InputTagSuggestionContainer extends Component {
         backgroundColor="white"
         maxHeight="50vh"
         overflow="auto"
+        open
         {...restProps}
       >
         {/* <Box

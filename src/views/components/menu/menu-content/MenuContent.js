@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { node, string, number, oneOf } from 'prop-types';
+import { node, string, number, oneOf, bool } from 'prop-types';
 import { isObject, isInteger } from '../../../../utils';
 import { Box, Portal, Boundary, Area } from '../../index';
 import MenuConsumer from '../consumer';
@@ -9,6 +9,7 @@ class MenuContent extends Component {
     offsetX: 0,
     offsetY: 0,
     position: 'left',
+    autofocus: false,
   }
 
   // use GROUP_CONTENT_WRAPPER to change position
@@ -21,15 +22,24 @@ class MenuContent extends Component {
     position: oneOf( [
       'left', 'center', 'right',
     ] ),
+    autofocus: bool,
+    open: bool,
   }
 
   focus() {
-    if ( this.input )
+    if (
+      this.input &&
+      this.props.autofocus
+    ) {
       this.input.focus();
+    }
   }
 
   handleLayout = () => {
-    if ( this.input ) {
+    if (
+      this.input &&
+      this.props.autofocus
+    ) {
       this.input.focus();
     }
   }
@@ -39,7 +49,7 @@ class MenuContent extends Component {
   }
 
   render() {
-    const { children, testID, offsetX, offsetY, position, ...restProps } = this.props;
+    const { children, testID, offsetX, offsetY, position, autofocus, open, ...restProps } = this.props; // eslint-disable-line
 
     return (
       <MenuConsumer>
@@ -51,7 +61,7 @@ class MenuContent extends Component {
           handleContentFocus,
         }) => {
           return (
-            isOpen && (
+            ( isOpen ) && (
               <Portal>
                 <Boundary>
                   {({ boundaryAdjustedArea, updateBoundaryArea }) => {

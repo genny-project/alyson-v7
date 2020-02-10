@@ -121,7 +121,6 @@ class InputTag extends Component {
   }
 
   handleRef = ( ref, id ) => {
-    console.log( 'handle ref', ref, id );
     if ( ref ) {
       this.inputs[id] = ref;
     }
@@ -286,7 +285,9 @@ class InputTag extends Component {
         }) => {
           return (
             <Menu>
-              {({ /* isOpen */ }) => { // eslint-disable-line
+              {({ isOpen, handleOpen }) => { // eslint-disable-line
+                console.log({ handleOpen, isOpen });
+
                 return (
                   <MultiDownshift
                     allowMultipleSelection={allowMultipleSelection}
@@ -462,6 +463,8 @@ class InputTag extends Component {
                                 onFocusInput={() => {
                                   setHighlightedIndex( -1 );
                                   handleOpenMenu();
+                                  console.log( handleOpen );
+                                  handleOpen();
                                 }}
                                 // onFocusTouchable={() => {
                                 //   console.log( 'focus override', this.inputs, this.inputs && this.inputs['input'] );
@@ -493,9 +496,9 @@ class InputTag extends Component {
                                 stateBasedProps={componentProps['input-field']}
                                 onChangeState={updateState( 'input-field' )}
                               >
-
                                 {/* SUGGESTIONS CONTAINER */ }
                                 { /* MenuContent */ }
+                                { this.props.ask.questionCode === 'QUE_SELECT_INTERN_SUPERVISOR' && console.log({ isOpen, filteredItems, inputValue }) }
                                 <InputTagSuggestionContainer
                                   isOpen={isOpen}
                                   {...componentProps['input-item-wrapper']}

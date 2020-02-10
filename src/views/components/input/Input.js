@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
-import { Text, Fragment } from '../index';
+import { Text } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
 import InputDatePicker from './date-time/date-picker';
@@ -23,7 +23,6 @@ import InputPayment from './payment';
 import AudioRecord from './audio-record';
 import SegmentedControl from './segmented-control';
 import InputTag from './tag';
-import InputTagNew from './tag-new';
 import InputEvent from './event';
 import Signature from './signature';
 import RichTextEditor from './rich-text-editor';
@@ -224,20 +223,12 @@ class Input extends Component {
 
       case 'dropdown':
         return (
-          <Fragment>
-            <InputTag
-              {...inputProps}
-              allowMultipleSelection={false}
-              allowNewTags={false}
-              ref={input => ( this.input = input )}
-            />
-            <InputTagNew
-              {...inputProps}
-              allowMultipleSelection={false}
-              allowNewTags={false}
-              ref={input => ( this.input = input )}
-            />
-          </Fragment>
+          <InputTag
+            {...inputProps}
+            allowMultipleSelection={false}
+            allowNewTags={false}
+            ref={input => ( this.input = input )}
+          />
         );
 
       case 'checkbox':

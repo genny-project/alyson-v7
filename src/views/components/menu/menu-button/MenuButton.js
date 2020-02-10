@@ -33,15 +33,15 @@ class MenuButton extends Component {
                     }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"
-                    onFocus={() => {
-                      console.log( 'touchable focus' );
-                    }}
-                    onBlur={() => {console.log( 'touchable blur' );}}
                   >
                     <span
                       ref={props.setObserve}
                       style={{
                         display: 'flex',
+                        width: '100%',
+                        zIndex: 10,
+                        position: 'relative',
+                        flexDirection: 'row',
                       }}
                     >
                       {children}
