@@ -27,13 +27,15 @@ class MenuButton extends Component {
                     withFeedback
                     testID={testID}
                     onPress={( event ) => {
-                      props.updateArea();
                       handleToggle( event );
                       onPress ? onPress() : null;
+                      props.updateArea();
                     }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"
-                    onFocus={() => {console.log( 'touchable focus' );}}
+                    onFocus={() => {
+                      console.log( 'touchable focus' );
+                    }}
                     onBlur={() => {console.log( 'touchable blur' );}}
                   >
                     <span
