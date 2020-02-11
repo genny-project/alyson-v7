@@ -61,7 +61,7 @@ class MenuContent extends Component {
           handleContentFocus,
         }) => {
           return (
-            ( isOpen ) && (
+            ( isOpen && buttonArea != null ) && (
               <Portal>
                 <Boundary>
                   {({ boundaryAdjustedArea, updateBoundaryArea }) => {

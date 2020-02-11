@@ -286,8 +286,6 @@ class InputTag extends Component {
           return (
             <Menu>
               {({ isOpen, handleOpen }) => { // eslint-disable-line
-                console.log({ handleOpen, isOpen });
-
                 return (
                   <MultiDownshift
                     allowMultipleSelection={allowMultipleSelection}
@@ -455,7 +453,10 @@ class InputTag extends Component {
                                 {...restProps}
                                 // inputProps={restProps}
                                 getInputProps={getInputProps}
-                                onPress={handleToggleMenu}
+                                onPress={() => {
+                                  handleToggleMenu();
+                                  handleOpen();
+                                }}
                                 isOpen={isOpen}
                                 inputValue={inputValue}
                                 onChangeValue={onInputValueChange}
@@ -463,7 +464,6 @@ class InputTag extends Component {
                                 onFocusInput={() => {
                                   setHighlightedIndex( -1 );
                                   handleOpenMenu();
-                                  console.log( handleOpen );
                                   handleOpen();
                                 }}
                                 // onFocusTouchable={() => {
@@ -498,7 +498,9 @@ class InputTag extends Component {
                               >
                                 {/* SUGGESTIONS CONTAINER */ }
                                 { /* MenuContent */ }
-                                { this.props.ask.questionCode === 'QUE_SELECT_INTERN_SUPERVISOR' && console.log({ isOpen, filteredItems, inputValue }) }
+
+                                {/* { this.props.ask.questionCode === 'QUE_SELECT_INTERN_SUPERVISOR' && console.log({ isOpen, filteredItems, inputValue }) } */}
+
                                 <InputTagSuggestionContainer
                                   isOpen={isOpen}
                                   {...componentProps['input-item-wrapper']}
