@@ -33,6 +33,7 @@ import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
 import Unity from './unity';
 import Progress from './progress';
+import HtmlEditor from './html-editor';
 
 /* maps the component to  */
 
@@ -84,8 +85,6 @@ class Input extends Component {
       type,
       dynamicWidth,
     };
-
-    // console.log( 'thisprospinsideinput:', this );
 
     const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
 
@@ -150,6 +149,7 @@ class Input extends Component {
             {...inputProps}
             {...inputFieldProps}
             ref={input => ( this.input = input )}
+            onChangeState={this.handleStateChange}
           />
         );
 
@@ -377,6 +377,10 @@ class Input extends Component {
       case 'editor':
       case 'texteditor':
         return <RichTextEditor {...inputProps} />;
+
+      case 'html-editor':
+      case 'htmleditor':
+        return <HtmlEditor {...inputProps} />;
 
       case 'event':
       case 'buttonevent':
