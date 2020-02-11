@@ -68,6 +68,10 @@ const themeBehaviourAttributes = {
     default: false,
     label: 'renderVisualControlIcon',
   },
+  PRI_IS_ICON_ONLY: {
+    default: false,
+    label: 'renderIconOnly',
+  },
   PRI_HAS_INPUT: {
     default: true,
     label: 'renderVisualControlInput',
