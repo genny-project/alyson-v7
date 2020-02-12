@@ -14,6 +14,7 @@ class InputTagInputField extends Component {
     onKeyPress: func,
     onRef: func,
     onFocusInput: func,
+    onBlurInput: func,
     children: node,
     isOpen: bool,
     allowMultipleSelection: bool,
@@ -64,7 +65,7 @@ class InputTagInputField extends Component {
       isOpen,
       testID,
       onFocusInput,
-      // onBlur,
+      onBlurInput,
       children,
       allowMultipleSelection,
       selectedItems,
@@ -80,14 +81,17 @@ class InputTagInputField extends Component {
     return (
       <MenuButton
         onPress={() => {
-          // console.log( 'touchable press', this.state.focusing, this.state.focused, isOpen );
+          // console.log( 'menu press', this.state.focusing );
           this.state.focusing ? null : onPress();
           this.setState({
             focusing: false,
           });
         }}
+        // onFocus={() => console.log( 'menu focus' )}
+        // onBlur={() => console.log( 'menu blur' )}
         accessibilityRole="link"
         width="100%"
+        suppressToggle
       >
         <Input
           {...getInputProps({
@@ -98,14 +102,16 @@ class InputTagInputField extends Component {
             value: ( allowMultipleSelection ? inputValue : ( isString( selectedItem, { ofMinLength: 1 }) ? selectedItem : this.props.placeholder ) || inputValue ) || '',
             ...stateBasedProps,
           })}
-              // disabled={!allowMultipleSelection}
+          // disabled={!allowMultipleSelection}
           cursor={allowMultipleSelection ? 'cursor' : 'pointer'}
           updateValueWhenFocused
           onKeyPress={this.handleKeyPress}
           onFocus={() => {
+            // console.log( 'input focus' );
             onFocusInput();
             this.handleState( 'focus' );
           }}
+          onBlur={onBlurInput}
           testID={`input-tag ${testID}`}
           {...( nonTabable ? { tabIndex: '-1' } : null )}
           blurOnSubmit={allowMultipleSelection ? false : true}

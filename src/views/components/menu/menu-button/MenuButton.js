@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { node, string, func } from 'prop-types';
+import { node, string, func, bool } from 'prop-types';
 import { Touchable, Area  } from '../../index';
 import MenuConsumer from '../consumer';
 
@@ -8,10 +8,11 @@ class MenuButton extends Component {
     children: node.isRequired,
     testID: string,
     onPress: func,
+    suppressToggle: bool,
   }
 
   render() {
-    const { children, testID, onPress, ...restProps } = this.props;
+    const { children, testID, onPress, suppressToggle, ...restProps } = this.props;
 
     return (
       <MenuConsumer>
@@ -27,12 +28,22 @@ class MenuButton extends Component {
                     withFeedback
                     testID={testID}
                     onPress={( event ) => {
-                      handleToggle( event );
+                      // console.log( 'touchable press' );
+                      !suppressToggle && handleToggle( event );
                       onPress ? onPress() : null;
                       props.updateArea();
                     }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"
+                    // onFocus={() => {
+                    //   console.log( 'touchable focus' );
+                    //   this.props.onFocus && this.props.onFocus();
+                    // }}
+                    // onBlur={() => {
+                    //   console.log( 'touchable blur' );
+                    //   this.props.onBlur && this.props.onBlur();
+                    // }}
+                    onLayout={() => props.updateArea()}
                   >
                     <span
                       ref={props.setObserve}

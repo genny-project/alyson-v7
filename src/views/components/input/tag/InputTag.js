@@ -179,6 +179,7 @@ class InputTag extends Component {
     selectMultipleItems,
     handleCloseMenu,
     handleOpenMenu,
+    handleOpen,
     isOpen,
     selectItem,
     selectedItems,
@@ -197,14 +198,20 @@ class InputTag extends Component {
 
     switch ( key ) {
       case 'ArrowDown':
-        if ( !isOpen ) handleOpenMenu();
+        if ( !isOpen ) {
+          handleOpenMenu();
+          handleOpen();
+        };
         setHighlightedIndex(
           highlightedIndex >= maxIndex || highlightedIndex == null
             ? 0 : highlightedIndex + 1
         );
         break;
       case 'ArrowUp':
-        if ( !isOpen ) handleOpenMenu();
+        if ( !isOpen ) {
+          handleOpenMenu();
+          handleOpen();
+        };
         setHighlightedIndex(
           highlightedIndex <= 0 || highlightedIndex == null
             ? maxIndex : highlightedIndex - 1
@@ -285,7 +292,7 @@ class InputTag extends Component {
         }) => {
           return (
             <Menu>
-              {({ isOpen, handleOpen }) => { // eslint-disable-line
+              {({ isOpen, handleOpen, handleToggle, handleClose }) => { // eslint-disable-line
                 return (
                   <MultiDownshift
                     allowMultipleSelection={allowMultipleSelection}
@@ -328,7 +335,6 @@ class InputTag extends Component {
                       selectedItems.filter( i => i[itemValueKey] !== newItem[itemValueKey] )
                     ))}
                   >
-
                     {({
                       getRootProps,
                       getInputProps,
@@ -455,7 +461,7 @@ class InputTag extends Component {
                                 getInputProps={getInputProps}
                                 onPress={() => {
                                   handleToggleMenu();
-                                  handleOpen();
+                                  handleToggle();
                                 }}
                                 isOpen={isOpen}
                                 inputValue={inputValue}
@@ -466,10 +472,10 @@ class InputTag extends Component {
                                   handleOpenMenu();
                                   handleOpen();
                                 }}
-                                // onFocusTouchable={() => {
-                                //   console.log( 'focus override', this.inputs, this.inputs && this.inputs['input'] );
-                                //   if ( this.inputs && this.inputs['input'] ) this.inputs['input'].focus();
-                                // }}
+                                onBlurInput={() => {
+                                  handleCloseMenu();
+                                  handleClose();
+                                }}
                                 selectedItems={selectedItems}
                                 allowMultipleSelection={allowMultipleSelection}
                                 onRef={( ref ) => this.handleRef( ref, 'input' )}
@@ -485,6 +491,7 @@ class InputTag extends Component {
                                     selectMultipleItems,
                                     handleCloseMenu,
                                     handleOpenMenu,
+                                    handleOpen,
                                     isOpen,
                                     selectItem,
                                     removeItem,
@@ -498,9 +505,6 @@ class InputTag extends Component {
                               >
                                 {/* SUGGESTIONS CONTAINER */ }
                                 { /* MenuContent */ }
-
-                                {/* { this.props.ask.questionCode === 'QUE_SELECT_INTERN_SUPERVISOR' && console.log({ isOpen, filteredItems, inputValue }) } */}
-
                                 <InputTagSuggestionContainer
                                   isOpen={isOpen}
                                   {...componentProps['input-item-wrapper']}
@@ -586,7 +590,7 @@ class InputTag extends Component {
                                             ? 'No results'
                                             : 'Please type...'
                                           } */}
-                                          No items to show
+                                          No results
                                         </Text>
                                       </Box>
                                     )}

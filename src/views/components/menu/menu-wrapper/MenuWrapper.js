@@ -67,7 +67,7 @@ class MenuWrapper extends Component {
   }
 
   handleToggle = () => {
-    console.warn( 'toggle', this.state.isOpen );
+    // console.warn( 'dropdown toggle', this.state.isOpen );
 
     this.setState( state => ({
       isOpen: !state.isOpen,
@@ -75,7 +75,7 @@ class MenuWrapper extends Component {
   }
 
   handleOpen = () => {
-    console.warn( 'open' );
+    // console.warn( 'dropdown open' );
 
     if ( this.props.disabled )
       return;
@@ -124,22 +124,24 @@ class MenuWrapper extends Component {
     const { children } = this.props;
     const { isOpen, buttonArea } = this.state;
 
+    const context = {
+      isOpen: isOpen,
+      handleToggle: this.handleToggle,
+      handleOpen: this.handleOpen,
+      handleClose: this.handleClose,
+      handleContentBlur: this.handleContentBlur,
+      handleContentFocus: this.handleContentFocus,
+      handlePressItem: this.handlePressItem,
+      setRef: this.setRef,
+      setButtonArea: this.setButtonArea,
+      buttonArea: buttonArea,
+    };
+
     return (
       <MenuProvider
-        value={{
-          isOpen: isOpen,
-          handleToggle: this.handleToggle,
-          handleOpen: this.handleOpen,
-          handleClose: this.handleClose,
-          handleContentBlur: this.handleContentBlur,
-          handleContentFocus: this.handleContentFocus,
-          handlePressItem: this.handlePressItem,
-          setRef: this.setRef,
-          setButtonArea: this.setButtonArea,
-          buttonArea: buttonArea,
-        }}
+        value={context}
       >
-        {children({ ...this.state, handleOpen: this.handleOpen })}
+        { children( context ) }
       </MenuProvider>
     );
   }

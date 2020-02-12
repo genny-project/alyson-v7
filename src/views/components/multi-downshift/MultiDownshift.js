@@ -147,6 +147,7 @@ class MultiDownshift extends React.Component {
   }
 
   handleToggleMenu = () => {
+    // console.warn( 'downshift toggle', this.state.isOpen );
     this.setState(
       ({ isOpen }) => {
         return {
@@ -156,12 +157,14 @@ class MultiDownshift extends React.Component {
   }
 
   handleOpenMenu = () => {
+    // console.warn( 'downshift open' );
     this.setState({
       isOpen: true,
     });
   }
 
   handleCloseMenu = () => {
+    // console.warn( 'downshift close' );
     this.setState({
       isOpen: false,
     });
