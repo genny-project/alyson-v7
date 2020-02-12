@@ -71,7 +71,7 @@ class FormGroup extends Component {
 
         this.state.themes,
         dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}.links` ),
-        nextProps,
+        this.props,
       )) {
         this.getThemes();
       }
