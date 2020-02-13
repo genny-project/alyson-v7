@@ -63,13 +63,15 @@ class FormGroup extends Component {
 
   componentDidUpdate( nextProps ) {
     if (  isObject( dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}` ))) {
+      // if ( shouldLog ) console.warn({ links: dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}.links` ) });
+
       if ( checkForNewLayoutLinks(
         /* Valid links are added to the state key that matches their
         link type, so check all the state arrays together */
 
         this.state.themes,
         dlv( nextProps, `asks.${nextProps.questionGroup.questionCode}.links` ),
-        nextProps,
+        this.props,
       )) {
         this.getThemes();
       }
@@ -102,6 +104,11 @@ class FormGroup extends Component {
   }
 
   updateThemes = ( links ) => {
+    const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP';
+    // const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_GRP';
+
+    if ( shouldLog ) console.error( 'updateThemes', JSON.stringify( links ));
+
     /* check if the stateKey is valid  */
     this.setState({
       ['themes']: [
@@ -158,9 +165,16 @@ class FormGroup extends Component {
       ),
     ];
 
+    // if ( shouldLog ) console.warn({ state: JSON.stringify( this.state.themes ), links: JSON.stringify( panelLinks ) });
+
+    // if ( shouldLog ) console.log( JSON.stringify({  ['THM_TABLE_CONTENT']: isObject( this.props.themes['THM_TABLE_CONTENT'] ), ['THM_WIDTH_100_PERCENT_NO_INHERIT']: isObject( this.props.themes['THM_WIDTH_100_PERCENT_NO_INHERIT'] ) }));
     // get props from theme links
     const inheritedThemeProps = getPropsFromThemes( inheritedLinks, this.props.themes );
-    const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
+    const themeProps = getPropsFromThemes( panelLinks, this.props.themes,  );
+
+    // if (
+    //   this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP'
+    // ) console.warn({ inheritedThemeProps, themeProps });
 
     const combinedThemeProps = objectMerge(
       isObject( this.props.inheritedProps ) ? this.props.inheritedProps : {},

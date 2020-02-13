@@ -24,6 +24,13 @@ const colors = {
   yellow: 'yellow',
 };
 
+const materialIconTypes = {
+  outlined: 'Outlined',
+  ['two-tone']: 'Two Tone',
+  round: 'Round',
+  sharp: 'Sharp',
+};
+
 const Icon = ({
   name,
   color = 'white',
@@ -32,8 +39,16 @@ const Icon = ({
   componentID,
   componentCode,
 }) => {
+  const materialIconType = isString( name, { includes: '__' })
+    ? name.split( '__' )[1]
+    : null;
+
+  const iconName = isString( name, { includes: '__' })
+    ? name.split( '__' )[0]
+    : name;
+
   const style = {
-    fontFamily: 'Material Icons',
+    fontFamily: `Material Icons${materialIconTypes[materialIconType] ? ` ${materialIconTypes[materialIconType]}` : ''}`,
     whiteSpace: 'nowrap',
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -54,8 +69,7 @@ const Icon = ({
       data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
       data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
     >
-      {name && name !== 'undefined' && name.includes( '-' ) ? name.replace( /-/g, '_' ) : name}
-
+      {iconName && iconName !== 'undefined' && iconName.includes( '-' ) ? iconName.replace( /-/g, '_' ) : iconName}
     </Text>
   );
 };

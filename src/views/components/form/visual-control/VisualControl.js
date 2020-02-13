@@ -84,7 +84,7 @@ class VisualControl extends Component {
       const hasNewLinks = checkForNewLayoutLinks(
         this.state.themes,
         dlv( nextProps, `asks.${nextProps.question.code}.links` ),
-        nextProps,
+        this.props,
       );
 
       if ( hasNewLinks ) {
