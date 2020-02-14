@@ -224,10 +224,10 @@ class InputTag extends Component {
           }
           else {
             selectItem( itemObject );
-            handleCloseMenu();
-            if ( this.inputs && this.inputs['input'] ) {
-              this.inputs['input'].blur();
-            }
+            // handleCloseMenu();
+            // if ( this.inputs && this.inputs['input'] ) {
+            //   this.inputs['input'].blur();
+            // }
           }
         }
         break;
@@ -293,37 +293,40 @@ class InputTag extends Component {
           return (
             <Menu>
               {({ isOpen, handleOpen, handleToggle, handleClose }) => { // eslint-disable-line
+                const newSelectedItems = isArray( value )
+                  ? value
+                    .filter( v => {
+                      return allowInvalidSelection
+                        ? true
+                        : items.filter( i  => {
+                          return isObject( v )
+                            ? i[itemValueKey] === v[itemValueKey]
+                            : i[itemValueKey] === v;}
+                        ).length > 0;
+                    })
+                    .map( v => {
+                      const item = isObject( v )
+                        ? items.filter( i => i[itemValueKey] === v[itemValueKey] ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v[itemValueKey] )[0]
+                          : v
+                        : items.filter( i => i[itemValueKey] === v ).length > 0
+                          ? items.filter( i => i[itemValueKey] === v )[0]
+                          : { [itemStringKey]: v, [itemValueKey]: v }
+                          ;
+
+                      return item;
+                    })
+                  : [];
+
+                if ( this.props.ask.questionCode === 'QUE_GENDER' ) console.log( 'value?', isArray( value ), newSelectedItems );
+
                 return (
                   <MultiDownshift
+                    log={this.props.ask.questionCode === 'QUE_GENDER'}
                     allowMultipleSelection={allowMultipleSelection}
                     onChange={this.handleChange}
                     itemToString={this.itemToString}
-                    selectedItems={
-                      isArray( value )
-                        ? value
-                          .filter( v => {
-                            return allowInvalidSelection
-                              ? true
-                              : items.filter( i  => {
-                                return isObject( v )
-                                  ? i[itemValueKey] === v[itemValueKey]
-                                  : i[itemValueKey] === v;}
-                              ).length > 0;
-                          })
-                          .map( v => {
-                            const item = isObject( v )
-                              ? items.filter( i => i[itemValueKey] === v[itemValueKey] ).length > 0
-                                ? items.filter( i => i[itemValueKey] === v[itemValueKey] )[0]
-                                : v
-                              : items.filter( i => i[itemValueKey] === v ).length > 0
-                                ? items.filter( i => i[itemValueKey] === v )[0]
-                                : { [itemStringKey]: v, [itemValueKey]: v }
-                                ;
-
-                            return item;
-                          })
-                        : []
-                    }
+                    selectedItems={newSelectedItems}
                     addItemFunction={(( selectedItems, newItem ) => {
                       return selectedItems.filter( i => (
                         newItem != null &&

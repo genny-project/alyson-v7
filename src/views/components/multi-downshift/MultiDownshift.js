@@ -29,9 +29,10 @@ class MultiDownshift extends React.Component {
   }
 
   componentDidUpdate( prevProps ) {
-    if ( prevProps.selectedItems !== this.props.selectedItems ) {
-      this.populateSelectedItems();
-    }
+    // if ( prevProps.selectedItems.length !== this.props.selectedItems.length ) {
+    //   if ( this.props.log ) console.warn( 'did update', prevProps.selectedItems !== this.props.selectedItems, prevProps.selectedItems, this.props.selectedItems );
+    //   this.populateSelectedItems( this.props.selectedItems );
+    // }
   }
 
   getRemoveButtonProps = downshift => ({ onPress, item, ...props } = {}) => {
@@ -69,10 +70,10 @@ class MultiDownshift extends React.Component {
     };
   }
 
-  populateSelectedItems = () => {
-    if ( this.props.selectedItems ) {
+  populateSelectedItems = ( selectedItems ) => {
+    if ( selectedItems ) {
       this.setState({
-        selectedItems: this.props.selectedItems,
+        selectedItems: selectedItems,
       });
     }
   }
@@ -131,6 +132,7 @@ class MultiDownshift extends React.Component {
   }
 
   addSelectedItem( item, downshift ) {
+    if ( this.props.log )  console.error( 'addSelectedItem', item, downshift );
     const { addItemFunction } = this.props;
 
     this.setState(
@@ -141,6 +143,7 @@ class MultiDownshift extends React.Component {
             ? [...selectedItems, item]
             : selectedItems,
       }), () => {
+        if ( this.props.log )  console.log( 'after change', this.state.selectedItems );
         this.callOnChange( downshift );
       }
     );
