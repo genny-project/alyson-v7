@@ -5,7 +5,7 @@
 import React from 'react';
 import Downshift from 'downshift';
 import { func, array, bool } from 'prop-types';
-import shallowCompare from '../../../utils/shallow-compare';
+import { isArray, isObject, shallowCompare } from '../../../utils';
 
 class MultiDownshift extends React.Component {
   static propTypes = {
@@ -29,10 +29,38 @@ class MultiDownshift extends React.Component {
   }
 
   componentDidUpdate( prevProps ) {
-    // if ( prevProps.selectedItems.length !== this.props.selectedItems.length ) {
-    //   if ( this.props.log ) console.warn( 'did update', prevProps.selectedItems !== this.props.selectedItems, prevProps.selectedItems, this.props.selectedItems );
-    //   this.populateSelectedItems( this.props.selectedItems );
-    // }
+    const compareArrays = ( currentArray, newArray ) => {
+      if ( !isArray( currentArray ) || !isArray( newArray )) {
+        return true;
+      }
+
+      if ( currentArray.length !== newArray.length ) {
+        return true;
+      }
+
+      const areArraysSame = currentArray.every( currentItem => {
+        if ( !isObject( currentItem, { withProperty: 'value' })) {
+          return false;
+        };
+
+        const currentItemValue = currentItem.value;
+        const newArrayValue = newArray.filter( newArrayItem => {
+          if ( !isObject( newArrayItem, { withProperty: 'value' })) {
+            return false;
+          };
+
+          return newArrayItem.value === currentItemValue;
+        });
+
+        return isArray( newArrayValue, { ofofExactLength: 1 });
+      });
+
+      return !areArraysSame;
+    };
+
+    if ( compareArrays( prevProps.selectedItems, this.props.selectedItems )) {
+      this.populateSelectedItems( this.props.selectedItems );
+    }
   }
 
   getRemoveButtonProps = downshift => ({ onPress, item, ...props } = {}) => {
@@ -132,7 +160,6 @@ class MultiDownshift extends React.Component {
   }
 
   addSelectedItem( item, downshift ) {
-    if ( this.props.log )  console.error( 'addSelectedItem', item, downshift );
     const { addItemFunction } = this.props;
 
     this.setState(
@@ -143,7 +170,6 @@ class MultiDownshift extends React.Component {
             ? [...selectedItems, item]
             : selectedItems,
       }), () => {
-        if ( this.props.log )  console.log( 'after change', this.state.selectedItems );
         this.callOnChange( downshift );
       }
     );
@@ -167,7 +193,6 @@ class MultiDownshift extends React.Component {
   }
 
   handleCloseMenu = () => {
-    // console.warn( 'downshift close' );
     this.setState({
       isOpen: false,
     });

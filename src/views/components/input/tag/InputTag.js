@@ -224,10 +224,10 @@ class InputTag extends Component {
           }
           else {
             selectItem( itemObject );
-            // handleCloseMenu();
-            // if ( this.inputs && this.inputs['input'] ) {
-            //   this.inputs['input'].blur();
-            // }
+            handleCloseMenu();
+            if ( this.inputs && this.inputs['input'] ) {
+              this.inputs['input'].blur();
+            }
           }
         }
         break;
@@ -318,11 +318,8 @@ class InputTag extends Component {
                     })
                   : [];
 
-                if ( this.props.ask.questionCode === 'QUE_GENDER' ) console.log( 'value?', isArray( value ), newSelectedItems );
-
                 return (
                   <MultiDownshift
-                    log={this.props.ask.questionCode === 'QUE_GENDER'}
                     allowMultipleSelection={allowMultipleSelection}
                     onChange={this.handleChange}
                     itemToString={this.itemToString}
@@ -564,7 +561,10 @@ class InputTag extends Component {
                                               }}
                                               testID={testID}
                                               index={index}
-                                              onPress={() => {
+                                              // onPress={() => {
+                                              //   this.handleSuggestionPress();
+                                              // }}
+                                              onFocus={() => {
                                                 this.handleSuggestionPress();
                                               }}
                                               onMouseEnter={() => {
