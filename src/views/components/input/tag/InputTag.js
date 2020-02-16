@@ -54,12 +54,41 @@ class InputTag extends Component {
     preSelected: [],
   }
 
+  componentDidMount() {
+    if (
+      this.props.allowMultipleSelection &&
+      isArray( this.props.value, { ofMinLength: 1 })
+    ) {
+      this.populatePreSelected( this.props.value );
+    }
+  }
+
   shouldComponentUpdate( nextProps ) {
     if ( nextProps.items !== this.props.items ) {
       return true;
     }
 
     return false;
+  }
+
+  componentDidUpdate( prevProps ) {
+    if (
+      this.props.allowMultipleSelection &&
+      isArray( this.state.preSelected, { ofExactLength: 0 }) &&
+      !isArray( prevProps.value, { ofMinLength: 1 }) &&
+      isArray( this.props.value, { ofMinLength: 1 })
+    )
+      this.populatePreSelected( this.props.value );
+  }
+
+  populatePreSelected = ( value ) => {
+    const preSelected = this.props.items.filter( item => {
+      return value.includes( item[this.props.itemValueKey] );
+    });
+
+    this.setState({
+      preSelected,
+    });
   }
 
   itemToString = ( item ) => {
@@ -561,9 +590,9 @@ class InputTag extends Component {
                                               }}
                                               testID={testID}
                                               index={index}
-                                              // onPress={() => {
-                                              //   this.handleSuggestionPress();
-                                              // }}
+                                              onPress={() => {
+                                                this.handleSuggestionPress();
+                                              }}
                                               onFocus={() => {
                                                 this.handleSuggestionPress();
                                               }}
