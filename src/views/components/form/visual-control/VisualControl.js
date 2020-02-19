@@ -66,6 +66,7 @@ class VisualControl extends Component {
     onChange: func,
     onChangeValue: func,
     type: string,
+    dataTypeCode: string,
   }
 
   state = {
@@ -163,7 +164,9 @@ class VisualControl extends Component {
         {
           component: componentType,
           acceptTypes: ['vcl', 'group'],
-          dataType: this.props.type,
+          // dataType: this.props.type,
+          dataTypeName: this.props.type,
+          dataTypeCode: this.props.dataTypeCode,
         }
       ),
     ];
@@ -175,7 +178,9 @@ class VisualControl extends Component {
         {
           component: componentType,
           acceptTypes: ['vcl', 'group'],
-          dataType: this.props.type,
+          // dataType: this.props.type,
+          dataTypeName: this.props.type,
+          dataTypeCode: this.props.dataTypeCode,
         }
       ),
     ];
@@ -221,7 +226,9 @@ class VisualControl extends Component {
           themeArray,
           this.props.themes,
           {
-            dataType: this.props.type,
+            // dataType: this.props.type,
+            dataTypeName: this.props.type,
+            dataTypeCode: this.props.dataTypeCode,
           }
         ),
       ];

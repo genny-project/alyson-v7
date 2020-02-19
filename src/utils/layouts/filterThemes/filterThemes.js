@@ -8,7 +8,9 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     onlyInheritableThemes,
     acceptTypes,
     onlyComponentThemes,
-    dataType,
+    // dataType,
+    dataTypeName,
+    dataTypeCode,
     childIndex,
     totalChildren,
   } = options;
@@ -93,13 +95,29 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
       }
     }
 
+    // if (
+    //   !onlyInheritableThemes &&
+    //   isString( theme.dataType ) &&
+    //   // isString( dataType ) &&
+    //   !(
+    //     isString( dataType ) &&
+    //     dataType.toLowerCase() === theme.dataType.toLowerCase()
+    //   )) return;
+
     if (
       !onlyInheritableThemes &&
-      isString( theme.dataType ) &&
-      // isString( dataType ) &&
+      isString( theme.dataTypeName ) &&
       !(
-        isString( dataType ) &&
-        dataType.toLowerCase() === theme.dataType.toLowerCase()
+        isString( dataTypeName ) &&
+        dataTypeName.toLowerCase() === theme.dataTypeName.toLowerCase()
+      )) return;
+
+    if (
+      !onlyInheritableThemes &&
+      isString( theme.dataTypeCode ) &&
+      !(
+        isString( dataTypeCode ) &&
+        dataTypeCode.toLowerCase() === theme.dataTypeCode.toLowerCase()
       )) return;
 
     if (

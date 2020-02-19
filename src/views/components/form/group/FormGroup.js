@@ -135,10 +135,14 @@ class FormGroup extends Component {
   }
 
   getStyling = ( componentType ) => {
-    const { questionGroup, data } = this.props;
+    const { questionGroup, data, types } = this.props;
     const { attributeCode } = questionGroup;
 
-    const dataType = dlv( data, `${attributeCode}.dataType` );
+    // const dataType = dlv( data, `${attributeCode}.dataType` );
+
+    const dataTypeName = dlv( data, `${attributeCode}.dataType` );
+
+    const dataTypeCode = dlv( types, `${dataTypeName}.className` );
 
     // filter links for panel
     const inheritedLinks = [
@@ -147,7 +151,9 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
-          dataType: dataType,
+          // dataType: dataType,
+          dataTypeName: dataTypeName,
+          dataTypeCode: dataTypeCode,
           acceptTypes: ['group'],
         },
       ),
@@ -159,7 +165,9 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
-          dataType: dataType,
+          // dataType: dataType,
+          dataTypeName: dataTypeName,
+          dataTypeCode: dataTypeCode,
           acceptTypes: ['group'],
         },
       ),
@@ -312,6 +320,7 @@ class FormGroup extends Component {
       valuePath,
       value: values && dlv( values, valuePath ),
       type: isString( dataType ) ? dataType.toLowerCase() : dataType,
+      dataTypeCode: isObject( dataTypeObject ) ? dataTypeObject.className : null,
       mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
       validation: isObject( dataTypeObject ) ? dataTypeObject.validationList : null,
       error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
@@ -391,7 +400,16 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode, rootCode, isClosed, data } = this.props;
+    const {
+      index,
+      questionGroup,
+      form,
+      parentGroupCode,
+      rootCode,
+      isClosed,
+      data,
+      types,
+    } = this.props;
     const {
       description,
       name,
@@ -406,14 +424,20 @@ class FormGroup extends Component {
 
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
-      const dataType = dlv( data, `${attributeCode}.dataType` );
+      // const dataType = dlv( data, `${attributeCode}.dataType` );
+
+      const dataTypeName = dlv( data, `${attributeCode}.dataType` );
+
+      const dataTypeCode = dlv( types, `${dataTypeName}.className` );
 
       const themeLinks = [
         ...filterThemes(
           themes,
           this.props.themes,
           {
-            dataType: dataType,
+            // dataType: dataType,
+            dataTypeName: dataTypeName,
+            dataTypeCode: dataTypeCode,
             acceptTypes: ['group'],
           },
         ),
