@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, number, bool, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
 import UnityWrapper from '../../input/unity';
 import UnityControl from '../../input/unity/control';
@@ -284,6 +284,7 @@ class FormGroup extends Component {
       touched,
       setFieldValue,
       setFieldTouched,
+      validateField,
     } = form;
     const {
       handleChange,
@@ -310,16 +311,17 @@ class FormGroup extends Component {
     const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
 
     const inputProps = {
-      onChangeValue: handleChange(
-        questionCode,
+      onChangeValue: handleChange({
+        field: questionCode,
         setFieldValue,
         setFieldTouched,
+        validateField,
         ask,
         valuePath,
-      ),
+      }),
       valuePath,
       value: values && dlv( values, valuePath ),
-      type: isString( dataType ) ? dataType.toLowerCase() : dataType,
+      type: isObject( dataTypeObject ) ? dataTypeObject.typeName.toLowerCase() : null,
       dataTypeCode: isObject( dataTypeObject ) ? dataTypeObject.className : null,
       mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
       validation: isObject( dataTypeObject ) ? dataTypeObject.validationList : null,
