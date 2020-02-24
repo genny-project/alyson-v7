@@ -523,6 +523,7 @@ class InputTag extends Component {
                                       <InputTagSuggestion
                                         key={itemId}
                                         item={itemObject}
+                                        itemId={itemId}
                                         itemString={itemString}
                                         isSelected={isSelected}
                                         isHighlighted={highlightedIndex === index}
