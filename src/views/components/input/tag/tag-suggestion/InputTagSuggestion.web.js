@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { bool, object, string, func } from 'prop-types';
-// import { isObject } from '../../../../../utils';
+import { isString } from '../../../../../utils';
 import { Box, Touchable, Text, Icon } from '../../../index';
 
 class InputTagSuggestion extends Component {
   static propTypes = {
     item: object,
     itemString: string,
+    itemId: string,
     isSelected: bool,
     isHighlighted: bool,
     allowMultipleSelection: bool,
@@ -31,6 +32,7 @@ class InputTagSuggestion extends Component {
     const {
       item,
       itemString,
+      itemId,
       isSelected,
       isHighlighted,
       allowMultipleSelection,
@@ -68,7 +70,7 @@ class InputTagSuggestion extends Component {
           }}
           onFocus={onFocus}
           onMouseEnter={onMouseEnter}
-          testID={`input-tag-option ${testID}`}
+          testID={`input-tag-option ${testID}${isString( itemId ) ? `:${itemId}` : null}`}
         >
           <Icon
             name={isSelected ? 'check_box' : 'check_box_outline_blank'}
