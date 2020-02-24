@@ -389,11 +389,11 @@ const reduceAsks = ({ item, state, shouldReplaceEntity }) => {
                   // dataType: isString( link.dataType )
                   //   ? link.dataType
                   //   : null,
-                  dataTypeName: isString( link.dataTypeName )
-                    ? link.dataTypeName
+                  dataType: isString( link.dataType )
+                    ? link.dataType
                     : null,
-                  dataTypeCode: isString( link.dataTypeCode )
-                    ? link.dataTypeCode
+                  dttCode: isString( link.dttCode )
+                    ? link.dttCode
                     : null,
                   selectorType: isInteger( link.selectorType )
                     ? link.selectorType

@@ -140,9 +140,9 @@ class FormGroup extends Component {
 
     // const dataType = dlv( data, `${attributeCode}.dataType` );
 
-    const dataTypeName = dlv( data, `${attributeCode}.dataType` );
+    const dataType = dlv( data, `${attributeCode}.dataType` );
 
-    const dataTypeCode = dlv( types, `${dataTypeName}.className` );
+    const dttCode = dlv( types, `${dataType}.className` );
 
     // filter links for panel
     const inheritedLinks = [
@@ -152,8 +152,8 @@ class FormGroup extends Component {
         {
           component: componentType,
           // dataType: dataType,
-          dataTypeName: dataTypeName,
-          dataTypeCode: dataTypeCode,
+          dataType: dataType,
+          dttCode: dttCode,
           acceptTypes: ['group'],
         },
       ),
@@ -166,8 +166,8 @@ class FormGroup extends Component {
         {
           component: componentType,
           // dataType: dataType,
-          dataTypeName: dataTypeName,
-          dataTypeCode: dataTypeCode,
+          dataType: dataType,
+          dttCode: dttCode,
           acceptTypes: ['group'],
         },
       ),
@@ -322,7 +322,7 @@ class FormGroup extends Component {
       valuePath,
       value: values && dlv( values, valuePath ),
       type: isObject( dataTypeObject ) ? dataTypeObject.typeName.toLowerCase() : null,
-      dataTypeCode: isObject( dataTypeObject ) ? dataTypeObject.className : null,
+      dttCode: isObject( dataTypeObject ) ? dataTypeObject.dttCode : null,
       mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
       validation: isObject( dataTypeObject ) ? dataTypeObject.validationList : null,
       error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
@@ -428,9 +428,9 @@ class FormGroup extends Component {
       if ( !isArray( themes )) return;
       // const dataType = dlv( data, `${attributeCode}.dataType` );
 
-      const dataTypeName = dlv( data, `${attributeCode}.dataType` );
+      const dataType = dlv( data, `${attributeCode}.dataType` );
 
-      const dataTypeCode = dlv( types, `${dataTypeName}.className` );
+      const dttCode = dlv( types, `${dataType}.className` );
 
       const themeLinks = [
         ...filterThemes(
@@ -438,8 +438,8 @@ class FormGroup extends Component {
           this.props.themes,
           {
             // dataType: dataType,
-            dataTypeName: dataTypeName,
-            dataTypeCode: dataTypeCode,
+            dataType: dataType,
+            dttCode: dttCode,
             acceptTypes: ['group'],
           },
         ),

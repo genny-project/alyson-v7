@@ -52,8 +52,8 @@ const checkForNewLayoutLinks = ( currentArray, newArray, layoutData, options = {
       newItem.panel === currentItem.panel &&
       newItem.component === currentItem.component &&
       // newItem.dataType === currentItem.dataType
-      newItem.dataTypeName === currentItem.dataTypeName &&
-      newItem.dataTypeCode === currentItem.dataTypeCode
+      newItem.dataType === currentItem.dataType &&
+      newItem.dttCode === currentItem.dttCode
     );
   };
 

@@ -158,7 +158,7 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
 const handleReduceDefinitionData = ( resultant, current ) => {
   resultant[current.code] = {
     ...current,
-    dataType: current.dataType.className,
+    dataType: current.dataType.dttCode,
   };
 
   return resultant;
@@ -208,7 +208,7 @@ const handleReduceDefinitionTypes = ( resultant, current ) => {
   const { dataType } = current;
 
   // resultant[dataType.typeName] = dataType;
-  resultant[dataType.className] = dataType;
+  resultant[dataType.dttCode] = dataType;
 
   return resultant;
 };

@@ -9,8 +9,8 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
     acceptTypes,
     onlyComponentThemes,
     // dataType,
-    dataTypeName,
-    dataTypeCode,
+    dataType,
+    dttCode,
     childIndex,
     totalChildren,
   } = options;
@@ -106,18 +106,18 @@ const filterThemes = ( themeLinks, allThemes, options = {}) => {
 
     if (
       !onlyInheritableThemes &&
-      isString( theme.dataTypeName ) &&
+      isString( theme.dataType ) &&
       !(
-        isString( dataTypeName ) &&
-        dataTypeName.toLowerCase() === theme.dataTypeName.toLowerCase()
+        isString( dataType ) &&
+        dataType.toLowerCase() === theme.dataType.toLowerCase()
       )) return;
 
     if (
       !onlyInheritableThemes &&
-      isString( theme.dataTypeCode ) &&
+      isString( theme.dttCode ) &&
       !(
-        isString( dataTypeCode ) &&
-        dataTypeCode.toLowerCase() === theme.dataTypeCode.toLowerCase()
+        isString( dttCode ) &&
+        dttCode.toLowerCase() === theme.dttCode.toLowerCase()
       )) return;
 
     if (
