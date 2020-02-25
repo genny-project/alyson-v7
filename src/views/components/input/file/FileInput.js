@@ -420,7 +420,7 @@ class FileInput extends Component {
       error,
     } = this.state;
 
-    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasIcon = isObject( iconProps ) || isString( icon, { ofMinLength: 1 });
     const hasText = !iconOnly && isObject( question, { withProperty: 'name' }) && isString( question.name, { isNotSameAs: ' ' });
     const isInputDisabled = this.props.disabled ||
       isInteger( maxNumberOfFiles ) && selectedFiles.length >= maxNumberOfFiles;

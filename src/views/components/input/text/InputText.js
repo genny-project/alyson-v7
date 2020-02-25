@@ -418,7 +418,7 @@ class InputText extends Component {
       value,
     } = this.state;
 
-    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasIcon = isObject( iconProps ) || isString( icon, { ofMinLength: 1 });
 
     /* TODO: performance optimisation? */
     const inputStyle = filterOutUnspecifiedProps({
