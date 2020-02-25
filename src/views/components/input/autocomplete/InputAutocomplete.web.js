@@ -45,9 +45,14 @@ class InputAutocomplete extends Component {
 
   componentDidUpdate( prevProps ) {
     if (
-      this.state.filterValue === '' &&
+      ( this.state.filterValue === '' &&
       isString( this.props.value ) &&
-      this.props.value !== prevProps.value
+      this.props.value !== prevProps.value ) ||
+      (
+        this.props.value !== prevProps.value &&
+        this.state.filterValue !== this.props.value &&
+        this.props.value === null
+      )
     ) {
       this.setFilterValue( this.props.value );
     }

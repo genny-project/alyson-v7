@@ -83,7 +83,7 @@ class VisualControl extends Component {
       const hasNewLinks = checkForNewLayoutLinks(
         this.state.themes,
         dlv( nextProps, `asks.${nextProps.question.code}.links` ),
-        nextProps,
+        this.props,
       );
 
       if ( hasNewLinks ) {
@@ -337,8 +337,8 @@ class VisualControl extends Component {
                         onBlur={onBlur}
                         iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
                         iconOnly={(
-                        properties.renderVisualControlInput != null
-                          ? !properties.renderVisualControlInput
+                        properties.renderIconOnly != null
+                          ? properties.renderIconOnly
                           : false
                       )}
                         useAttributeNameAsValue={isObject( properties, { withProperty: 'useAttributeNameAsValue' }) ? properties.useAttributeNameAsValue : null}

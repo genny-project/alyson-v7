@@ -115,6 +115,13 @@ class FileInput extends Component {
       //   return true;
       // }
 
+      if (
+        value === null &&
+        value !== prevProps.value
+      ) {
+        return true;
+      }
+
       return false;
     };
 
@@ -170,7 +177,10 @@ class FileInput extends Component {
 
     this.setState( state => ({
       selectedFiles: [
-        ...state.selectedFiles.filter( file => !fileNames.includes( file.name )),
+        ...state.selectedFiles.filter( file =>
+          isArray( fileNames, { ofMinLength: 1 }) &&
+          !fileNames.includes( file.name )
+        ),
         ...formattedFiles,
       ],
     }));

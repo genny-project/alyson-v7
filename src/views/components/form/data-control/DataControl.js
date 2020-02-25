@@ -49,16 +49,12 @@ class DataControl extends Component {
       });
   }
 
-  componentDidUpdate( prevProps, prevState ) {
+  componentDidUpdate( prevProps ) {
     if (
-      ((
-        prevProps.value !== this.props.value &&
-        this.state.value !== this.props.value
-      ) ||
-        prevState.value !== this.state.value
-      ) &&
+      prevProps.value !== this.props.value &&
       (
-        !this.state.maskedValue
+        !this.state.maskedValue ||
+        this.props.value == null
       )
     ) {
       this.updateValue( this.props.value );
@@ -218,13 +214,13 @@ class DataControl extends Component {
 
     /* things to do
       1/ key restrict -> onChangeText, only allow certain keypresses to pass through
-      2/ mask -> onChangeText, force each character to fit predescribed pattern
+      2/ mask -> onChangeText, force each character to fit predescribed patterns
       3/ realtime validation -> onChangeText, run regex to check if field is valid
       4/ filter errors for child
       5/ stop onChangeValue and onBlur events from passing upwards if value is not a valid answer
     */
 
-    const useMaskedValue = mask != null || keyfilter != null;
+    const useMaskedValue = ( mask != null && mask !== 'dropdown' && mask !== 'Tag' ) || keyfilter != null;
 
     return (
       children({
@@ -236,6 +232,7 @@ class DataControl extends Component {
         updateValueWhenFocused: useMaskedValue ? true : null,
         // placeholder: mask ? mask : null, // input mask.placeholder ?? or just placeholder
         error: isString( error ) ? error : this.props.error,
+        isUsingMask: useMaskedValue ? true : null,
       })
     );
   }
