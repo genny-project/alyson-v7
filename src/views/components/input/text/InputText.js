@@ -509,10 +509,14 @@ class InputText extends Component {
         { hasIcon
           ? (
             <Box
-              position="absolute"
-              top="50%"
-              transform="translateY( -50% )"
-              left={0}
+              {
+                ...( editable ? {
+                  position: 'absolute',
+                  top: '50%',
+                  transform: 'translateY( -50% )',
+                  left: 0,
+                } : {})
+              }
               pointerEvents="none"
               {...iconProps}
             >
