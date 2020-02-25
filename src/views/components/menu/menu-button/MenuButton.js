@@ -31,7 +31,7 @@ class MenuButton extends Component {
                     onPress={( event ) => {
                       !suppressToggle && handleToggle( event );
                       onPress ? onPress() : null;
-                      // props.updateArea()
+                      props.updateArea();
                     }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"

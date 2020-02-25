@@ -67,16 +67,12 @@ class MenuWrapper extends Component {
   }
 
   handleToggle = () => {
-    // console.warn( 'dropdown toggle', this.state.isOpen );
-
     this.setState( state => ({
       isOpen: !state.isOpen,
     }));
   }
 
   handleOpen = () => {
-    // console.warn( 'dropdown open' );
-
     if ( this.props.disabled )
       return;
 

@@ -123,6 +123,7 @@ class InputTagInputField extends Component {
           alignItems="center"
           right={10}
           zIndex={5}
+          pointerEvents="none"
         >
           <Icon
             name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
