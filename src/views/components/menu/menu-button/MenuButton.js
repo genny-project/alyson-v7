@@ -27,11 +27,11 @@ class MenuButton extends Component {
                     {...restProps}
                     withFeedback
                     testID={testID}
+                    onFocus={() => props.updateArea()}
                     onPress={( event ) => {
-                      // console.log( 'touchable press' );
                       !suppressToggle && handleToggle( event );
                       onPress ? onPress() : null;
-                      props.updateArea();
+                      // props.updateArea()
                     }}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"
