@@ -1,5 +1,5 @@
 import copy from 'fast-copy';
-import { isArray, isObject } from '../../../../utils';
+import { isArray, isObject, isString } from '../../../../utils';
 
 const initialState = {
   data: {},
@@ -208,7 +208,7 @@ const handleReduceDefinitionTypes = ( resultant, current ) => {
   const { dataType } = current;
 
   // resultant[dataType.typeName] = dataType;
-  resultant[dataType.dttCode] = dataType;
+  resultant[isString( dataType.dttCode ) ? dataType.dttCode : dataType.typeName] = dataType;
 
   return resultant;
 };
