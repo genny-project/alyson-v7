@@ -140,9 +140,10 @@ class FormGroup extends Component {
 
     // const dataType = dlv( data, `${attributeCode}.dataType` );
 
-    const dataType = dlv( data, `${attributeCode}.dataType` );
+    const dataTypeObject = dlv( data, `${attributeCode}.dataType` );
 
-    const dttCode = dlv( types, `${dataType}.className` );
+    const dataType = dlv( types, `${dataTypeObject}.typeName` );
+    const dttCode = dlv( types, `${dataTypeObject}.dttCode` );
 
     // filter links for panel
     const inheritedLinks = [
@@ -151,7 +152,6 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
-          // dataType: dataType,
           dataType: dataType,
           dttCode: dttCode,
           acceptTypes: ['group'],
