@@ -137,7 +137,7 @@ class Progress extends Component {
       subcomponentProps,
     } = this.props;
 
-    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasIcon = isObject( iconProps ) || isString( icon, { ofMinLength: 1 });
 
     return (
       <SubcomponentThemeHandler

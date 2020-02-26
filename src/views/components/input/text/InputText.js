@@ -418,7 +418,7 @@ class InputText extends Component {
       value,
     } = this.state;
 
-    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasIcon = isObject( iconProps ) || isString( icon, { ofMinLength: 1 });
 
     /* TODO: performance optimisation? */
     const inputStyle = filterOutUnspecifiedProps({
@@ -509,10 +509,14 @@ class InputText extends Component {
         { hasIcon
           ? (
             <Box
-              position="absolute"
-              top="50%"
-              transform="translateY( -50% )"
-              left={0}
+              {
+                ...( editable ? {
+                  position: 'absolute',
+                  top: '50%',
+                  transform: 'translateY( -50% )',
+                  left: 0,
+                } : {})
+              }
               pointerEvents="none"
               {...iconProps}
             >

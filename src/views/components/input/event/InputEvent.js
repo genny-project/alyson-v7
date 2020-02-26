@@ -44,7 +44,7 @@ class InputEvent extends Component {
       ...restProps
     } = this.props;
 
-    const hasIcon = isObject( iconProps ) && isString( icon, { ofMinLength: 1 });
+    const hasIcon = isObject( iconProps ) || isString( icon, { ofMinLength: 1 });
     const hasText = !iconOnly && isString( question.name, { isNotSameAs: ' ' });
 
     // get eventType from somewhere in the question

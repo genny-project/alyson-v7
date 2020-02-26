@@ -1,5 +1,5 @@
 import copy from 'fast-copy';
-import { isArray, isObject } from '../../../../utils';
+import { isArray, isObject, isString } from '../../../../utils';
 
 const initialState = {
   data: {},
@@ -158,7 +158,9 @@ const handleReduceLinks = ( resultant, current, shouldReplace ) => {
 const handleReduceDefinitionData = ( resultant, current ) => {
   resultant[current.code] = {
     ...current,
-    dataType: current.dataType.typeName,
+    dataType: isString( current.dataType.dttCode )
+      ? current.dataType.dttCode
+      : current.dataType.typeName,
   };
 
   return resultant;
@@ -207,7 +209,8 @@ const handleReduceData = ( resultant, current ) => {
 const handleReduceDefinitionTypes = ( resultant, current ) => {
   const { dataType } = current;
 
-  resultant[dataType.typeName] = dataType;
+  // resultant[dataType.typeName] = dataType;
+  resultant[isString( dataType.dttCode ) ? dataType.dttCode : dataType.typeName] = dataType;
 
   return resultant;
 };
