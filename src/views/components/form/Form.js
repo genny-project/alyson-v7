@@ -52,10 +52,6 @@ class Form extends Component {
   componentDidUpdate( prevProps, prevState ) {
     const { questionGroupCode } = this.props;
     const { questionGroups } = this.state;
-    // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-    // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP"
-    // )
-    //   console.warn('update', {questionGroupCode, questionGroups, newGroups: this.getQuestionGroups()})
 
     const checkIfSetNeeded = () => {
       return (
@@ -68,10 +64,6 @@ class Form extends Component {
       questionGroupCode !== prevProps.questionGroupCode ||
       isArray( questionGroups, { ofExactLength: 0 })
     ) {
-      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
-      //   console.warn('update1', questionGroupCode)
-
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
@@ -90,16 +82,9 @@ class Form extends Component {
     if (
       isArray( this.state.missingBaseEntities, { ofMinLength: 1 })
     ) {
-      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
-      //   console.warn('update2', questionGroupCode, this.state.missingBaseEntities)
       if (
         this.checkIfNewBaseEntities( this.props )
       ) {
-        // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-        // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
-        //   console.warn('update2checked')
-
         this.setInitialValues();
         this.setValidationList();
 
@@ -109,9 +94,6 @@ class Form extends Component {
     if (
       this.checkForUpdatedQuestionTargets( this.props )
     ) {
-      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
-      //   console.warn('update3', questionGroupCode)
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
@@ -130,10 +112,6 @@ class Form extends Component {
     if (
       this.checkForUpdatedAttributeValues( this.props )
     ) {
-      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
-      //   console.warn('update4', questionGroupCode)
-
       this.setInitialValues();
       this.setValidationList();
 
@@ -143,9 +121,6 @@ class Form extends Component {
     if (
       this.checkForRemovedQuestions( this.props )
     ) {
-      // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-      // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
-      // console.warn('update5', questionGroupCode)
       const newGroups = this.getQuestionGroups();
 
       if ( newGroups.length > 0 ) {
@@ -160,10 +135,6 @@ class Form extends Component {
         });
       }
     }
-
-    // if ( questionGroupCode === "QUE_BUCKET_CONTENT_SBE_APPLIED_APPLICATIONS_GRP" ||
-    // questionGroupCode === "QUE_BUCKET_CONTENT_SBE_SHORTLISTED_APPLICATIONS_GRP" )
-    //   console.warn('no-update')
   }
 
   setInitialValues = () => {
@@ -399,6 +370,9 @@ class Form extends Component {
       // const path = `${currentPath}.${ask.questionCode}`;
 
       const initialValue = dlv( initialValues, `${path}.${ask.questionCode}` );
+      const currentValue = dlv( this.values, `${path}.${ask.questionCode}` );
+
+      const formValue = isObject( this.values, { isNotEmpty: true }) ? currentValue : initialValue;
 
       const isMatch = (
         initialValue == null &&
@@ -406,7 +380,16 @@ class Form extends Component {
       ) ||
       initialValue === baseEntityAttributeValue;
 
-      if ( isMatch ) {
+      const matchAlt = (
+        formValue == null &&
+        baseEntityAttributeValue == null
+      ) ||
+      formValue === baseEntityAttributeValue;
+
+      const matchDiff = isMatch !== matchAlt;
+
+      // if ( isMatch ) {
+      if ( matchDiff || isMatch ) {
         return false;
       }
 
@@ -488,7 +471,6 @@ class Form extends Component {
 
     const validate = ( value, validation ) => {
       // handle targetCode
-      // console.log( 'data', value, validation );
       let error = null;
 
       if ( !validation ) {
@@ -496,8 +478,6 @@ class Form extends Component {
       }
 
       const { dataType, required } = validation;
-
-      // console.log( 'dataType', types, dataType, validation, validation.dataType );
 
       const validationArray = types[dataType] && types[dataType].validationList;
 
@@ -558,16 +538,14 @@ class Form extends Component {
       const hasChildren = isObject( value ) && isArray( Object.keys( value ), { ofMinLength: 1 });
 
       if ( hasChildren ) {
-        // console.log( 'hasChildren' );
-
         Object.keys( value ).forEach( valueKey => {
-          const hasError = validate( value[valueKey], validation[valueKey] );
+          const hasError = validate( value[valueKey], validation[valueKey], '1' );
 
           if ( hasError ) {
             if ( !childValidation ) {
               childValidation = {};
             }
-            childValidation[valueKey] = validate( value[valueKey], validation[valueKey] );
+            childValidation[valueKey] = validate( value[valueKey], validation[valueKey], '2' );
           }
         });
       }
@@ -578,8 +556,6 @@ class Form extends Component {
     };
 
     Object.keys( values ).forEach( valueKey => {
-      // console.log( 'value',  valueKey );
-
       errorList[valueKey] = validate( values[valueKey], validationList[valueKey] );
     });
 
@@ -638,7 +614,8 @@ class Form extends Component {
       value: finalValue,
     });
 
-    Bridge.sendFormattedAnswer({
+    Bridge.sendFormattedAnswer
+    ({
       askId: ask.id,
       attributeCode: finalAttributeCode,
       sourceCode: ask.sourceCode,
@@ -651,13 +628,14 @@ class Form extends Component {
     });
   }
 
-  handleChange = (
-    field,
+  handleChange = ({
+    field, // eslint-disable-line
     setFieldValue,
     setFieldTouched,
+    validateField, // eslint-disable-line
     ask,
     valuePath,
-  ) => (
+  }) => (
     value,
     sendOnChange,
   ) => {

@@ -1,6 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { object } from 'prop-types';
 import Unity, { UnityContent } from 'react-unity-webgl';
+import { connect } from 'react-redux';
+import dlv from 'dlv';
 import { Box, ActivityIndicator, Text } from '../../../components';
 import { Bridge, isObject, isString } from '../../../../utils';
 import UnityProvider from './provider';
@@ -10,6 +13,10 @@ const buildPath = '/unity/safeTrafficTown.json';
 // const buildPath = '';
 
 class UnityWrapper extends React.Component {
+  static propTypes = {
+    attributes: object,
+  }
+
   constructor( props ) {
     super( props );
     this.unityContent = new UnityContent(
@@ -103,9 +110,11 @@ class UnityWrapper extends React.Component {
     this.setState( state => ({
       currentSceneCode: shouldUpdateCurrentSceneCode ? sceneCode : state.currentSceneCode,
     }), () => {
-      // console.warn( 'UPDATE CALLBACK', this.state.currentSceneCode, updatedSceneContexts );
+      const unityEntityData = dlv( this.props.attributes, `${this.state.currentSceneCode}.PRI_UNITY_SCENE.value` );
 
+      console.log({ unityEntityData });
       this.sendEventToUnity( 'changeScene', this.state.currentSceneCode );
+      // this.sendEventToUnity( 'changeScene', unityEntityData );
     });
   }
 
@@ -236,11 +245,11 @@ class UnityWrapper extends React.Component {
     }));
   }
 
-  handleButtonPress = ( method, params ) => {
-    this.sendEventToUnity(
-      method, params,
-    );
-  }
+  // handleButtonPress = ( method, params ) => {
+  //   this.sendEventToUnity(
+  //     method, params,
+  //   );
+  // }
 
   render() {
     const { children, renderHeader } = this.props;
@@ -317,4 +326,12 @@ class UnityWrapper extends React.Component {
   }
 }
 
-export default UnityWrapper;
+// export default UnityWrapper;
+
+export { UnityWrapper };
+
+const mapStateToProps = state => ({
+  attributes: state.vertx.baseEntities.attributes,
+});
+
+export default connect( mapStateToProps )( UnityWrapper );
