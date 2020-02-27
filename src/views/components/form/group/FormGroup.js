@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object, number, bool, array } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
-import { isArray, isObject, isString, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
+import { isArray, isObject, getLayoutLinksOfType, checkForNewLayoutLinks, filterThemes, sort, getPropsFromThemes, objectMerge /* arrayAddDelimiter */ } from '../../../../utils';
 import { Box, Collapsible, Dropdown, EventTouchable, Fragment, Text } from '../../index';
 import UnityWrapper from '../../input/unity';
 import UnityControl from '../../input/unity/control';
@@ -135,10 +135,15 @@ class FormGroup extends Component {
   }
 
   getStyling = ( componentType ) => {
-    const { questionGroup, data } = this.props;
+    const { questionGroup, data, types } = this.props;
     const { attributeCode } = questionGroup;
 
-    const dataType = dlv( data, `${attributeCode}.dataType` );
+    // const dataType = dlv( data, `${attributeCode}.dataType` );
+
+    const dataTypeObject = dlv( data, `${attributeCode}.dataType` );
+
+    const dataType = dlv( types, `${dataTypeObject}.typeName` );
+    const dttCode = dlv( types, `${dataTypeObject}.dttCode` );
 
     // filter links for panel
     const inheritedLinks = [
@@ -148,6 +153,7 @@ class FormGroup extends Component {
         {
           component: componentType,
           dataType: dataType,
+          dttCode: dttCode,
           acceptTypes: ['group'],
         },
       ),
@@ -159,7 +165,9 @@ class FormGroup extends Component {
         this.props.themes,
         {
           component: componentType,
+          // dataType: dataType,
           dataType: dataType,
+          dttCode: dttCode,
           acceptTypes: ['group'],
         },
       ),
@@ -276,6 +284,7 @@ class FormGroup extends Component {
       touched,
       setFieldValue,
       setFieldTouched,
+      validateField,
     } = form;
     const {
       handleChange,
@@ -302,16 +311,18 @@ class FormGroup extends Component {
     const valuePath = `${questionOnly ? '' : `${this.props.groupPath}.`}${questionCode}`;
 
     const inputProps = {
-      onChangeValue: handleChange(
-        questionCode,
+      onChangeValue: handleChange({
+        field: questionCode,
         setFieldValue,
         setFieldTouched,
+        validateField,
         ask,
         valuePath,
-      ),
+      }),
       valuePath,
       value: values && dlv( values, valuePath ),
-      type: isString( dataType ) ? dataType.toLowerCase() : dataType,
+      type: isObject( dataTypeObject ) ? dataTypeObject.typeName.toLowerCase() : null,
+      dttCode: isObject( dataTypeObject ) ? dataTypeObject.dttCode : null,
       mask: isObject( dataTypeObject ) ? dataTypeObject.inputmask : null,
       validation: isObject( dataTypeObject ) ? dataTypeObject.validationList : null,
       error: touched && dlv( touched, valuePath ) && errors && dlv( errors, valuePath ),
@@ -391,7 +402,16 @@ class FormGroup extends Component {
   }
 
   render() {
-    const { index, questionGroup, form, parentGroupCode, rootCode, isClosed, data } = this.props;
+    const {
+      index,
+      questionGroup,
+      form,
+      parentGroupCode,
+      rootCode,
+      isClosed,
+      data,
+      types,
+    } = this.props;
     const {
       description,
       name,
@@ -406,14 +426,20 @@ class FormGroup extends Component {
 
     const checkThemeForProperties = ( themes ) => {
       if ( !isArray( themes )) return;
+      // const dataType = dlv( data, `${attributeCode}.dataType` );
+
       const dataType = dlv( data, `${attributeCode}.dataType` );
+
+      const dttCode = dlv( types, `${dataType}.className` );
 
       const themeLinks = [
         ...filterThemes(
           themes,
           this.props.themes,
           {
+            // dataType: dataType,
             dataType: dataType,
+            dttCode: dttCode,
             acceptTypes: ['group'],
           },
         ),
