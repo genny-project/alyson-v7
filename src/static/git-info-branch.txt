@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 2020-02-10-inputdropdown-update
-=======
-2020-02-19-context-datatype-code
->>>>>>> v3.1.0

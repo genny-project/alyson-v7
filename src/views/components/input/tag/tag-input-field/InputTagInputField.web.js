@@ -126,7 +126,7 @@ class InputTagInputField extends Component {
           pointerEvents="none"
         >
           <Icon
-            name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
+            name={isOpen ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
             color="blue"
             size="md"
             {...iconProps}
