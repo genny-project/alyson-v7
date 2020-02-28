@@ -640,7 +640,12 @@ class Form extends Component {
     sendOnChange,
   ) => {
     this.state.isUpdating = true; // eslint-disable-line
-    if ( value == null )
+
+    if (
+      value == null ||
+      setFieldValue == null ||
+      setFieldTouched == null
+    )
       return;
 
     setFieldValue( valuePath, value );

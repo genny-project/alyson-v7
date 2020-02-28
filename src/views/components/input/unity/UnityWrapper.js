@@ -112,9 +112,10 @@ class UnityWrapper extends React.Component {
     }), () => {
       const unityEntityData = dlv( this.props.attributes, `${this.state.currentSceneCode}.PRI_UNITY_SCENE.value` );
 
-      console.log({ unityEntityData });
-      this.sendEventToUnity( 'changeScene', this.state.currentSceneCode );
-      // this.sendEventToUnity( 'changeScene', unityEntityData );
+      // this.sendEventToUnity( 'changeScene', this.state.currentSceneCode );
+      if ( unityEntityData != null ) {
+        this.sendEventToUnity( 'changeScene', unityEntityData );
+      }
     });
   }
 
