@@ -483,10 +483,6 @@ class Input extends Component {
                 value: 'ZNE_ONE',
                 label: '',
               },
-              {
-                value: 'ZNE_TWO',
-                label: '',
-              },
             ]}
             componentProps={{
               ['input-wrapper']: {

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import { object, string } from 'prop-types';
-import { Text, Touchable } from '../../..';
+import { Text, Touchable, Box } from '../../..';
 import UnityConsumer from '../consumer';
 
 class UnityButton extends Component {
@@ -37,61 +37,63 @@ class UnityButton extends Component {
       },
     };
 
-    const buttonType = 'OBJ_SPEED_SIGN';
+    // const buttonType = 'OBJ_SPEED_SIGN';
 
-    const button = buttons[buttonType];
+    // const button = buttons[buttonType];
 
     return (
-      <Touchable
-        withFeedback
-        onPress={() => !unity ? null : unity.sendEventToUnity(
-          button.method,
-          button.params,
-        )}
-        padding={10}
-        backgroundColor={backgroundColor}
-        borderRadius={10}
-      >
-        <Text
-          size="xs"
-          color={color}
-          text={button.label}
-        />
-      </Touchable>
-      // <Box
-      //   width="100%"
-      //   padding={5}
-      //   flexWrap="wrap"
+      // <Touchable
+      //   withFeedback
+      //   onPress={() => !unity ? null : unity.sendEventToUnity(
+      //     button.method,
+      //     button.params,
+      //   )}
+      //   padding={10}
+      //   backgroundColor={backgroundColor}
+      //   borderRadius={10}
       // >
-      //   {buttons.map(( button, index, array ) => {
-      //     return (
-      //       <Box
-      //         key={button.label}
-      //         padding={10}
-      //         backgroundColor={backgroundColor}
-      //         borderRadius={10}
-      //         marginRight={index + 1 >= array.length ? null : 5}
-      //         marginBottom={5}
-      //       >
-      //         <Touchable
-      //           withFeedback
-      //           onPress={() => !unity ? null : unity.sendEventToUnity(
-      //             button.method,
-      //             button.params,
-      //           )}
-      //         >
-      //           <Text
-      //             size="xs"
-      //             color={color}
-      //             text={button.label}
-      //           />
-      //         </Touchable>
+      //   <Text
+      //     size="xs"
+      //     color={color}
+      //     text={button.label}
+      //   />
+      // </Touchable>
+      <Box
+        width="100%"
+        padding={5}
+        flexWrap="wrap"
+      >
+        {Object.keys( buttons ).map(( buttonKey, index, array ) => {
+          const button = buttons[buttonKey];
 
-      //       </Box>
+          return (
+            <Box
+              key={button.label}
+              padding={10}
+              backgroundColor={backgroundColor}
+              borderRadius={10}
+              marginRight={index + 1 >= array.length ? null : 5}
+              marginBottom={5}
+            >
+              <Touchable
+                withFeedback
+                onPress={() => !unity ? null : unity.sendEventToUnity(
+                  button.method,
+                  button.params,
+                )}
+              >
+                <Text
+                  size="xs"
+                  color={color}
+                  text={button.label}
+                />
+              </Touchable>
 
-      //     );
-      //   })}
-      // </Box>
+            </Box>
+
+          );
+        })}
+      </Box>
     );
   }
 }
