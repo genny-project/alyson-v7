@@ -12,7 +12,7 @@ RUN npm run build:web
 
 WORKDIR /app
 FROM nginx
-RUN apt-get install -y nginx-plus-module-brotli
+#RUN apt-get install -y nginx-plus-module-brotli
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 RUN ["nginx"]
