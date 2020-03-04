@@ -157,6 +157,8 @@ class InputText extends Component {
       ['normal', 'italic']
     ),
     isUsingMask: bool,
+    fontWeight: string,
+    bold: bool,
   }
 
   state = {
@@ -409,6 +411,8 @@ class InputText extends Component {
       tabIndex,
       cursor,
       fontStyle,
+      fontWeight,
+      bold,
     } = this.props;
 
     const {
@@ -462,6 +466,7 @@ class InputText extends Component {
       fontStyle,
       ...editable === false ? { cursor: 'default' } : {},
       cursor,
+      fontWeight: bold ? 'bold' : fontWeight,
     });
 
     const textStyle = filterOutUnspecifiedProps({
@@ -489,6 +494,7 @@ class InputText extends Component {
       overflow,
       alignSelf,
       cursor,
+      fontWeight: bold ? 'bold' : fontWeight,
       // ...editable === false ? { cursor: 'default' } : {},
     });
 
