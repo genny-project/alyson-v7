@@ -525,6 +525,7 @@ class InputText extends Component {
               // }
               pointerEvents="none"
               {...iconProps}
+              width="100%"
             >
               <Icon
                 name={icon}
