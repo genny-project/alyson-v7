@@ -111,7 +111,7 @@ class InputDatePicker extends PureComponent {
           return (
             <Fragment>
               <Box
-                width="100%"
+                // width="100%"
                 zIndex={10}
                 position="relative"
               >
@@ -147,19 +147,24 @@ class InputDatePicker extends PureComponent {
                   onFocus={open}
                   accessibilityRole="link"
                   testID={`input-date-picker ${testID}`}
+                  position="absolute"
+                  right={0}
+                  zIndex={5}
+                  transform="translateY(-50%)"
+                  top="50%"
                 >
                   <Box
-                    position="absolute"
                     height="100%"
                     alignItems="center"
-                    right={0}
-                    zIndex={5}
+                    transform={[
+                      { rotate: isOpen ? '0deg' : '180deg' },
+                    ]}
                   >
                     <Icon
-                      // name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
-                      name="keyboard-arrow-down"
+                      name="keyboard-arrow-up"
                       color="black"
                       size="md"
+                      cursor="pointer"
                     />
                   </Box>
                 </Touchable>

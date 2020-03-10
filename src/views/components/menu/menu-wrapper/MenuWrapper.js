@@ -120,22 +120,24 @@ class MenuWrapper extends Component {
     const { children } = this.props;
     const { isOpen, buttonArea } = this.state;
 
+    const context = {
+      isOpen: isOpen,
+      handleToggle: this.handleToggle,
+      handleOpen: this.handleOpen,
+      handleClose: this.handleClose,
+      handleContentBlur: this.handleContentBlur,
+      handleContentFocus: this.handleContentFocus,
+      handlePressItem: this.handlePressItem,
+      setRef: this.setRef,
+      setButtonArea: this.setButtonArea,
+      buttonArea: buttonArea,
+    };
+
     return (
       <MenuProvider
-        value={{
-          isOpen: isOpen,
-          handleToggle: this.handleToggle,
-          handleOpen: this.handleOpen,
-          handleClose: this.handleClose,
-          handleContentBlur: this.handleContentBlur,
-          handleContentFocus: this.handleContentFocus,
-          handlePressItem: this.handlePressItem,
-          setRef: this.setRef,
-          setButtonArea: this.setButtonArea,
-          buttonArea: buttonArea,
-        }}
+        value={context}
       >
-        {children( this.state )}
+        { children( context ) }
       </MenuProvider>
     );
   }

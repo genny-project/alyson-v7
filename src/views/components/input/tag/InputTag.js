@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { string, func, array, bool, object, shape } from 'prop-types';
 import { isString, isArray, isObject, isInteger } from '../../../../utils';
-import { Box, MultiDownshift, Text } from '../../index';
+import { Box, MultiDownshift, Text, Menu } from '../../index';
 import InputTagBody from './tag-body';
 import InputTagInputField from './tag-input-field';
 import InputTagItem from './tag-item';
@@ -54,12 +54,41 @@ class InputTag extends Component {
     preSelected: [],
   }
 
+  componentDidMount() {
+    if (
+      this.props.allowMultipleSelection &&
+      isArray( this.props.value, { ofMinLength: 1 })
+    ) {
+      this.populatePreSelected( this.props.value );
+    }
+  }
+
   shouldComponentUpdate( nextProps ) {
     if ( nextProps.items !== this.props.items ) {
       return true;
     }
 
     return false;
+  }
+
+  componentDidUpdate( prevProps ) {
+    if (
+      this.props.allowMultipleSelection &&
+      isArray( this.state.preSelected, { ofExactLength: 0 }) &&
+      !isArray( prevProps.value, { ofMinLength: 1 }) &&
+      isArray( this.props.value, { ofMinLength: 1 })
+    )
+      this.populatePreSelected( this.props.value );
+  }
+
+  populatePreSelected = ( value ) => {
+    const preSelected = this.props.items.filter( item => {
+      return value.includes( item[this.props.itemValueKey] );
+    });
+
+    this.setState({
+      preSelected,
+    });
   }
 
   itemToString = ( item ) => {
@@ -179,6 +208,7 @@ class InputTag extends Component {
     selectMultipleItems,
     handleCloseMenu,
     handleOpenMenu,
+    handleOpen,
     isOpen,
     selectItem,
     selectedItems,
@@ -197,14 +227,20 @@ class InputTag extends Component {
 
     switch ( key ) {
       case 'ArrowDown':
-        if ( !isOpen ) handleOpenMenu();
+        if ( !isOpen ) {
+          handleOpenMenu();
+          handleOpen();
+        };
         setHighlightedIndex(
           highlightedIndex >= maxIndex || highlightedIndex == null
             ? 0 : highlightedIndex + 1
         );
         break;
       case 'ArrowUp':
-        if ( !isOpen ) handleOpenMenu();
+        if ( !isOpen ) {
+          handleOpenMenu();
+          handleOpen();
+        };
         setHighlightedIndex(
           highlightedIndex <= 0 || highlightedIndex == null
             ? maxIndex : highlightedIndex - 1
@@ -284,12 +320,9 @@ class InputTag extends Component {
           filterComponentProps,
         }) => {
           return (
-            <MultiDownshift
-              allowMultipleSelection={allowMultipleSelection}
-              onChange={this.handleChange}
-              itemToString={this.itemToString}
-              selectedItems={
-                isArray( value )
+            <Menu>
+              {({ isOpen, handleOpen, handleToggle, handleClose }) => { // eslint-disable-line
+                const newSelectedItems = isArray( value )
                   ? value
                     .filter( v => {
                       return allowInvalidSelection
@@ -312,274 +345,300 @@ class InputTag extends Component {
 
                       return item;
                     })
-                  : []
-              }
-              addItemFunction={(( selectedItems, newItem ) => {
-                return selectedItems.filter( i => (
-                  newItem != null &&
-                  i[itemValueKey] === newItem[itemValueKey] )).length === 0
-                  ? [...allowMultipleSelection ? selectedItems : [], newItem]
-                  : selectedItems;
-              })}
-              removeItemFunction={(( selectedItems, newItem ) => (
-                selectedItems.filter( i => i[itemValueKey] !== newItem[itemValueKey] )
-              ))}
-            >
-
-              {({
-                getRootProps,
-                getInputProps,
-                getRemoveButtonProps,
-                getItemProps,
-                removeItem,
-                isOpen,
-                inputValue,
-                selectedItems,
-                highlightedIndex,
-                handleToggleMenu,
-                handleOpenMenu,
-                handleCloseMenu,
-                selectItem,
-                onInputValueChange,
-                clearSelection,
-                selectMultipleItems,
-                setHighlightedIndex,
-              }) => {
-                const userCreatedTags = [];
-
-                selectedItems.forEach( selectedItem => {
-                  const isMatch = items.some( item => {
-                    return (
-                      item.value === selectedItem.value ||
-                      item.value === inputValue ||
-                      selectedItem.value === inputValue
-                    );
-                  });
-
-                  if ( !isMatch && allowInvalidSelection ) {
-                    userCreatedTags.push( selectedItem );
-                  }
-                });
-
-                const filteredItems = items
-                  .concat(
-                    allowNewTags && isString( inputValue, { ofMinLength: 1 })
-                      ? [inputValue] : [] )
-                  .concat( userCreatedTags )
-                  .filter( this.handleFilter( inputValue ));
-                  // .slice( 0, 10 );
-
-                const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
+                  : [];
 
                 return (
-                  // WRAPPER
-                  <InputTagBody
-                    bodyProps={{
-                      ...restRootProps,
-                      flexDirection: 'column',
-                      ...componentProps['input-wrapper'],
-                    }}
-                    onRef={onRef}
-                    componentID="INPUT-WRAPPER"
-                    isOpen={isOpen}
-                    handleToggleMenu={handleToggleMenu}
+                  <MultiDownshift
+                    allowMultipleSelection={allowMultipleSelection}
+                    onChange={this.handleChange}
+                    itemToString={this.itemToString}
+                    selectedItems={newSelectedItems}
+                    addItemFunction={(( selectedItems, newItem ) => {
+                      return selectedItems.filter( i => (
+                        newItem != null &&
+                        i[itemValueKey] === newItem[itemValueKey] )).length === 0
+                        ? [...allowMultipleSelection ? selectedItems : [], newItem]
+                        : selectedItems;
+                    })}
+                    removeItemFunction={(( selectedItems, newItem ) => (
+                      selectedItems.filter( i => i[itemValueKey] !== newItem[itemValueKey] )
+                    ))}
                   >
-                    {/* SELECTED TAGS CONTAINER */ }
-                    {
-                      allowMultipleSelection
-                        ? (
-                          <Box
-                            flexWrap="wrap"
-                            // marginTop={10}
-                            componentID="INPUT-SELECTED-WRAPPER"
-                            {...componentProps['input-selected-wrapper']}
-                          >
-                            {selectedItems.length > 0 && (
-                              selectedItems.map( item => {
-                                const itemString = isObject( item ) ? item[itemStringKey] : item;
-                                const itemId = isObject( item ) ? item[itemValueKey] : item;
-                                const itemObject = isObject( item )
-                                  ? item
-                                  : {
-                                    [itemStringKey]: itemString,
-                                    [itemValueKey]: itemId,
-                                  };
-                                const onPress = () => {
-                                  removeItem( itemObject,  );
-                                  this.removeItemToPreSelection( itemObject );
-                                };
+                    {({
+                      getRootProps,
+                      getInputProps,
+                      getRemoveButtonProps,
+                      getItemProps,
+                      removeItem,
+                      isOpen,
+                      inputValue,
+                      selectedItems,
+                      highlightedIndex,
+                      handleToggleMenu,
+                      handleOpenMenu,
+                      handleCloseMenu,
+                      selectItem,
+                      onInputValueChange,
+                      clearSelection,
+                      selectMultipleItems,
+                      setHighlightedIndex,
+                    }) => {
+                      const userCreatedTags = [];
 
-                                return (
-                                  <InputTagItem
-                                    editable={editable}
-                                    key={itemId}
-                                    item={itemObject}
-                                    itemString={itemString}
-                                    touchableProps={getRemoveButtonProps({
-                                      withFeedback: true,
-                                      onPress: onPress,
-                                      style: {
-                                        padding: 10,
-                                      },
-                                    })}
-                                    onPress={onPress}
-                                    testID={testID}
-                                    stateBasedProps={
-                                      ({ active, hover }) => filterComponentProps( 'input-selected', { active, hover })
-                                    }
-                                  />
-                                );
-                              })
-                            )}
-                          </Box>
-                        ) : null
-                    }
+                      selectedItems.forEach( selectedItem => {
+                        const isMatch = items.some( item => {
+                          return (
+                            item.value === selectedItem.value ||
+                            item.value === inputValue ||
+                            selectedItem.value === inputValue
+                          );
+                        });
 
-                    {
-                      editable ? (
-                        <InputTagInputField
-                          {...restProps}
-                          // inputProps={restProps}
-                          getInputProps={getInputProps}
-                          onPress={handleToggleMenu}
+                        if ( !isMatch && allowInvalidSelection ) {
+                          userCreatedTags.push( selectedItem );
+                        }
+                      });
+
+                      const filteredItems = items
+                        .concat(
+                          allowNewTags && isString( inputValue, { ofMinLength: 1 })
+                            ? [inputValue] : [] )
+                        .concat( userCreatedTags )
+                        .filter( this.handleFilter( inputValue ));
+                        // .slice( 0, 10 );
+
+                      const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
+
+                      return (
+                        // WRAPPER
+                        // Menu
+                          // no props needed
+
+                        <InputTagBody
+                          bodyProps={{
+                            ...restRootProps,
+                            flexDirection: 'column',
+                            ...componentProps['input-wrapper'],
+                          }}
+                          onRef={onRef}
+                          componentID="INPUT-WRAPPER"
                           isOpen={isOpen}
-                          inputValue={inputValue}
-                          onChangeValue={onInputValueChange}
-                          testID={testID}
-                          onFocusInput={() => {
-                            setHighlightedIndex( -1 );
-                            handleOpenMenu();
-                          }}
-                          onFocusTouchable={() => {
-                            if ( this.inputs && this.inputs['input'] ) this.inputs['input'].focus();
-                          }}
-                          selectedItems={selectedItems}
-                          allowMultipleSelection={allowMultipleSelection}
-                          onRef={this.handleRef}
-                          onKeyPress={( key ) => {
-                            this.handleKeyPress({
-                              key,
-                              setHighlightedIndex,
-                              highlightedIndex,
-                              maxIndex: filteredItems.length,
-                              item: isInteger( highlightedIndex )
-                                ? filteredItems[highlightedIndex]
-                                : null,
-                              selectMultipleItems,
-                              handleCloseMenu,
-                              handleOpenMenu,
-                              isOpen,
-                              selectItem,
-                              removeItem,
-                              selectedItems,
-                            });
-                          }}
-                          nonTabable={nonTabable}
-                          iconProps={componentProps['input-icon']}
-                          stateBasedProps={componentProps['input-field']}
-                          onChangeState={updateState( 'input-field' )}
+                          handleToggleMenu={handleToggleMenu}
                         >
-
-                          {/* SUGGESTIONS CONTAINER */ }
-
-                          <InputTagSuggestionContainer
-                            isOpen={isOpen}
-                            {...componentProps['input-item-wrapper']}
-                          >
-                            {(
-                              isArray( filteredItems ) ||
-                                inputValue.length > 3
-                            ) ? (
-                                filteredItems
-                                  .map(( item, index ) => {
-                                    const itemString = isObject( item )
-                                      ? item[itemStringKey]
-                                      : item;
-                                    const itemId = isObject( item )
-                                      ? item[itemValueKey]
-                                      : item;
-                                    const itemObject = isObject( item )
-                                      ? item
-                                      : {
-                                        [itemStringKey]: itemString,
-                                        [itemValueKey]: itemId,
-                                      };
-                                    const isSelected = allowMultipleSelection
-                                      ? (
-                                        this.state.preSelected &&
-                                        this.state.preSelected.filter(
-                                          i => i[itemValueKey] === itemId
-                                        ).length > 0
-                                      )
-                                      : (
-                                        selectedItems &&
-                                        selectedItems.filter(
-                                          i => i[itemValueKey] === itemId
-                                        ).length > 0
-                                      );
-
-                                    return (
-                                      // RENDER SUGGESTION
-                                      <InputTagSuggestion
-                                        key={itemId}
-                                        item={itemObject}
-                                        itemId={itemId}
-                                        itemString={itemString}
-                                        isSelected={isSelected}
-                                        isHighlighted={highlightedIndex === index}
-                                        getItemProps={getItemProps}
-                                        allowMultipleSelection={allowMultipleSelection}
-                                        functions={{
-                                          selectMultipleItems: selectMultipleItems,
-                                          addItemToPreSelection: this.addItemToPreSelection,
-                                          selectItem: selectItem,
-                                          clearSelection: clearSelection,
-                                          handleToggleMenu: handleToggleMenu,
-                                          handleCloseMenu: handleCloseMenu,
-                                        }}
-                                        testID={testID}
-                                        index={index}
-                                        onPress={() => {
-                                          this.handleSuggestionPress();
-                                        }}
-                                        onMouseEnter={() => {
-                                          setHighlightedIndex( index );
-                                        }}
-                                        // onChangeState={updateState( 'input-item' )}
-                                        stateBasedProps={
-                                          filterComponentProps( 'input-item', { selected: isSelected, hover: highlightedIndex === index })
-                                        }
-                                      />
-                                    );
-                                  })
-                              ) : (
+                          {/* SELECTED TAGS CONTAINER */ }
+                          {
+                            allowMultipleSelection
+                              ? (
                                 <Box
-                                  paddingX={15}
-                                  paddingY={10}
-                                  width="100%"
-                                  justifyContent="center"
+                                  flexWrap="wrap"
+                                  // marginTop={10}
+                                  componentID="INPUT-SELECTED-WRAPPER"
+                                  {...componentProps['input-selected-wrapper']}
                                 >
-                                  <Text
-                                    align="center"
-                                    color="grey"
-                                    size="xs"
-                                  >
-                                    {inputValue.length > 0
-                                      ? 'No results'
-                                      : 'Please type...'
-                                    }
-                                  </Text>
-                                </Box>
-                              )}
-                          </InputTagSuggestionContainer>
-                        </InputTagInputField>
-                      ) : null
-                    }
+                                  {selectedItems.length > 0 && (
+                                    selectedItems.map( item => {
+                                      const itemString = isObject( item )
+                                        ? item[itemStringKey]
+                                        : item;
+                                      const itemId = isObject( item )
+                                        ? item[itemValueKey]
+                                        : item;
+                                      const itemObject = isObject( item )
+                                        ? item
+                                        : {
+                                          [itemStringKey]: itemString,
+                                          [itemValueKey]: itemId,
+                                        };
+                                      const onPress = () => {
+                                        removeItem( itemObject,  );
+                                        this.removeItemToPreSelection( itemObject );
+                                      };
 
-                  </InputTagBody>
+                                      return (
+                                        <InputTagItem
+                                          editable={editable}
+                                          key={itemId}
+                                          item={itemObject}
+                                          itemString={itemString}
+                                          touchableProps={getRemoveButtonProps({
+                                            withFeedback: true,
+                                            onPress: onPress,
+                                            style: {
+                                              padding: 10,
+                                            },
+                                          })}
+                                          onPress={onPress}
+                                          testID={testID}
+                                          stateBasedProps={
+                                            ({ active, hover }) => filterComponentProps( 'input-selected', { active, hover })
+                                          }
+                                        />
+                                      );
+                                    })
+                                  )}
+                                </Box>
+                              ) : null
+                          }
+
+                          {
+                            // MenuButton
+                              //
+                            editable ? (
+                              <InputTagInputField
+                                {...restProps}
+                                // inputProps={restProps}
+                                getInputProps={getInputProps}
+                                onPress={() => {
+                                  handleToggleMenu();
+                                  handleToggle();
+                                }}
+                                isOpen={isOpen}
+                                inputValue={inputValue}
+                                onChangeValue={onInputValueChange}
+                                testID={testID}
+                                onFocusInput={() => {
+                                  setHighlightedIndex( -1 );
+                                  handleOpenMenu();
+                                  handleOpen();
+                                }}
+                                onBlurInput={() => {
+                                  handleCloseMenu();
+                                  handleClose();
+                                }}
+                                selectedItems={selectedItems}
+                                allowMultipleSelection={allowMultipleSelection}
+                                onRef={( ref ) => this.handleRef( ref, 'input' )}
+                                onKeyPress={( key ) => {
+                                  this.handleKeyPress({
+                                    key,
+                                    setHighlightedIndex,
+                                    highlightedIndex,
+                                    maxIndex: filteredItems.length,
+                                    item: isInteger( highlightedIndex )
+                                      ? filteredItems[highlightedIndex]
+                                      : null,
+                                    selectMultipleItems,
+                                    handleCloseMenu,
+                                    handleOpenMenu,
+                                    handleOpen,
+                                    isOpen,
+                                    selectItem,
+                                    removeItem,
+                                    selectedItems,
+                                  });
+                                }}
+                                nonTabable={nonTabable}
+                                iconProps={componentProps['input-icon']}
+                                stateBasedProps={componentProps['input-field']}
+                                onChangeState={updateState( 'input-field' )}
+                              >
+                                {/* SUGGESTIONS CONTAINER */ }
+                                { /* MenuContent */ }
+                                <InputTagSuggestionContainer
+                                  isOpen={isOpen}
+                                  {...componentProps['input-item-wrapper']}
+                                >
+                                  {(
+                                    isArray( filteredItems, { ofMinLength: 1 }) ||
+                                      isString( inputValue, { ofMinLength: 3 })
+                                  ) ? (
+                                      filteredItems
+                                        .map(( item, index ) => {
+                                          const itemString = isObject( item )
+                                            ? item[itemStringKey]
+                                            : item;
+                                          const itemId = isObject( item )
+                                            ? item[itemValueKey]
+                                            : item;
+                                          const itemObject = isObject( item )
+                                            ? item
+                                            : {
+                                              [itemStringKey]: itemString,
+                                              [itemValueKey]: itemId,
+                                            };
+                                          const isSelected = allowMultipleSelection
+                                            ? (
+                                              this.state.preSelected &&
+                                              this.state.preSelected.filter(
+                                                i => i[itemValueKey] === itemId
+                                              ).length > 0
+                                            )
+                                            : (
+                                              selectedItems &&
+                                              selectedItems.filter(
+                                                i => i[itemValueKey] === itemId
+                                              ).length > 0
+                                            );
+
+                                          return (
+                                            // RENDER SUGGESTION
+                                            <InputTagSuggestion
+                                              key={itemId}
+                                              item={itemObject}
+                                              itemString={itemString}
+                                              isSelected={isSelected}
+                                              isHighlighted={highlightedIndex === index}
+                                              getItemProps={getItemProps}
+                                              allowMultipleSelection={allowMultipleSelection}
+                                              functions={{
+                                                selectMultipleItems: selectMultipleItems,
+                                                addItemToPreSelection: this.addItemToPreSelection,
+                                                selectItem: selectItem,
+                                                clearSelection: clearSelection,
+                                                handleToggleMenu: handleToggleMenu,
+                                                handleCloseMenu: handleCloseMenu,
+                                              }}
+                                              testID={testID}
+                                              index={index}
+                                              onPress={() => {
+                                                this.handleSuggestionPress();
+                                              }}
+                                              onFocus={() => {
+                                                this.handleSuggestionPress();
+                                              }}
+                                              onMouseEnter={() => {
+                                                setHighlightedIndex( index );
+                                              }}
+                                              // onChangeState={updateState( 'input-item' )}
+                                              stateBasedProps={
+                                                filterComponentProps( 'input-item', { selected: isSelected, hover: highlightedIndex === index })
+                                              }
+                                            />
+                                          );
+                                        })
+                                    ) : (
+                                      <Box
+                                        paddingX={15}
+                                        paddingY={10}
+                                        width="100%"
+                                        justifyContent="center"
+                                      >
+                                        <Text
+                                          align="center"
+                                          color="black"
+                                          size="xs"
+                                        >
+                                          {/* { isString( inputValue, { ofMinLength: 1 })
+                                            ? 'No results'
+                                            : 'Please type...'
+                                          } */}
+                                          No results
+                                        </Text>
+                                      </Box>
+                                    )}
+                                </InputTagSuggestionContainer>
+                              </InputTagInputField>
+                            ) : null
+                          }
+
+                        </InputTagBody>
+                      );
+                    }}
+                  </MultiDownshift>
+
                 );
               }}
-            </MultiDownshift>
+            </Menu>
           );
         }
       }
