@@ -428,9 +428,10 @@ class FormGroup extends Component {
       if ( !isArray( themes )) return;
       // const dataType = dlv( data, `${attributeCode}.dataType` );
 
-      const dataType = dlv( data, `${attributeCode}.dataType` );
+      const dataTypeObject = dlv( data, `${attributeCode}.dataType` );
 
-      const dttCode = dlv( types, `${dataType}.className` );
+      const dataType = dlv( types, `${dataTypeObject}.typeName` );
+      const dttCode = dlv( types, `${dataTypeObject}.dttCode` );
 
       const themeLinks = [
         ...filterThemes(
