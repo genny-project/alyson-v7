@@ -1,122 +1,53 @@
-import React, { Component } from 'react';
-import { string, integer, node, oneOf, oneOfType, object, func } from 'prop-types';
-// import debounce from 'lodash.debounce';
-import { Box, Text, Fragment } from '../../components';
+import React from 'react';
+import PropTypes from 'prop-types';
+import Hover from '../hover/Hover.js';
 
-var timeoutID;
-
-class Tooltip extends Component {
-  static defaultProps = {
-    text: 'test-id',
-    debounce: 300,
-    top: 0 ,
-    left: '-50%',
+const styles = {
+  container: {
+    position: 'relative',
+    display: 'flex',
+  },
+  tooltip: {
+    boxSizing: 'border-box',
     position: 'absolute',
-    zIndex: 100,
-    transform: 'translate(-50%)',
-    containerProps: {
-      backgroundColor: '#fff',
-      padding: 5,
-    },
-  }
+    width: '160px',
+    bottom: '100%',
+    left: '50%',
+    marginLeft: '-80px',
+    borderRadius: '3px',
+    backgroundColor: 'hsla(0, 0%, 20%, 0.9)',
+    padding: '7px',
+    marginBottom: '5px',
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: '14px',
+  },
+};
 
-  static propTypes = {
-    children: node,
-    text: string,
-    debounce: integer,
-    top: oneOfType( [
-      integer, string,
-    ] ),
-    left: oneOfType( [
-      integer, string,
-    ] ),
-    position: oneOf( [
-      'absolute', 'fixed',
-    ] ),
-    zIndex: integer,
-    transform: string,
-    containerProps: object,
-    onMouseOver: func,
-    onMouseOut: func,
-  }
-
-  state = {
-    isOpen: false,
-  }
-
-  handleMouseOverDebounced = () => {
-    timeoutID = window.setTimeout(
-      () => {
-        this.handleMouseOver();
-      },
-      this.props.debounce,
-    );
-  }
-
-  handleMouseOver = () => {
-    this.setState({
-      isOpen: true,
-    }, () => {
-      if ( this.props.onMouseOver ) this.props.onMouseOver();
-    });
-  }
-
-  handleMouseOut = () => {
-    window.clearTimeout( timeoutID );
-    this.setState({
-      isOpen: false,
-    }, () => {
-      if ( this.props.onMouseOut ) this.props.onMouseOut();
-    });
-  }
-
-  // TODO update Tooltip to use Portal and Area components
-
-  render() {
-    const {
-      children,
-      text,
-      position,
-      top,
-      left,
-      zIndex,
-      transform,
-      containerProps,
-    } = this.props;
-    const { isOpen  } = this.state;
-
-    return (
-      <Fragment>
-        {
-          isOpen
-            ? (
-              <Box
-                position={position}
-                top={top}
-                left={left}
-                transform={transform}
-                zIndex={zIndex}
-                {...containerProps}
-              >
-                <Text
-                  size="xxs"
-                  text={text}
-                />
-              </Box>
-            ) : null
-        }
-        {
-          React.Children.map( children, child => (
-            React.cloneElement( child, {
-              ...child.props,
-              onMouseOver: this.handleMouseOverDebounced,
-              onMouseOut: this.handleMouseOut,
-            })
-          ))
-        }
-      </Fragment>
-    );
-  }
+export default function Tooltip({ text, children }) {
+  return (
+    <Hover>
+      {
+        ( hovering ) => (
+          <div
+            style={styles.container}
+          >
+            {hovering === true && (
+            <div style={styles.tooltip}> 
+              {' '}
+              {text}
+              {' '}
+            </div>
+            )}
+            {children}
+          </div>
+        )
+      }
+    </Hover>
+  );
 }
 
-export default Tooltip;
+Tooltip.propTypes = {
+  text: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired, 
+};
