@@ -20,7 +20,7 @@ class VisualControlHint extends Component {
         {...restProps}
       >
         <Icon
-          name="help"
+          name="arrow_up"
           size="xs"
           color="grey"
           cursor="help"

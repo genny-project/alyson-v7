@@ -64,8 +64,8 @@ class Vertx {
     this.openEventBus( url );
   }
 
-  openEventBus( url ) {
-    const eventBus = new EventBus( url );
+  openEventBus() {
+    const eventBus = new EventBus( 'https://internmatch-test.gada.io/frontend' );
 
     this.log( 'Connecting to event bus...' );
 
