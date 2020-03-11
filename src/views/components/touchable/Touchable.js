@@ -360,7 +360,7 @@ class Touchable extends Component {
           data-component-type="TOUCHABLE"
           data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
           data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
-          testID={`touchable ${this.props.testID}`}
+          testID={`${this.props.testID}`}
         >
           {children}
         </Element>
