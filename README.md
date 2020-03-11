@@ -102,9 +102,10 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_CONTENT_CLOSED | Object | { "width": 50 } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component or any of it's parents are closed. |
 | PRI_CONTENT_SELECTED | Object | { "color": "blue" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently selected. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
-| PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
+| PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to displayed with its children hidden inside in an expandable component. |
 | PRI_IS_SHAREABLE | Boolean | true | false | If attached to a Frame, will allow the Frame and it's children be be downloaded as a PDF. |
-| PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in a floating dropdown component. |
+| PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to displayed with its children hidden inside in a floating dropdown component. |
+| PRI_IS_DROPDOWN_ITEM | Boolean | true | false | If linked component has a parent that is a Dropdown, then when the component is pressed it will close the dropdown. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group** and has either of the properties **PRI_IS_DROPDOWN** or **PRI_IS_EXPANDABLE**, then it will render the **Icon** as part of the in addition to the child asks. See *Question Group Inputs* for more detail. Defaults to true.|
 | PRI_HAS_QUESTION_GRP_ICON | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
 | PRI_HAS_INPUT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Input. Default is `true` |
@@ -113,12 +114,17 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_HAS_HINT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
 | PRI_HAS_DESCRIPTION | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Description. |
 | PRI_HAS_ICON | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Icon. |
+| PRI_IS_ICON_ONLY | Boolean | true | false | If the connected entity is **Question** and has an Icon, then no Input will be rendered. |
 | PRI_HAS_QUESTION_GRP_LABEL | Boolean | true | false | If the connected entity is a **Question Group**, then it will render the `name` field of the question as a title.
+| PRI_HAS_QUESTION_GRP_ICON | Boolean | true | false | If the connected entity is a **Question Group**, then it will render an Icon as part of the question group.
+| PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is a **Question Group**, then it will render a Question as part of the question group.
 | PRI_HAS_QUESTION_GRP_DESCRIPTION | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render the `description` field of the question as a subtitle.
 | PRI_IS_QUESTION_GRP_LABEL_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Label be rendered as part of the clickable area.
 | PRI_IS_QUESTION_GRP_INPUT_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Input be rendered as part of the clickable area.
 | PRI_USE_ATTRIBUTE_NAME_AS_VALUE | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** Input Component will use the Attribute name as the value. |
 | PRI_USE_QUESTION_NAME_AS_VALUE | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** Input Component will use the Question name as the value. |
+| PRI_HAS_HINT | Boolean | true | true | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
+| PRI_IS_UNITY_GROUP | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render a Unity component as part of the Question Group. |
 
 ## Question Sets
 ( prefix: QUE_ )

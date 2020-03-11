@@ -78,7 +78,7 @@ class CheckBoxList extends React.Component {
   render() {
     const { numberOfColumns, icons } = this.props;
 
-    const { data } = this.state;
+    const { data, selected } = this.state;
 
     return (
       <SubcomponentThemeHandler
@@ -105,11 +105,16 @@ class CheckBoxList extends React.Component {
                       icons={icons}
                       onPress={this.handlePress( item.value )}
                       key={item.value}
-                      checkBoxStatus={this.state.selected.includes( item.value ) ? true : false}
+                      checkBoxStatus={(
+                          isArray( selected ) &&
+                          selected.includes( item.value )
+                            ? true
+                            : false
+                      )}
                       id={item.value}
                       label={item.label}
                       stateBasedProps={
-                        filterComponentProps( 'input-item', { selected: this.state.selected.includes( item.value ) })
+                        filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
                       }
                     />
                   </Box>

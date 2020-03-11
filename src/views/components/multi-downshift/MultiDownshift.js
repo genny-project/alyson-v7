@@ -5,7 +5,7 @@
 import React from 'react';
 import Downshift from 'downshift';
 import { func, array, bool } from 'prop-types';
-import shallowCompare from '../../../utils/shallow-compare';
+import { isArray, isObject, shallowCompare } from '../../../utils';
 
 class MultiDownshift extends React.Component {
   static propTypes = {
@@ -29,8 +29,37 @@ class MultiDownshift extends React.Component {
   }
 
   componentDidUpdate( prevProps ) {
-    if ( prevProps.selectedItems !== this.props.selectedItems ) {
-      this.populateSelectedItems();
+    const compareArrays = ( currentArray, newArray ) => {
+      if ( !isArray( currentArray ) || !isArray( newArray )) {
+        return true;
+      }
+
+      if ( currentArray.length !== newArray.length ) {
+        return true;
+      }
+
+      const areArraysSame = currentArray.every( currentItem => {
+        if ( !isObject( currentItem, { withProperty: 'value' })) {
+          return false;
+        };
+
+        const currentItemValue = currentItem.value;
+        const newArrayValue = newArray.filter( newArrayItem => {
+          if ( !isObject( newArrayItem, { withProperty: 'value' })) {
+            return false;
+          };
+
+          return newArrayItem.value === currentItemValue;
+        });
+
+        return isArray( newArrayValue, { ofofExactLength: 1 });
+      });
+
+      return !areArraysSame;
+    };
+
+    if ( compareArrays( prevProps.selectedItems, this.props.selectedItems )) {
+      this.populateSelectedItems( this.props.selectedItems );
     }
   }
 
@@ -69,10 +98,10 @@ class MultiDownshift extends React.Component {
     };
   }
 
-  populateSelectedItems = () => {
-    if ( this.props.selectedItems ) {
+  populateSelectedItems = ( selectedItems ) => {
+    if ( selectedItems ) {
       this.setState({
-        selectedItems: this.props.selectedItems,
+        selectedItems: selectedItems,
       });
     }
   }
@@ -147,6 +176,7 @@ class MultiDownshift extends React.Component {
   }
 
   handleToggleMenu = () => {
+    // console.warn( 'downshift toggle', this.state.isOpen );
     this.setState(
       ({ isOpen }) => {
         return {
@@ -156,6 +186,7 @@ class MultiDownshift extends React.Component {
   }
 
   handleOpenMenu = () => {
+    // console.warn( 'downshift open' );
     this.setState({
       isOpen: true,
     });

@@ -357,10 +357,10 @@ class Touchable extends Component {
           onKeyPress={this.handleKeyPress}
           onKeyDown={this.handleKeyPress}
           ref={this.handleRef}
-          data-component-type="TEXT"
+          data-component-type="TOUCHABLE"
           data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
           data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
-          testID={this.props.testID}
+          testID={`touchable ${this.props.testID}`}
         >
           {children}
         </Element>

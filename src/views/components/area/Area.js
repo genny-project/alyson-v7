@@ -82,7 +82,7 @@ class Area extends Component {
           // setSize: this.handleSetSize,
           setObserve: this.setObserve,
           size: this.rect,
-          updateArea: onUpdate ? () =>  onUpdate( this.rect ) : null,
+          updateArea: onUpdate ? () => onUpdate( this.rect ) : null,
         })
         : children
     );
