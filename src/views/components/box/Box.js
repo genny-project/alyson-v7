@@ -320,7 +320,6 @@ Box.propTypes = {
   borderBottomLeftRadius: oneOfType(
     [number, string]
   ),
-  cleanStyleObject: bool,
   fullHeightOnWeb: bool,
   __dangerouslySetStyle: object,
   overflow: string,
