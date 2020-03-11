@@ -83,7 +83,6 @@ class Input extends Component {
       ...restProps,
       type,
       dynamicWidth,
-      editable: false,
     };
 
     const TextInputElement = dynamicWidth ? InputTextWithDynamicWidth : InputText;
@@ -342,7 +341,6 @@ class Input extends Component {
           <InputEvent
             {...inputProps}
             {...inputFieldProps}
-            editable
           />
         );
 
