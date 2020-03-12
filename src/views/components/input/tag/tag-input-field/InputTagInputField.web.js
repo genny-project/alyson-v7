@@ -92,7 +92,7 @@ class InputTagInputField extends Component {
         accessibilityRole="link"
         width="100%"
         suppressToggle
-        testID={`input-tag ${testID}`}
+        testID={testID}
       >
         <Input
           {...getInputProps({
