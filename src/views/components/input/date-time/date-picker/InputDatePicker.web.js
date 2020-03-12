@@ -119,13 +119,14 @@ class InputDatePicker extends PureComponent {
                   {...getInputProps({
                     ...restProps,
                     type: 'text',
-                  // editable: false,
+                    // editable: false,
                     updateValueWhenFocused: true,
-                    value: inputValue || editable ? displayFormat.toLowerCase() : '',
-                  // placeholder,
+                    value: inputValue || ( editable ? displayFormat.toLowerCase() : '' ),
+                    // placeholder,
                     onRef: onRef,
                     dynamicWidth: true,
                     ignoreOnChange: true,
+                    log: true,
                     ...componentProps['input-field'],
                   })}
                   onChange={null}
