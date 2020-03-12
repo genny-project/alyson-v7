@@ -576,6 +576,7 @@ class InputTag extends Component {
                                               key={itemId}
                                               item={itemObject}
                                               itemString={itemString}
+                                              itemId={itemId}
                                               isSelected={isSelected}
                                               isHighlighted={highlightedIndex === index}
                                               getItemProps={getItemProps}
