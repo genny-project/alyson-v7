@@ -11,17 +11,16 @@ import InputFile from './file';
 import InputScroll from './scroll';
 import InputRating from './rating';
 import InputText from './text';
-// import InputTextWithStateThemes from './text/InputTextWithStateThemes';
 import InputTextArea from './textarea';
 import InputTextWithDynamicWidth from './text-with-dynamic-width';
 import Switch from './switch';
-import Passcode from './passcode';
+// import Passcode from './passcode';
 import InputRead from './read';
 import InputCurrency from './currency';
-import InputCreditCard from './credit-card';
-import InputPayment from './payment';
-import AudioRecord from './audio-record';
-import SegmentedControl from './segmented-control';
+// import InputCreditCard from './credit-card';
+// import InputPayment from './payment';
+// import AudioRecord from './audio-record';
+// import SegmentedControl from './segmented-control';
 import InputTag from './tag';
 import InputEvent from './event';
 import Signature from './signature';
@@ -222,16 +221,6 @@ class Input extends Component {
           />
         );
 
-      case 'dropdown':
-        return (
-          <InputTag
-            {...inputProps}
-            allowMultipleSelection={false}
-            allowNewTags={false}
-            ref={input => ( this.input = input )}
-          />
-        );
-
       case 'checkbox':
       case 'checkboxmultiple':
         return (
@@ -302,53 +291,12 @@ class Input extends Component {
           />
         );
 
-      case 'mobileverification':
+      case 'dropdown':
         return (
-          <Passcode
+          <InputTag
             {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'codeverificationfive':
-      case 'codeVerificationFive':
-        return (
-          <Passcode
-            {...inputProps}
-            numberOfInputs={5}
-            keyboardType="default"
-            ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'credit-card':
-        return (
-          <InputCreditCard
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-      case 'payment':
-        return (
-          <InputPayment
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'audioRecord':
-      case 'audiorecord':
-        return (
-          <AudioRecord
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
-      case 'segmentedcontrol':
-        return (
-          <SegmentedControl
-            {...inputProps}
+            allowMultipleSelection={false}
+            allowNewTags={false}
             ref={input => ( this.input = input )}
           />
         );
@@ -612,14 +560,14 @@ class Input extends Component {
         );
 
       /* DEPRECATED DATATYPES */
-      case 'menu':
-        return (
-          <Text>
-            Datatype `
-            {type}
-            ` has been deprecated.
-          </Text>
-        );
+      // case 'menu':
+      //   return (
+      //     <Text>
+      //       Datatype `
+      //       {type}
+      //       ` has been deprecated.
+      //     </Text>
+      //   );
 
       default:
         return (

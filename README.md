@@ -80,7 +80,7 @@ Styling information is determined by the value of the attribute `PRI_CONTENT`. T
 
 Most CSS fields are acceptable as parameters, but given that the information is passed as props to React Components, each component has it's own list of props that it accepts. All others are ignored. All keys must be denoted in camelCase
 
-[Click here to see a list accepted props.](./docs/PROPS.md)
+[Click here to see a list accepted props.](./docs/COMPONENTS.md)
 
 ### Behavioural Attributes
 Where most styling changes can simply be passed to components as props, some desired behaviour from components requires more complex changes to how the element tree is constructed. They might require a component to keep track of a state and then pass that to child elements, or change the order components are rendered, or use different components to the default ones.
@@ -102,9 +102,10 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_CONTENT_CLOSED | Object | { "width": 50 } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component or any of it's parents are closed. |
 | PRI_CONTENT_SELECTED | Object | { "color": "blue" } | false | An object similar to `PRI_CONTENT`, but the styling will only be applied if the component is currently selected. |
 | PRI_IS_INHERITABLE | Boolean | false | false | An optional prop to define whether a Theme's information should be passed to the children of the Theme. Defaults to true. |
-| PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in an expandable component. |
+| PRI_IS_EXPANDABLE | Boolean | true | false | Instructs linked component to displayed with its children hidden inside in an expandable component. |
 | PRI_IS_SHAREABLE | Boolean | true | false | If attached to a Frame, will allow the Frame and it's children be be downloaded as a PDF. |
-| PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to de displayed with its children hidden inside in a floating dropdown component. |
+| PRI_IS_DROPDOWN | Boolean | true | false | Instructs linked component to displayed with its children hidden inside in a floating dropdown component. |
+| PRI_IS_DROPDOWN_ITEM | Boolean | true | false | If linked component has a parent that is a Dropdown, then when the component is pressed it will close the dropdown. |
 | PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is **Question Group** and has either of the properties **PRI_IS_DROPDOWN** or **PRI_IS_EXPANDABLE**, then it will render the **Icon** as part of the in addition to the child asks. See *Question Group Inputs* for more detail. Defaults to true.|
 | PRI_HAS_QUESTION_GRP_ICON | Boolean | true | false | If the connected entity is **Question Group**, then it will render the **Question** in addition to the child asks. See *Question Group Inputs* for more detail. |
 | PRI_HAS_INPUT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Input. Default is `true` |
@@ -113,12 +114,17 @@ It is possible, probably even, that a given component will end up with multiple 
 | PRI_HAS_HINT | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
 | PRI_HAS_DESCRIPTION | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render a Description. |
 | PRI_HAS_ICON | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** will render an Icon. |
+| PRI_IS_ICON_ONLY | Boolean | true | false | If the connected entity is **Question** and has an Icon, then no Input will be rendered. |
 | PRI_HAS_QUESTION_GRP_LABEL | Boolean | true | false | If the connected entity is a **Question Group**, then it will render the `name` field of the question as a title.
+| PRI_HAS_QUESTION_GRP_ICON | Boolean | true | false | If the connected entity is a **Question Group**, then it will render an Icon as part of the question group.
+| PRI_HAS_QUESTION_GRP_INPUT | Boolean | true | false | If the connected entity is a **Question Group**, then it will render a Question as part of the question group.
 | PRI_HAS_QUESTION_GRP_DESCRIPTION | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render the `description` field of the question as a subtitle.
 | PRI_IS_QUESTION_GRP_LABEL_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Label be rendered as part of the clickable area.
 | PRI_IS_QUESTION_GRP_INPUT_CLICKABLE | Boolean | true | false | If the Question Group is Expandable or a Dropdown, should the Question Group Input be rendered as part of the clickable area.
 | PRI_USE_ATTRIBUTE_NAME_AS_VALUE | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** Input Component will use the Attribute name as the value. |
 | PRI_USE_QUESTION_NAME_AS_VALUE | Boolean | true | false | If the connected entity is **Question**, the associated **Visual Control** Input Component will use the Question name as the value. |
+| PRI_HAS_HINT | Boolean | true | true | If the connected entity is **Question**, the associated **Visual Control** will render a Hint. |
+| PRI_IS_UNITY_GROUP | Boolean | true | false | If the connected entity is  a**Question Group**, then it will render a Unity component as part of the Question Group. |
 
 ## Question Sets
 ( prefix: QUE_ )
@@ -139,17 +145,17 @@ A Question Group can also have a `question` field, but by default it is not rend
 
 ![Question Group Structure](https://i.imgur.com/3x0hsXo.png)
 
-| Name | visualControlType Code | Description |
-| ------ | ---------- | ----------- |
-| - | `GROUP` |  will apply theme to all elements of the form group |
-| Wrapper | `GROUP_WRAPPER` |  box containing all the other components of the visual control |
-| Label | `GROUP_LABEL` | text displaying the question name |
-| Description | `GROUP_DESCRIPTION` | additional text to provide for information or context |
-| Input | `GROUP_INPUT` | input or display component that will be rendered |
-| Header Wrapper | `GROUP_HEADER_WRAPPER` | container element for components in the header of a complex group component |
-| Clickable Wrapper | `GROUP_CLICKABLE_WRAPPER` | interactable component that toggles whether the Content Wrapper is rendered or not |
-| Icon | `GROUP_ICON` | icon rendered as part of the header |
-| Content Wrapper | `GROUP_CONTENT_WRAPPER` | component container that renders any children within it |
+| Name | visualControlType Code | Component | Description |
+| ------ | ---------- | ---------- | ----------- |
+| - | `GROUP` | - | will apply theme to all elements of the form group |
+| Wrapper | `GROUP_WRAPPER` | `Box` | box containing all the other components of the visual control |
+| Label | `GROUP_LABEL` | `Text` | text displaying the question name |
+| Description | `GROUP_DESCRIPTION` | `Text` |additional text to provide for information or context |
+| Input | `GROUP_INPUT` | `Input` | input or display component that will be rendered |
+| Header Wrapper | `GROUP_HEADER_WRAPPER` | `Box` | container element for components in the header of a complex group component |
+| Clickable Wrapper | `GROUP_CLICKABLE_WRAPPER` | `Box` | interactable component that toggles whether the Content Wrapper is rendered or not |
+| Icon | `GROUP_ICON` | `Icon` | icon rendered as part of the header |
+| Content Wrapper | `GROUP_CONTENT_WRAPPER` | `Box` | component container that renders any children within it |
 
 ### Difference Between a Question Group and a Question?
 A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two?
@@ -172,17 +178,17 @@ The basic components of a Visual Control are as follows:
 
 ![Visual Control Structure](https://i.imgur.com/8sHNoPu.png)
 
-| Name | visualControlType Code | Description |
-| ------ | ---------- | ----------- |
-| - | `VCL` | will apply theme to all elements of the visual control |
-| Input | `VCL_INPUT` | input or display component that will be rendered |
-| Wrapper | `VCL_WRAPPER` | box containing all the other components of the visual control |
-| Label | `VCL_LABEL` | text displaying the question name |
-| Required | `VCL_REQUIRED` | symbol indicating if a question is mandatory |
-| Hint | `VCL_HINT` | icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input |
-| Description | `VCL_DESCRIPTION` | additional text to provide for information or context |
-| Icon | `VCL_ICON` | icon rendered as part of the input |
-| Error | `VCL_ERROR` | text render if answer is invalid or an error occurs |
+| Name | visualControlType Code | Component | Description |
+| ------ | ---------- | ----------- |----------- |
+| - | `VCL` | - | will apply theme to all elements of the visual control |
+| Input | `VCL_INPUT` | `Input` | input or display component that will be rendered |
+| Wrapper | `VCL_WRAPPER` | `Box` | box containing all the other components of the visual control |
+| Label | `VCL_LABEL` | `Text` | text displaying the question name |
+| Required | `VCL_REQUIRED` | `Icon` | symbol indicating if a question is mandatory |
+| Hint | `VCL_HINT` | `Tooltip` | icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input |
+| Description | `VCL_DESCRIPTION` | `Text` | additional text to provide for information or context |
+| Icon | `VCL_ICON` | `Icon` | icon rendered as part of the input |
+| Error | `VCL_ERROR` | `Text` | text render if answer is invalid or an error occurs |
 
 ## Input Subcomponents
 
@@ -190,16 +196,16 @@ An **Input** that is part of a **Visual Control** might be a single element, suc
 
 ![Input Subcomponent Structure](https://i.imgur.com/ijdxdia.png)
 
-| Name | visualControlType Code | Description |
-| ------ | ---------- | ----------- |
-| Input Field | `INPUT_FIELD` | the main input field that is interactable |
-| Input Wrapper | `INPUT_WRAPPER` | box containing all the other components of the input |
-| Icon | `INPUT_ICON` | icon rendered as part of the input field |
-| Item Wrapper | `INPUT_ITEM_WRAPPER` | box containing all the items that are available as options to select |
-| Item | `INPUT_ITEM` | an element selectable by the user |
-| Selected Element Wrapper | `INPUT_SELECTED_WRAPPER` | box containing all the elements that have been selected |
-| Selected Element | `INPUT_SELECTED` | a selected element |
-| Placeholder Element | `INPUT_PLACEHOLDER` | an element shown if there are no selected elements. **currently only supported for file input**|
+| Name | visualControlType Code | Component | Description |
+| ------ | ---------- | ----------- | ----------- |
+| Input Field | `INPUT_FIELD` | `Input` | the main input field that is interactable |
+| Input Wrapper | `INPUT_WRAPPER` | `Box` | box containing all the other components of the input |
+| Icon | `INPUT_ICON` | `Icon` | icon rendered as part of the input field |
+| Item Wrapper | `INPUT_ITEM_WRAPPER` | `Box` | box containing all the items that are available as options to select |
+| Item | `INPUT_ITEM` | `Box | Touchable | Text` | an element selectable by the user |
+| Selected Element Wrapper | `INPUT_SELECTED_WRAPPER` | `Box` | box containing all the elements that have been selected |
+| Selected Element | `INPUT_SELECTED` | `Box | Touchable | Text` | a selected element |
+| Placeholder Element | `INPUT_PLACEHOLDER` | `Box | Icon | Text` | an element shown if there are no selected elements. **currently only supported for file input**|
 
 ### Applying Themes.
 Any Themes which are attached to a **Question** via the **Context List** will be passed to all elements of the **Visual Control**. A Theme can be directed to only be applied to a specific component of the **Visual Control** by using the field `visualControlType` (set the value to any of the above types, written in ALL CAPS eg `"visualControlType": "INPUT"`).

@@ -37,7 +37,7 @@ class InputEvent extends Component {
       rootQuestionGroupCode,
       icon,
       iconProps,
-      onPress, // eslint-disable-line no-unused-vars
+      // onPress, // eslint-disable-line no-unused-vars
       onChangeState,
       color,
       iconOnly,
