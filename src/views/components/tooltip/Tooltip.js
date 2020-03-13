@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Hover from '../hover/Hover.js';
+// import { Box, Text, Fragment, Dropdown } from '../../components';
 
 const styles = {
   container: {
@@ -28,26 +29,33 @@ export default function Tooltip({ text, children }) {
   return (
     <Hover>
       {
-        ( hovering ) => (
+        ( isOpen ) => (
           <div
             style={styles.container}
           >
-            {hovering === true && (
-            <div style={styles.tooltip}> 
+            {isOpen === true && (
+            <div style={styles.tooltip}>
               {' '}
               {text}
               {' '}
             </div>
             )}
-            {children}
+            {
+              React.Children.map( children, child => (
+                React.cloneElement( child, {
+                  ...child.props,
+                })
+              ))
+            }
           </div>
         )
       }
+
     </Hover>
   );
 }
 
 Tooltip.propTypes = {
   text: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired, 
+  children: PropTypes.node.isRequired,
 };
