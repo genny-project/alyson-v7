@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string } from 'prop-types';
 // import { string, object, bool, number, func } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
-import { Box, Icon, Dropdown, Text } from '../../../../components';
+import { Box, Icon, Tooltip, Text } from '../../../../components';
 
 class VisualControlHint extends Component {
   static propTypes = {
@@ -17,26 +17,7 @@ class VisualControlHint extends Component {
 
     return (
 
-      <Dropdown
-        subcomponentProps={{
-          'group-content-wrapper': {
-            position: 'right',
-            width: '100%',
-            bottom: '100%',
-            borderRadius: '3px',
-            backgroundColor: '#fff',
-            padding: '5px',
-            marginBottom: '5px',
-            color: '#000',
-            textAlign: 'center',
-            fontSize: '12px',
-            flexDirection: 'row',
-            offsetY: 4,
-          },
-        }}
-        showIcon={false}
-        allowHoverEvents
-        allowPressEvents={false}
+      <Tooltip
         renderHeader={(
           <Box
             paddingLeft={5}
@@ -57,7 +38,7 @@ class VisualControlHint extends Component {
         <Box>
           <Text text={questionCode} />
         </Box>
-      </Dropdown>
+      </Tooltip>
     );
   }
 }
