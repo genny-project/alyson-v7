@@ -4,19 +4,26 @@ import { Touchable, Area  } from '../../index';
 import MenuConsumer from '../consumer';
 
 class MenuButton extends Component {
+    static defaultProps = {
+      allowPressEvents: true,
+    }
+
   static propTypes = {
     children: node.isRequired,
     testID: string,
     onPress: func,
     suppressToggle: bool,
+    allowHoverEvents: bool,
+    allowPressEvents: bool,
   }
 
   render() {
-    const { children, testID, onPress, suppressToggle, ...restProps } = this.props;
+    // eslint-disable-next-line max-len
+    const { children, testID, onPress, suppressToggle, allowHoverEvents, allowPressEvents, ...restProps } = this.props;
 
     return (
       <MenuConsumer>
-        {({ handleToggle, setButtonArea, setRef }) => {
+        {({ handleToggle, setButtonArea, setRef, handleOpen, handleClose }) => {
           return (
             <Area
               onUpdate={setButtonArea}
@@ -29,10 +36,15 @@ class MenuButton extends Component {
                     testID={testID}
                     onFocus={() => props.updateArea()}
                     onPress={( event ) => {
-                      !suppressToggle && handleToggle( event );
-                      onPress ? onPress() : null;
-                      props.updateArea();
+                      if ( allowPressEvents ) {
+                        !suppressToggle && handleToggle( event );
+                        onPress ? onPress() : null;
+                        props.updateArea();
+                      }
                     }}
+
+                    onMouseOver={( event ) => allowHoverEvents && handleOpen( event )}
+                    onMouseOut={( event ) => allowHoverEvents && handleClose( event )}
                     onRef={ref => setRef( ref, 'button' )}
                     alignSelf="flex-start"
                     // onFocus={() => {
