@@ -113,6 +113,7 @@ class Dropdown extends Component {
                 <MenuContent
                   ref={input => this.input = input}
                   identifier={testID}
+                  autofocus
                   {...subcomponentProps['group-content-wrapper']}
                 >
                   {(

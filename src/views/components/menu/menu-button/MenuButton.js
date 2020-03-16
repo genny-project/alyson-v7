@@ -40,8 +40,7 @@ class MenuButton extends Component {
                     //   this.props.onFocus && this.props.onFocus();
                     // }}
                     // onBlur={() => {
-                    //   console.log( 'touchable blur' );
-                    //   this.props.onBlur && this.props.onBlur();
+                    //   console.log( 'menu button blur' );
                     // }}
                     onLayout={() => props.updateArea()}
                   >
