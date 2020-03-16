@@ -87,7 +87,7 @@ class Dropdown extends Component {
                           >
                             <Box
                               transform={[
-                                { rotate: isOpen ? '0deg' : '270deg' },
+                                { rotate: isOpen ? '180deg' : '0deg' },
                               ]}
                               componentID="GROUP-ICON"
                               componentCode={questionCode}
