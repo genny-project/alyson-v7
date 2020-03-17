@@ -119,13 +119,14 @@ class InputDatePicker extends PureComponent {
                   {...getInputProps({
                     ...restProps,
                     type: 'text',
-                  // editable: false,
+                    // editable: false,
                     updateValueWhenFocused: true,
-                    value: inputValue || displayFormat.toLowerCase(),
-                  // placeholder,
+                    value: inputValue || ( editable ? displayFormat.toLowerCase() : '' ),
+                    // placeholder,
                     onRef: onRef,
                     dynamicWidth: true,
                     ignoreOnChange: true,
+                    log: true,
                     ...componentProps['input-field'],
                   })}
                   onChange={null}
@@ -140,34 +141,38 @@ class InputDatePicker extends PureComponent {
                   onChangeState={updateState( 'input-field' )}
                   // {...this.props.inputFieldProps} // eslint-disable-line
                 />
-                <Touchable
-                  withFeedback
-                  disabled={!this.props.editable}
-                  onPress={this.props.editable ? toggle : null}
-                  onFocus={open}
-                  accessibilityRole="link"
-                  testID={`input-date-picker ${testID}`}
-                  position="absolute"
-                  right={0}
-                  zIndex={5}
-                  transform="translateY(-50%)"
-                  top="50%"
-                >
-                  <Box
-                    height="100%"
-                    alignItems="center"
-                    transform={[
-                      { rotate: isOpen ? '0deg' : '180deg' },
-                    ]}
-                  >
-                    <Icon
-                      name="keyboard-arrow-up"
-                      color="black"
-                      size="md"
-                      cursor="pointer"
-                    />
-                  </Box>
-                </Touchable>
+                {
+                  editable ? (
+                    <Touchable
+                      withFeedback
+                      disabled={!this.props.editable}
+                      onPress={this.props.editable ? toggle : null}
+                      onFocus={open}
+                      accessibilityRole="link"
+                      testID={`input-date-picker ${testID}`}
+                      position="absolute"
+                      right={0}
+                      zIndex={5}
+                      transform="translateY(-50%)"
+                      top="50%"
+                    >
+                      <Box
+                        height="100%"
+                        alignItems="center"
+                        transform={[
+                          { rotate: isOpen ? '0deg' : '180deg' },
+                        ]}
+                      >
+                        <Icon
+                          name="keyboard-arrow-up"
+                          color="black"
+                          size="md"
+                          cursor="pointer"
+                        />
+                      </Box>
+                    </Touchable>
+                  ) : null
+                }
               </Box>
 
               {/*  ----------------------------

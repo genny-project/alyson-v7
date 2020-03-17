@@ -26,6 +26,7 @@ class InputEvent extends Component {
     editable: bool,
     error: string,
     disabled: bool,
+    testID: string,
   }
 
   render() {
@@ -41,6 +42,7 @@ class InputEvent extends Component {
       onChangeState,
       color,
       iconOnly,
+      testID,
       ...restProps
     } = this.props;
 
@@ -85,6 +87,7 @@ class InputEvent extends Component {
               flexDirection="row"
               componentID="INPUT-WRAPPER"
               componentCode={question.code}
+              testID={testID}
               {...componentProps['input-wrapper']}
             >
               { hasIcon

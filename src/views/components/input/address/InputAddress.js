@@ -280,15 +280,20 @@ class InputAddress extends Component {
         {/*
           This can be turned into a dropdown menu to allow any country to be selected.
         */}
-        <Touchable
-          withFeedback
-          onPress={this.handleToggleCountryLock}
-        >
-          <Text
-            text={countryLock ? iconAU : iconInternational}
-            size="sm"
-          />
-        </Touchable>
+        {
+          restProps.editable ? (
+            <Touchable
+              withFeedback
+              onPress={this.handleToggleCountryLock}
+            >
+              <Text
+                text={countryLock ? iconAU : iconInternational}
+                size="sm"
+              />
+            </Touchable>
+          ) : null
+        }
+
         <Box
           paddingLeft={5}
         />
