@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string } from 'prop-types';
+import { string, object } from 'prop-types';
 // import { string, object, bool, number, func } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
 import { Box, Icon, Tooltip, Text } from '../../../../components';
@@ -7,12 +7,14 @@ import { Box, Icon, Tooltip, Text } from '../../../../components';
 class VisualControlHint extends Component {
   static propTypes = {
     questionCode: string,
+    iconProps: object,
   }
 
   render() {
+ //   console.log( 'Props ---->', this.props );
     const {
       questionCode,
-      ...restProps
+      iconProps,
     } = this.props;
 
     return (
@@ -23,14 +25,14 @@ class VisualControlHint extends Component {
             paddingLeft={5}
             paddingRight={5}
             cursor="pointer"
-            {...restProps}
+            {...iconProps}
           >
             <Icon
               name="help"
               size="xs"
               color="grey"
               cursor="help"
-              {...restProps}
+              {...iconProps}
             />
           </Box>
           )}

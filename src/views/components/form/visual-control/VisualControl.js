@@ -19,6 +19,8 @@ const components = [
   'vcl-label',
   'vcl-description',
   'vcl-hint',
+  'vcl-hint-icon',
+  'vcl-hint-text',
   'vcl-error',
   'vcl-required',
 ];
@@ -299,6 +301,10 @@ class VisualControl extends Component {
                   <VisualControlHint
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
+                    {...componentProps['vcl-hint-icon']}
+                    {...componentProps['vcl-hint-text']}
+                    iconProps={componentProps['vcl-hint-icon']}
+
                   />
                 )}
               </Box>
