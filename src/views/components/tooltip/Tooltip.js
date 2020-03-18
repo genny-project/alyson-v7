@@ -5,11 +5,15 @@ import { Dropdown }  from '../../components';
 class Tooltip extends Component {
     static propTypes = {
       contentWrapperProps: object,
+      headerWrapperProps: object,
+      clickableWrapperProps: object,
     }
 
     render() {
       const {
         contentWrapperProps,
+        headerWrapperProps,
+        clickableWrapperProps,
         ...restProps
       } = this.props;
 
@@ -31,6 +35,12 @@ class Tooltip extends Component {
               flexDirection: 'row',
               offsetY: 4,
               ...contentWrapperProps,
+            },
+            'group-header-wrapper': {
+              ...headerWrapperProps,
+            },
+            'group-clickable-wrapper': {
+              ...clickableWrapperProps,
             },
           }}
           showIcon={false}
