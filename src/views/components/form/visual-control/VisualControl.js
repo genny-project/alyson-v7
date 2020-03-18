@@ -21,6 +21,7 @@ const components = [
   'vcl-hint',
   'vcl-hint-icon',
   'vcl-hint-text',
+  'vcl-hint-content-wrapper',
   'vcl-error',
   'vcl-required',
 ];
@@ -70,6 +71,7 @@ class VisualControl extends Component {
     type: string,
     rootQuestionGroupCode: string,
     dttCode: string,
+
   }
 
   state = {
@@ -301,10 +303,9 @@ class VisualControl extends Component {
                   <VisualControlHint
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
-                    {...componentProps['vcl-hint-icon']}
-                    {...componentProps['vcl-hint-text']}
                     iconProps={componentProps['vcl-hint-icon']}
-
+                    textProps={componentProps ['vcl-hint-text']}
+                    contentWrapperProps={componentProps['vcl-hint-content-wrapper']}
                   />
                 )}
               </Box>
