@@ -19,11 +19,13 @@ const components = [
   'vcl-label',
   'vcl-description',
   'vcl-hint',
+  'vcl-error',
+  'vcl-required',
   'vcl-hint-icon',
   'vcl-hint-text',
   'vcl-hint-content-wrapper',
-  'vcl-error',
-  'vcl-required',
+  'vcl-hint-header-wrapper',
+  'vcl-hint-clickable-wrapper',
 ];
 
 /*
@@ -306,6 +308,8 @@ class VisualControl extends Component {
                     iconProps={componentProps['vcl-hint-icon']}
                     textProps={componentProps ['vcl-hint-text']}
                     contentWrapperProps={componentProps['vcl-hint-content-wrapper']}
+                    headerWrapperProps={componentProps['vcl-hint-header-wrapper']}
+                    clickableWrapperProps={componentProps['vcl-hint-clickable-wrapper']}
                   />
                 )}
               </Box>
