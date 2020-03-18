@@ -37,6 +37,7 @@ class InputTextWithDynamicWidth extends Component {
     paddingX: number,
     paddingLeft: number,
     paddingRight: number,
+    usePlaceholder: bool,
   }
 
   constructor( props ) {
@@ -82,6 +83,7 @@ class InputTextWithDynamicWidth extends Component {
       paddingLeft,
       paddingRight,
       placeholder,
+      usePlaceholder,
     } = this.props;
 
     const tempElementStyle = `position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; font-size: ${TEXT_SIZES[this.props.size]}px; white-space: pre-wrap;` ;
@@ -89,7 +91,11 @@ class InputTextWithDynamicWidth extends Component {
     this.tempElement.innerHTML = (
       isString( text, { ofMinLength: 1 }) ||
       isInteger( text, { ofMinLength: 1 })
-    ) ? text : placeholder;
+    )
+      ? text
+      : usePlaceholder
+        ? placeholder
+        : ' ';
     this.tempElement.setAttribute( 'style', `${tempElementStyle}` );
     const contentWidth = this.tempElement.clientWidth;
 
