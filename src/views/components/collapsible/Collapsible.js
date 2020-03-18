@@ -74,7 +74,7 @@ class Collapsible extends Component {
                 <Touchable
                   withFeedback
                   onPress={this.handlePress}
-                  testID={testID}
+                  testID={`group-clickable-wrapper ${testID}`}
                   componentID="GROUP-CLICKABLE-WRAPPER"
                   componentCode={questionCode}
                   {...subcomponentProps['group-clickable-wrapper']}

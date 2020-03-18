@@ -75,7 +75,7 @@ class Dropdown extends Component {
                           color,
                         }}
                         data-testid={testID}
-                        testID={testID}
+                        testID={`group-clickable-wrapper ${testID}`}
                         questionCode={questionCode}
                         {...subcomponentProps['group-clickable-wrapper']}
                       >
