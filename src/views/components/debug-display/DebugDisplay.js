@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactJson from 'react-json-view';
-import { Icon, Box, Text, Button } from '../../components';
+import { Icon, Box, Text, Touchable } from '../../components';
 import { Version } from '../../pages';
 import TestDisplay from '../../../views/app/test-display';
 import store from '../../../redux/store';
@@ -51,7 +51,8 @@ class DebugDisplay extends React.Component {
           cursor="pointer"
           height={40}
         >
-          <Button
+          <Touchable
+            withFeedback
             onPress={this.handleMinimize}
             height={40}
           >
@@ -68,7 +69,7 @@ class DebugDisplay extends React.Component {
                 cursor="pointer"
               />
             )}
-          </Button>
+          </Touchable>
         </Box>
         {minimized ? (
           <Box flexDirection="column">
@@ -88,7 +89,8 @@ Expand to View Debug Mode (🐞)
             */}
             <TestDisplay />
             <Box borderRadius={4}>
-              <Button
+              <Touchable
+                withFeedback
                 background="#db7093"
                 height="30px"
                 color="#db7093"
@@ -101,7 +103,7 @@ Expand to View Debug Mode (🐞)
                   text="Re-render page"
                   size="xs"
                 />
-              </Button>
+              </Touchable>
             </Box>
 
             <Box
@@ -161,7 +163,8 @@ Redux Store
                   marginTop={20}
                   borderRadius={5}
                 >
-                  <Button
+                  <Touchable
+                    withFeedback
                     background="#db7093"
                     height="30px"
                     color="#db7093"
@@ -172,7 +175,7 @@ Redux Store
                       text="Click to Display store"
                       color="#fff"
                     />
-                  </Button>
+                  </Touchable>
                 </Box>
                 <Box marginTop={10}>
                   {!displayStore ? (
