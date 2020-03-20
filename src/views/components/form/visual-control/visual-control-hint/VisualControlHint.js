@@ -13,7 +13,6 @@ class VisualControlHint extends Component {
   }
 
   render() {
-    // console.log( 'Props ---->', this.props.subcomponentProps );
     const {
       questionCode,
       iconProps,

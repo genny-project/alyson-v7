@@ -255,6 +255,11 @@ class VisualControl extends Component {
     checkThemeForProperties( inheritedThemes );
     checkThemeForProperties( this.state.themes );
 
+    // console.log ( 'questionCode--->', this.props.ask.questionCode );
+    // if ( this.props.ask.questionCode === 'QUE_HINT' ) {
+    //   console.log( 'Checking for visual Control HInt',  { questionCode: this.props.ask.questionCode, properties });
+    // }
+
     return (
       <StatelessThemeHandler
         getStyling={this.getStyling}
@@ -299,9 +304,10 @@ class VisualControl extends Component {
                     {...componentProps['vcl-required']}
                   />
                 )}
-
                 {/* HINT */}
-                { (
+                {(
+                  properties.renderVisualControlHint
+                ) && (
                   <VisualControlHint
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}

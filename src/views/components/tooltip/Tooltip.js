@@ -10,6 +10,7 @@ class Tooltip extends Component {
     }
 
     render() {
+      // console.log( 'props--->', { contentWrapperProps, headerWrapperProps, clickableWrapperProps });
       const {
         contentWrapperProps,
         headerWrapperProps,
@@ -22,18 +23,6 @@ class Tooltip extends Component {
           {...restProps}
           subcomponentProps={{
             'group-content-wrapper': {
-              position: 'right',
-              width: '100%',
-              bottom: '100%',
-              borderRadius: '3px',
-              backgroundColor: '#fff',
-              padding: '5px',
-              marginBottom: '5px',
-              color: '#000',
-              textAlign: 'center',
-              fontSize: '12px',
-              flexDirection: 'row',
-              offsetY: 4,
               ...contentWrapperProps,
             },
             'group-header-wrapper': {
