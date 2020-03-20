@@ -24,6 +24,17 @@ class Tooltip extends Component {
           subcomponentProps={{
             'group-content-wrapper': {
               ...contentWrapperProps,
+              position: 'right',
+              width: '100%',
+              bottom: '100%',
+              borderRadius: '3px',
+              backgroundColor: '#d3d3d3',
+              padding: '5px',
+              marginBottom: '5px',
+              color: '#000',
+              textAlign: 'center',
+              fontSize: '12px',
+              flexDirection: 'row',
             },
             'group-header-wrapper': {
               ...headerWrapperProps,
