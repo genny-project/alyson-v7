@@ -365,9 +365,10 @@ class VisualControl extends Component {
                           onBlur={onBlur}
                           iconProps={properties.renderVisualControlIcon ? componentProps['vcl-icon'] : null}
                           iconOnly={(
-                          properties.renderVisualControlInput != null
-                            ? !properties.renderVisualControlInput
-                            : false
+                            properties.renderIconOnly === true ||
+                            properties.renderVisualControlInput != null
+                              ? !properties.renderVisualControlInput
+                              : false
                         )}
                           useAttributeNameAsValue={isObject( properties, { withProperty: 'useAttributeNameAsValue' }) ? properties.useAttributeNameAsValue : null}
                           useQuestionNameAsValue={isObject( properties, { withProperty: 'useQuestionNameAsValue' }) ? properties.useQuestionNameAsValue : null}

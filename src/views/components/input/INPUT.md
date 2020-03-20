@@ -2,48 +2,40 @@
 
 ## Description
 
-Component used to allow users to submit data.
-
-Input can be used as a standalone component, but most often is used as part of a form. In the latter case, the props passed to the Input are collated by the Form component based on the data in the store.
+Inputs are the components which display information to the user and allow the user to enter information.
 
 ## List of Input Types
 
-| Type | Component | Additional Props | Description |
-|:-----|:----------|:------------| :------------|
-| text, abn number, acn number, double | InputText | - | Plain text field |
-| password | InputText | secureTextEntry | Text field, but with hidden characters |
-| email | InputText | keyboardType="email-address" |  |
-| htmlarea, textarea | InputText | multiline, numberOfLines={3}, height={100} |  |
-| number, java.lang.integer, java.lang.long, java.lang.Long ,java.lang.Integer, mobile, landline | InputText | keyboardType="phone-pad" |  |
-| currency, org.javamoney.moneta.money | InputCurrency | - |  |
+###
+
+| Type | TypeName | Component | Default Props | Description |
+|:-----|:-----|:----------|:------------| :------------|
+| Text Field | ```"text", "abn number", "acn number", "double"``` | [InputText](./text/INPUT_TEXT.md) | {} | Standard text field |
+| Password | ```"password"``` | InputText | ```{ secureTextEntry: true }``` | As InputText field, but with hidden characters |
+| Email | ```"email"``` | InputText | ```{ keyboardType: "email-address" }``` | As InputText, but with keyboardtype set for email |
+| Number |```"number", "java.lang.integer", "java.lang.long", "java.lang.Long", "java.lang.Integer", "mobile", "landline"``` | InputText | ```{ keyboardType: "phone-pad" }``` | As InputText, but with keyboardtype set for phone |
+| TextArea | ```"textarea"``` | [InputTextArea](./textarea/INPUT_TEXT_AREA.md) | ```{ multiline: true, numberOfLines: 2 }``` | Multiline text field |
+| Address | ```"address"``` | [InputAddress](./address/INPUT_ADDRESS.md) | ```{}``` | Text field with an autocomplete address lookup using the Google Places API |
+| Dropdown (Single Select) | ```"dropdown"``` | [InputTag](./tag/INPUT_TAG.md) | ```{ allowMultipleSelection: false, allowNewTags: false}``` | Single select dropdown field |
+| Dropdown (Multiple Select) | ```"dropdownmultiple"``` | InputTag |  ```{ allowMultipleSelection: true, allowNewTags: false}``` | Multiple select dropdown field |
+| Tags | ```"tag"``` | InputTag | ```{ allowMultipleSelection: true }``` | Multiple select dropdown field which allows user to add new tags |
+| Date | ```"date", "java.time.localdate"``` | [InputDatePicker](./date-time/INPUT_DATE_TIME.md) | ```{}``` | Masked Text Field with calendar picker |
+| DateTime | ```"datetime", "java.time.localdate"``` | InputDatePicker | ```{}``` | Masked Text Field |
+| File | ```"file", "upload", "imagemultiple", "Imagemultiple", "images"``` | [InputFile](./file/INPUT_FILE.md) | ```{}``` | File uploader and viewer |
+| Image | ```"image", "Image"``` | InputFile | ```{ allowedFileTypes: ['image/*'] }``` | Image only uploads |
+| Event | ```event", "buttonevent", "form previous submit", "form cancel next", "form submit", "button", "form submit cancel"``` | [InputEvent](./event/INPUT_EVENT.md) | ```{}``` | Touchable which sends an Event to the backend |
+| Signature | ```"signature"``` | [Signature](./signature/INPUT_SIGNATURE.md) | ```{}``` | Canvas area with a confirm button to upload a signature |
+| Colour Picker | ```"color", "colour"``` | [ColourPicker](./colour-picker/COLOUR_PICKER.md) | ```{}``` | Colour picker |
+| Progress | ```progress"``` | [Progress](./progress/PROGRESS.md) | ```{}``` | Progress bar |
+| Rich Text Editor | ```"htmlarea", "rich-text-editor", "editor", "texteditor"``` | [RichTextEditor](./rich-text-editor/RICH_TEXT_EDITOR.md) | ```{}``` | Multiline text area using Markdown / Rich Text format |
+
+<!--  | htmlarea, textarea | InputText | multiline, numberOfLines={3}, height={100} |  | -->
+<!-- | currency, org.javamoney.moneta.money | InputCurrency | - |  |
 | java.lang.boolean, switch | Switch | - |  |
 | read, termsandconditions | InputRead | - |  |
 | scroll | InputScroll | - |  |
 | rating | InputRating | - |  |
-| autocomplete | InputAutocomplete | - |  |
-| address | InputAddress | - |  |
-| dropdown | InputDropdown | - |  |
-| checkbox | CheckBox | - |  |
-| radio | CheckBox | radio |  |
-| file, upload | InputFile | - |  |
-| image, Image | InputFile | imageOnly |  |
-| date, java.time.localdate | InputDatePicker | date |  |
-| datetime, java.time.localdatetime | InputDatePicker | date, time |  |
-| mobileverification | Passcode | - |  |
-| codeverificationfive, codeVerificationFive | Passcode | numberOfInputs={5}, keyboardType="default" |  |
-| credit-card | InputCreditCard | - |  |
-| checkboxmultiple | InputCheckbox | - |  |
-| payment | InputPayment | - |  |
-| audiorecord, audioRecord | AudioRecord | - |  |
-| segmentedcontrol | SegmentedControl | - |  |
-| dropdownmultiple | InputTag | allowMultipleSelection |  |
-| tag | InputTag | - |  |
-| signature | Signature | - |  |
-| rich-text-editor | RichTextEditor | - |  |
+| autocomplete | InputAutocomplete | - |  | -->
+<!-- | checkbox | CheckBox | - |  |
+| checkboxmultiple | InputCheckbox | - |  | -->
 
-## Props
-
-| Prop Name | Prop Type | Description |
-| :-------- | :-------: | :---------- |
-| type | string.isRequired | The type of input to be rendered |
-| typeOnlyProps | object | Props that will only be passed to a component with a type that matches a key in typeOnlyProps |

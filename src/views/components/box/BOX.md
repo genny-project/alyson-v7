@@ -2,18 +2,43 @@
 
 ## Description
 
-The main display component.
+The main display component. Renders a div html element with flexbox.
 
 ## Props
 
 ```
-children: any,
-  justifyContent: oneOf(
-    ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
+  opacity: number,
+  backgroundColor: string,
+  boxSizing: oneOf(
+    ['content-box', 'border-box']
   ),
+
+  /* flexbox */
+
   alignItems: oneOf(
     ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
   ),
+  justifyContent: oneOf(
+    ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
+  ),
+  alignSelf: oneOf(
+    ['normal', 'auto', 'center', 'flex-start', 'flex-end']
+  ),
+  flexDirection: oneOf(
+    ['row', 'row-reverse', 'column', 'column-reverse']
+  ),
+  flexWrap: oneOf(
+    ['nowrap', 'wrap', 'wrap-reverse']
+  ),
+  flex: number,
+  flexGrow: number,
+  flexShrink: number,
+  flexBasis: oneOfType(
+    [string, number]
+  ),
+
+  /* width and height */
+
   height: oneOfType(
     [string, number]
   ),
@@ -32,72 +57,44 @@ children: any,
   maxWidth: oneOfType(
     [string, number]
   ),
-  flexDirection: oneOf(
-    ['row', 'row-reverse', 'column', 'column-reverse']
-  ),
-  flexWrap: oneOf(
-    ['nowrap', 'wrap', 'wrap-reverse']
-  ),
-  flex: number,
-  flexBasis: number,
-  flexGrow: number,
-  flexShrink: number,
+  fullHeightOnWeb: bool,
+
+  /* padding */
+
   padding: number,
+  paddingTop: number,
+  paddingRight: number,
+  paddingLeft: number,
+  paddingBottom: number,
   paddingX: number,
   paddingY: number,
-  margin: number,
-  marginX: number,
-  marginY: number,
-  marginTop: number,
-  marginRight: number,
-  marginBottom: number,
-  marginLeft: number,
-  backgroundColor: string,
-  position: oneOf(
-    ['fixed', 'absolute', 'relative', 'static', 'sticky']
-  ),
-  top: oneOfType(
+
+  /* margin */
+
+  margin: oneOfType(
     [number, string]
   ),
-  right: oneOfType(
+  marginX: oneOfType(
     [number, string]
   ),
-  bottom: number,
-  left: oneOfType(
+  marginY: oneOfType(
     [number, string]
   ),
-  zIndex: number,
-  transform: array,
-  transitionDuration: string,
-  transitionProperty: string,
-  transitionTimingFunction: string,
-  transitionDelay: string,
-  opacity: number,
-  onLayout: func,
-  onPress: func,
-  accessible: bool,
-  accessibilityRole: string,
-  accessibilityLabel: string,
-  borderTopWidth: number,
-  borderRightWidth: number,
-  borderBottomWidth: number,
-  borderLeftWidth: number,
-  borderWidth: number,
-  borderColor: string,
-  borderStyle: string,
-  borderRadius: oneOf(
-    [2, 5, 10, '50%']
+  marginTop: oneOfType(
+    [number, string]
   ),
-  cleanStyleObject: bool,
-  shape: oneOf(
-    ['square', 'rounded', 'pill', 'circle']
+  marginRight: oneOfType(
+    [number, string]
   ),
-  fullHeightOnWeb: bool,
-  __dangerouslySetStyle: object,
-  overflow: string,
-  overflowX: string,
-  overflowY: string,
-  display: string,
+  marginBottom: oneOfType(
+    [number, string]
+  ),
+  marginLeft: oneOfType(
+    [number, string]
+  ),
+
+  /* shadow */
+
   shadowColor: string,
   shadowOpacity: oneOfType(
     [string, number]
@@ -112,5 +109,95 @@ children: any,
     height: oneOfType(
       [string, number]
     ),
-  })
+  }),
+
+  /* border */
+
+  borderTopWidth: number,
+  borderRightWidth: number,
+  borderBottomWidth: number,
+  borderLeftWidth: number,
+  borderWidth: number,
+  borderColor: string,
+  borderStyle: string,
+  borderRadius: oneOfType(
+    [number, string]
+  ),
+  borderTopLeftRadius: oneOfType(
+    [number, string]
+  ),
+  borderTopRightRadius: oneOfType(
+    [number, string]
+  ),
+  borderBottomRightRadius: oneOfType(
+    [number, string]
+  ),
+  borderBottomLeftRadius: oneOfType(
+    [number, string]
+  ),
+
+  /* overflow */
+
+  overflow: string,
+  overflowX: string,
+  overflowY: string,
+  overscrollBehavior: oneOf(
+    ['auto', 'contain', 'none']
+  ),
+  overscrollBehaviorX: oneOf(
+    ['auto', 'contain', 'none']
+  ),
+  overscrollBehaviorY: oneOf(
+    ['auto', 'contain', 'none']
+  ),
+
+  /* position */
+
+  position: oneOf(
+    ['fixed', 'absolute', 'relative', 'static', 'sticky']
+  ),
+  top: oneOfType(
+    [number, string]
+  ),
+  right: oneOfType(
+    [number, string]
+  ),
+  bottom: number,
+  left: oneOfType(
+    [number, string]
+  ),
+  zIndex: number,
+
+  /* transform */
+
+  transform: array,
+  transitionDuration: string,
+  transitionProperty: string,
+  transitionTimingFunction: string,
+  transitionDelay: string,
+  ```
+
+  ## Non-theme Props
+
+  ```
+  children: any,
+  __dangerouslySetStyle: object,
+
+  /* accessibility */
+
+  accessible: bool,
+  accessibilityRole: string,
+  accessibilityLabel: string,
+
+  /* html elemental id props */
+
+  componentID: string,
+  componentCode: string,
+
+  /* functions */
+
+  onLayout: func,
+  onPress: func,
+  onBlur: func,
+  onRef: func,
   ```

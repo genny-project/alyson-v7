@@ -80,7 +80,7 @@ Styling information is determined by the value of the attribute `PRI_CONTENT`. T
 
 Most CSS fields are acceptable as parameters, but given that the information is passed as props to React Components, each component has it's own list of props that it accepts. All others are ignored. All keys must be denoted in camelCase
 
-[Click here to see a list accepted props.](./docs/PROPS.md)
+[Click here to see a list accepted props.](./docs/COMPONENTS.md)
 
 ### Behavioural Attributes
 Where most styling changes can simply be passed to components as props, some desired behaviour from components requires more complex changes to how the element tree is constructed. They might require a component to keep track of a state and then pass that to child elements, or change the order components are rendered, or use different components to the default ones.
@@ -145,17 +145,17 @@ A Question Group can also have a `question` field, but by default it is not rend
 
 ![Question Group Structure](https://i.imgur.com/3x0hsXo.png)
 
-| Name | visualControlType Code | Description |
-| ------ | ---------- | ----------- |
-| - | `GROUP` |  will apply theme to all elements of the form group |
-| Wrapper | `GROUP_WRAPPER` |  box containing all the other components of the visual control |
-| Label | `GROUP_LABEL` | text displaying the question name |
-| Description | `GROUP_DESCRIPTION` | additional text to provide for information or context |
-| Input | `GROUP_INPUT` | input or display component that will be rendered |
-| Header Wrapper | `GROUP_HEADER_WRAPPER` | container element for components in the header of a complex group component |
-| Clickable Wrapper | `GROUP_CLICKABLE_WRAPPER` | interactable component that toggles whether the Content Wrapper is rendered or not |
-| Icon | `GROUP_ICON` | icon rendered as part of the header |
-| Content Wrapper | `GROUP_CONTENT_WRAPPER` | component container that renders any children within it |
+| Name | visualControlType Code | Component | Description |
+| ------ | ---------- | ---------- | ----------- |
+| - | `GROUP` | - | will apply theme to all elements of the form group |
+| Wrapper | `GROUP_WRAPPER` | `Box` | box containing all the other components of the visual control |
+| Label | `GROUP_LABEL` | `Text` | text displaying the question name |
+| Description | `GROUP_DESCRIPTION` | `Text` |additional text to provide for information or context |
+| Input | `GROUP_INPUT` | `Input` | input or display component that will be rendered |
+| Header Wrapper | `GROUP_HEADER_WRAPPER` | `Box` | container element for components in the header of a complex group component |
+| Clickable Wrapper | `GROUP_CLICKABLE_WRAPPER` | `Box` | interactable component that toggles whether the Content Wrapper is rendered or not |
+| Icon | `GROUP_ICON` | `Icon` | icon rendered as part of the header |
+| Content Wrapper | `GROUP_CONTENT_WRAPPER` | `Box` | component container that renders any children within it |
 
 ### Difference Between a Question Group and a Question?
 A Question Group and a Question both have Codes that begin with `QUE_`, and there is actually no check being made in the front end to see if the suffix `_GRP` is present, so what is the actual distinction between the two?
@@ -178,17 +178,17 @@ The basic components of a Visual Control are as follows:
 
 ![Visual Control Structure](https://i.imgur.com/8sHNoPu.png)
 
-| Name | visualControlType Code | Description |
-| ------ | ---------- | ----------- |
-| - | `VCL` | will apply theme to all elements of the visual control |
-| Input | `VCL_INPUT` | input or display component that will be rendered |
-| Wrapper | `VCL_WRAPPER` | box containing all the other components of the visual control |
-| Label | `VCL_LABEL` | text displaying the question name |
-| Required | `VCL_REQUIRED` | symbol indicating if a question is mandatory |
-| Hint | `VCL_HINT` | icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input |
-| Description | `VCL_DESCRIPTION` | additional text to provide for information or context |
-| Icon | `VCL_ICON` | icon rendered as part of the input |
-| Error | `VCL_ERROR` | text render if answer is invalid or an error occurs |
+| Name | visualControlType Code | Component | Description |
+| ------ | ---------- | ----------- |----------- |
+| - | `VCL` | - | will apply theme to all elements of the visual control |
+| Input | `VCL_INPUT` | `Input` | input or display component that will be rendered |
+| Wrapper | `VCL_WRAPPER` | `Box` | box containing all the other components of the visual control |
+| Label | `VCL_LABEL` | `Text` | text displaying the question name |
+| Required | `VCL_REQUIRED` | `Icon` | symbol indicating if a question is mandatory |
+| Hint | `VCL_HINT` | `Tooltip` | icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input |
+| Description | `VCL_DESCRIPTION` | `Text` | additional text to provide for information or context |
+| Icon | `VCL_ICON` | `Icon` | icon rendered as part of the input |
+| Error | `VCL_ERROR` | `Text` | text render if answer is invalid or an error occurs |
 
 ## Input Subcomponents
 
@@ -196,16 +196,16 @@ An **Input** that is part of a **Visual Control** might be a single element, suc
 
 ![Input Subcomponent Structure](https://i.imgur.com/ijdxdia.png)
 
-| Name | visualControlType Code | Description |
-| ------ | ---------- | ----------- |
-| Input Field | `INPUT_FIELD` | the main input field that is interactable |
-| Input Wrapper | `INPUT_WRAPPER` | box containing all the other components of the input |
-| Icon | `INPUT_ICON` | icon rendered as part of the input field |
-| Item Wrapper | `INPUT_ITEM_WRAPPER` | box containing all the items that are available as options to select |
-| Item | `INPUT_ITEM` | an element selectable by the user |
-| Selected Element Wrapper | `INPUT_SELECTED_WRAPPER` | box containing all the elements that have been selected |
-| Selected Element | `INPUT_SELECTED` | a selected element |
-| Placeholder Element | `INPUT_PLACEHOLDER` | an element shown if there are no selected elements. **currently only supported for file input**|
+| Name | visualControlType Code | Component | Description |
+| ------ | ---------- | ----------- | ----------- |
+| Input Field | `INPUT_FIELD` | `Input` | the main input field that is interactable |
+| Input Wrapper | `INPUT_WRAPPER` | `Box` | box containing all the other components of the input |
+| Icon | `INPUT_ICON` | `Icon` | icon rendered as part of the input field |
+| Item Wrapper | `INPUT_ITEM_WRAPPER` | `Box` | box containing all the items that are available as options to select |
+| Item | `INPUT_ITEM` | `Box | Touchable | Text` | an element selectable by the user |
+| Selected Element Wrapper | `INPUT_SELECTED_WRAPPER` | `Box` | box containing all the elements that have been selected |
+| Selected Element | `INPUT_SELECTED` | `Box | Touchable | Text` | a selected element |
+| Placeholder Element | `INPUT_PLACEHOLDER` | `Box | Icon | Text` | an element shown if there are no selected elements. **currently only supported for file input**|
 
 ### Applying Themes.
 Any Themes which are attached to a **Question** via the **Context List** will be passed to all elements of the **Visual Control**. A Theme can be directed to only be applied to a specific component of the **Visual Control** by using the field `visualControlType` (set the value to any of the above types, written in ALL CAPS eg `"visualControlType": "INPUT"`).

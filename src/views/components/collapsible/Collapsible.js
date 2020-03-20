@@ -74,7 +74,7 @@ class Collapsible extends Component {
                 <Touchable
                   withFeedback
                   onPress={this.handlePress}
-                  testID={testID}
+                  testID={`group-clickable-wrapper ${testID}`}
                   componentID="GROUP-CLICKABLE-WRAPPER"
                   componentCode={questionCode}
                   {...subcomponentProps['group-clickable-wrapper']}
@@ -87,7 +87,7 @@ class Collapsible extends Component {
                     >
                       <Box
                         transform={[
-                          { rotate: isOpen ? '0deg' : '270deg' },
+                          { rotate: isOpen ? '180deg' : '0deg' },
                         ]}
                         componentID="GROUP-ICON"
                         componentCode={questionCode}
