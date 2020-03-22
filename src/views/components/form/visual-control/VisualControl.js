@@ -24,7 +24,6 @@ const components = [
   'vcl-hint-icon',
   'vcl-hint-text',
   'vcl-hint-content-wrapper',
-  'vcl-hint-header-wrapper',
   'vcl-hint-clickable-wrapper',
 ];
 
@@ -305,16 +304,13 @@ class VisualControl extends Component {
                   />
                 )}
                 {/* HINT */}
-                {(
-                  properties.renderVisualControlHint
-                ) && (
+                { (
                   <VisualControlHint
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
                     iconProps={componentProps['vcl-hint-icon']}
                     textProps={componentProps ['vcl-hint-text']}
                     contentWrapperProps={componentProps['vcl-hint-content-wrapper']}
-                    headerWrapperProps={componentProps['vcl-hint-header-wrapper']}
                     clickableWrapperProps={componentProps['vcl-hint-clickable-wrapper']}
                   />
                 )}
