@@ -189,6 +189,10 @@ The basic components of a Visual Control are as follows:
 | Description | `VCL_DESCRIPTION` | `Text` | additional text to provide for information or context |
 | Icon | `VCL_ICON` | `Icon` | icon rendered as part of the input |
 | Error | `VCL_ERROR` | `Text` | text render if answer is invalid or an error occurs |
+| Icon | `VCL_HINT_ICON` | `Icon` | icon rendered as part of the hint component |
+| Text | `VCL_HINT_TEXT` | `Text` | text rendered as part of the hint component |
+| Content Wrapper | `VCL_HINT_CONTENT_WRAPPER` | `Box` | container for the hint component that renders the content of the hint component|
+| Clickable Wrapper | `VCL_HINT_CLICKABLE_WRAPPER` | `Box` | interactable part for the Hint component that toggles the content from the content wrapper when clicked on |
 
 ## Input Subcomponents
 
