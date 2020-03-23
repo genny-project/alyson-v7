@@ -222,6 +222,8 @@ class VisualControl extends Component {
       ...restProps
     } = this.props;
 
+    const { description } = this.props.question.attribute;
+
     let properties = {};
 
     const checkThemeForProperties = ( themeArray ) => {
@@ -253,11 +255,6 @@ class VisualControl extends Component {
 
     checkThemeForProperties( inheritedThemes );
     checkThemeForProperties( this.state.themes );
-
-    // console.log ( 'questionCode--->', this.props.ask.questionCode );
-    // if ( this.props.ask.questionCode === 'QUE_HINT' ) {
-    //   console.log( 'Checking for visual Control HInt',  { questionCode: this.props.ask.questionCode, properties });
-    // }
 
     return (
       <StatelessThemeHandler
@@ -305,8 +302,6 @@ class VisualControl extends Component {
                 )}
                 {/* HINT */}
                 {(
-                  properties.renderVisualControlHint
-                ) && (
                   <VisualControlHint
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
@@ -314,6 +309,7 @@ class VisualControl extends Component {
                     textProps={componentProps ['vcl-hint-text']}
                     contentWrapperProps={componentProps['vcl-hint-content-wrapper']}
                     clickableWrapperProps={componentProps['vcl-hint-clickable-wrapper']}
+                    description={description}
                   />
                 )}
               </Box>
