@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { string, object } from 'prop-types';
 // import { string, object, bool, number, func } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
-import { Icon, Tooltip, Text } from '../../../../components';
+import { Icon, Tooltip, Text, Box } from '../../../../components';
 
 class VisualControlHint extends Component {
   static propTypes = {
@@ -25,20 +25,17 @@ class VisualControlHint extends Component {
 
       <Tooltip
         renderHeader={(
-          // <Box
-          //   paddingLeft={5}
-          //   paddingRight={5}
-          //   cursor="pointer"
-          //   {...iconProps}
-          // >
-          <Icon
-            name="help"
-            size="xs"
-            color="grey"
-            cursor="help"
-            {...iconProps}
-          />
-          // </Box>
+          <Box
+            marginLeft="auto"
+          >
+            <Icon
+              name="help"
+              size="xs"
+              color="grey"
+              cursor="help"
+              {...iconProps}
+            />
+          </Box>
           )}
         {...restProps}
       >

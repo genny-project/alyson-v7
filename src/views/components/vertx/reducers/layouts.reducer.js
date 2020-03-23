@@ -131,6 +131,7 @@ const componentTypes = {
   VCL_HINT_ICON: 'vcl-hint-icon',
   VCL_HINT_TEXT: 'vcl-hint-text',
   VCL_HINT_CONTENT_WRAPPER: 'vcl-hint-content-wrapper',
+  VCL_HINT_HEAD_WRAPPER: 'vcl-hint-header-wrapper',
   VCL_HINT_CLICKABLE_WRAPPER: 'vcl-hint-clickable-wrapper',
   // input subcomponents
   INPUT_FIELD: 'input-field',

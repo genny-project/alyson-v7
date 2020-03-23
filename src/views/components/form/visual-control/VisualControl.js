@@ -25,6 +25,7 @@ const components = [
   'vcl-hint-text',
   'vcl-hint-content-wrapper',
   'vcl-hint-clickable-wrapper',
+  'vcl-hint-header-wrapper',
 ];
 
 /*
@@ -309,6 +310,7 @@ class VisualControl extends Component {
                     textProps={componentProps ['vcl-hint-text']}
                     contentWrapperProps={componentProps['vcl-hint-content-wrapper']}
                     clickableWrapperProps={componentProps['vcl-hint-clickable-wrapper']}
+                    headerWrapperProps={componentProps['vcl-hint-header-wrapper']}
                     description={description}
                   />
                 )}

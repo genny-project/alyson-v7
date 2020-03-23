@@ -13,6 +13,7 @@ class Tooltip extends Component {
       const {
         contentWrapperProps,
         clickableWrapperProps,
+        headerWrapperProps,
         ...restProps
       } = this.props;
 
@@ -37,6 +38,9 @@ class Tooltip extends Component {
             },
             'group-clickable-wrapper': {
               ...clickableWrapperProps,
+            },'group-header-wrapper': {
+              marginLeft: 'auto',
+              ...headerWrapperProps,
             },
           }}
           showIcon={false}
