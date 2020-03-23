@@ -10,13 +10,14 @@ class VisualControlHint extends Component {
     iconProps: object,
     textProps: object,
     subcomponentProps: object,
+    description: object,
   }
 
   render() {
     const {
-      questionCode,
       iconProps,
       textProps,
+      description,
       ...restProps
     } = this.props;
 
@@ -42,7 +43,7 @@ class VisualControlHint extends Component {
         {...restProps}
       >
         <Text
-          text={questionCode}
+          text={description}
           {...textProps}
         />
 
