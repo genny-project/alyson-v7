@@ -193,6 +193,7 @@ The basic components of a Visual Control are as follows:
 | Text | `VCL_HINT_TEXT` | `Text` | text rendered as part of the hint component |
 | Content Wrapper | `VCL_HINT_CONTENT_WRAPPER` | `Box` | container for the hint component that renders the content of the hint component|
 | Clickable Wrapper | `VCL_HINT_CLICKABLE_WRAPPER` | `Box` | interactable part for the Hint component that toggles the content from the content wrapper when clicked on |
+| Header Wrapper | `VCL_HINT_HEADER_WRAPPER` | `Box` | container element for styling the header of the Visual Control Hint component |
 
 ## Input Subcomponents
 
