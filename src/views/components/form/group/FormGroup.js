@@ -633,7 +633,7 @@ class FormGroup extends Component {
                 <WrapperElement
                   subcomponentProps={subcomponentProps}
                   isClosed={this.props.isClosed}
-                  testID={`${parentGroupCode || questionCode}:${questionCode}`}
+                  testID={`${parentGroupCode || questionCode}:${questionCode}${targetCode ? `:${targetCode}` : ''}`}
                   showIcon={(
                     properties.renderQuestionGroupIcon != null
                       ? properties.renderQuestionGroupIcon
