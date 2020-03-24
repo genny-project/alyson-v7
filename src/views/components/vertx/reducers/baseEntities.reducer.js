@@ -59,11 +59,6 @@ const getDisplayValueField = ( item ) => {
       return object;
     }
     catch ( error ) {
-      if ( item.baseEntityCode.startsWith( 'THM' )) {
-        // eslint-disable-next-line no-console
-        console.warn({ item, error });
-      }
-
       return item.valueString;
     }
   }
