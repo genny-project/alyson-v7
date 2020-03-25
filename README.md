@@ -318,3 +318,13 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 * Added description of the **FRAME** Panel type.
 * Updated Visual Control section to include the `visualControlType` needed to assign a Theme to a specific Visual Control Element.
 * Added section on Input Subcomponents.
+
+----
+
+* Hint Icon will show the hint description as a tooltip if there is any description for the particular attribute code of that question
+
+---
+* In order to show the hint component:
+1.  Create a theme THM_HAS_LABEL_DEFAULT with attribute code PRI_HAS_LABEL and set the value to true.
+2.  Create a theme THM_HAS_HINT_DEFAULT with attribute code PRI_HAS_HINT and set the value to true.
+3.
