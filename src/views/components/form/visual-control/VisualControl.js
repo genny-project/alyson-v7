@@ -303,6 +303,8 @@ class VisualControl extends Component {
                 )}
                 {/* HINT */}
                 {(
+                  description !== undefined
+                ) && (
                   <VisualControlHint
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
