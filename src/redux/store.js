@@ -12,19 +12,32 @@ import reducers from './reducers';
 
 // export default store;
 
+const logKeys = ['vertx', 'router'];
+
 const SetTransform = createTransform(
   // transform state on its way to being serialized and persisted.
   ( inboundState, key ) => {
     // convert mySet to an Array.
-    console.warn( 'inbound', key, JSON.stringify( inboundState ));
-    // debugger; // eslint-disable-line
+    if ( logKeys.includes( key )) {
+      console.warn(
+        'persist',
+        key,
+        JSON.stringify( inboundState )
+      );
+    }
 
     return { ...inboundState };
   },
   // transform state being rehydrated
   ( outboundState, key ) => {
     // convert mySet back to a Set.
-    console.warn( 'outbound', key, JSON.stringify( outboundState ));
+    if ( logKeys.includes( key )) {
+      console.warn(
+        'rehydrate',
+        key,
+        JSON.stringify( outboundState )
+      );
+    }
 
     return { ...outboundState };
   },
@@ -34,6 +47,7 @@ const persistConfig = {
   key: 'root',
   storage,
   // transforms: [SetTransform],
+  blacklist: ['router'],
 };
 
 const persistedReducer = persistReducer( persistConfig, reducers );
