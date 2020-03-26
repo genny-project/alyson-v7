@@ -325,6 +325,6 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 
 ---
 * In order to show the hint component:
-1.  Create a theme THM_HAS_LABEL_DEFAULT with attribute code PRI_HAS_LABEL and set the value to true.
-2.  Create a theme THM_HAS_HINT_DEFAULT with attribute code PRI_HAS_HINT and set the value to true.
-3.
+1. Create a theme THM_HAS_LABEL_DEFAULT with attribute code PRI_HAS_LABEL and set the value to true and attach it to the question group.
+2. Create a theme THM_HAS_HINT_DEFAULT with attribute code PRI_HAS_HINT and set the value to true and attach it to the question group.
+3. Create a theme THM_HINT_DEFAULT with all the styling attributes and attach it to the question group with the VCL type set to 'VCL_HINT_CONTENT_WRAPPER'.
