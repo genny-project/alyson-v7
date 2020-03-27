@@ -39,6 +39,8 @@ class Bridge {
 
     const browser = detect();
 
+    const sessionInfo = store.getState().session;
+
     const clientData = {
       platform: {
         type: Platform.OS,
@@ -49,18 +51,11 @@ class Bridge {
         os: browser.os,
         version: browser.version,
       },
-      alyson: {
-        branch: '',
-        version: '',
-        date: '',
-      },
       screen: {
         height: Dimensions.get( 'window' ).height,
         width: Dimensions.get( 'window' ).width,
       },
-      redux: {
-        updated: '',
-      },
+      ...sessionInfo,
     };
 
     if ( window ) {
