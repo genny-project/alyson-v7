@@ -5,7 +5,7 @@ import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import App from './views/app';
-import { VertxProvider, GoogleProvider, ErrorBoundary, ActivityIndicator, Box, Text } from './views/components';
+import { VertxProvider, GoogleProvider, ErrorBoundary } from './views/components';
 import { store, persistor } from './redux';
 import './utils/layouts-dev';
 
@@ -28,20 +28,6 @@ const Root = () => (
   <ErrorBoundary>
     <ReduxProvider store={store}>
       <PersistGate
-        loading={(
-          <Box
-            justifyContent="center"
-            alignItems="center"
-            flex={1}
-            flexDirection="column"
-            testID="page-loading"
-          >
-            <ActivityIndicator />
-            <Text>
-            Loading...
-            </Text>
-          </Box>
-)}
         persistor={persistor}
       >
         <VertxProvider>
