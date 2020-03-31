@@ -37,6 +37,8 @@ const reducer = ( state = initialState, { type, payload }) => {
       };
 
     case 'persist/PERSIST':
+      console.warn( 'PERSIST', payload, state );
+
       return {
         ...state,
         persist: {
@@ -46,6 +48,8 @@ const reducer = ( state = initialState, { type, payload }) => {
       };
 
     case 'persist/REHYDRATE':
+      console.warn( 'REHYDRATE', payload, state );
+
       return {
         ...state,
         persist: {

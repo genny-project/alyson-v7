@@ -5,7 +5,7 @@ import vertx from '../views/components/vertx/vertx.reducer';
 import navigation from '../views/routing/navigation.reducer';
 import session from './session/session.reducer';
 
-const reducers = combineReducers({
+const appReducer = combineReducers({
   keycloak,
   vertx,
   router,
@@ -13,4 +13,4 @@ const reducers = combineReducers({
   session,
 });
 
-export default reducers;
+export default appReducer;
