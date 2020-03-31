@@ -1,4 +1,4 @@
-import { prefixedLog, isArray } from '../../utils';
+import { prefixedLog, isArray, isObject, isString, Api } from '../../utils';
 import { store } from '../../redux';
 import * as events from './events';
 
@@ -96,11 +96,61 @@ class MessageHandler {
     return output;
   };
 
+  handleBulkPullMessage = async ( message ) => {
+    console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
+
+    const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+    const { data = {}, accessToken } = store.getState().keycloak;
+    const { api_url } = data;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `bearer ${accessToken}`,
+    };
+
+    if ( isString( api_url ) && isString( message.pullUrl )) {
+      const url = `${proxyurl}${api_url}${message.pullUrl}`;
+
+      console.warn( 'Making GET request to:', url ); // eslint-disable-line
+
+      const result = await Api.promiseCall({
+        method: 'GET',
+        url,
+        headers: headers,
+        timeout: 10000,
+      });
+
+      if ( isObject( result )) {
+        const { data } = result;
+
+        if ( isObject( data, { withProperty: 'value' })) {
+          const pulledMessage = JSON.parse( data.value );
+
+          const { msg_type } = pulledMessage;
+
+          const eventType = this.eventTypes[msg_type];
+          const event = pulledMessage[eventType];
+          const action = events[event];
+
+          if ( action ) {
+            store.dispatch( action( pulledMessage ));
+          }
+        }
+      }
+    }
+  }
+
   onMessage = message => {
     if ( !message ) return;
 
     const { msg_type, data_type, messages } = message;
     const isValidMessage = this.validMessageTypes.includes( msg_type );
+
+    if ( data_type === 'QBulkPullMessage' ) {
+      this.handleBulkPullMessage( message );
+
+      return;
+    }
 
     if ( !isValidMessage && data_type !== 'QBulkMessage' ) {
       this.log(
