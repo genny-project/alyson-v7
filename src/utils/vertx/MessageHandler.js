@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { prefixedLog, isArray, isObject, isString, Api } from '../../utils';
 import { store } from '../../redux';
 import * as events from './events';
@@ -98,11 +97,11 @@ class MessageHandler {
   };
 
   handleBulkPullMessage = async ( message ) => {
+    console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
+
     const proxyurl = 'https://cors-anywhere.herokuapp.com/';
     const { data = {}, accessToken } = store.getState().keycloak;
     const { api_url } = data;
-
-    console.warn( '!!!! QBulkPullMessage !!!!', message );
 
     const headers = {
       'Content-Type': 'application/json',
@@ -112,7 +111,7 @@ class MessageHandler {
     if ( isString( api_url ) && isString( message.pullUrl )) {
       const url = `${proxyurl}${api_url}${message.pullUrl}`;
 
-      console.warn( 'making GET request to:', url );
+      console.warn( 'Making GET request to:', url ); // eslint-disable-line
 
       const result = await Api.promiseCall({
         method: 'GET',
@@ -121,15 +120,11 @@ class MessageHandler {
         timeout: 10000,
       });
 
-      console.warn({ result });
-
       if ( isObject( result )) {
         const { data } = result;
 
         if ( isObject( data, { withProperty: 'value' })) {
           const pulledMessage = JSON.parse( data.value );
-
-          console.warn({ pulledMessage });
 
           const { msg_type } = pulledMessage;
 
@@ -137,7 +132,9 @@ class MessageHandler {
           const event = pulledMessage[eventType];
           const action = events[event];
 
-          store.dispatch( action( pulledMessage ));
+          if ( action ) {
+            store.dispatch( action( pulledMessage ));
+          }
         }
       }
     }
