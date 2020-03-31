@@ -505,6 +505,24 @@ class InputText extends Component {
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
 
+    // if ( value === null ) {
+    //   console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName });
+    // }
+
+    // console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName, valueProps: this.props });
+
+    // if ( this.props.ask.questionCode === 'QUE_DAYS_PER_WEEK' || this.props.ask.questionCode === 'QUE_INTERN_SOFTWARE' ) {
+    //   console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName, valueProps: this.props });
+    // }
+
+    // const valueCheck = ( value ) => {
+    //   if ( value !== null ) {
+    //     return value;
+    //   }
+
+    //   return undefined;
+    // };
+
     return (
       <Box
         position="relative"
