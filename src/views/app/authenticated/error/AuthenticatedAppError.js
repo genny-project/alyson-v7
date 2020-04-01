@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { any, number, func } from 'prop-types';
-import { Box, Text, Button, Heading } from '../../../components';
+import { Box, Text, Touchable, Heading } from '../../../components';
 import { store } from '../../../../redux';
 import { fetchKeycloakConfig } from '../../../../redux/actions';
 
@@ -46,13 +46,19 @@ class AuthenticatedAppError extends Component {
           marginTop={20}
           padding={20}
         >
-          <Button
-            color="green"
+          <Touchable
+            withFeedback
+            backgroundColor="green"
             size="md"
             onPress={this.handleRetry}
+            padding={8}
+            borderRadius={8}
           >
-              Retry
-          </Button>
+            <Text
+              text="Retry"
+              color="white"
+            />
+          </Touchable>
         </Box>
 
         {secondsUntilRetry ? (
