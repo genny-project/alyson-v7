@@ -32,14 +32,15 @@ class TestIdHandler extends Component {
     );
   }
 
-  handleMouseOverDebounced = () => {
+  handleMouseOverDebounced = ( event ) => {
     const { timer } = this.props;
 
+    event.stopPropagation();
     window.clearTimeout( timeoutMouseOutID );
 
     timeoutMouseOverID = window.setTimeout(
       () => {
-        this.handleMouseOver();
+        this.handleMouseOver( event );
       },
       timer,
     );

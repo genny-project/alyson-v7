@@ -72,7 +72,10 @@ class DebugDisplay extends React.Component {
           </Touchable>
         </Box>
         {minimized ? (
-          <Box flexDirection="column">
+          <Box
+            flexDirection="column"
+            flexGrow="1"
+          >
             <Text size="md">
               {' '}
 Expand to View Debug Mode (🐞)
