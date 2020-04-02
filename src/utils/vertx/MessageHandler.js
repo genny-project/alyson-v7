@@ -133,6 +133,7 @@ class MessageHandler {
             const action = events[event];
 
             if ( action ) {
+              console.warn( 'Pull Message Action:', event ); // eslint-disable-line
               store.dispatch( action( data ));
             }
           }
