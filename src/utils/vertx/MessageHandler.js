@@ -99,7 +99,8 @@ class MessageHandler {
   handleBulkPullMessage = async ( message ) => {
     console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
 
-    const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+    // const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+    const proxyurl = '';
     const { data = {}, accessToken } = store.getState().keycloak;
     const { api_url } = data;
 
@@ -115,29 +116,31 @@ class MessageHandler {
       console.log( 'original url is ...',api_url2 ); // eslint-disable-line
       console.warn( 'Making GET request to:', url ); // eslint-disable-line
 
-      const result = await Api.promiseCall({
-        method: 'GET',
-        url,
-        headers: headers,
-        timeout: 10000,
-      });
+      try {
+        const result = await Api.promiseCall({
+          method: 'GET',
+          url,
+          headers: headers,
+          timeout: 10000,
+        });
 
-      if ( isObject( result )) {
-        const { data } = result;
+        if ( isObject( result )) {
+          const { data } = result;
 
-        if ( isObject( data, { withProperty: 'value' })) {
-          const pulledMessage = JSON.parse( data.value );
+          if ( isObject( data )) {
+            const { msg_type } = data;
 
-          const { msg_type } = pulledMessage;
+            const eventType = this.eventTypes[msg_type];
+            const event = data[eventType];
+            const action = events[event];
 
-          const eventType = this.eventTypes[msg_type];
-          const event = pulledMessage[eventType];
-          const action = events[event];
-
-          if ( action ) {
-            store.dispatch( action( pulledMessage ));
+            if ( action ) {
+              store.dispatch( action( data ));
+            }
           }
         }
+      } catch ( error ) {
+        console.error( 'GET REQUEST ERROR', error );
       }
     }
   }
