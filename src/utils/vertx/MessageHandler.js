@@ -133,8 +133,9 @@ class MessageHandler {
             const action = events[event];
 
             if ( action ) {
-              console.warn( 'Pull Message Action:', event ); // eslint-disable-line
-              store.dispatch( action( data ));
+              console.warn( 'Dispatching Pull message:', event ); // eslint-disable-line
+              // store.dispatch( action( data ));
+              this.onMessage( data );
             }
           }
         }
