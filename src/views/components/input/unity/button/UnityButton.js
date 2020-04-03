@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
-import { object, string } from 'prop-types';
+import { object, string, array } from 'prop-types';
 import { Text, Touchable, Box } from '../../..';
 import UnityConsumer from '../consumer';
 
@@ -14,28 +14,31 @@ class UnityButton extends Component {
     unity: object,
     backgroundColor: string,
     color: string,
+    items: array,
   }
 
   render() {
     const { unity, backgroundColor, color } = this.props;
 
-    const buttons = {
-      OBJ_SPEED_SIGN: {
-        label: 'Place a speed sign',
-        method: 'spawnObjectReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
-      },
-      OBJ_TRAFFIC_CONTROLLER_SIGN: {
-        label: 'Place a traffic controller sign',
-        method: 'spawnObjectReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
-      },
-      OBJ_BOLLARD: {
-        label: 'Place a line of bollards',
-        method: 'twoPointReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
-      },
-    };
+    const { items } = this.props;
+
+    // const buttons = {
+    //   OBJ_SPEED_SIGN: {
+    //     label: 'Place a speed sign',
+    //     method: 'spawnObjectReact',
+    //     params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
+    //   },
+    //   OBJ_TRAFFIC_CONTROLLER_SIGN: {
+    //     label: 'Place a traffic controller sign',
+    //     method: 'spawnObjectReact',
+    //     params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+    //   },
+    //   OBJ_BOLLARD: {
+    //     label: 'Place a line of bollards',
+    //     method: 'twoPointReact',
+    //     params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+    //   },
+    // };
 
     // const buttonType = 'OBJ_SPEED_SIGN';
 
@@ -63,8 +66,8 @@ class UnityButton extends Component {
         padding={5}
         flexWrap="wrap"
       >
-        {Object.keys( buttons ).map(( buttonKey, index, array ) => {
-          const button = buttons[buttonKey];
+        {Object.keys( items ).map(( itemKey, index, array ) => {
+          const button = items[itemKey];
 
           return (
             <Box
