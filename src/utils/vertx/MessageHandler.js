@@ -1,4 +1,4 @@
-import { prefixedLog, isArray } from '../../utils';
+import { prefixedLog, isArray, isObject, isString, Api } from '../../utils';
 import { store } from '../../redux';
 import * as events from './events';
 
@@ -96,11 +96,68 @@ class MessageHandler {
     return output;
   };
 
+  handleBulkPullMessage = async ( message ) => {
+    console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
+
+    // const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+    // const proxyurl = '';
+    const { data = {}, accessToken } = store.getState().keycloak;
+    const { api_url } = data;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `bearer ${accessToken}`,
+    };
+
+    if ( isString( api_url ) && isString( message.pullUrl )) {
+      const api_url2 = `${api_url.substring( 0,api_url.length - 1 )}/`;
+    //  const url = `${proxyurl}${api_url2}${message.pullUrl}`;
+      const url = `${api_url2}${message.pullUrl}`;
+      console.log( 'original url is ...',api_url2 ); // eslint-disable-line
+      console.warn( 'Making GET request to:', url ); // eslint-disable-line
+
+      try {
+        const result = await Api.promiseCall({
+          method: 'GET',
+          url,
+          headers: headers,
+          timeout: 10000,
+        });
+
+        if ( isObject( result )) {
+          const { data } = result;
+
+          if ( isObject( data )) {
+            const { msg_type } = data;
+
+            const eventType = this.eventTypes[msg_type];
+            const event = data[eventType];
+            const action = events[event];
+
+            if ( action ) {
+              console.warn( 'Dispatching Pull message:', event ); // eslint-disable-line
+              // store.dispatch( action( data ));
+              this.onMessage( data );
+            }
+          }
+        }
+      } catch ( error ) {
+        console.error( 'GET REQUEST ERROR', error );
+      }
+    }
+  }
+
   onMessage = message => {
     if ( !message ) return;
 
     const { msg_type, data_type, messages } = message;
     const isValidMessage = this.validMessageTypes.includes( msg_type );
+
+    if ( data_type === 'QBulkPullMessage' ) {
+      this.handleBulkPullMessage( message );
+
+      return;
+    }
 
     if ( !isValidMessage && data_type !== 'QBulkMessage' ) {
       this.log(

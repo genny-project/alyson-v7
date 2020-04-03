@@ -35,6 +35,9 @@ class DebugDisplay extends React.Component {
   render() {
     const { minimized, displayStore } = this.state;
 
+    const reduxStore = store.getState();
+    const { session, keycloak } = reduxStore;
+
     return (
       <Box
         padding={10}
@@ -74,13 +77,12 @@ class DebugDisplay extends React.Component {
         {minimized ? (
           <Box
             flexDirection="column"
-            flexGrow="1"
+            flexGrow={1}
           >
-            <Text size="md">
-              {' '}
-Expand to View Debug Mode (🐞)
-            </Text>
-
+            <Text
+              size="md"
+              text="Expand to View Debug Mode (🐞)"
+            />
             <TestDisplay />
             <Box marginTop="10px" />
           </Box>
@@ -130,12 +132,13 @@ Expand to View Debug Mode (🐞)
                 flexDirection="column"
                 marginTop={20}
               >
-                <Text size="md">
-Session
-                </Text>
+                <Text
+                  size="md"
+                  text="Session"
+                />
               </Box>
 
-              {!minimized ? <ReactJson src={store.getState().rawSession} /> : null}
+              {!minimized ? <ReactJson src={session} /> : null}
             </Box>
             <Box
               height={300}
@@ -146,10 +149,11 @@ Session
               backgroundColor="#fff"
               padding={10}
             >
-              <Text size="md">
-Keycloak Session From Redux store
-              </Text>
-              <ReactJson src={store.getState().keycloak} />
+              <Text
+                size="md"
+                text="Keycloak Session From Redux store"
+              />
+              <ReactJson src={keycloak} />
             </Box>
             <Box
               flexDirection="column"
@@ -157,10 +161,10 @@ Keycloak Session From Redux store
               backgroundColor="#fff"
               padding={10}
             >
-              <Text size="md">
-Redux Store
-              </Text>
-
+              <Text
+                size="md"
+                text="Redux Store"
+              />
               <Box flexDirection="column">
                 <Box
                   marginTop={20}
@@ -182,33 +186,18 @@ Redux Store
                 </Box>
                 <Box marginTop={10}>
                   {!displayStore ? (
-                    <Text size="xs">
-Hidden for performance reasons click above button to show
-                    </Text>
+                    <Text
+                      size="xs"
+                      text="Hidden for performance reasons click above button to show"
+                    />
                   ) : null}
                 </Box>
               </Box>
               {displayStore ? (
                 <ReactJson
-                  src={store.getState()}
+                  src={reduxStore}
                   collapsed
                 />
-              ) : null}
-            </Box>
-            <Box
-              backgroundColor="#fff"
-              padding={10}
-              marginTop={20}
-              flexDirection="column"
-            >
-              {store.getState().gennyteerDisplay.data ? (
-                <Box flexDirection="column">
-                  <Text text="Text from Gennyteeer" />
-                  <Text
-                    size="xs"
-                    text={store.getState().gennyteerDisplay.data}
-                  />
-                </Box>
               ) : null}
             </Box>
           </pre>

@@ -2,7 +2,7 @@ import EventBus from 'vertx3-eventbus-client';
 import decodeToken from 'jwt-decode';
 import NProgress from 'nprogress';
 import { push } from 'react-router-redux';
-import { prefixedLog } from '../../utils';
+import { prefixedLog /* Storage */ } from '../../utils';
 import { store } from '../../redux';
 import * as actions from '../../redux/actions';
 import * as events from './events';
@@ -171,9 +171,13 @@ class Vertx {
     }
 
     if ( message.cmd_type === 'LOGOUT' ) {
+      // debugger // eslint-disable-line
       store.dispatch( actions.userLogout());
-      this.handleLogoutOnLogoutEvent();
+      // debugger // eslint-disable-line
+      // this.handleLogoutOnLogoutEvent();
       store.dispatch( push( '/logout' ));
+
+      return;
     }
 
     // this.log( 'Receiving a message' );
