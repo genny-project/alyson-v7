@@ -99,8 +99,6 @@ class MessageHandler {
   handleBulkPullMessage = async ( message ) => {
     console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
 
-    // const proxyurl = 'https://cors-anywhere.herokuapp.com/';
-    const proxyurl = '';
     const { data = {}, accessToken } = store.getState().keycloak;
     const { api_url } = data;
 
@@ -110,10 +108,14 @@ class MessageHandler {
     };
 
     if ( isString( api_url ) && isString( message.pullUrl )) {
-      const api_url2 = api_url.substring(0,api_url.length-1)+"/";
-    //  const url = `${proxyurl}${api_url2}${message.pullUrl}`;
-      const url = `${api_url2}${message.pullUrl}`;
-      console.log( 'original url is ...',api_url2 ); // eslint-disable-line
+      let apiUrl = api_url;
+
+      if ( apiUrl.endsWith( ':' )) {
+        apiUrl = `${api_url.substring( 0, api_url.length - 1 )}/`;
+
+        console.warn( 'Changing api_url from:', api_url, 'to:', apiUrl ); // eslint-disable-line
+      }
+      const url = `${apiUrl}${message.pullUrl}`;
       console.warn( 'Making GET request to:', url ); // eslint-disable-line
 
       try {
