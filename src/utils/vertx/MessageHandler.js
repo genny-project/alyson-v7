@@ -110,8 +110,10 @@ class MessageHandler {
     };
 
     if ( isString( api_url ) && isString( message.pullUrl )) {
-      const url = `${proxyurl}${api_url}${message.pullUrl}`;
-
+      const api_url2 = api_url.substring(0,api_url.length-1)+"/";
+    //  const url = `${proxyurl}${api_url2}${message.pullUrl}`;
+      const url = `${api_url2}${message.pullUrl}`;
+      console.log( 'original url is ...',api_url2 ); // eslint-disable-line
       console.warn( 'Making GET request to:', url ); // eslint-disable-line
 
       try {
