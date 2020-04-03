@@ -1,4 +1,4 @@
-import { prefixedLog, isArray, isObject, isString, Api } from '../../utils';
+import { prefixedLog, isArray, isObject, isString, Api, removeSubstring } from '../../utils';
 import { store } from '../../redux';
 import * as events from './events';
 
@@ -133,8 +133,9 @@ class MessageHandler {
             const action = events[event];
 
             if ( action ) {
-              console.warn( 'Dispatching Pull message:', event ); // eslint-disable-line
-              // store.dispatch( action( data ));
+              data['is_pull_message'] = true;
+              data['pull_id'] = removeSubstring( message.pullUrl, 'api/pull/' );
+
               this.onMessage( data );
             }
           }
@@ -205,6 +206,10 @@ class MessageHandler {
           ...item,
           links: item.questions ? item.links.concat( item.questions ) : item.links,
         }));
+      }
+
+      if ( payload.is_pull_message ) {
+        console.warn( 'Dispatching Pull message:', event, payload.pull_id, payload ); // eslint-disable-line
       }
 
       store.dispatch( action( payload ));
