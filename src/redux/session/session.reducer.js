@@ -1,6 +1,3 @@
-import {
-  format,
-} from 'date-fns';
 import branch from '!!raw-loader!../../static/git-info-branch.txt';
 import commit from '!!raw-loader!../../static/git-info-commit.txt';
 import date from '!!raw-loader!../../static/git-info-date.txt';
@@ -36,21 +33,12 @@ const reducer = ( state = initialState, { type, payload }) => {
         sessionId: payload,
       };
 
-    case 'persist/PERSIST':
-      return {
-        ...state,
-        persist: {
-          ...state.persist,
-          lastReduxSave: format( new Date()),
-        },
-      };
-
     case 'persist/REHYDRATE':
       return {
         ...state,
         persist: {
           ...state.persist,
-          lastReduxLoad: format( new Date()),
+          timestamp: window.localStorage && window.localStorage.getItem( 'persist:timestamp' ),
         },
       };
 

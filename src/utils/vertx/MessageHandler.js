@@ -123,29 +123,25 @@ class MessageHandler {
           method: 'GET',
           url,
           headers: headers,
-          timeout: 10000,
+          timeout: 5000,
         });
 
         if ( isObject( result )) {
           const { data } = result;
 
           if ( isObject( data )) {
-            const { msg_type } = data;
+            data['is_pull_message'] = true;
+            data['pull_id'] = removeSubstring( message.pullUrl, 'api/pull/' );
 
-            const eventType = this.eventTypes[msg_type];
-            const event = data[eventType];
-            const action = events[event];
-
-            if ( action ) {
-              data['is_pull_message'] = true;
-              data['pull_id'] = removeSubstring( message.pullUrl, 'api/pull/' );
-
-              this.onMessage( data );
-            }
+            this.onMessage( data );
+          } else {
+            console.error( 'QBulkPullMessage Error:', '"invalid data"', result );
           }
+        } else {
+          console.error( 'QBulkPullMessage Error:', '"invalid result"', result );
         }
       } catch ( error ) {
-        console.error( 'GET REQUEST ERROR', error );
+        console.error( 'QBulkPullMessage Error:', error );
       }
     }
   }
