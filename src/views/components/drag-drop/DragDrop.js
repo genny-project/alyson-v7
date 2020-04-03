@@ -31,7 +31,7 @@ const DragDrop = ({
   zoneItemLimit,
   value = [],
   ask,
-  ...restProps
+  // ...restProps
 }) => {
   const [itemPos, setItemPos] = useState( setupItems( items, shuffleItems )); // set up initial item array
 
@@ -51,7 +51,7 @@ const DragDrop = ({
     const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: dlv( selectedDropZones, `${item.zone}` ) }));
     // const selectedItemForSend = selectedItems.map( item => ({ [item[itemValueKey]]: dlv( selectedDropZones, `${item.position}` ) }));
 
-    console.log({ itemPos, selectedItems, selectedItemForSend, selectedDropZones });
+    // console.log({ itemPos, selectedItems, selectedItemForSend, selectedDropZones });
 
     const shouldSendValue = ( newValue, currentValue ) => {
       // if ( restProps.log ) console.log( 'shouldSendValue', { newValue, currentValue });
@@ -106,7 +106,7 @@ const DragDrop = ({
   });
 
   const moveItem = ( toX, name ) => {
-    console.log( 'move Item' );
+//    console.log( 'move Item' );
     const itemPosNew = [];
     const currentZones = {};
 
@@ -140,7 +140,7 @@ const DragDrop = ({
 
   const moveCard = useCallback(
     ( dragIndex, hoverIndex ) => {
-      console.log( 'move Card' );
+      // console.log( 'move Card' );
       const dragCard = itemPos[dragIndex];
 
       const newObj = update( itemPos, {
@@ -157,6 +157,7 @@ const DragDrop = ({
     [itemPos],
   );
 
+  // eslint-disable-next-line react/prop-types
   const renderDropZone = ({ zoneId, index, name, dropzoneProps, overlayProps }) => {
     return (
       <DropZone
