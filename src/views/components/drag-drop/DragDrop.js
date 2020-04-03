@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
-import { string, array, bool, func, object, number } from 'prop-types';
+import { PropTypes ,string, array, bool, func, object, number } from 'prop-types';
 import dlv from 'dlv';
 import { DropZone } from './drop-zone/DropZone';
 import { DragDropItem } from './drag-drop-item/DragDropItem';
@@ -157,7 +157,6 @@ const DragDrop = ({
     [itemPos],
   );
 
-  // eslint-disable-next-line react/prop-types
   const renderDropZone = ({ zoneId, index, name, dropzoneProps, overlayProps }) => {
     return (
       <DropZone
@@ -176,6 +175,14 @@ const DragDrop = ({
         {renderItem({ zoneId, zoneIndex: index })}
       </DropZone>
     );
+  };
+
+  renderDropZone.propTypes = {
+    zoneId: PropTypes.string,
+    index: PropTypes.number,
+    name: PropTypes.string,
+    dropzoneProps: PropTypes.object,
+    overlayProps: PropTypes.object,
   };
 
   const renderItem = ({ zoneId, zoneIndex }) => {
