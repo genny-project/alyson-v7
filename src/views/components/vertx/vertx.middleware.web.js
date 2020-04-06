@@ -5,6 +5,14 @@ import { showDialog } from '../../../redux/actions';
 import { Bridge, removeStartingAndEndingSlashes, Storage } from '../../../utils';
 import { alert } from '../../components';
 
+const persistActions = [
+  'BASE_ENTITY_MESSAGE',
+  'ATTRIBUTE_DATA',
+  'ASK_DATA',
+  // 'SESSION_TEST',
+  'CACHE_ACTIONS',
+];
+
 const setPersistTimestamp = () => {
   Storage.set( 'persist:timestamp', format( new Date()));
 };
@@ -13,7 +21,9 @@ const middleware = store => next => action => {
   /* Since we are not making any side effects to `action`, pass on next. */
   next( action );
 
-  setPersistTimestamp();
+  if ( persistActions.includes( action.type )) {
+    setPersistTimestamp();
+  }
 
   if ( action.type === 'AUTH_ATTEMPT_SUCCESS' ) {
     store.dispatch( actions.initVertx());
