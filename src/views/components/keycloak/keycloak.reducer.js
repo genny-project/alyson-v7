@@ -1,4 +1,5 @@
 // import { combineReducers } from 'redux';
+import { persistor } from '../../../redux';
 import { KEYCLOAK_CONFIG_FETCH_REQUEST, KEYCLOAK_CONFIG_FETCH_SUCCESS, KEYCLOAK_CONFIG_FETCH_FAILURE } from '../../../constants';
 
 const configInitialState = {
@@ -34,12 +35,17 @@ const configReducer = ( state = configInitialState, { type, payload }) => {
       };
 
     case 'AUTH_ATTEMPT_SUCCESS':
+
       return {
         ...state,
         accessToken: payload.accessToken,
       };
 
     case 'USER_LOGOUT':
+
+      // clear persist data
+      persistor.purge();
+
       return {
         ...state,
         accessToken: null,

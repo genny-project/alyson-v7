@@ -10,7 +10,7 @@ const injectActionIntoState = ({ item, state }) => {
     console.warn('Adding action to cache...', item.cache);
 
     state[item.cache] = [
-      ...( isArray( state[item.cache] ) ? state[item.cache] : []),
+      // ...( isArray( state[item.cache] ) ? state[item.cache] : []),
       item,
     ];
   }

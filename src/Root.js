@@ -3,10 +3,13 @@ import 'nprogress/nprogress.css';
 import './polyfills';
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import App from './views/app';
 import { VertxProvider, GoogleProvider, ErrorBoundary } from './views/components';
-import { store } from './redux';
+import { store, persistor } from './redux';
 import './utils/layouts-dev';
+
+// const { store, persistor } = reduxStore();
 
 console.disableYellowBox = true; // eslint-disable-line no-console
 
@@ -24,11 +27,15 @@ if ( typeof window !== 'undefined' ) {
 const Root = () => (
   <ErrorBoundary>
     <ReduxProvider store={store}>
-      <VertxProvider>
-        <GoogleProvider>
-          <App />
-        </GoogleProvider>
-      </VertxProvider>
+      <PersistGate
+        persistor={persistor}
+      >
+        <VertxProvider>
+          <GoogleProvider>
+            <App />
+          </GoogleProvider>
+        </VertxProvider>
+      </PersistGate>
     </ReduxProvider>
   </ErrorBoundary>
 );

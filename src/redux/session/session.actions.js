@@ -7,3 +7,8 @@ export const removeTestId = () => ({
   type: 'REMOVE_TEST_ID',
   payload: {},
 });
+
+export const rawSession = data => ({
+  type: 'SESSION_TEST',
+  payload: data,
+});
