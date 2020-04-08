@@ -21,24 +21,25 @@ class UnityButton extends Component {
     const { unity, backgroundColor, color } = this.props;
 
     const { items } = this.props;
+    const buttonLabel = items.map(( item ) => item.label );
 
-    // const buttons = {
-    //   OBJ_SPEED_SIGN: {
-    //     label: 'Place a speed sign',
-    //     method: 'spawnObjectReact',
-    //     params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
-    //   },
-    //   OBJ_TRAFFIC_CONTROLLER_SIGN: {
-    //     label: 'Place a traffic controller sign',
-    //     method: 'spawnObjectReact',
-    //     params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
-    //   },
-    //   OBJ_BOLLARD: {
-    //     label: 'Place a line of bollards',
-    //     method: 'twoPointReact',
-    //     params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
-    //   },
-    // };
+    const buttons = {
+      OBJ_SPEED_SIGN: {
+        label: buttonLabel[0],
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
+      },
+      OBJ_TRAFFIC_CONTROLLER_SIGN: {
+        label: buttonLabel[1],
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+      OBJ_BOLLARD: {
+        label: buttonLabel[2],
+        method: 'twoPointReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+    };
 
     // const buttonType = 'OBJ_SPEED_SIGN';
 
@@ -66,12 +67,32 @@ class UnityButton extends Component {
         padding={5}
         flexWrap="wrap"
       >
-        {Object.keys( items ).map(( itemKey, index, array ) => {
-          const button = items[itemKey];
+        {Object.keys( buttons ).map(( buttonKey, index, array ) => {
+          const button = buttons[buttonKey];
+          // const mapButton = button.map(( label, params, method ) =>
+          //   label.foreach(( buttonLabel ) => {
+          //     buttonLabel;
+          //   })
+          // );
+
+          // switch ( button.label ) {
+          //   case 'Place a speed sign':
+          //     return Object.assign ( button, items[0] );
+          //   case 'Place a traffic controller sign':
+          //     return Object.assign ( button, items[1] );
+          //   case 'Place a line of bollards':
+          //     return Object.assign ( button, items[2] );
+          //   default:
+          //     break;
+          // }
+
+          const unityButton = Object.assign ({}, button );
+
+          // console.warn( 'Unity Button--->', { button, unityButton, buttonLabel });
 
           return (
             <Box
-              key={button.label}
+              key={unityButton.label}
               padding={10}
               backgroundColor={backgroundColor}
               borderRadius={10}
@@ -81,14 +102,14 @@ class UnityButton extends Component {
               <Touchable
                 withFeedback
                 onPress={() => !unity ? null : unity.sendEventToUnity(
-                  button.method,
-                  button.params,
+                  unityButton.method,
+                  unityButton.params,
                 )}
               >
                 <Text
                   size="xs"
                   color={color}
-                  text={button.label}
+                  text={unityButton.label}
                 />
               </Touchable>
 
