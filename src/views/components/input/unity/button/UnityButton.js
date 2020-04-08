@@ -21,23 +21,42 @@ class UnityButton extends Component {
     const { unity, backgroundColor, color } = this.props;
 
     const { items } = this.props;
-    const buttonLabel = items.map(( item ) => item.label );
+
+    // console.warn( 'ITEMS--->', items );
+    // const buttonLabel = items.map(( item ) => item.id );
 
     const buttons = {
-      OBJ_SPEED_SIGN: {
-        label: buttonLabel[0],
+      SEL_S1_B_ONE: {
+        // label: buttonLabel[0],
         method: 'spawnObjectReact',
         params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
       },
-      OBJ_TRAFFIC_CONTROLLER_SIGN: {
-        label: buttonLabel[1],
+
+      SEL_S1_B_TWO: {
+        // label: buttonLabel[1],
         method: 'spawnObjectReact',
         params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
       },
-      OBJ_BOLLARD: {
-        label: buttonLabel[2],
-        method: 'twoPointReact',
+
+      SEL_S1_B_THREE: {
+        // label: buttonLabel[2],
+        method: 'spawnObjectReact',
         params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+
+      SEL_S1_B_FOUR: {
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "leadouttaper", "ObjectPath": "Prefabs/leadouttaper", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+
+      SEL_S1_B_FIVE: {
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "longrunwithtaper", "ObjectPath": "Prefabs/longrunwithtaper", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+
+      SEL_S1_B_SIX: {
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "shortrunofbollards", "ObjectPath": "Prefabs/shortrunofbollards", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
       },
     };
 
@@ -67,8 +86,8 @@ class UnityButton extends Component {
         padding={5}
         flexWrap="wrap"
       >
-        {Object.keys( buttons ).map(( buttonKey, index, array ) => {
-          const button = buttons[buttonKey];
+        {items.map(( item, index, array ) => {
+          // const button = buttons[buttonKey];
           // const mapButton = button.map(( label, params, method ) =>
           //   label.foreach(( buttonLabel ) => {
           //     buttonLabel;
@@ -86,13 +105,13 @@ class UnityButton extends Component {
           //     break;
           // }
 
-          const unityButton = Object.assign ({}, button );
+          // const unityButton = Object.assign ({}, button );
 
           // console.warn( 'Unity Button--->', { button, unityButton, buttonLabel });
 
           return (
             <Box
-              key={unityButton.label}
+              key={item.label}
               padding={10}
               backgroundColor={backgroundColor}
               borderRadius={10}
@@ -102,14 +121,14 @@ class UnityButton extends Component {
               <Touchable
                 withFeedback
                 onPress={() => !unity ? null : unity.sendEventToUnity(
-                  unityButton.method,
-                  unityButton.params,
+                  buttons[item.value].method,
+                  buttons[item.value].params,
                 )}
               >
                 <Text
                   size="xs"
                   color={color}
-                  text={unityButton.label}
+                  text={item.label}
                 />
               </Touchable>
 
