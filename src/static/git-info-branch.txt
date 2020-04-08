@@ -1,1 +1,1 @@
-2020-04-03-optimisations-fix
+v3.1.0

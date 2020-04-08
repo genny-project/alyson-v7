@@ -17,7 +17,7 @@ class InputTagSuggestionContainer extends Component {
       <MenuContent
         ref={input => this.input = input}
         backgroundColor="white"
-        maxHeight="50vh"
+        maxHeight={200}
         overflow="auto"
         open
         {...restProps}
