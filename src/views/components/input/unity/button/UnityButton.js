@@ -7,18 +7,18 @@ import UnityConsumer from '../consumer';
 class UnityButton extends Component {
   static defaultProps = {
     backgroundColor: '#ddd',
-    color: 'white',
+    // color: 'white',
   }
 
   static propTypes = {
     unity: object,
     backgroundColor: string,
-    color: string,
+    // color: string,
     items: array,
   }
 
   render() {
-    const { unity, backgroundColor, color } = this.props;
+    const { unity, backgroundColor } = this.props;
 
     const { items } = this.props;
 
@@ -99,7 +99,7 @@ class UnityButton extends Component {
               >
                 <Text
                   size="xs"
-                  color={color}
+                  color="white"
                   text={item.label}
                 />
               </Touchable>
