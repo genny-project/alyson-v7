@@ -1,4 +1,4 @@
-import { prefixedLog, isArray, isObject, isString, Api } from '../../utils';
+import { prefixedLog, isArray, isObject, isString, Api, removeSubstring } from '../../utils';
 import { store } from '../../redux';
 import * as events from './events';
 
@@ -99,8 +99,6 @@ class MessageHandler {
   handleBulkPullMessage = async ( message ) => {
     console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
 
-    // const proxyurl = 'https://cors-anywhere.herokuapp.com/';
-    // const proxyurl = '';
     const { data = {}, accessToken } = store.getState().keycloak;
     const { api_url } = data;
 
@@ -110,10 +108,14 @@ class MessageHandler {
     };
 
     if ( isString( api_url ) && isString( message.pullUrl )) {
-      const api_url2 = `${api_url.substring( 0,api_url.length - 1 )}/`;
-    //  const url = `${proxyurl}${api_url2}${message.pullUrl}`;
-      const url = `${api_url2}${message.pullUrl}`;
-      console.log( 'original url is ...',api_url2 ); // eslint-disable-line
+      let apiUrl = api_url;
+
+      if ( apiUrl.endsWith( ':' )) {
+        apiUrl = `${api_url.substring( 0, api_url.length - 1 )}/`;
+
+        console.warn( 'Changing api_url from:', api_url, 'to:', apiUrl ); // eslint-disable-line
+      }
+      const url = `${apiUrl}${message.pullUrl}`;
       console.warn( 'Making GET request to:', url ); // eslint-disable-line
 
       try {
@@ -121,28 +123,25 @@ class MessageHandler {
           method: 'GET',
           url,
           headers: headers,
-          timeout: 10000,
+          timeout: 5000,
         });
 
         if ( isObject( result )) {
           const { data } = result;
 
           if ( isObject( data )) {
-            const { msg_type } = data;
+            data['is_pull_message'] = true;
+            data['pull_id'] = removeSubstring( message.pullUrl, 'api/pull/' );
 
-            const eventType = this.eventTypes[msg_type];
-            const event = data[eventType];
-            const action = events[event];
-
-            if ( action ) {
-              console.warn( 'Dispatching Pull message:', event ); // eslint-disable-line
-              // store.dispatch( action( data ));
-              this.onMessage( data );
-            }
+            this.onMessage( data );
+          } else {
+            console.error( 'QBulkPullMessage Error:', '"invalid data"', result );
           }
+        } else {
+          console.error( 'QBulkPullMessage Error:', '"invalid result"', result );
         }
       } catch ( error ) {
-        console.error( 'GET REQUEST ERROR', error );
+        console.error( 'QBulkPullMessage Error:', error );
       }
     }
   }
@@ -207,6 +206,10 @@ class MessageHandler {
           ...item,
           links: item.questions ? item.links.concat( item.questions ) : item.links,
         }));
+      }
+
+      if ( payload.is_pull_message ) {
+        console.warn( 'Dispatching Pull message:', event, payload.pull_id, payload ); // eslint-disable-line
       }
 
       store.dispatch( action( payload ));
