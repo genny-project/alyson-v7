@@ -92,7 +92,7 @@ class InputTagInputField extends Component {
         accessibilityRole="link"
         width="100%"
         suppressToggle
-        testID={testID}
+        testID={`input-field ${testID}`}
       >
         <Input
           {...getInputProps({
@@ -113,7 +113,7 @@ class InputTagInputField extends Component {
             this.handleState( 'focus' );
           }}
           onBlur={onBlurInput}
-          testID={`input-tag ${testID}`}
+          testID={`${testID}`}
           {...( nonTabable ? { tabIndex: '-1' } : null )}
           blurOnSubmit={allowMultipleSelection ? false : true}
           onChangeState={this.props.onChangeState}

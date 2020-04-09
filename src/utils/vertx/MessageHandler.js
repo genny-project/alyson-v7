@@ -1,4 +1,4 @@
-import { prefixedLog, isArray } from '../../utils';
+import { prefixedLog, isArray, isObject, isString, Api, removeSubstring } from '../../utils';
 import { store } from '../../redux';
 import * as events from './events';
 
@@ -96,11 +96,67 @@ class MessageHandler {
     return output;
   };
 
+  handleBulkPullMessage = async ( message ) => {
+    console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
+
+    const { data = {}, accessToken } = store.getState().keycloak;
+    const { api_url } = data;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `bearer ${accessToken}`,
+    };
+
+    if ( isString( api_url ) && isString( message.pullUrl )) {
+      let apiUrl = api_url;
+
+      if ( apiUrl.endsWith( ':' )) {
+        apiUrl = `${api_url.substring( 0, api_url.length - 1 )}/`;
+
+        console.warn( 'Changing api_url from:', api_url, 'to:', apiUrl ); // eslint-disable-line
+      }
+      const url = `${apiUrl}${message.pullUrl}`;
+      console.warn( 'Making GET request to:', url ); // eslint-disable-line
+
+      try {
+        const result = await Api.promiseCall({
+          method: 'GET',
+          url,
+          headers: headers,
+          timeout: 5000,
+        });
+
+        if ( isObject( result )) {
+          const { data } = result;
+
+          if ( isObject( data )) {
+            data['is_pull_message'] = true;
+            data['pull_id'] = removeSubstring( message.pullUrl, 'api/pull/' );
+
+            this.onMessage( data );
+          } else {
+            console.error( 'QBulkPullMessage Error:', '"invalid data"', result );
+          }
+        } else {
+          console.error( 'QBulkPullMessage Error:', '"invalid result"', result );
+        }
+      } catch ( error ) {
+        console.error( 'QBulkPullMessage Error:', error );
+      }
+    }
+  }
+
   onMessage = message => {
     if ( !message ) return;
 
     const { msg_type, data_type, messages } = message;
     const isValidMessage = this.validMessageTypes.includes( msg_type );
+
+    if ( data_type === 'QBulkPullMessage' ) {
+      this.handleBulkPullMessage( message );
+
+      return;
+    }
 
     if ( !isValidMessage && data_type !== 'QBulkMessage' ) {
       this.log(
@@ -150,6 +206,10 @@ class MessageHandler {
           ...item,
           links: item.questions ? item.links.concat( item.questions ) : item.links,
         }));
+      }
+
+      if ( payload.is_pull_message ) {
+        console.warn( 'Dispatching Pull message:', event, payload.pull_id, payload ); // eslint-disable-line
       }
 
       store.dispatch( action( payload ));
