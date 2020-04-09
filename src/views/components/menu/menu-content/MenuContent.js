@@ -11,6 +11,7 @@ class MenuContent extends Component {
     offsetY: 0,
     position: 'left',
     autofocus: false,
+    maxHeight: 200,
   }
 
   // use GROUP_CONTENT_WRAPPER to change position
