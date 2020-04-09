@@ -303,6 +303,8 @@ class VisualControl extends Component {
                 )}
                 {/* HINT */}
                 {(
+                  properties.renderVisualControlHint
+                ) && (
                   description !== undefined
                 ) && (
                   <VisualControlHint
