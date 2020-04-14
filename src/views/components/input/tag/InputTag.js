@@ -409,6 +409,18 @@ class InputTag extends Component {
 
                       const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
 
+                      // const showSuggestionItems = isArray( filteredItems, { ofMinLength: 10 })
+                      //   ? isString( inputValue, { ofMinLength: 3 })
+                      //   : (
+                      //     isArray( filteredItems, { ofMinLength: 1 }) ||
+                      //     isString( inputValue, { ofMinLength: 3 })
+                      //   );
+
+                      const showSuggestionItems = (
+                        isArray( filteredItems, { ofMinLength: 1 }) ||
+                        isString( inputValue, { ofMinLength: 3 })
+                      );
+
                       return (
                         // WRAPPER
                         // Menu
@@ -539,8 +551,7 @@ class InputTag extends Component {
                                   {...componentProps['input-item-wrapper']}
                                 >
                                   {(
-                                    isArray( filteredItems, { ofMinLength: 1 }) ||
-                                      isString( inputValue, { ofMinLength: 3 })
+                                    showSuggestionItems
                                   ) ? (
                                       filteredItems
                                         .map(( item, index ) => {
@@ -619,9 +630,11 @@ class InputTag extends Component {
                                           color="black"
                                           size="xs"
                                         >
-                                          {/* { isString( inputValue, { ofMinLength: 1 })
-                                            ? 'No results'
-                                            : 'Please type...'
+                                          {/* {
+                                          isString( inputValue, { ofMinLength: 1, ofMaxLength: 3 }) &&
+                                          isArray( filteredItems, { ofMinLength: 10 })
+                                            ? 'Enter '
+                                            : 'No results'
                                           } */}
                                           No results
                                         </Text>
