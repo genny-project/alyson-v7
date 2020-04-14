@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { object } from 'prop-types';
+import { string } from 'prop-types';
 import { Text, Box } from '../../components';
 
 class TestDisplay extends Component {
-  static defaultProps = {
-    testDisplay: {},
-  }
-
   static propTypes = {
-    testDisplay: object,
+    testId: string,
   }
 
   render() {
-    const { testDisplay } = this.props;
+    const { testId } = this.props;
 
     return (
       <Box
@@ -28,7 +24,7 @@ class TestDisplay extends Component {
 
         <Text
           size="xxs"
-          text={testDisplay.testId}
+          text={testId}
         />
       </Box>
     );
@@ -38,7 +34,7 @@ class TestDisplay extends Component {
 export { TestDisplay };
 
 const mapStateToProps = state => ({
-  testDisplay: state.testDisplay,
+  testId: state.session.testId,
 });
 
 export default connect( mapStateToProps )( TestDisplay );

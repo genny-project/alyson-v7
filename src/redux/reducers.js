@@ -3,46 +3,14 @@ import { routerReducer as router } from 'react-router-redux';
 import keycloak from '../views/components/keycloak/keycloak.reducer';
 import vertx from '../views/components/vertx/vertx.reducer';
 import navigation from '../views/routing/navigation.reducer';
+import session from './session/session.reducer';
 
-import testDisplay from '../views/app/test-display/testDisplay.reducer';
-
-const initialState = {
-  session: '',
-};
-
-const rawSession = ( state = initialState, { type, payload }) => {
-  switch ( type ) {
-    case 'SESSION_TEST':
-      return {
-        ...state,
-        session: payload,
-      };
-
-    default:
-      return state;
-  }
-};
-
-const gennyteerDisplay = ( state = '', action ) => {
-  switch ( action.type ) {
-    case 'DISPLAY_FROM_GENNYTEER':
-      return {
-        ...state,
-        data: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-
-const reducers = combineReducers({
+const appReducer = combineReducers({
   keycloak,
   vertx,
   router,
   navigation,
-  testDisplay,
-  rawSession,
-  gennyteerDisplay,
+  session,
 });
 
-export default reducers;
+export default appReducer;

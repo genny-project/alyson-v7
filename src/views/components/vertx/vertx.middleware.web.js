@@ -1,12 +1,29 @@
+import { format } from 'date-fns';
 import { push } from 'react-router-redux';
 import * as actions from './vertx.actions';
 import { showDialog } from '../../../redux/actions';
-import { Bridge, removeStartingAndEndingSlashes } from '../../../utils';
+import { Bridge, removeStartingAndEndingSlashes, Storage } from '../../../utils';
 import { alert } from '../../components';
+
+const persistActions = [
+  'BASE_ENTITY_MESSAGE',
+  'ATTRIBUTE_DATA',
+  'ASK_DATA',
+  // 'SESSION_TEST',
+  'CACHE_ACTIONS',
+];
+
+const setPersistTimestamp = () => {
+  Storage.set( 'persist:timestamp', format( new Date()));
+};
 
 const middleware = store => next => action => {
   /* Since we are not making any side effects to `action`, pass on next. */
   next( action );
+
+  if ( persistActions.includes( action.type )) {
+    setPersistTimestamp();
+  }
 
   if ( action.type === 'AUTH_ATTEMPT_SUCCESS' ) {
     store.dispatch( actions.initVertx());

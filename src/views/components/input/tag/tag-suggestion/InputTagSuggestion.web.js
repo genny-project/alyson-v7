@@ -70,7 +70,7 @@ class InputTagSuggestion extends Component {
           }}
           onFocus={onFocus}
           onMouseEnter={onMouseEnter}
-          testID={`input-tag-option ${testID}${isString( itemId ) ? `:${itemId}` : null}`}
+          testID={`input-item ${testID}${isString( itemId ) ? `:${itemId}` : null}`}
         >
           <Icon
             name={isSelected ? 'check_box' : 'check_box_outline_blank'}

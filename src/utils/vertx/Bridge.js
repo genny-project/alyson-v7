@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 import { detect } from 'detect-browser';
 import queryString from 'query-string';
+import { Dimensions } from 'react-native-web'; // TODO move
 import config from '../../config';
 import { prefixedLog, isObject, isString, isArray } from '../../utils';
 import { store } from '../../redux';
@@ -38,6 +39,8 @@ class Bridge {
 
     const browser = detect();
 
+    const sessionInfo = store.getState().session;
+
     const clientData = {
       platform: {
         type: Platform.OS,
@@ -48,6 +51,11 @@ class Bridge {
         os: browser.os,
         version: browser.version,
       },
+      screen: {
+        height: Dimensions.get( 'window' ).height,
+        width: Dimensions.get( 'window' ).width,
+      },
+      ...sessionInfo,
     };
 
     if ( window ) {
