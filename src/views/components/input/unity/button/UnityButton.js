@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
-import { object, string } from 'prop-types';
+import { object, string, array } from 'prop-types';
 import { Text, Touchable, Box } from '../../..';
 import UnityConsumer from '../consumer';
 
@@ -14,26 +14,44 @@ class UnityButton extends Component {
     unity: object,
     backgroundColor: string,
     color: string,
+    // color: string,
+    items: array,
   }
 
   render() {
     const { unity, backgroundColor, color } = this.props;
 
+    const { items } = this.props;
+
     const buttons = {
-      OBJ_SPEED_SIGN: {
-        label: 'Place a speed sign',
+      SEL_S1_B_ONE: {
         method: 'spawnObjectReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "mms-workers-40kmph-roadwork", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframeGraphicWorkerDigging", "ObjectRightSignPath": "Textures/signframeGraphic40kmh", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/roadwork_40_sign", "ObjectSpeedLimit": 11.1 } } ] } }',
       },
-      OBJ_TRAFFIC_CONTROLLER_SIGN: {
-        label: 'Place a traffic controller sign',
+
+      SEL_S1_B_TWO: {
         method: 'spawnObjectReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "signholder", "ObjectPath": "Prefabs/sign holder", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "mms-prepare-to-stop-traffic-controller-roadwork", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
       },
-      OBJ_BOLLARD: {
-        label: 'Place a line of bollards',
-        method: 'twoPointReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "bollard", "ObjectPath": "Prefabs/bollard", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+
+      SEL_S1_B_THREE: {
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "mms-end-roadwork-100kmph-blank", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+
+      SEL_S1_B_FOUR: {
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "shortrunofbollards", "ObjectPath": "Prefabs/shortrunofbollards", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+
+      SEL_S1_B_FIVE: {
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "longrunwithtaper", "ObjectPath": "Prefabs/longrunwithtaper", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+      },
+
+      SEL_S1_B_SIX: {
+        method: 'spawnObjectReact',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "leadouttaper", "ObjectPath": "Prefabs/leadouttaper", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
       },
     };
 
@@ -63,12 +81,10 @@ class UnityButton extends Component {
         padding={5}
         flexWrap="wrap"
       >
-        {Object.keys( buttons ).map(( buttonKey, index, array ) => {
-          const button = buttons[buttonKey];
-
+        {items.map(( item, index, array ) => {
           return (
             <Box
-              key={button.label}
+              key={item.label}
               padding={10}
               backgroundColor={backgroundColor}
               borderRadius={10}
@@ -78,14 +94,14 @@ class UnityButton extends Component {
               <Touchable
                 withFeedback
                 onPress={() => !unity ? null : unity.sendEventToUnity(
-                  button.method,
-                  button.params,
+                  buttons[item.value].method,
+                  buttons[item.value].params,
                 )}
               >
                 <Text
                   size="xs"
                   color={color}
-                  text={button.label}
+                  text={item.label}
                 />
               </Touchable>
 
