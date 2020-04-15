@@ -37,6 +37,7 @@ class InputText extends Component {
     editable: true,
     updateValueWhenFocused: false,
     alignSelf: 'center',
+    returnKeyType: 'next',
   }
 
   static propTypes = {
@@ -607,7 +608,11 @@ class InputText extends Component {
               placeholder={placeholder}
               placeholderTextColor={placeholderColor || color}
               returnKeyLabel={!multiline ? returnKeyLabel : null}
-              returnKeyType={!multiline ? returnKeyType : null}
+              returnKeyType={!multiline
+                ? returnKeyType === 'default'
+                  ? 'next'
+                  : returnKeyType
+                : null}
               secureTextEntry={secureTextEntry}
               selection={selection}
               selectTextOnFocus={selectTextOnFocus}
