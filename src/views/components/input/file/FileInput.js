@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, func, array, arrayOf, string, number, object } from 'prop-types';
+import { bool, func, array, arrayOf, string, number, object, oneOfType } from 'prop-types';
 // import prettierBytes from 'prettier-bytes';
 import { Box, Text, Touchable, Icon, Fragment, ActivityIndicator } from '../..';
 import InputFileItem from './file-item';
@@ -33,7 +33,9 @@ class FileInput extends Component {
     onChangeValue: func,
     defaultValue: array,
     maxFileSize: number,
-    value: array,
+    value: oneOfType(
+      [array, string]
+    ),
     maxTotalFileSize: number,
     maxNumberOfFiles: number,
     allowedFileTypes: arrayOf(
