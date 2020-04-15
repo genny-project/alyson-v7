@@ -1,5 +1,6 @@
 import html2pdf from 'html2pdf.js';
 import uuid from 'uuid';
+import { Dimensions } from 'react-native-web';
 import store from '../../redux/store';
 
 const saveElementAsPdf = ( element, options = {}) => {
@@ -26,16 +27,36 @@ const saveElementAsPdf = ( element, options = {}) => {
   const keycloakData = store.getState().keycloak.data;
   const project = keycloakData.realm;
 
+  const windowDimensions = Dimensions.get( 'window' );
+
   const opt = {
     filename: `${project}-${code}-${uuid()}.pdf`,
-    jsPDF: { orientation: 'landscape' },
+    jsPDF: {
+      orientation: 'landscape',
+      unit: 'in',
+      format: 'letter',
+    },
     html2canvas: {
+      scale: 2,
       // backgroundColor: 'red',
-      width: element.scrollWidth, // has to be a number!
-      onclone: () => {
-        if ( currentMinWidth !== null ) {
-          element.style.minWidth = currentMinWidth;
-        }
+      // width: element.scrollWidth, // has to be a number!
+      onclone: ( arg ) => {
+        console.log({ arg, element, style: element.style });
+
+        console.warn({
+          element: {
+            minWidth: element.style.minWidth,
+            maxWidth: element.style.maxWidth,
+            width: element.style.width,
+          },
+          window: {
+            width: windowDimensions.width,
+          },
+        });
+
+        // if ( currentMinWidth !== null ) {
+        //   element.style.minWidth = currentMinWidth;
+        // }
       },
     },
   };
