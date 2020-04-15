@@ -35,7 +35,6 @@ class InputText extends Component {
     size: 'xs',
     textAlign: 'left',
     editable: true,
-    outline: 'none',
     updateValueWhenFocused: false,
     alignSelf: 'center',
   }
@@ -620,7 +619,9 @@ class InputText extends Component {
                 ? attributeName
                 : useQuestionNameAsValue
                   ? questionName
-                  : value}
+                  : value
+                    ? value
+                    : ''}
               underlineColorAndroid="transparent"
               {...Platform.select({
                 ios: nativeProps,

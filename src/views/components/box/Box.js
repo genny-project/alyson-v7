@@ -286,7 +286,9 @@ Box.propTypes = {
     [number, string]
   ),
   zIndex: number,
-  transform: array,
+  transform: oneOfType(
+    [array, string]
+  ),
   transitionDuration: string,
   transitionProperty: string,
   transitionTimingFunction: string,

@@ -153,7 +153,7 @@ class InputDatePicker extends PureComponent {
                       position="absolute"
                       right={0}
                       zIndex={5}
-                      transform="translateY(-50%)"
+                      transform={[{ translateY: '-50%' }]}
                       top="50%"
                     >
                       <Box
