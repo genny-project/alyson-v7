@@ -31,12 +31,12 @@ class UnityButton extends Component {
 
       SEL_S1_B_TWO: {
         method: 'spawnObjectReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "mms-prepare-to-stop-traffic-controller-roadwork", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "mms_prepare_trafficcontroller_roadwork", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
       },
 
       SEL_S1_B_THREE: {
         method: 'spawnObjectReact',
-        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "mms-end-roadwork-100kmph-blank", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframePrepareToStop", "ObjectRightSignPath": "Textures/signframeGraphicTrafficController", "ObjectBottomSignPath": "Textures/signframeRoadwork", "ObjectPlaneSignPath": "Textures/prepare_sign_holder_sign" } } ] } }',
+        params: '{"reactiveQuestion": {"Objects": [ { "ObjectName": "mms_endroadwork_100_blank", "ObjectPath": "Prefabs/multi message sign", "ObjectMultiMessage": { "ObjectLeftSignPath": "Textures/signframe 600-600 End Road Work", "ObjectRightSignPath": "Textures/signframe 600-600 Graphic 100kmh", "ObjectBottomSignPath": "Textures/signframe-01", "ObjectPlaneSignPath": "Textures/endroadwork-100-blank", "InstantiatedSpeedLimit": 27.77 } } ] } }',
       },
 
       SEL_S1_B_FOUR: {
