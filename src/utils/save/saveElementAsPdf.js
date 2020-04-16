@@ -32,8 +32,8 @@ const saveElementAsPdf = ( element, options = {}) => {
   const opt = {
     filename: `${project}-${code}-${uuid()}.pdf`,
     jsPDF: {
-      // orientation: 'landscape',
-      orientation: 'portrait',
+      orientation: 'landscape',
+      // orientation: 'portrait',
       unit: 'in',
       format: 'letter',
     },
