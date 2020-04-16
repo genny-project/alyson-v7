@@ -1,1 +1,1 @@
-2020-04-08-input-tag-update
+v3.1.0
