@@ -150,7 +150,11 @@ function Box({
     bottom,
     left,
     zIndex,
-    transform,
+    transform: (
+      transform === 'initial'
+        ? []
+        : transform
+    ),
     opacity,
     borderColor,
     borderStyle,
