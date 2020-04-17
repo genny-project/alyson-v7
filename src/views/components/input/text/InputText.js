@@ -76,7 +76,9 @@ class InputText extends Component {
     }),
     selectTextOnFocus: bool,
     spellCheck: bool,
-    value: string,
+    value: oneOfType(
+      [string, number]
+    ),
     margin: number,
     marginX: number,
     marginY: number,

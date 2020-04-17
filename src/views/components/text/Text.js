@@ -85,7 +85,9 @@ const Text = ({
 };
 
 Text.propTypes = {
-  text: string,
+  text: oneOfType(
+    [number, string]
+  ),
   color: string,
   decoration: oneOf(
     ['none', 'underline']
