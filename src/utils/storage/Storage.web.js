@@ -25,7 +25,6 @@ class Storage {
         localStorage.setItem( key, value );
         resolve();
       } catch ( error ) {
-        console.error( 'SET ERROR' );
         reject( error );
       }
     });
