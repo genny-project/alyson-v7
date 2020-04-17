@@ -11,7 +11,7 @@ class InputTagItem extends Component {
     touchableProps: object,
     onPress: func,
     editable: bool,
-    stateBasedProps: object,
+    stateBasedProps: func,
   }
 
   state = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { string, bool, any, func, object } from 'prop-types';
+import { string, bool, any, func, object, oneOfType } from 'prop-types';
 import { Bridge } from '../../../utils';
 import { Touchable } from '../../components';
 
@@ -79,7 +79,9 @@ EventTouchable.propTypes = {
   eventType: string,
   messageType: string,
   showSpinnerOnClick: bool,
-  value: object,
+  value: oneOfType(
+    [string, object]
+  ),
 };
 
 export default EventTouchable;
