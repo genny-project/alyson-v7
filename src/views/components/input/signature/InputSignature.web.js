@@ -4,6 +4,10 @@ import SignaturePad from 'react-signature-pad-wrapper';
 import { Box, Touchable, Text, Icon, Image, ActivityIndicator } from '../../../components';
 import { Api, isArray, isObject, convertImageURLtoFile, isFile, createFormDataFromFiles } from '../../../../utils';
 
+function generateKey() {
+  return Math.random().toString( 36 ).substring( 2 ) + ( new Date()).getTime().toString( 36 );
+}
+
 class InputSignature extends Component {
   // static defaultProps = {
   //   height: 'auto',
@@ -239,7 +243,7 @@ class InputSignature extends Component {
             {buttons.map( button => {
               return (
                 <Touchable
-                  key={button.text}
+                  key={button.text + generateKey()}
                   onPress={button.handlePress}
                 >
                   <Box

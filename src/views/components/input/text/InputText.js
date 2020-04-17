@@ -35,9 +35,9 @@ class InputText extends Component {
     size: 'xs',
     textAlign: 'left',
     editable: true,
-    outline: 'none',
     updateValueWhenFocused: false,
     alignSelf: 'center',
+    returnKeyType: 'next',
   }
 
   static propTypes = {
@@ -505,6 +505,24 @@ class InputText extends Component {
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
 
+    // if ( value === null ) {
+    //   console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName });
+    // }
+
+    // console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName, valueProps: this.props });
+
+    // if ( this.props.ask.questionCode === 'QUE_DAYS_PER_WEEK' || this.props.ask.questionCode === 'QUE_INTERN_SOFTWARE' ) {
+    //   console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName, valueProps: this.props });
+    // }
+
+    // const valueCheck = ( value ) => {
+    //   if ( value !== null ) {
+    //     return value;
+    //   }
+
+    //   return undefined;
+    // };
+
     return (
       <Box
         position="relative"
@@ -590,7 +608,11 @@ class InputText extends Component {
               placeholder={placeholder}
               placeholderTextColor={placeholderColor || color}
               returnKeyLabel={!multiline ? returnKeyLabel : null}
-              returnKeyType={!multiline ? returnKeyType : null}
+              returnKeyType={!multiline
+                ? returnKeyType === 'default'
+                  ? 'next'
+                  : returnKeyType
+                : null}
               secureTextEntry={secureTextEntry}
               selection={selection}
               selectTextOnFocus={selectTextOnFocus}
@@ -602,7 +624,9 @@ class InputText extends Component {
                 ? attributeName
                 : useQuestionNameAsValue
                   ? questionName
-                  : value}
+                  : value
+                    ? value
+                    : ''}
               underlineColorAndroid="transparent"
               {...Platform.select({
                 ios: nativeProps,

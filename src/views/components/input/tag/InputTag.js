@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, func, array, bool, object, shape } from 'prop-types';
+import { string, func, array, bool, object, shape, oneOfType } from 'prop-types';
 import { isString, isArray, isObject, isInteger } from '../../../../utils';
 import { Box, MultiDownshift, Text, Menu } from '../../index';
 import InputTagBody from './tag-body';
@@ -27,7 +27,7 @@ class InputTag extends Component {
     itemStringKey: string,
     itemValueKey: string,
     itemIdKey: string,
-    value: string,
+    value: oneOfType( [string, array] ),
     allowNewTags: bool,
     allowMultipleSelection: bool,
     allowInvalidSelection: bool,

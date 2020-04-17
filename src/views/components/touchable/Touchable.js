@@ -66,7 +66,9 @@ class Touchable extends Component {
     marginX: number,
     marginY: number,
     marginTop: number,
-    marginRight: number,
+    marginRight: oneOfType(
+      [number, string]
+    ),
     marginBottom: number,
     marginLeft: number,
     backgroundColor: string,
@@ -84,7 +86,9 @@ class Touchable extends Component {
       [number, string]
     ),
     zIndex: number,
-    transform: array,
+    transform: oneOfType(
+      [array, string]
+    ),
     transitionDuration: string,
     transitionProperty: string,
     transitionTimingFunction: string,
