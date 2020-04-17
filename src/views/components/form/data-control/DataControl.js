@@ -193,6 +193,7 @@ class DataControl extends Component {
   }
 
   render() {
+    // console.log( 'cyrus' );
     const { children, mask, keyfilter, ...restProps } = this.props;
     const {
       maskedValue,

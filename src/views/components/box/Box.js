@@ -150,7 +150,11 @@ function Box({
     bottom,
     left,
     zIndex,
-    transform,
+    transform: (
+      transform === 'initial'
+        ? []
+        : transform
+    ),
     opacity,
     borderColor,
     borderStyle,
@@ -286,7 +290,9 @@ Box.propTypes = {
     [number, string]
   ),
   zIndex: number,
-  transform: array,
+  transform: oneOfType(
+    [array, string]
+  ),
   transitionDuration: string,
   transitionProperty: string,
   transitionTimingFunction: string,

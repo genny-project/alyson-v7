@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, integer, node, oneOf, oneOfType, object, func } from 'prop-types';
+import { string, integer, number, node, oneOf, oneOfType, object, func } from 'prop-types';
 // import debounce from 'lodash.debounce';
 import { Box, Text, Fragment } from '../../components';
 
@@ -25,10 +25,10 @@ class Tooltip extends Component {
     text: string,
     debounce: integer,
     top: oneOfType( [
-      integer, string,
+      number, string,
     ] ),
     left: oneOfType( [
-      integer, string,
+      number, string,
     ] ),
     position: oneOf( [
       'absolute', 'fixed',

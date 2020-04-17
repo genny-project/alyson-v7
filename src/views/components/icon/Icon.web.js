@@ -75,7 +75,7 @@ const Icon = ({
 };
 
 Icon.propTypes = {
-  name: string.isRequired,
+  name: string,
   color: string,
   size: oneOf( ['xs', 'sm', 'md', 'lg', 'xl'] ),
   cursor: oneOf( ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text'] ),
