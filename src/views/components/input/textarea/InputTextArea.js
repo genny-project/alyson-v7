@@ -63,9 +63,6 @@ class InputTextArea extends Component {
     const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
     const numberOfNewLines = text != null ? [...text.matchAll( /\n/g )].length : 0;
 
-    // console.log( 'number of new lines====>', numberOfNewLines );
-    // console.log( 'NOL====>', this.props.numberOfLines );
-
     this.tempElement.innerHTML = isString( text ) ? text : null;
     this.tempElement.setAttribute( 'style', `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} ${tempElementStyle}` );
 
@@ -74,22 +71,16 @@ class InputTextArea extends Component {
     const contentHeight = this.tempElement.clientHeight;
     const totalRows = Math.floor( contentHeight / rowHeight ) + numberOfNewLines;
 
-    // console.log( 'details---->', { minRows, totalRows, contentHeight, rowHeight });
-
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,
       clientWidth,
     });
-
-    // console.log( 'clientWidth--->', this.state.clientWidth );
-    // console.log( 'row--->', this.state.rows );
   }
 
   handleChange = ( event ) => {
     const text = dlv( event, 'nativeEvent.text' );
     const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
-    // console.log( 'inside of handleChange--->', { text, clientWidth, event });
     this.updateWidth({ text, clientWidth });
   }
 
