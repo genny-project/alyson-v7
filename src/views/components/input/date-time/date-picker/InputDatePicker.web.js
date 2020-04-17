@@ -127,6 +127,7 @@ class InputDatePicker extends PureComponent {
                     dynamicWidth: true,
                     ignoreOnChange: true,
                     log: true,
+                    editable,
                     ...componentProps['input-field'],
                   })}
                   onChange={null}
