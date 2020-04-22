@@ -61,7 +61,10 @@ class InputTextArea extends Component {
 
   updateWidth = ({ text, clientWidth }) => {
     const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
-    const numberOfNewLines = text != null ? [...text.matchAll( /\n/g )].length : 0;
+
+    const numberOfNewLines = ( isString( text ) || isInteger( text ))
+      ? [...text.toString().matchAll( /\n/g )].length
+      : 0;
 
     this.tempElement.innerHTML = isString( text ) ? text : null;
     this.tempElement.setAttribute( 'style', `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} ${tempElementStyle}` );
