@@ -60,6 +60,8 @@ class InputTextArea extends Component {
   }
 
   updateWidth = ({ text, clientWidth }) => {
+ //   console.log( 'UPdate Width triggered' );
+ //   console.log( 'text==>', text );
     const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
 
     const numberOfNewLines = ( isString( text ) || isInteger( text ))
@@ -72,31 +74,62 @@ class InputTextArea extends Component {
     const rowHeight = 3 + ( TEXT_SIZES[this.props.size] || 14 );
     const minRows = this.props.numberOfLines;
     const contentHeight = this.tempElement.clientHeight;
-    const totalRows = Math.ceil( contentHeight / rowHeight ) + numberOfNewLines;
+    const totalRows = Math.floor( contentHeight / rowHeight ) + numberOfNewLines;
+
+//    console.log( 'ROWHEIGHT===>', { rowHeight, contentHeight,  numberOfNewLines });
 
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,
       clientWidth,
-    });
+    },
+    // () => {console.log( 'state=>', this.state );}
+    );
   }
 
+// handleKeyPress = ( event ) => {
+// //  console.log( event.key );
+//   if ( event.key === 'Enter' ||  event.key === 'Backspace' ) {
+//     event.preventDefault();
+//     event.stopPropagation();
+// //    console.log( `About to press ${event.key} !` );
+//     // const text = this.props.value;
+//     // const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
+
+//     // this.updateWidth({ text, clientWidth });
+//     () => this.handleLayout( event );
+
+//  //   console.log( `${event.key} pressed!` );
+//   }
+// }
+
   handleChange = ( event ) => {
+ //   console.log( 'HandleChange invoked', event );
     const text = dlv( event, 'nativeEvent.text' );
     const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
     this.updateWidth({ text, clientWidth });
   }
 
-  handleLayout = ( event ) => {
-    const text = this.props.value;
-    const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
+  // handleLayout = ( event ) => {
+  //   //console.log( 'HANDLELAYOUT INVOKED====>', event );
+  //   // console.log( 'Value===>', this.props.value );
+  //   const text = this.props.value;
+  //   const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
-    if ( isString( text )) {
-      this.updateWidth({ text, clientWidth });
-    }
-  }
+  //   // if ( event.key === 'Enter' ||  event.key === 'Backspace' ) {
+  //   //   console.log( 'clicked===>' );
+  //   //   event.preventDefault();
+  //   //   event.stopPropagation();
+  //   // }
+
+  //   // if ( isString( text )) {
+  //   //   console.log( 'AAAAArrr===>' );
+  //   //   this.updateWidth({ text, clientWidth });
+  //   // }
+  // }
 
   render() {
+   // console.log( 'TEMPELEMENT===>', this.tempElement );
     const {
       multiline,
       ...restProps
@@ -121,6 +154,7 @@ class InputTextArea extends Component {
         type="text"
         ref={input => this.input = input}
         onChangeState={this.props.onChangeState}
+//        onKeyDown={this.handleOnKeyDown}
       />
     );
   }
