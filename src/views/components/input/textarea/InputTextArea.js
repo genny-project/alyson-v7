@@ -37,6 +37,7 @@ class InputTextArea extends Component {
   state = {
     rows: null,
     clientWidth: null,
+    numberOfNewLines: null,
   }
 
   componentDidMount() {
@@ -46,9 +47,11 @@ class InputTextArea extends Component {
 
   componentDidUpdate( prevProps ) {
     if (
-      prevProps.value !== this.props.value
+      prevProps.value !== this.props.value || this.state.numberOfNewLines > 0
     ) {
-      this.updateWidth({ text: this.props.value, clientWidth: this.state.clientWidth  });
+      console.warn ({ a: prevProps.value, b: this.props.value, c: prevProps });
+      () => this.updateWidth({ text: this.props.value, clientWidth: this.state.clientWidth  });
+      console.warn( 'insideComponentDidUpdate' );
     }
   }
 
@@ -60,7 +63,8 @@ class InputTextArea extends Component {
   }
 
   updateWidth = ({ text, clientWidth }) => {
- //   console.log( 'UPdate Width triggered' );
+    console.warn( 'inside updateWidth' );
+
  //   console.log( 'text==>', text );
     const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
 
@@ -81,8 +85,9 @@ class InputTextArea extends Component {
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,
       clientWidth,
+      numberOfNewLines,
     },
-    // () => {console.log( 'state=>', this.state );}
+    () => {console.warn( 'state=>', this.state );}
     );
   }
 
@@ -103,30 +108,30 @@ class InputTextArea extends Component {
 // }
 
   handleChange = ( event ) => {
- //   console.log( 'HandleChange invoked', event );
     const text = dlv( event, 'nativeEvent.text' );
     const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
     this.updateWidth({ text, clientWidth });
+//    console.warn( 'HandleChange invoked', event );
   }
 
-  // handleLayout = ( event ) => {
-  //   //console.log( 'HANDLELAYOUT INVOKED====>', event );
-  //   // console.log( 'Value===>', this.props.value );
-  //   const text = this.props.value;
-  //   const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
+  handleLayout = ( event ) => {
+    // console.log( 'HANDLELAYOUT INVOKED====>', event );
+    // console.log( 'Value===>', this.props.value );
+    const text = this.props.value;
+    const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
-  //   // if ( event.key === 'Enter' ||  event.key === 'Backspace' ) {
-  //   //   console.log( 'clicked===>' );
-  //   //   event.preventDefault();
-  //   //   event.stopPropagation();
-  //   // }
+    // if ( event.key === 'Enter' ||  event.key === 'Backspace' ) {
+    //   console.log( 'clicked===>' );
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    // }
 
-  //   // if ( isString( text )) {
-  //   //   console.log( 'AAAAArrr===>' );
-  //   //   this.updateWidth({ text, clientWidth });
-  //   // }
-  // }
+    if ( isString( text )) {
+      this.updateWidth({ text, clientWidth });
+  //    console.warn( 'HandleLayout invoked', event );
+    }
+  }
 
   render() {
    // console.log( 'TEMPELEMENT===>', this.tempElement );
@@ -145,7 +150,7 @@ class InputTextArea extends Component {
         {...restProps}
         multiline={multiline}
         numberOfLines={rows}
-        onKeyPress={this.handleKeyPress}
+        // onKeyPress={this.handleKeyPress}
         onLayout={this.handleLayout}
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}
