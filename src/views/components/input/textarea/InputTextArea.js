@@ -37,7 +37,7 @@ class InputTextArea extends Component {
   state = {
     rows: null,
     clientWidth: null,
-    numberOfNewLines: null,
+    value: null,
   }
 
   componentDidMount() {
@@ -47,11 +47,9 @@ class InputTextArea extends Component {
 
   componentDidUpdate( prevProps ) {
     if (
-      prevProps.value !== this.props.value || this.state.numberOfNewLines > 0
+      prevProps.value !== this.props.value
     ) {
-      console.warn ({ a: prevProps.value, b: this.props.value, c: prevProps });
-      () => this.updateWidth({ text: this.props.value, clientWidth: this.state.clientWidth  });
-      console.warn( 'insideComponentDidUpdate' );
+      this.updateWidth({ text: this.props.value, clientWidth: this.state.clientWidth  });
     }
   }
 
@@ -63,9 +61,6 @@ class InputTextArea extends Component {
   }
 
   updateWidth = ({ text, clientWidth }) => {
-    console.warn( 'inside updateWidth' );
-
- //   console.log( 'text==>', text );
     const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
 
     const numberOfNewLines = ( isString( text ) || isInteger( text ))
@@ -80,61 +75,31 @@ class InputTextArea extends Component {
     const contentHeight = this.tempElement.clientHeight;
     const totalRows = Math.floor( contentHeight / rowHeight ) + numberOfNewLines;
 
-//    console.log( 'ROWHEIGHT===>', { rowHeight, contentHeight,  numberOfNewLines });
-
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,
       clientWidth,
-      numberOfNewLines,
+      value: this.tempElement.innerHTML,
     },
-    () => {console.warn( 'state=>', this.state );}
     );
   }
-
-// handleKeyPress = ( event ) => {
-// //  console.log( event.key );
-//   if ( event.key === 'Enter' ||  event.key === 'Backspace' ) {
-//     event.preventDefault();
-//     event.stopPropagation();
-// //    console.log( `About to press ${event.key} !` );
-//     // const text = this.props.value;
-//     // const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
-
-//     // this.updateWidth({ text, clientWidth });
-//     () => this.handleLayout( event );
-
-//  //   console.log( `${event.key} pressed!` );
-//   }
-// }
 
   handleChange = ( event ) => {
     const text = dlv( event, 'nativeEvent.text' );
     const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
     this.updateWidth({ text, clientWidth });
-//    console.warn( 'HandleChange invoked', event );
   }
 
   handleLayout = ( event ) => {
-    // console.log( 'HANDLELAYOUT INVOKED====>', event );
-    // console.log( 'Value===>', this.props.value );
     const text = this.props.value;
     const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
-    // if ( event.key === 'Enter' ||  event.key === 'Backspace' ) {
-    //   console.log( 'clicked===>' );
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    // }
-
     if ( isString( text )) {
       this.updateWidth({ text, clientWidth });
-  //    console.warn( 'HandleLayout invoked', event );
     }
   }
 
   render() {
-   // console.log( 'TEMPELEMENT===>', this.tempElement );
     const {
       multiline,
       ...restProps
@@ -147,10 +112,10 @@ class InputTextArea extends Component {
     return (
       <Input
         blurOnSubmit={false}
+        value={this.state.value}
         {...restProps}
         multiline={multiline}
         numberOfLines={rows}
-        // onKeyPress={this.handleKeyPress}
         onLayout={this.handleLayout}
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}
@@ -159,7 +124,6 @@ class InputTextArea extends Component {
         type="text"
         ref={input => this.input = input}
         onChangeState={this.props.onChangeState}
-//        onKeyDown={this.handleOnKeyDown}
       />
     );
   }
