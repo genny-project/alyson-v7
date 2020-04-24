@@ -10,7 +10,7 @@ class CheckBoxList extends React.Component {
     items: [],
     // value: [],
     multiSelect: true,
-    numberOfColumns: 1,
+    numberOfColumns: 3,
   };
 
   static propTypes = {
@@ -76,7 +76,11 @@ class CheckBoxList extends React.Component {
   };
 
   render() {
+    // console.warn( 'CHECKBOX LIST---->', this.props );
+
     const { numberOfColumns, icons } = this.props;
+
+    const numberOfButtonsToRender = numberOfColumns > 3 ? 3 : numberOfColumns;
 
     const { data, selected } = this.state;
 
@@ -98,7 +102,7 @@ class CheckBoxList extends React.Component {
               {isArray( data, { ofMinLength: 1 }) ? (
                 data.map( item => (
                   <Box
-                    width={`${100 / numberOfColumns}%`}
+                    width={`${100 / numberOfButtonsToRender}%`}
                     key={item.value}
                   >
                     <BaseCheckBox

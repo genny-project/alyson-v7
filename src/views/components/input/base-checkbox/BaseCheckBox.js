@@ -54,6 +54,7 @@ class BaseCheckBox extends Component {
   };
 
   render() {
+    // console.warn( 'BASECHECK BOX===>', this.props );
     const { label } = this.props;
 
     return (
