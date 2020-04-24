@@ -76,8 +76,6 @@ class CheckBoxList extends React.Component {
   };
 
   render() {
-    // console.warn( 'CHECKBOX LIST---->', this.props );
-
     const { numberOfColumns, icons } = this.props;
 
     const numberOfButtonsToRender = numberOfColumns > 3 ? 3 : numberOfColumns;

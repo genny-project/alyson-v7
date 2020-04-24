@@ -54,7 +54,6 @@ class BaseCheckBox extends Component {
   };
 
   render() {
-    // console.warn( 'BASECHECK BOX===>', this.props );
     const { label } = this.props;
 
     return (
@@ -67,7 +66,7 @@ class BaseCheckBox extends Component {
           {...this.props.stateBasedProps}
         >
           <Icon
-              name={this.state.currentIcon} // eslint-disable-line
+            name={this.state.currentIcon}
             color="black"
             size="md"
             id={this.props.id}
