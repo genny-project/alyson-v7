@@ -238,6 +238,7 @@ class Input extends Component {
         return (
           <CheckBoxList
             {...inputProps}
+            multiSelect={false}
             radio
             ref={input => this.input = input}
           />
