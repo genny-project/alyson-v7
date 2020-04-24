@@ -238,6 +238,7 @@ class Input extends Component {
         return (
           <CheckBoxList
             {...inputProps}
+            icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: 'indeterminate_check_box' }}
             multiSelect={false}
             radio
             ref={input => this.input = input}
