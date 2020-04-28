@@ -5,9 +5,20 @@ import { TEXT_SIZES } from '../../../../constants';
 import { isString, isInteger } from '../../../../utils';
 import { Input } from '../..';
 
+/*
+  xxs: 12,
+  xs: 14,  +2 = 1/7
+  sm: 16, +3 = 1/5.3
+  md: 18, +3 = 1/7
+  lg: 20, +4 = 1/5
+  xl: 24, +4 = 1/6
+  xxl: 32, +6 = 1/5.x
+*/
+
 class InputTextArea extends Component {
   static defaultProps = {
-    size: 'xs',
+    // size: 'xs',
+    size: 'xxl',
   }
 
   static propTypes = {
@@ -26,7 +37,6 @@ class InputTextArea extends Component {
       ['xs','sm','md','lg','xl']
     ),
     value: string,
-
   }
 
   constructor( props ) {
@@ -61,26 +71,42 @@ class InputTextArea extends Component {
   }
 
   updateWidth = ({ text, clientWidth }) => {
-    const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
+    if (
+      !isString( text ) &&
+      !isInteger( text )
+    ) {
+      console.error( 'Error: invalid data type. "text" should be `string` or `integer`' );
 
-    const numberOfNewLines = ( isString( text ) || isInteger( text ))
-      ? [...text.toString().matchAll( /\n/g )].length
-      : 0;
+      this.setState({
+        rows: minRows,
+      });
+
+      return;
+    }
+    // const tempElementStyle = 'position: absolute; top: 0; left: 0; margin: 0; white-space: pre-wrap; z-index: -1000; opacity: 0' ;
+    const tempElementStyle = `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} font-size: ${TEXT_SIZES[this.props.size]}px; font-family: ${this.props.fontFamily}; position: absolute; top: 0; left: 0; margin: 0; word-wrap: break-word; white-space: pre-line; z-index: 1000`;
+
+    const isEndOfStringNewLine = [...text.toString().matchAll( /\n$/g )].length > 0;
 
     this.tempElement.innerHTML = isString( text ) ? text : null;
-    this.tempElement.setAttribute( 'style', `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} ${tempElementStyle}` );
+    this.tempElement.setAttribute( 'style', tempElementStyle );
 
-    const rowHeight = 3 + ( TEXT_SIZES[this.props.size] || 14 );
+    const rowHeight = 6 + TEXT_SIZES[this.props.size]; // calculating lineheight
     const minRows = this.props.numberOfLines;
+    // const contentHeight = this.tempElement.clientHeight;
     const contentHeight = this.tempElement.clientHeight;
-    const totalRows = Math.floor( contentHeight / rowHeight ) + numberOfNewLines;
+    const totalRows = Math.ceil( contentHeight / rowHeight ) + ( isEndOfStringNewLine ? 1 : 0 );
+
+    if ( this.props.ask.questionCode === 'QUE_ROLES_AND_RESP' ) {
+      console.error( `END OF STRING NEW LINE: ${isEndOfStringNewLine}` );
+      console.error( `ROW HEIGHT: ${contentHeight} / ${rowHeight} = ${contentHeight / rowHeight} => ceil: ${totalRows}` );
+    }
 
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,
       clientWidth,
       value: this.tempElement.innerHTML,
-    },
-    );
+    });
   }
 
   handleChange = ( event ) => {
@@ -90,14 +116,19 @@ class InputTextArea extends Component {
     this.updateWidth({ text, clientWidth });
   }
 
-  handleLayout = ( event ) => {
-    const text = this.props.value;
-    const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
+  // handleLayout = ( event ) => {
+  //   // console.warn( '-----------------------------' );
+  //   console.warn( 'HANDLE LAYOUT' );
+  //   console.warn( '-----------------------------' );
+  //   // console.warn( '-----------------------------' );
+  //   const text = this.props.value;
+  //   // const text = null;
+  //   const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
-    if ( isString( text )) {
-      this.updateWidth({ text, clientWidth });
-    }
-  }
+  //   if ( isString( text )) {
+  //     this.updateWidth({ text, clientWidth });
+  //   }
+  // }
 
   render() {
     const {
