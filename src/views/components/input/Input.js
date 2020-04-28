@@ -33,6 +33,7 @@ import ColourPicker from './colour-picker';
 import Unity from './unity';
 import Progress from './progress';
 import HtmlEditor from './html-editor';
+import RadioButton from './radio-button';
 
 /* maps the component to  */
 
@@ -77,6 +78,7 @@ class Input extends Component {
   };
 
   render() {
+    // console.log( 'this.props==>', this.props );
     // const { valuePath, value } = this.props;
 
     // if ( this.props.ask.questionCode === 'QUE_DAYS_PER_WEEK' || this.props.ask.questionCode === 'QUE_INTERN_SOFTWARE' ) {
@@ -239,6 +241,17 @@ class Input extends Component {
           <CheckBoxList
             {...inputProps}
             icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: 'indeterminate_check_box' }}
+            multiSelect={false}
+            radio
+            ref={input => this.input = input}
+          />
+        );
+
+      case 'starrating':
+        return (
+          <RadioButton
+            {...inputProps}
+            icons={{ true: 'star', false: 'star_border', null: 'star_outline' }}
             multiSelect={false}
             radio
             ref={input => this.input = input}
