@@ -7,7 +7,7 @@ import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
 class RadioButton extends React.Component {
   static defaultProps = {
-    items: [],
+    items: ['one', 'two', 'three', 'four', 'five'],
     // value: [],
     multiSelect: true,
     numberOfColumns: 5,
