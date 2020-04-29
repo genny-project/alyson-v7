@@ -1,24 +1,14 @@
 import React, { Component } from 'react';
-import { number, bool, func, oneOf, string } from 'prop-types';
+import { number, bool, func, oneOf, string, object } from 'prop-types';
 import dlv from 'dlv';
-import { TEXT_SIZES } from '../../../../constants';
+import { TEXT_SIZES, LINE_HEIGHTS } from '../../../../constants';
 import { isString, isInteger } from '../../../../utils';
 import { Input } from '../..';
-
-/*
-  xxs: 12,
-  xs: 14,  +2 = 1/7
-  sm: 16, +3 = 1/5.3
-  md: 18, +3 = 1/7
-  lg: 20, +4 = 1/5
-  xl: 24, +4 = 1/6
-  xxl: 32, +6 = 1/5.x
-*/
 
 class InputTextArea extends Component {
   static defaultProps = {
     // size: 'xs',
-    size: 'xxl',
+    size: 'xxs',
   }
 
   static propTypes = {
@@ -37,6 +27,8 @@ class InputTextArea extends Component {
       ['xs','sm','md','lg','xl']
     ),
     value: string,
+    ask: object,
+    fontFamily: string,
   }
 
   constructor( props ) {
@@ -83,21 +75,23 @@ class InputTextArea extends Component {
 
       return;
     }
+    const { size, ask, fontFamily } = this.props;
+
     // const tempElementStyle = 'position: absolute; top: 0; left: 0; margin: 0; white-space: pre-wrap; z-index: -1000; opacity: 0' ;
-    const tempElementStyle = `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} font-size: ${TEXT_SIZES[this.props.size]}px; font-family: ${this.props.fontFamily}; position: absolute; top: 0; left: 0; margin: 0; word-wrap: break-word; white-space: pre-line; z-index: 1000`;
+    const tempElementStyle = `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} font-size: ${TEXT_SIZES[size]}px; font-family: ${fontFamily}; position: absolute; top: 0; left: 0; margin: 0; word-wrap: break-word; white-space: pre-line; z-index: 1000`;
 
     const isEndOfStringNewLine = [...text.toString().matchAll( /\n$/g )].length > 0;
 
     this.tempElement.innerHTML = isString( text ) ? text : null;
     this.tempElement.setAttribute( 'style', tempElementStyle );
 
-    const rowHeight = 6 + TEXT_SIZES[this.props.size]; // calculating lineheight
+    const rowHeight = LINE_HEIGHTS[size]; // calculating lineheight
     const minRows = this.props.numberOfLines;
     // const contentHeight = this.tempElement.clientHeight;
     const contentHeight = this.tempElement.clientHeight;
     const totalRows = Math.ceil( contentHeight / rowHeight ) + ( isEndOfStringNewLine ? 1 : 0 );
 
-    if ( this.props.ask.questionCode === 'QUE_ROLES_AND_RESP' ) {
+    if ( ask.questionCode === 'QUE_ROLES_AND_RESP' ) {
       console.error( `END OF STRING NEW LINE: ${isEndOfStringNewLine}` );
       console.error( `ROW HEIGHT: ${contentHeight} / ${rowHeight} = ${contentHeight / rowHeight} => ceil: ${totalRows}` );
     }
