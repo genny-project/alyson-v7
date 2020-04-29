@@ -115,9 +115,9 @@ class DataControl extends Component {
         this.handleEmailValidation( value );
         break;
       // case 'abn':
-      // case 'abn number':
-      //   this.handleABNValidation( value );
-      //   break;
+      case 'abn number':
+        this.handleABNValidation( value );
+        break;
       // case 'acn':
       //   this.handleACNValidation( value );
       //   break;
@@ -138,6 +138,11 @@ class DataControl extends Component {
 
   handleABNValidation = ( value ) => {
     const result = validatorABN.validateABN( value ); // eslint-disable-line
+
+    this.setState({
+      // displayValue: emailValue,
+      error: !result ? 'Please enter a valid abn number' : null,
+    });
   }
 
   handleACNValidation = ( value ) => {
@@ -193,7 +198,6 @@ class DataControl extends Component {
   }
 
   render() {
-    // console.log( 'cyrus' );
     const { children, mask, keyfilter, ...restProps } = this.props;
     const {
       maskedValue,
