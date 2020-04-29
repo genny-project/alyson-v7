@@ -146,12 +146,12 @@ class InputSignature extends Component {
 
     if ( !uploading && !deleting ) {
       if ( isObject( file )) {
-        buttons.push({ icon: 'clear', handlePress: () => this.handleDeleteFile( file ) });
+        buttons.push({ label: 'Clear', icon: 'clear', handlePress: () => this.handleDeleteFile( file ) });
       }
       else {
-        buttons.push({ icon: 'clear', handlePress: this.handleClearCanvas });
+        buttons.push({ label: 'Clear', icon: 'clear', handlePress: this.handleClearCanvas });
         if ( !empty ) {
-          buttons.push({ icon: 'publish', handlePress: this.handleSignatureSubmitOnDraw });
+          buttons.push({ label: 'Upload', icon: 'publish', handlePress: this.handleSignatureSubmitOnDraw });
         }
       }
     }
@@ -163,9 +163,9 @@ class InputSignature extends Component {
         <Box
           width={width}
           height="100%"
-          backgroundColor="#f9f9f9"
           flexDirection="column"
-          position="relative"
+          backgroundColor="#f9f9f9"
+          // position="relative"
           onLayout={this.handleLayout}
         >
           { uploading || deleting || error ? (
@@ -235,30 +235,31 @@ class InputSignature extends Component {
               editable
             />
           </Box> */}
-          <Box
-            position="absolute"
-            top={0}
-            right={0}
-          >
-            {buttons.map( button => {
-              return (
-                <Touchable
-                  key={button.text + generateKey()}
-                  onPress={button.handlePress}
-                >
-                  <Box
-                    padding={5}
-                  >
-                    <Icon
-                      name={button.icon}
-                      color="#aaa"
-                      cursor="pointer"
-                    />
-                  </Box>
-                </Touchable>
-              );
-            })}
-          </Box>
+        </Box>
+        <Box>
+          {buttons.map( button => {
+            return (
+              <Touchable
+                withFeedback
+                key={button.text + generateKey()}
+                onPress={button.handlePress}
+                backgroundColor="#888"
+                padding={4}
+              >
+                <Text
+                  text={button.label}
+                />
+                <Box
+                  paddingRight={4}
+                />
+                <Icon
+                  name={button.icon}
+                  color="#aaa"
+                  cursor="pointer"
+                />
+              </Touchable>
+            );
+          })}
         </Box>
       </Box>
     );
