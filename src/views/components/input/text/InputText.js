@@ -160,6 +160,7 @@ class InputText extends Component {
     ),
     isUsingMask: bool,
     fontWeight: string,
+    fontFamily: string,
     bold: bool,
   }
 
@@ -414,6 +415,7 @@ class InputText extends Component {
       cursor,
       fontStyle,
       fontWeight,
+      fontFamily,
       bold,
     } = this.props;
 
@@ -466,6 +468,7 @@ class InputText extends Component {
       outline,
       overflow,
       fontStyle,
+      fontFamily,
       ...editable === false ? { cursor: 'default' } : {},
       cursor,
       fontWeight: bold ? 'bold' : fontWeight,
@@ -497,6 +500,7 @@ class InputText extends Component {
       alignSelf,
       cursor,
       fontWeight: bold ? 'bold' : fontWeight,
+      fontFamily,
       // ...editable === false ? { cursor: 'default' } : {},
     });
 
