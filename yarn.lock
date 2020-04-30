@@ -6701,8 +6701,8 @@ joi@^6.10.1:
     topo "1.x.x"
 
 jquery@>=1.12.0:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.0.tgz#9980b97d9e4194611c36530e7dc46a58d7340fc9"
 
 js-base64@^2.1.9:
   version "2.5.1"
@@ -10126,6 +10126,10 @@ redux-observable@^0.18.0:
   resolved "https://registry.yarnpkg.com/redux-observable/-/redux-observable-0.18.0.tgz#48de1f35554b7ba23a88b18379ca1c93f5124197"
   dependencies:
     gitbook-plugin-github "^2.0.0"
+
+redux-persist@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
 
 redux@^4.0.0:
   version "4.0.5"
