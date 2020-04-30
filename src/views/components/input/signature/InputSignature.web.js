@@ -19,6 +19,7 @@ class InputSignature extends Component {
     // height: oneOfType( [string, number] ),
     // width: oneOfType( [string, number] ),
     onChangeValue: func,
+    testID: string,
     subcomponentProps: object,
     editable: bool,
     disabled: bool,
@@ -143,6 +144,11 @@ class InputSignature extends Component {
   };
 
   handleLayout = () => {
+    var canvas = document.querySelector( 'canvas' );
+
+    canvas.setAttribute( 'testID', `input-signature ${this.props.testID}` );
+    canvas.setAttribute( 'data-component-type', 'SIGNATURE' );
+
     console.warn( 'sending \'resize\' event' ); // eslint-disable-line
     window.dispatchEvent( new Event( 'resize' ));
   }
