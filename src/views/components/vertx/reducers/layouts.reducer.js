@@ -137,6 +137,7 @@ const componentTypes = {
   INPUT_SELECTED_WRAPPER: 'input-selected-wrapper',
   INPUT_SELECTED: 'input-selected',
   INPUT_PLACEHOLDER: 'input-placeholder',
+  INPUT_BUTTON: 'input-button',
 };
 
 const selectorTypes = {
