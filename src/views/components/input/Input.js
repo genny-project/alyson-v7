@@ -132,7 +132,7 @@ class Input extends Component {
         return (
           <InputTextArea
             multiline
-            numberOfLines={2}
+            numberOfLines={1}
             {...inputProps}
             {...inputFieldProps}
             ref={input => this.input = input}
