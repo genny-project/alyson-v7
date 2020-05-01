@@ -89,7 +89,7 @@ class DataControl extends Component {
     const dataType = type.toLowerCase();
 
     if ( mask ) {
-      const maskedValue = Masker.applyMask( value, mask );
+      var maskedValue = Masker.applyMask( value, mask );
 
       if ( this.state.maskedValue !== maskedValue ) {
         this.setState({
@@ -116,7 +116,7 @@ class DataControl extends Component {
         break;
       // case 'abn':
       case 'abn number':
-        this.handleABNValidation( value );
+        this.handleABNValidation( maskedValue );
         break;
       // case 'acn':
       //   this.handleACNValidation( value );
