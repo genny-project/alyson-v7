@@ -121,7 +121,6 @@ class InputDatePicker extends PureComponent {
                     type: 'text',
                     // editable: false,
                     updateValueWhenFocused: true,
-                    isUsingMask: true,
                     value: inputValue || ( editable ? displayFormat.toLowerCase() : '' ),
                     // placeholder,
                     onRef: onRef,
