@@ -260,8 +260,8 @@ class InputSignature extends Component {
                     bottom={0}
                     {...(
                       i === 0
-                        ? { left: 0 }
-                        : { right: 0 }
+                        ? { right: 0 }
+                        : { left: 0 }
                     )}
                   >
                     <Text
