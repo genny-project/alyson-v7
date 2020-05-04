@@ -121,12 +121,14 @@ class InputDatePicker extends PureComponent {
                     type: 'text',
                     // editable: false,
                     updateValueWhenFocused: true,
+                    isUsingMask: true,
                     value: inputValue || ( editable ? displayFormat.toLowerCase() : '' ),
                     // placeholder,
                     onRef: onRef,
                     dynamicWidth: true,
                     ignoreOnChange: true,
                     log: true,
+                    editable,
                     ...componentProps['input-field'],
                   })}
                   onChange={null}
@@ -153,7 +155,7 @@ class InputDatePicker extends PureComponent {
                       position="absolute"
                       right={0}
                       zIndex={5}
-                      transform="translateY(-50%)"
+                      transform={[{ translateY: '-50%' }]}
                       top="50%"
                     >
                       <Box

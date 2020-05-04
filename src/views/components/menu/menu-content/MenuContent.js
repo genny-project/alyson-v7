@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { node, string, number, oneOf, bool } from 'prop-types';
+import { node, string, number, oneOf, bool, oneOfType } from 'prop-types';
+import { Dimensions } from 'react-native-web';
 import { isObject, isInteger } from '../../../../utils';
 import { Box, Portal, Boundary, Area } from '../../index';
 import MenuConsumer from '../consumer';
@@ -10,6 +11,7 @@ class MenuContent extends Component {
     offsetY: 0,
     position: 'left',
     autofocus: false,
+    maxHeight: 200,
   }
 
   // use GROUP_CONTENT_WRAPPER to change position
@@ -24,6 +26,9 @@ class MenuContent extends Component {
     ] ),
     autofocus: bool,
     open: bool,
+    maxHeight: oneOfType( [
+      string, number,
+    ] ),
   }
 
   focus() {
@@ -49,7 +54,17 @@ class MenuContent extends Component {
   }
 
   render() {
-    const { children, testID, offsetX, offsetY, position, autofocus, open, ...restProps } = this.props; // eslint-disable-line
+    const {
+      children,
+      testID,
+      offsetX,
+      offsetY,
+      position,
+      autofocus, // eslint-disable-line
+      open, // eslint-disable-line
+      maxHeight,
+      ...restProps
+    } = this.props;
 
     return (
       <MenuConsumer>
@@ -82,6 +97,47 @@ class MenuContent extends Component {
 
                           const top = buttonArea.bottom + offsetY;
 
+                          const dimensions = Dimensions.get( 'window' );
+                          const screenBottom = dimensions.height;
+
+                          const height = isInteger( top ) ? screenBottom - top : null;
+
+                          // check if item box will be pushed off the bottom of the screen
+                          // if yes, then check the space between the top of the item box and the bottom of the screen
+                          // if at least 150px, then set as the maxHeight of the input
+                          // if less than 150px, then set the top of the input as the bottom of the item box
+
+                          // isObject( areaProps.size, { withProperty: 'height' });
+
+                          const newBottom = isInteger( height, { isLessThan: maxHeight })
+                            ? buttonArea.top
+                            : null;
+
+                          const style = {
+                            position: 'absolute',
+                            top: newBottom
+                              ? newBottom
+                              : isInteger( y )
+                                ? y
+                                : top,
+                            left: isInteger( x )
+                              ? x
+                              : positions[position],
+                            ...( isInteger( x )
+                              ? {}
+                              : { transform: `translate( -${
+                                position === 'right'
+                                  ? 100
+                                  : position === 'center'
+                                    ? 50
+                                    : 0
+                              }%, -${
+                                newBottom
+                                  ? 100
+                                  : 0
+                              }% )` }),
+                          };
+
                           return (
                             <div
                               ref={ref => {
@@ -90,12 +146,7 @@ class MenuContent extends Component {
                                 setRef( ref, 'menu' );
                               }}
                               tabIndex="-1"
-                              style={{
-                                position: 'absolute',
-                                top: isInteger( y ) ? y : top,
-                                left: isInteger( x ) ? x : positions[position],
-                                ...( isInteger( x ) ? {} : { transform: `translateX( -${position === 'right' ? 100 : position === 'center' ? 50 : 0}%)` }),
-                              }}
+                              style={style}
                               onBlur={handleContentBlur}
                               onFocus={handleContentFocus}
                             >
@@ -110,6 +161,7 @@ class MenuContent extends Component {
                                   width: 0,
                                   height: 0,
                                 }}
+                                maxHeight={maxHeight}
                                 {...restProps}
                               >
                                 {children}

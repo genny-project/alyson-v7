@@ -35,9 +35,9 @@ class InputText extends Component {
     size: 'xs',
     textAlign: 'left',
     editable: true,
-    outline: 'none',
     updateValueWhenFocused: false,
     alignSelf: 'center',
+    returnKeyType: 'next',
   }
 
   static propTypes = {
@@ -76,7 +76,9 @@ class InputText extends Component {
     }),
     selectTextOnFocus: bool,
     spellCheck: bool,
-    value: string,
+    value: oneOfType(
+      [string, number]
+    ),
     margin: number,
     marginX: number,
     marginY: number,
@@ -158,6 +160,7 @@ class InputText extends Component {
     ),
     isUsingMask: bool,
     fontWeight: string,
+    fontFamily: string,
     bold: bool,
   }
 
@@ -412,6 +415,7 @@ class InputText extends Component {
       cursor,
       fontStyle,
       fontWeight,
+      fontFamily,
       bold,
     } = this.props;
 
@@ -464,6 +468,7 @@ class InputText extends Component {
       outline,
       overflow,
       fontStyle,
+      fontFamily,
       ...editable === false ? { cursor: 'default' } : {},
       cursor,
       fontWeight: bold ? 'bold' : fontWeight,
@@ -495,6 +500,7 @@ class InputText extends Component {
       alignSelf,
       cursor,
       fontWeight: bold ? 'bold' : fontWeight,
+      fontFamily,
       // ...editable === false ? { cursor: 'default' } : {},
     });
 
@@ -504,6 +510,24 @@ class InputText extends Component {
 
     const attributeName = dlv( this.props.question, 'attribute.name' );
     const questionName = dlv( this.props.question, 'name' );
+
+    // if ( value === null ) {
+    //   console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName });
+    // }
+
+    // console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName, valueProps: this.props });
+
+    // if ( this.props.ask.questionCode === 'QUE_DAYS_PER_WEEK' || this.props.ask.questionCode === 'QUE_INTERN_SOFTWARE' ) {
+    //   console.log( 'valueProps=====>', { value, useAttributeNameAsValue, attributeName, useQuestionNameAsValue, questionName, valueProps: this.props });
+    // }
+
+    // const valueCheck = ( value ) => {
+    //   if ( value !== null ) {
+    //     return value;
+    //   }
+
+    //   return undefined;
+    // };
 
     return (
       <Box
@@ -590,7 +614,11 @@ class InputText extends Component {
               placeholder={placeholder}
               placeholderTextColor={placeholderColor || color}
               returnKeyLabel={!multiline ? returnKeyLabel : null}
-              returnKeyType={!multiline ? returnKeyType : null}
+              returnKeyType={!multiline
+                ? returnKeyType === 'default'
+                  ? 'next'
+                  : returnKeyType
+                : null}
               secureTextEntry={secureTextEntry}
               selection={selection}
               selectTextOnFocus={selectTextOnFocus}
@@ -602,7 +630,9 @@ class InputText extends Component {
                 ? attributeName
                 : useQuestionNameAsValue
                   ? questionName
-                  : value}
+                  : value
+                    ? value
+                    : ''}
               underlineColorAndroid="transparent"
               {...Platform.select({
                 ios: nativeProps,

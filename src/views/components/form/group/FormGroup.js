@@ -104,11 +104,6 @@ class FormGroup extends Component {
   }
 
   updateThemes = ( links ) => {
-    const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP';
-    // const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_GRP';
-
-    if ( shouldLog ) console.error( 'updateThemes', JSON.stringify( links ));
-
     /* check if the stateKey is valid  */
     this.setState({
       ['themes']: [

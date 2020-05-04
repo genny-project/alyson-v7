@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { number, bool, func, oneOf, string } from 'prop-types';
+import { number, bool, func, oneOf, string, object } from 'prop-types';
 import dlv from 'dlv';
-import { TEXT_SIZES } from '../../../../constants';
+import { TEXT_SIZES, LINE_HEIGHTS } from '../../../../constants';
 import { isString, isInteger } from '../../../../utils';
 import { Input } from '../..';
 
 class InputTextArea extends Component {
   static defaultProps = {
-    size: 'xs',
+    // size: 'xs',
+    size: 'xxs',
   }
 
   static propTypes = {
@@ -26,7 +27,8 @@ class InputTextArea extends Component {
       ['xs','sm','md','lg','xl']
     ),
     value: string,
-
+    ask: object,
+    fontFamily: string,
   }
 
   constructor( props ) {
@@ -37,6 +39,7 @@ class InputTextArea extends Component {
   state = {
     rows: null,
     clientWidth: null,
+    value: null,
   }
 
   componentDidMount() {
@@ -60,20 +63,43 @@ class InputTextArea extends Component {
   }
 
   updateWidth = ({ text, clientWidth }) => {
-    const tempElementStyle = 'position: absolute; top: 0; left: 0; z-index: -1000; opacity: 0' ;
-    const numberOfNewLines = text != null ? [...text.matchAll( /\n/g )].length : 0;
+    if (
+      !isString( text ) &&
+      !isInteger( text )
+    ) {
+      console.error( 'Error: invalid data type. "text" should be `string` or `integer`' );
+
+      this.setState({
+        rows: minRows,
+      });
+
+      return;
+    }
+    const { size, ask, fontFamily } = this.props;
+
+    // const tempElementStyle = 'position: absolute; top: 0; left: 0; margin: 0; white-space: pre-wrap; z-index: -1000; opacity: 0' ;
+    const tempElementStyle = `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} font-size: ${TEXT_SIZES[size]}px; font-family: ${fontFamily}; position: absolute; top: 0; left: 0; margin: 0; word-wrap: break-word; white-space: pre-line; z-index: 1000`;
+
+    const isEndOfStringNewLine = [...text.toString().matchAll( /\n$/g )].length > 0;
 
     this.tempElement.innerHTML = isString( text ) ? text : null;
-    this.tempElement.setAttribute( 'style', `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} ${tempElementStyle}` );
+    this.tempElement.setAttribute( 'style', tempElementStyle );
 
-    const rowHeight = 3 + ( TEXT_SIZES[this.props.size] || 14 );
+    const rowHeight = LINE_HEIGHTS[size]; // calculating lineheight
     const minRows = this.props.numberOfLines;
+    // const contentHeight = this.tempElement.clientHeight;
     const contentHeight = this.tempElement.clientHeight;
-    const totalRows = Math.ceil( contentHeight / rowHeight ) + numberOfNewLines;
+    const totalRows = Math.ceil( contentHeight / rowHeight ) + ( isEndOfStringNewLine ? 1 : 0 );
+
+    if ( ask.questionCode === 'QUE_ROLES_AND_RESP' ) {
+      console.error( `END OF STRING NEW LINE: ${isEndOfStringNewLine}` );
+      console.error( `ROW HEIGHT: ${contentHeight} / ${rowHeight} = ${contentHeight / rowHeight} => ceil: ${totalRows}` );
+    }
 
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,
       clientWidth,
+      value: this.tempElement.innerHTML,
     });
   }
 
@@ -84,14 +110,19 @@ class InputTextArea extends Component {
     this.updateWidth({ text, clientWidth });
   }
 
-  handleLayout = ( event ) => {
-    const text = this.props.value;
-    const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
+  // handleLayout = ( event ) => {
+  //   // console.warn( '-----------------------------' );
+  //   console.warn( 'HANDLE LAYOUT' );
+  //   console.warn( '-----------------------------' );
+  //   // console.warn( '-----------------------------' );
+  //   const text = this.props.value;
+  //   // const text = null;
+  //   const clientWidth = dlv( event, 'nativeEvent.target.clientWidth' );
 
-    if ( isString( text )) {
-      this.updateWidth({ text, clientWidth });
-    }
-  }
+  //   if ( isString( text )) {
+  //     this.updateWidth({ text, clientWidth });
+  //   }
+  // }
 
   render() {
     const {
@@ -106,10 +137,10 @@ class InputTextArea extends Component {
     return (
       <Input
         blurOnSubmit={false}
+        value={this.state.value}
         {...restProps}
         multiline={multiline}
         numberOfLines={rows}
-        onKeyPress={this.handleKeyPress}
         onLayout={this.handleLayout}
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}
