@@ -1,5 +1,6 @@
 import React from 'react';
 import { array, bool, number, object, func, string } from 'prop-types';
+import debounce from 'lodash.debounce';
 import { Box, Text } from '../../index';
 import { isArray, isString } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
@@ -26,6 +27,12 @@ class CheckBoxList extends React.Component {
     disabled: bool,
     error: string,
   };
+
+  constructor( props ) {
+    super( props );
+
+    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 3000 );
+  }
 
   state = {
     data: this.props.items,
@@ -68,72 +75,75 @@ class CheckBoxList extends React.Component {
         return { selected: [...state.selected, value] };
       },
       () => {
-        if ( this.props.onChangeValue ) this.props.onChangeValue( this.state.selected );
-
+        this.handleChangeDebounced ( value );
         console.warn(this.state); //eslint-disable-line
       }
     );
   };
 
-  render() {
-    const { numberOfColumns, icons } = this.props;
+    handleChangeDebounced = ( value ) => {
+      this.props.onChangeValue( value );
+    };
 
-    const numberOfButtonsToRender = numberOfColumns > 3 ? 3 : numberOfColumns;
+    render() {
+      const { numberOfColumns, icons } = this.props;
 
-    const { data, selected } = this.state;
+      const numberOfButtonsToRender = numberOfColumns > 3 ? 3 : numberOfColumns;
 
-    return (
-      <SubcomponentThemeHandler
-        subcomponentProps={this.props.subcomponentProps}
-        editable={this.props.editable}
-        disabled={this.props.disabled}
-        error={this.props.error}
-      >
-        {({
-          filterComponentProps,
-        }) => {
-          return (
-            <Box
-              flexDirection="row"
-              flexWrap="wrap"
-            >
-              {isArray( data, { ofMinLength: 1 }) ? (
-                data.map( item => (
-                  <Box
-                    width={`${100 / numberOfButtonsToRender}%`}
-                    key={item.value}
-                  >
-                    <BaseCheckBox
-                      icons={icons}
-                      onPress={this.handlePress( item.value )}
+      const { data, selected } = this.state;
+
+      return (
+        <SubcomponentThemeHandler
+          subcomponentProps={this.props.subcomponentProps}
+          editable={this.props.editable}
+          disabled={this.props.disabled}
+          error={this.props.error}
+        >
+          {({
+            filterComponentProps,
+          }) => {
+            return (
+              <Box
+                flexDirection="row"
+                flexWrap="wrap"
+              >
+                {isArray( data, { ofMinLength: 1 }) ? (
+                  data.map( item => (
+                    <Box
+                      width={`${100 / numberOfButtonsToRender}%`}
                       key={item.value}
-                      checkBoxStatus={(
+                    >
+                      <BaseCheckBox
+                        icons={icons}
+                        onPress={this.handlePress( item.value )}
+                        key={item.value}
+                        checkBoxStatus={(
                           isArray( selected ) &&
                           selected.includes( item.value )
                             ? true
                             : false
                       )}
-                      id={item.value}
-                      label={item.label}
-                      stateBasedProps={
+                        id={item.value}
+                        label={item.label}
+                        stateBasedProps={
                         filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
                       }
-                    />
-                  </Box>
-                ))
-              ) : (
-                <Text
-                  text="No Items to Show"
-                />
-              )}
-            </Box>
-          );
-        }
+                      />
+                    </Box>
+                  ))
+                ) : (
+                  <Text
+                    text="No Items to Show"
+                  />
+                )}
+              </Box>
+            );
+          }
     }
-      </SubcomponentThemeHandler>
+        </SubcomponentThemeHandler>
 
-    );
-  }
+      );
+    }
 }
 
 export default CheckBoxList;
