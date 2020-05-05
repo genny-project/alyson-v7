@@ -33,7 +33,7 @@ import ColourPicker from './colour-picker';
 import Unity from './unity';
 import Progress from './progress';
 import HtmlEditor from './html-editor';
-import RadioButton from './radio-button';
+import Starrating from './star-rating';
 
 /* maps the component to  */
 
@@ -249,7 +249,7 @@ class Input extends Component {
 
       case 'starrating':
         return (
-          <RadioButton
+          <Starrating
             {...inputProps}
             icons={{ true: 'star', false: 'star_border', null: 'star_outline' }}
             multiSelect={false}
