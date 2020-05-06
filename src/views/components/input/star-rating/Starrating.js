@@ -1,5 +1,6 @@
 import React from 'react';
 import { array, bool, number, object, func, string } from 'prop-types';
+import debounce from 'lodash.debounce';
 import { Box, Text } from '../../index';
 import { isArray, isString } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
@@ -27,9 +28,15 @@ class Starrating extends React.Component {
     error: string,
   };
 
+  constructor( props ) {
+    super( props );
+
+    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 3000 );
+  }
+
   state = {
     data: this.props.items,
-    selectedItems: 0,
+    // selectedItems: 0,
     selected: this.props.value,
   };
 
@@ -68,71 +75,73 @@ class Starrating extends React.Component {
         return { selected: [...state.selected, value] };
       },
       () => {
-        if ( this.props.onChangeValue ) this.props.onChangeValue( this.state.selected );
-
-        console.warn(this.state); //eslint-disable-line
+        this.handleChangeDebounced ( value );
       }
     );
   };
 
-  render() {
-    const { numberOfColumns, icons } = this.props;
+      handleChangeDebounced = ( value ) => {
+        this.props.onChangeValue( value );
+      };
 
-    const numberOfButtonsToRender = numberOfColumns > 5 ? 5 : numberOfColumns;
+      render() {
+        const { numberOfColumns, icons } = this.props;
 
-    const { data, selected } = this.state;
+        const numberOfButtonsToRender = numberOfColumns > 5 ? 5 : numberOfColumns;
 
-    return (
-      <SubcomponentThemeHandler
-        subcomponentProps={this.props.subcomponentProps}
-        editable={this.props.editable}
-        disabled={this.props.disabled}
-        error={this.props.error}
-      >
-        {({
-          filterComponentProps,
-        }) => {
-          return (
-            <Box
-              flexDirection="row"
-              flexWrap="wrap"
-            >
-              {isArray( data, { ofMinLength: 1 }) ? (
-                data.map( item => (
-                  <Box
-                    width={`${100 / ( numberOfButtonsToRender * 2 )}%`}
-                    key={item.value}
-                  >
-                    <BaseCheckBox
-                      icons={icons}
-                      onPress={this.handlePress( item.value )}
-                      key={item.value}
-                      checkBoxStatus={(
+        const { data, selected } = this.state;
+
+        return (
+          <SubcomponentThemeHandler
+            subcomponentProps={this.props.subcomponentProps}
+            editable={this.props.editable}
+            disabled={this.props.disabled}
+            error={this.props.error}
+          >
+            {({
+              filterComponentProps,
+            }) => {
+              return (
+                <Box
+                  flexDirection="row"
+                  flexWrap="wrap"
+                >
+                  {isArray( data, { ofMinLength: 1 }) ? (
+                    data.map( item => (
+                      <Box
+                        width={`${100 / ( numberOfButtonsToRender * 2 )}%`}
+                        key={item.value}
+                      >
+                        <BaseCheckBox
+                          icons={icons}
+                          onPress={this.handlePress( item.value )}
+                          key={item.value}
+                          checkBoxStatus={(
                           isArray( selected ) &&
                           selected.includes( item.value )
                             ? true
                             : false
                       )}
-                      id={item.value}
-                      stateBasedProps={
+                          id={item.value}
+                          stateBasedProps={
                         filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
                       }
+                        />
+                      </Box>
+                    ))
+                  ) : (
+                    <Text
+                      text="No Items to Show"
                     />
-                  </Box>
-                ))
-              ) : (
-                <Text
-                  text="No Items to Show"
-                />
-              )}
-            </Box>
-          );
-        }
+                  )}
+                </Box>
+              );
+            }
     }
-      </SubcomponentThemeHandler>
+          </SubcomponentThemeHandler>
 
-    );
-  }
+        );
+      }
 }
 
 export default Starrating;
