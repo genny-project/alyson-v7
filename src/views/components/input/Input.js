@@ -9,7 +9,6 @@ import InputTimePicker from './date-time/time-picker';
 import InputDateTimePicker from './date-time/date-time-picker';
 import InputFile from './file';
 import InputScroll from './scroll';
-import InputRating from './rating';
 import InputText from './text';
 import InputTextArea from './textarea';
 import InputTextWithDynamicWidth from './text-with-dynamic-width';
@@ -233,18 +232,18 @@ class Input extends Component {
             {...inputProps}
             icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: 'indeterminate_check_box' }}
             multiSelect={false}
-            radio
+            numberOfColumns={3}
             ref={input => this.input = input}
           />
         );
 
       case 'rating':
         return (
-          <InputRating
+          <CheckBoxList
             {...inputProps}
             icons={{ true: 'star', false: 'star_border', null: 'star_outline' }}
             multiSelect={false}
-            radio
+            numberOfColumns={5}
             ref={input => this.input = input}
           />
         );
