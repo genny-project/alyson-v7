@@ -1,1 +1,1 @@
-export { default } from './Starrating';
+export { default } from './Star-rating';

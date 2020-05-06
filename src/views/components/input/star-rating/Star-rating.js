@@ -31,7 +31,7 @@ class Starrating extends React.Component {
   constructor( props ) {
     super( props );
 
-    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 3000 );
+    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 1000 );
   }
 
   state = {
