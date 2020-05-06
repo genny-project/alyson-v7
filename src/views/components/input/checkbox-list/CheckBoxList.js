@@ -26,6 +26,7 @@ class CheckBoxList extends React.Component {
     editable: bool,
     disabled: bool,
     error: string,
+    type: string,
   };
 
   constructor( props ) {
@@ -86,11 +87,17 @@ class CheckBoxList extends React.Component {
     };
 
     render() {
-      const { numberOfColumns, icons } = this.props;
+      const { numberOfColumns, icons, type } = this.props;
 
-      const numberOfButtonsToRender = numberOfColumns > 3 ? 3 : numberOfColumns;
+      const numberOfButtonsToRender = type === 'radio'
+        ? numberOfColumns > 3 ? 3 : numberOfColumns
+        : type === 'rating'
+          ? numberOfColumns > 5 ? 5 : numberOfColumns
+          : numberOfColumns;
 
       const { data, selected } = this.state;
+
+      console.error( 'CB', this.props );
 
       return (
         <SubcomponentThemeHandler
@@ -108,9 +115,9 @@ class CheckBoxList extends React.Component {
                 flexWrap="wrap"
               >
                 {isArray( data, { ofMinLength: 1 }) ? (
-                  data.map( item => (
+                  data.map(( item ) => (
                     <Box
-                      width={`${100 / numberOfButtonsToRender}%`}
+                      width={type === 'rating' ? `${100 / ( numberOfButtonsToRender * 2 )}%` : `${100 / numberOfButtonsToRender}%`}
                       key={item.value}
                     >
                       <BaseCheckBox
@@ -124,7 +131,7 @@ class CheckBoxList extends React.Component {
                             : false
                       )}
                         id={item.value}
-                        label={item.label}
+                        label={type === 'rating' ? null : item.label}
                         stateBasedProps={
                         filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
                       }
