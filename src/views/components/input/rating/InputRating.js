@@ -1,55 +1,147 @@
-import React, { Component } from 'react';
-import { number, func, string } from 'prop-types';
-import range from 'lodash.range';
-import { TouchableOpacity } from 'react-native';
-import { Icon, Box } from '../../../components';
+import React from 'react';
+import { array, bool, number, object, func, string } from 'prop-types';
+import debounce from 'lodash.debounce';
+import { Box, Text } from '../../index';
+import { isArray, isString } from '../../../../utils';
+import BaseCheckBox from '../base-checkbox';
+import { SubcomponentThemeHandler } from '../../form/theme-handlers';
 
-class InputRating extends Component {
+class InputRating extends React.Component {
   static defaultProps = {
-    numberOfStars: 5,
-    color: 'lightGrey',
-    testID: 'input-rating',
-  }
+    items: [],
+    // value: [],
+    multiSelect: true,
+    numberOfColumns: 5,
+  };
 
   static propTypes = {
-    numberOfStars: number,
-    value: number,
-    onChange: func,
-    color: string,
-    testID: string,
+    // value: array,
+    value: string,
+    numberOfColumns: number,
+    items: array,
+    multiSelect: bool,
+    icons: object,
+    onChangeValue: func,
+    subcomponentProps: object,
+    editable: bool,
+    disabled: bool,
+    error: string,
+  };
+
+  constructor( props ) {
+    super( props );
+
+    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 1000 );
   }
 
-  handleOnPress = ( value ) => {
-    if ( this.props.onChange ) this.props.onChange( value );
+  state = {
+    data: this.props.items,
+    // selectedItems: 0,
+    selected: this.props.value,
+  };
+
+  componentDidUpdate( prevProps ) {
+    if ( this.props.items !== prevProps.items ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        data: this.props.items,
+      });
+    }
   }
 
-  render() {
-    const { numberOfStars, value, color, testID } = this.props;
+  handlePress = value => () => {
+    const { selected } = this.state;
+    const { multiSelect } = this.props;
 
-    return (
-      <Box
-        flexDirection="row"
-        testID={testID}
-      >
-        {range( numberOfStars )
-        .map( i => (
-          <TouchableOpacity
-            key={i}
-            onPress={() => this.handleOnPress( i + 1 )}
-          >
-            <Icon
-              name={(
-                value >= i + 1
-                  ? 'star'
-                  : 'star-border'
-              )}
-              color={color}
-            />
-          </TouchableOpacity>
-        ))}
-      </Box>
+    this.setState(
+      state => {
+        if (
+          !isArray( state.selected ) ||
+          !isString( value )
+        ) {
+          return { selected: [] };
+        }
+
+        /* Dont allow to select more than one button/icon */
+        if ( !multiSelect && selected.length >= 1 ) {
+          /* if the selected value is more or equal to 1 dont allow to add the value */
+          return { selected: [value] };
+        }
+
+        if ( state.selected.includes( value )) {
+          return { selected: state.selected.filter( item => item !== value ) };
+        }
+
+        return { selected: [...state.selected, value] };
+      },
+      () => {
+        this.handleChangeDebounced ( value );
+      }
     );
-  }
+  };
+
+      handleChangeDebounced = ( value ) => {
+        this.props.onChangeValue( value );
+      };
+
+      render() {
+        const { numberOfColumns, icons } = this.props;
+
+        const numberOfButtonsToRender = numberOfColumns > 5 ? 5 : numberOfColumns;
+
+        const { data, selected } = this.state;
+
+        return (
+          <SubcomponentThemeHandler
+            subcomponentProps={this.props.subcomponentProps}
+            editable={this.props.editable}
+            disabled={this.props.disabled}
+            error={this.props.error}
+          >
+            {({
+              filterComponentProps,
+            }) => {
+              return (
+                <Box
+                  flexDirection="row"
+                  flexWrap="wrap"
+                >
+                  {isArray( data, { ofMinLength: 1 }) ? (
+                    data.map( item => (
+                      <Box
+                        width={`${100 / ( numberOfButtonsToRender * 2 )}%`}
+                        key={item.value}
+                      >
+                        <BaseCheckBox
+                          icons={icons}
+                          onPress={this.handlePress( item.value )}
+                          key={item.value}
+                          checkBoxStatus={(
+                          isArray( selected ) &&
+                          selected.includes( item.value )
+                            ? true
+                            : false
+                      )}
+                          id={item.value}
+                          stateBasedProps={
+                        filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
+                      }
+                        />
+                      </Box>
+                    ))
+                  ) : (
+                    <Text
+                      text="No Items to Show"
+                    />
+                  )}
+                </Box>
+              );
+            }
+    }
+          </SubcomponentThemeHandler>
+
+        );
+      }
 }
 
 export default InputRating;

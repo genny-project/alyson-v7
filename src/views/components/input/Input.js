@@ -33,7 +33,6 @@ import ColourPicker from './colour-picker';
 import Unity from './unity';
 import Progress from './progress';
 import HtmlEditor from './html-editor';
-import Starrating from './star-rating';
 
 /* maps the component to  */
 
@@ -202,14 +201,6 @@ class Input extends Component {
           />
         );
 
-      case 'rating':
-        return (
-          <InputRating
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
       case 'autocomplete':
         return (
           <InputAutocomplete
@@ -247,9 +238,9 @@ class Input extends Component {
           />
         );
 
-      case 'starrating':
+      case 'rating':
         return (
-          <Starrating
+          <InputRating
             {...inputProps}
             icons={{ true: 'star', false: 'star_border', null: 'star_outline' }}
             multiSelect={false}
