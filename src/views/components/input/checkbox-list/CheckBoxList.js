@@ -99,30 +99,13 @@ class CheckBoxList extends React.Component {
 
       const { items, selected } = this.state;
 
-      // console.error( 'state', this.state );
-
-      // if ( isArray( selected )) {
-      //   var selectedValue = items.filter(( item, index ) => (
-      //     item.value === selected[0] ? index : null
-      //   ));
-
-      //   console.error( selectedValue );
-      // }
-
-      const selectedValue = items.map(( item, index ) => {
+      const filteredValue = items.map(( item, index ) => {
         if ( isArray( selected ) && selected[0] === item.value ) {
           var  selectedIndex = index;
 
           return selectedIndex;
         }
-        // console.error( 'selectedIndex', selectedIndex );
-      });
-
-      // console.error( 'selectedIndex1', selectedValue );
-
-      var filteredValue = selectedValue.filter(( item ) => ( item !== undefined ));
-
-      console.error( 'filteredValue', filteredValue );
+      }).filter(( item ) => ( item !== undefined ));
 
       return (
         <SubcomponentThemeHandler
@@ -142,29 +125,7 @@ class CheckBoxList extends React.Component {
                 {isArray( items, { ofMinLength: 1 }) ? (
 
                   items.map(( item, index ) => {
-                    // console.error( 'INDEX', { item: item, index: index, selected: selected, itemValue: item.value });
-
-                    // const updatedItems = () => {
-                    //   if ( isArray( selected ) && selected[0] === item.value ) {
-                    //   // console.error( 'hell yeah', { index, item, items });
-                    //     // items.length = index + 1;
-                    //     const selectedIndex = index;
-
-                    //     // console.error ( 'hell no', items );
-                    //     // console.error( 'test', test );
-                    //   }
-                    // };
-
-                    // if ( isArray( selected ) && selected[0] === item.value ) {
-                    //   var  selectedIndex = index;
-                    // }
-
-                    // console.error( 'selectedIndex', filteredValue );
-
-                    // eslint-disable-next-line no-unused-vars
                     const isBeforeSelectedItem = index < filteredValue;
-
-                    // console.error( 'isBeforeSelectedItem', { item, isBeforeSelectedItem });
 
                     return (
                       <Box
@@ -176,12 +137,12 @@ class CheckBoxList extends React.Component {
                           onPress={this.handlePress( item.value )}
                           key={item.value}
                           checkBoxStatus={updateIconForPreviousItems
-                            ? (
-                              isArray( selected ) &&
-                          selected.includes( item.value )
+                            ? isArray( selected ) &&
+                              selected.includes( item.value )
+                              ? true
+                              : isBeforeSelectedItem
                                 ? true
                                 : false
-                            )
                             : (
                               isArray( selected ) &&
                           selected.includes( item.value )
