@@ -244,6 +244,7 @@ class Input extends Component {
             icons={{ true: 'star', false: 'star_border', null: 'star_outline' }}
             multiSelect={false}
             numberOfColumns={5}
+            updateIconForPreviousItems
             ref={input => this.input = input}
           />
         );
