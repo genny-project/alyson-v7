@@ -12,6 +12,7 @@ class CheckBoxList extends React.Component {
     // value: [],
     multiSelect: true,
     numberOfColumns: 3,
+    updateIconForPreviousItems: false,
   };
 
   static propTypes = {
@@ -27,6 +28,7 @@ class CheckBoxList extends React.Component {
     disabled: bool,
     error: string,
     type: string,
+    updateIconForPreviousItems: bool,
   };
 
   constructor( props ) {
@@ -36,7 +38,7 @@ class CheckBoxList extends React.Component {
   }
 
   state = {
-    data: this.props.items,
+    items: this.props.items,
     selectedItems: 0,
     selected: this.props.value,
   };
@@ -45,7 +47,7 @@ class CheckBoxList extends React.Component {
     if ( this.props.items !== prevProps.items ) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
-        data: this.props.items,
+        items: this.props.items,
       });
     }
   }
@@ -87,7 +89,7 @@ class CheckBoxList extends React.Component {
     };
 
     render() {
-      const { numberOfColumns, icons, type } = this.props;
+      const { numberOfColumns, icons, type, updateIconForPreviousItems } = this.props;
 
       const numberOfButtonsToRender = type === 'radio'
         ? numberOfColumns > 3 ? 3 : numberOfColumns
@@ -95,9 +97,32 @@ class CheckBoxList extends React.Component {
           ? numberOfColumns > 5 ? 5 : numberOfColumns
           : numberOfColumns;
 
-      const { data, selected } = this.state;
+      const { items, selected } = this.state;
 
-      console.error( 'CB', this.props );
+      // console.error( 'state', this.state );
+
+      // if ( isArray( selected )) {
+      //   var selectedValue = items.filter(( item, index ) => (
+      //     item.value === selected[0] ? index : null
+      //   ));
+
+      //   console.error( selectedValue );
+      // }
+
+      const selectedValue = items.map(( item, index ) => {
+        if ( isArray( selected ) && selected[0] === item.value ) {
+          var  selectedIndex = index;
+
+          return selectedIndex;
+        }
+        // console.error( 'selectedIndex', selectedIndex );
+      });
+
+      // console.error( 'selectedIndex1', selectedValue );
+
+      var filteredValue = selectedValue.filter(( item ) => ( item !== undefined ));
+
+      console.error( 'filteredValue', filteredValue );
 
       return (
         <SubcomponentThemeHandler
@@ -114,30 +139,64 @@ class CheckBoxList extends React.Component {
                 flexDirection="row"
                 flexWrap="wrap"
               >
-                {isArray( data, { ofMinLength: 1 }) ? (
-                  data.map(( item ) => (
-                    <Box
-                      width={type === 'rating' ? `${100 / ( numberOfButtonsToRender * 2 )}%` : `${100 / numberOfButtonsToRender}%`}
-                      key={item.value}
-                    >
-                      <BaseCheckBox
-                        icons={icons}
-                        onPress={this.handlePress( item.value )}
+                {isArray( items, { ofMinLength: 1 }) ? (
+
+                  items.map(( item, index ) => {
+                    // console.error( 'INDEX', { item: item, index: index, selected: selected, itemValue: item.value });
+
+                    // const updatedItems = () => {
+                    //   if ( isArray( selected ) && selected[0] === item.value ) {
+                    //   // console.error( 'hell yeah', { index, item, items });
+                    //     // items.length = index + 1;
+                    //     const selectedIndex = index;
+
+                    //     // console.error ( 'hell no', items );
+                    //     // console.error( 'test', test );
+                    //   }
+                    // };
+
+                    // if ( isArray( selected ) && selected[0] === item.value ) {
+                    //   var  selectedIndex = index;
+                    // }
+
+                    // console.error( 'selectedIndex', filteredValue );
+
+                    // eslint-disable-next-line no-unused-vars
+                    const isBeforeSelectedItem = index < filteredValue;
+
+                    // console.error( 'isBeforeSelectedItem', { item, isBeforeSelectedItem });
+
+                    return (
+                      <Box
+                        width={type === 'rating' ? `${100 / ( numberOfButtonsToRender * 2 )}%` : `${100 / numberOfButtonsToRender}%`}
                         key={item.value}
-                        checkBoxStatus={(
-                          isArray( selected ) &&
+                      >
+                        <BaseCheckBox
+                          icons={icons}
+                          onPress={this.handlePress( item.value )}
+                          key={item.value}
+                          checkBoxStatus={updateIconForPreviousItems
+                            ? (
+                              isArray( selected ) &&
                           selected.includes( item.value )
-                            ? true
-                            : false
-                      )}
-                        id={item.value}
-                        label={type === 'rating' ? null : item.label}
-                        stateBasedProps={
+                                ? true
+                                : false
+                            )
+                            : (
+                              isArray( selected ) &&
+                          selected.includes( item.value )
+                                ? true
+                                : false
+                            )}
+                          id={item.value}
+                          label={type === 'rating' ? null : item.label}
+                          stateBasedProps={
                         filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
                       }
-                      />
-                    </Box>
-                  ))
+                        />
+                      </Box>
+                    );
+                  })
                 ) : (
                   <Text
                     text="No Items to Show"
