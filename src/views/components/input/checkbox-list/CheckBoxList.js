@@ -129,7 +129,7 @@ class CheckBoxList extends React.Component {
 
                     return (
                       <Box
-                        width={type === 'rating' ? `${100 / ( numberOfButtonsToRender * 2 )}%` : `${100 / numberOfButtonsToRender}%`}
+                        width={type === 'rating' ? `${100 / ( numberOfButtonsToRender * 4 )}%` : `${100 / numberOfButtonsToRender}%`}
                         key={item.value}
                       >
                         <BaseCheckBox
