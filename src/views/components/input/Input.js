@@ -245,6 +245,7 @@ class Input extends Component {
             multiSelect={false}
             numberOfColumns={5}
             updateIconForPreviousItems
+            compactWidth
             ref={input => this.input = input}
           />
         );

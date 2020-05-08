@@ -29,6 +29,7 @@ class CheckBoxList extends React.Component {
     error: string,
     type: string,
     updateIconForPreviousItems: bool,
+    compactWidth: bool,
   };
 
   constructor( props ) {
@@ -89,7 +90,7 @@ class CheckBoxList extends React.Component {
     };
 
     render() {
-      const { numberOfColumns, icons, type, updateIconForPreviousItems } = this.props;
+      const { numberOfColumns, icons, type, updateIconForPreviousItems,compactWidth } = this.props;
 
       const numberOfButtonsToRender = type === 'radio'
         ? numberOfColumns > 3 ? 3 : numberOfColumns
@@ -129,7 +130,7 @@ class CheckBoxList extends React.Component {
 
                     return (
                       <Box
-                        width={type === 'rating' ? `${100 / ( numberOfButtonsToRender * 4 )}%` : `${100 / numberOfButtonsToRender}%`}
+                        width={compactWidth  ? `${100 / ( numberOfButtonsToRender * 4 )}%` : `${100 / numberOfButtonsToRender}%`}
                         key={item.value}
                       >
                         <BaseCheckBox
@@ -150,7 +151,7 @@ class CheckBoxList extends React.Component {
                                 : false
                             )}
                           id={item.value}
-                          label={type === 'rating' ? null : item.label}
+                          label={compactWidth ? null : item.label}
                           stateBasedProps={
                         filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
                       }
