@@ -423,8 +423,8 @@ class Frame extends Component {
             ? (
               <Box
                 position="absolute"
-                left={0}
-                bottom={0}
+                top={0}
+                right={0}
                 zIndex={1000}
               >
                 <Dropdown
