@@ -379,6 +379,8 @@ class Input extends Component {
             {...inputProps}
             ref={input => ( this.input = input )}
             bumpItems
+            /* ----------------------- */
+            /* temp placeholders for dev */
             content="Bananas are among the most important {{OPT_001}} crops on the planet. They come from a family of plants called Musa that are native to {{OPT_002}} and grown in many of the {{OPT_003}} areas of the world."
             componentProps={{
               ['input-wrapper']: {
@@ -420,6 +422,7 @@ class Input extends Component {
                 margin: 5,
               },
             }}
+            /* ----------------------- */
           />
         );
 
@@ -431,6 +434,8 @@ class Input extends Component {
             {...inputProps}
             ref={input => ( this.input = input )}
             zoneItemLimit={3}
+            /* ----------------------- */
+            /* temp placeholders for dev */
             groups={[
               {
                 value: 'ZNE_ONE',
@@ -479,6 +484,7 @@ class Input extends Component {
                 marginBottom: 5,
               },
             }}
+            /* ----------------------- */
           />
         );
 
@@ -491,6 +497,8 @@ class Input extends Component {
             ref={input => ( this.input = input )}
             shuffleItems
             canReorderItems
+            /* ----------------------- */
+            /* temp placeholders for dev */
             componentProps={{
               ['input-wrapper']: {
                 backgroundColor: '#00ffff',
@@ -532,6 +540,7 @@ class Input extends Component {
                 margin: 5,
               },
             }}
+            /* ----------------------- */
           />
         );
 
