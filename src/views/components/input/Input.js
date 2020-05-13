@@ -233,6 +233,7 @@ class Input extends Component {
             icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: 'indeterminate_check_box' }}
             multiSelect={false}
             numberOfColumns={3}
+            radio
             ref={input => this.input = input}
           />
         );
@@ -245,7 +246,7 @@ class Input extends Component {
             multiSelect={false}
             numberOfColumns={5}
             updateIconForPreviousItems
-            compactWidth
+            rating
             ref={input => this.input = input}
           />
         );
