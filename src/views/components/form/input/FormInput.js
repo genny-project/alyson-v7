@@ -79,6 +79,7 @@ class FormInput extends Component {
       case 'menu':
       case 'checkboxmultiple':
       case 'radio':
+      case 'rating':
         return (
           <FormInputWithItems
             {...inputProps}
