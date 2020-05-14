@@ -35,12 +35,11 @@ class CheckBoxList extends React.Component {
   constructor( props ) {
     super( props );
 
-    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 3000 );
+    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 1000 );
   }
 
   state = {
     items: this.props.items,
-    selectedItems: 0,
     selected: this.props.value,
   };
 
@@ -63,12 +62,13 @@ class CheckBoxList extends React.Component {
           !isArray( state.selected ) ||
           !isString( value )
         ) {
-          return { selected: [] };
+          return { selected: [value] };
         }
 
         /* Dont allow to select more than one button/icon */
         if ( !multiSelect && selected.length >= 1 ) {
           /* if the selected value is more or equal to 1 dont allow to add the value */
+
           return { selected: [value] };
         }
 
@@ -77,10 +77,6 @@ class CheckBoxList extends React.Component {
         }
 
         return { selected: [...state.selected, value] };
-      },
-      () => {
-        this.handleChangeDebounced ( value );
-        console.warn(this.state); //eslint-disable-line
       }
     );
   };
