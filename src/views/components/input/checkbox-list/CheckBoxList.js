@@ -77,6 +77,9 @@ class CheckBoxList extends React.Component {
         }
 
         return { selected: [...state.selected, value] };
+      },
+      () => {
+        this.handleChangeDebounced ( value );
       }
     );
   };
