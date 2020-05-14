@@ -44,10 +44,11 @@ class CheckBoxList extends React.Component {
   };
 
   componentDidUpdate( prevProps ) {
-    if ( this.props.items !== prevProps.items ) {
+    if (( this.props.items !== prevProps.items ) || ( prevProps.value !== this.props.value )) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         items: this.props.items,
+        selected: this.props.value,
       });
     }
   }
@@ -100,7 +101,8 @@ class CheckBoxList extends React.Component {
       const { items, selected } = this.state;
 
       const filteredValue = items.map(( item, index ) => {
-        if ( isArray( selected ) && selected[0] === item.value ) {
+        // eslint-disable-next-line max-len
+        if (( isArray( selected ) || isString( selected )) && ( selected[0] === item.value || this.state.selected === item.value )) {
           var  selectedIndex = index;
 
           return selectedIndex;
@@ -137,14 +139,14 @@ class CheckBoxList extends React.Component {
                           onPress={this.handlePress( item.value )}
                           key={item.value}
                           checkBoxStatus={updateIconForPreviousItems
-                            ? isArray( selected ) &&
+                            ?  ( isArray( selected ) || isString( selected )) &&
                               selected.includes( item.value )
                               ? true
                               : isBeforeSelectedItem
                                 ? true
                                 : false
                             : (
-                              isArray( selected ) &&
+                              ( isArray( selected ) || isString( selected )) &&
                           selected.includes( item.value )
                                 ? true
                                 : false
