@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { string, object, func, bool } from 'prop-types';
-import { Text } from '../index';
+import { Text, DragDrop } from '../index';
 import InputAddress from './address';
 import InputAutocomplete from './autocomplete';
 import InputDatePicker from './date-time/date-picker';
@@ -30,9 +30,10 @@ import InputSort from './sort';
 import InputBoolean from './input-boolean';
 import CheckBoxList from './checkbox-list';
 import ColourPicker from './colour-picker';
-import Unity from './unity';
+import UnityButton from './unity/button'; // TEMP
 import Progress from './progress';
 import HtmlEditor from './html-editor';
+import InputJSON from './json';
 
 /* maps the component to  */
 
@@ -369,11 +370,197 @@ class Input extends Component {
             ref={input => ( this.input = input )}
           />
         );
-      case 'unity':
+
+      case 'fill':
+      case 'dndfill':
+      case 'dragdropfill':
         return (
-          <Unity
+          <DragDrop
             {...inputProps}
             ref={input => ( this.input = input )}
+            bumpItems
+            /* ----------------------- */
+            /* temp placeholders for dev */
+            content="Bananas are among the most important {{OPT_001}} crops on the planet. They come from a family of plants called Musa that are native to {{OPT_002}} and grown in many of the {{OPT_003}} areas of the world."
+            componentProps={{
+              ['input-wrapper']: {
+                backgroundColor: '#00ffff',
+                padding: 5,
+              },
+              ['input-selected-wrapper']: {
+                backgroundColor: 'ff00ff',
+                padding: 5,
+              },
+              ['input-selected-dropzone']: {
+                backgroundColor: '#ffff00',
+                padding: 5,
+                fullWidth: false,
+              },
+              ['input-selected-overlay']: {
+                backgroundColor: 'red',
+                opacity: 1,
+              },
+              ['input-selected']: {
+                backgroundColor: '#0000ff',
+                padding: 5,
+              },
+              ['input-item-wrapper']: {
+                backgroundColor: '#00ff00',
+                padding: 5,
+              },
+              ['input-item-dropzone']: {
+                backgroundColor: '#ff0000',
+                padding: 5,
+              },
+              ['input-item-overlay']: {
+                backgroundColor: 'blue',
+                opacity: 1,
+              },
+              ['input-item']: {
+                backgroundColor: '#ffaaaa',
+                padding: 5,
+                margin: 5,
+              },
+            }}
+            /* ----------------------- */
+          />
+        );
+
+      case 'match':
+      case 'dndmatch':
+      case 'dragdropmatch':
+        return (
+          <DragDrop
+            {...inputProps}
+            ref={input => ( this.input = input )}
+            zoneItemLimit={3}
+            /* ----------------------- */
+            /* temp placeholders for dev */
+            groups={[
+              {
+                value: 'ZNE_ONE',
+                label: '',
+              },
+            ]}
+            componentProps={{
+              ['input-wrapper']: {
+                flexDirection: 'column',
+                // flexDirection: 'row',
+              },
+              ['input-selected-wrapper']: {
+                // flexDirection: 'column',
+                backgroundColor: '#ddd',
+                flexDirection: 'row',
+                flex: 1,
+              },
+              ['input-selected-dropzone']: {
+                // backgroundColor: 'blue',
+              },
+              ['input-selected-overlay']: {
+                backgroundColor: 'red',
+                opacity: 1,
+              },
+              ['input-selected']: {
+                backgroundColor: 'white',
+                // width: '50%',
+              },
+              ['input-item-wrapper']: {
+                // backgroundColor: 'green',
+                padding: 10,
+              },
+              ['input-item-dropzone']: {
+                flexDirection: 'row',
+              },
+              ['input-item-overlay']: {
+                backgroundColor: 'blue',
+                opacity: 1,
+              },
+              ['input-item']: {
+                backgroundColor: 'white',
+                borderStyle: 'dotted',
+                borderWidth: 1,
+                borderColor: 'black',
+                marginRight: 5,
+                marginBottom: 5,
+              },
+            }}
+            /* ----------------------- */
+          />
+        );
+
+      case 'list':
+      case 'dndlist':
+      case 'dragdroplist':
+        return (
+          <DragDrop
+            {...inputProps}
+            ref={input => ( this.input = input )}
+            shuffleItems
+            canReorderItems
+            /* ----------------------- */
+            /* temp placeholders for dev */
+            componentProps={{
+              ['input-wrapper']: {
+                backgroundColor: '#00ffff',
+                padding: 5,
+              },
+              ['input-selected-wrapper']: {
+                backgroundColor: 'ff00ff',
+                padding: 5,
+              },
+              ['input-selected-dropzone']: {
+                backgroundColor: '#ffff00',
+                padding: 5,
+                fullWidth: false,
+              },
+              ['input-selected-overlay']: {
+                backgroundColor: 'red',
+                opacity: 1,
+              },
+              ['input-selected']: {
+                backgroundColor: '#0000ff',
+                padding: 5,
+              },
+              ['input-item-wrapper']: {
+                backgroundColor: '#00ff00',
+                padding: 5,
+                flexDirection: 'column',
+              },
+              ['input-item-dropzone']: {
+                backgroundColor: '#ff0000',
+                padding: 5,
+              },
+              ['input-item-overlay']: {
+                backgroundColor: 'blue',
+                opacity: 1,
+              },
+              ['input-item']: {
+                backgroundColor: '#ffaaaa',
+                padding: 5,
+                margin: 5,
+              },
+            }}
+            /* ----------------------- */
+          />
+        );
+
+      case 'unitybuttons':
+      case 'unity-buttons':
+        return (
+          <UnityButton
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => ( this.input = input )}
+          />
+        );
+
+      case 'json':
+        return (
+          <InputJSON
+            {...inputProps}
+            {...inputFieldProps}
+            ref={input => ( this.input = input )}
+            onChangeState={this.handleStateChange}
           />
         );
 

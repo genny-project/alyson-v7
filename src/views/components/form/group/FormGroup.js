@@ -231,6 +231,7 @@ class FormGroup extends Component {
     const {
       setFieldValue,
       setFieldTouched,
+      validateField,
     } = form;
     const {
       handleChange,
@@ -246,14 +247,14 @@ class FormGroup extends Component {
 
     // value
     // sendValueOnChange
-
-    handleChange(
-      questionCode,
+    handleChange({
+      field: questionCode,
       setFieldValue,
       setFieldTouched,
+      validateField,
       ask,
       valuePath,
-    )(
+    })(
       data,
       true
     );
