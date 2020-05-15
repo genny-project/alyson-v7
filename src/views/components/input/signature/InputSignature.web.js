@@ -246,7 +246,12 @@ class InputSignature extends Component {
 
               > */}
               {buttons.map(( button, i ) => {
-                const { backgroundColor, color } = componentProps['input-button'];
+                const {
+                  backgroundColor,
+                  color,
+                  padding = 4,
+                  borderRadius,
+                } = componentProps['input-button'];
 
                 return (
                   <Touchable
@@ -254,7 +259,8 @@ class InputSignature extends Component {
                     key={button.text + generateKey()}
                     onPress={button.handlePress}
                     backgroundColor={backgroundColor}
-                    padding={4}
+                    padding={padding}
+                    borderRadius={borderRadius}
                     position="absolute"
                     margin={4}
                     bottom={0}
