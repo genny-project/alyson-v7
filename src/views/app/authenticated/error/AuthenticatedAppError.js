@@ -55,10 +55,9 @@ class AuthenticatedAppError extends Component {
             borderRadius={8}
           >
             <Text
+              text="Retry"
               color="white"
-            >
-              Retry
-            </Text>
+            />
           </Touchable>
         </Box>
 

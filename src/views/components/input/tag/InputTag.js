@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, func, array, bool, object, shape } from 'prop-types';
+import { string, func, array, bool, object, shape, oneOfType } from 'prop-types';
 import { isString, isArray, isObject, isInteger } from '../../../../utils';
 import { Box, MultiDownshift, Text, Menu } from '../../index';
 import InputTagBody from './tag-body';
@@ -27,7 +27,7 @@ class InputTag extends Component {
     itemStringKey: string,
     itemValueKey: string,
     itemIdKey: string,
-    value: string,
+    value: oneOfType( [string, array] ),
     allowNewTags: bool,
     allowMultipleSelection: bool,
     allowInvalidSelection: bool,
@@ -409,6 +409,18 @@ class InputTag extends Component {
 
                       const { onRef, restRootProps } = getRootProps({ refKey: 'onRef' });
 
+                      // const showSuggestionItems = isArray( filteredItems, { ofMinLength: 10 })
+                      //   ? isString( inputValue, { ofMinLength: 3 })
+                      //   : (
+                      //     isArray( filteredItems, { ofMinLength: 1 }) ||
+                      //     isString( inputValue, { ofMinLength: 3 })
+                      //   );
+
+                      const showSuggestionItems = (
+                        isArray( filteredItems, { ofMinLength: 1 }) ||
+                        isString( inputValue, { ofMinLength: 3 })
+                      );
+
                       return (
                         // WRAPPER
                         // Menu
@@ -539,8 +551,7 @@ class InputTag extends Component {
                                   {...componentProps['input-item-wrapper']}
                                 >
                                   {(
-                                    isArray( filteredItems, { ofMinLength: 1 }) ||
-                                      isString( inputValue, { ofMinLength: 3 })
+                                    showSuggestionItems
                                   ) ? (
                                       filteredItems
                                         .map(( item, index ) => {
@@ -619,9 +630,11 @@ class InputTag extends Component {
                                           color="black"
                                           size="xs"
                                         >
-                                          {/* { isString( inputValue, { ofMinLength: 1 })
-                                            ? 'No results'
-                                            : 'Please type...'
+                                          {/* {
+                                          isString( inputValue, { ofMinLength: 1, ofMaxLength: 3 }) &&
+                                          isArray( filteredItems, { ofMinLength: 10 })
+                                            ? 'Enter '
+                                            : 'No results'
                                           } */}
                                           No results
                                         </Text>

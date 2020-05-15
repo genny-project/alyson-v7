@@ -211,6 +211,7 @@ An **Input** that is part of a **Visual Control** might be a single element, suc
 | Selected Element Wrapper | `INPUT_SELECTED_WRAPPER` | `Box` | box containing all the elements that have been selected |
 | Selected Element | `INPUT_SELECTED` | `Box | Touchable | Text` | a selected element |
 | Placeholder Element | `INPUT_PLACEHOLDER` | `Box | Icon | Text` | an element shown if there are no selected elements. **currently only supported for file input**|
+| Button | `INPUT_BUTTON` | `Box | Icon | Text` | an element shown if there are additional controls for the input. **currently only supported for signature input**|
 
 ### Applying Themes.
 Any Themes which are attached to a **Question** via the **Context List** will be passed to all elements of the **Visual Control**. A Theme can be directed to only be applied to a specific component of the **Visual Control** by using the field `visualControlType` (set the value to any of the above types, written in ALL CAPS eg `"visualControlType": "INPUT"`).

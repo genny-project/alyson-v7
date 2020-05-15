@@ -104,11 +104,6 @@ class FormGroup extends Component {
   }
 
   updateThemes = ( links ) => {
-    const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_RESULTS_GRP';
-    // const shouldLog = this.props.questionGroup.questionCode === 'QUE_TABLE_GRP';
-
-    if ( shouldLog ) console.error( 'updateThemes', JSON.stringify( links ));
-
     /* check if the stateKey is valid  */
     this.setState({
       ['themes']: [
@@ -236,6 +231,7 @@ class FormGroup extends Component {
     const {
       setFieldValue,
       setFieldTouched,
+      validateField,
     } = form;
     const {
       handleChange,
@@ -251,14 +247,14 @@ class FormGroup extends Component {
 
     // value
     // sendValueOnChange
-
-    handleChange(
-      questionCode,
+    handleChange({
+      field: questionCode,
       setFieldValue,
       setFieldTouched,
+      validateField,
       ask,
       valuePath,
-    )(
+    })(
       data,
       true
     );

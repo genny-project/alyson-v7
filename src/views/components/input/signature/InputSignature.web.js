@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import { func } from 'prop-types';
+import { func, object, bool, string } from 'prop-types';
 import SignaturePad from 'react-signature-pad-wrapper';
 import { Box, Touchable, Text, Icon, Image, ActivityIndicator } from '../../../components';
 import { Api, isArray, isObject, convertImageURLtoFile, isFile, createFormDataFromFiles } from '../../../../utils';
+import { SubcomponentThemeHandler } from '../../form/theme-handlers';
+
+function generateKey() {
+  return Math.random().toString( 36 ).substring( 2 ) + ( new Date()).getTime().toString( 36 );
+}
 
 class InputSignature extends Component {
   // static defaultProps = {
@@ -14,6 +19,11 @@ class InputSignature extends Component {
     // height: oneOfType( [string, number] ),
     // width: oneOfType( [string, number] ),
     onChangeValue: func,
+    testID: string,
+    subcomponentProps: object,
+    editable: bool,
+    disabled: bool,
+    error: string,
   };
 
   state = {
@@ -120,6 +130,10 @@ class InputSignature extends Component {
   // clear the canvas
   handleClearCanvas = () => {
     this.signaturePad.clear();
+
+    this.setState({
+      empty: this.signaturePad && this.signaturePad.isEmpty(),
+    });
   };
 
   /* handle text signature change */
@@ -130,133 +144,183 @@ class InputSignature extends Component {
   };
 
   handleLayout = () => {
+    var canvas = document.querySelector( 'canvas' );
+
+    canvas.setAttribute( 'testID', `input-signature ${this.props.testID}` );
+    canvas.setAttribute( 'data-component-type', 'SIGNATURE' );
+
     console.warn( 'sending \'resize\' event' ); // eslint-disable-line
     window.dispatchEvent( new Event( 'resize' ));
   }
 
   render() {
-    // const {} = this.props;
+    const { subcomponentProps } = this.props;
     const { width, file, deleting, uploading, error, empty } = this.state;
 
     const buttons = [];
 
     if ( !uploading && !deleting ) {
       if ( isObject( file )) {
-        buttons.push({ icon: 'clear', handlePress: () => this.handleDeleteFile( file ) });
+        buttons.push({
+          label: 'Delete',
+          icon: 'delete_outline',
+          handlePress: () => this.handleDeleteFile( file ),
+        });
       }
       else {
-        buttons.push({ icon: 'clear', handlePress: this.handleClearCanvas });
+        buttons.push({
+          label: 'Clear',
+          icon: 'clear',
+          handlePress: this.handleClearCanvas,
+        });
         if ( !empty ) {
-          buttons.push({ icon: 'publish', handlePress: this.handleSignatureSubmitOnDraw });
+          buttons.push({
+            label: 'Upload',
+            icon: 'publish',
+            handlePress: this.handleSignatureSubmitOnDraw,
+          });
         }
       }
     }
 
     return (
-      <Box
-        flexDirection="column"
+      <SubcomponentThemeHandler
+        subcomponentProps={subcomponentProps}
+        editable={this.props.editable}
+        disabled={this.props.disabled}
+        error={this.props.error}
       >
-        <Box
-          width={width}
-          height="100%"
-          backgroundColor="#f9f9f9"
-          flexDirection="column"
-          position="relative"
-          onLayout={this.handleLayout}
-        >
-          { uploading || deleting || error ? (
+        {({
+          componentProps,
+        }) => {
+          return (
             <Box
-              justifyContent="center"
-              alignItems="center"
-              alignSelf="center"
-              flexDirection="row"
+              width={width}
+              height="100%"
+              flexDirection="column"
+              backgroundColor="#f9f9f9"
+              position="relative"
+              onLayout={this.handleLayout}
             >
-              <Text
-                text={`${error ? error : `File ${uploading ? 'upload' : 'deletion'} in progress`}`}
-              />
-              <Box
-                padding={5}
-              />
-              { !error ? (
-                <ActivityIndicator />
-              ) : null }
-            </Box>
-          ) : null }
-          {
-            isObject( file, { withProperty: 'url' }) ? (
-              <Image
-                source={file.url}
-              />
-            ) : (
-              <SignaturePad
-                ref={ref => ( this.signaturePad = ref )}
-                // redrawOnResize
-                height={250}
-                // width={300}
-                options={{
-                  dotSize: 1,
-                  minWidth: 0.5,
-                  maxWidth: 2,
-                  onEnd: this.handleSignatureEndDraw,
-                }}
-              />
-            )
-          }
-          {/* <Box
-            width="100%"
-            backgroundColor="white"
-            padding={20}
-            flexDirection="column"
-          >
-            <InputText
-              type="text"
-              // size="lg"
-              size="sm"
-              padding={10}
-              backgroundColor="#f1f1f1"
-              borderSize={1}
-              width="100%"
-              onChange={this.handleTextSignatureChange}
-              value={this.state.textSignatureValue}
-            />
-            <Text
-              size="lg"
-              fontFamily="satisfy"
-              text={this.state.textSignatureValue}
-            />
-          </Box> */}
-          {/* <Box>
-            <Input
-              type="file"
-              editable
-            />
-          </Box> */}
-          <Box
-            position="absolute"
-            top={0}
-            right={0}
-          >
-            {buttons.map( button => {
-              return (
-                <Touchable
-                  key={button.text}
-                  onPress={button.handlePress}
+              { uploading || deleting || error ? (
+                <Box
+                  justifyContent="center"
+                  alignItems="center"
+                  alignSelf="center"
+                  flexDirection="row"
                 >
+                  <Text
+                    text={`${error ? error : `File ${uploading ? 'upload' : 'deletion'} in progress`}`}
+                  />
                   <Box
                     padding={5}
+                  />
+                  { !error ? (
+                    <ActivityIndicator />
+                  ) : null }
+                </Box>
+              ) : null }
+              {
+                isObject( file, { withProperty: 'url' }) ? (
+                  <Image
+                    source={file.url}
+                  />
+                ) : (
+                  <SignaturePad
+                    ref={ref => ( this.signaturePad = ref )}
+                    // redrawOnResize
+                    height={250}
+                    // width={300}
+                    options={{
+                      dotSize: 1,
+                      minWidth: 0.5,
+                      maxWidth: 2,
+                      onEnd: this.handleSignatureEndDraw,
+                    }}
+                  />
+                )
+              }
+              {/* <Box
+                width="100%"
+                justifyContent="space-between"
+
+              > */}
+              {buttons.map(( button, i ) => {
+                const {
+                  backgroundColor,
+                  color,
+                  padding = 4,
+                  borderRadius,
+                } = componentProps['input-button'];
+
+                return (
+                  <Touchable
+                    withFeedback
+                    key={button.text + generateKey()}
+                    onPress={button.handlePress}
+                    backgroundColor={backgroundColor}
+                    padding={padding}
+                    borderRadius={borderRadius}
+                    position="absolute"
+                    margin={4}
+                    bottom={0}
+                    {...(
+                      i === 0
+                        ? { right: 0 }
+                        : { left: 0 }
+                    )}
                   >
+                    <Text
+                      text={button.label}
+                      color={color}
+                    />
+                    <Box
+                      paddingRight={4}
+                    />
                     <Icon
                       name={button.icon}
-                      color="#aaa"
+                      color={color}
                       cursor="pointer"
+                      size="sm"
                     />
-                  </Box>
-                </Touchable>
-              );
-            })}
-          </Box>
-        </Box>
-      </Box>
+                  </Touchable>
+                );
+              })}
+              {/* </Box> */}
+              {/* <Box
+                width="100%"
+                backgroundColor="white"
+                padding={20}
+                flexDirection="column"
+              >
+                <InputText
+                  type="text"
+                  // size="lg"
+                  size="sm"
+                  padding={10}
+                  backgroundColor="#f1f1f1"
+                  borderSize={1}
+                  width="100%"
+                  onChange={this.handleTextSignatureChange}
+                  value={this.state.textSignatureValue}
+                />
+                <Text
+                  size="lg"
+                  fontFamily="satisfy"
+                  text={this.state.textSignatureValue}
+                />
+              </Box> */}
+              {/* <Box>
+                <Input
+                  type="file"
+                  editable
+                />
+              </Box> */}
+            </Box>
+          );
+        }
+      }
+      </SubcomponentThemeHandler>
     );
   }
 }

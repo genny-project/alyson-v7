@@ -78,6 +78,16 @@ class FormInput extends Component {
       case 'menu':
       case 'checkboxmultiple':
       case 'radio':
+      case 'fill':
+      case 'dndfill':
+      case 'dragdropfill':
+      case 'match':
+      case 'dndmatch':
+      case 'dragdropmatch':
+      case 'list':
+      case 'dndlist':
+      case 'unitybuttons':
+      case 'dragdroplist':
         return (
           <FormInputWithItems
             {...inputProps}

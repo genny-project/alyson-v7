@@ -8,10 +8,15 @@ import style from './style.css'; //eslint-disable-line
 import { isObject, isArray } from './../../../../utils';
 
 class RichEditor extends Component {
+  static defaultProps = {
+    editable: true,
+  }
+
   static propTypes = {
     onChangeValue: func,
     testID: string,
     value: string,
+    editable: bool,
   };
 
   constructor( props ) {
@@ -123,7 +128,7 @@ class RichEditor extends Component {
   render() {
     // console.log( '*****FINAL******', this.state );
     // console.log( '*********AGAIN*******', this.props );
-    const { testID } = this.props;
+    const { testID, editable } = this.props;
     const { editorState /* , isFocused */  } = this.state;
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -142,17 +147,21 @@ class RichEditor extends Component {
     }
 
     return (
-      <div className="RichEditor-root">
-        <BlockStyleControls
-          editorState={editorState}
-          onToggle={this.handleToggleBlockType}
-        />
-        <InlineStyleControls
-          editorState={editorState}
-          onToggle={this.handleToggleInlineStyle}
-        />
+      <div className={editable ? 'RichEditor-root' : null}>
+        { editable ? (
+          <BlockStyleControls
+            editorState={editorState}
+            onToggle={this.handleToggleBlockType}
+          />
+        ) : null }
+        { editable ? (
+          <InlineStyleControls
+            editorState={editorState}
+            onToggle={this.handleToggleInlineStyle}
+          />
+        ) : null }
         <div
-          className={className}
+          className={editable ? className : null}
           onClick={this.handleFocus}
           testid={`${testID}`}
         >
@@ -169,6 +178,7 @@ class RichEditor extends Component {
             placeholder={null}
             ref={this.editor}
             spellCheck
+            readOnly={!editable}
           />
         </div>
       </div>
