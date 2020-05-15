@@ -75,7 +75,7 @@ class InputTextArea extends Component {
 
       return;
     }
-    const { size, ask, fontFamily } = this.props;
+    const { size, fontFamily } = this.props;
 
     // const tempElementStyle = 'position: absolute; top: 0; left: 0; margin: 0; white-space: pre-wrap; z-index: -1000; opacity: 0' ;
     const tempElementStyle = `${isInteger( clientWidth ) ? `width: ${clientWidth}px;` : ''} font-size: ${TEXT_SIZES[size]}px; font-family: ${fontFamily}; position: absolute; top: 0; left: 0; margin: 0; word-wrap: break-word; white-space: pre-line; z-index: 1000`;
@@ -90,11 +90,6 @@ class InputTextArea extends Component {
     // const contentHeight = this.tempElement.clientHeight;
     const contentHeight = this.tempElement.clientHeight;
     const totalRows = Math.ceil( contentHeight / rowHeight ) + ( isEndOfStringNewLine ? 1 : 0 );
-
-    if ( ask.questionCode === 'QUE_ROLES_AND_RESP' ) {
-      console.error( `END OF STRING NEW LINE: ${isEndOfStringNewLine}` );
-      console.error( `ROW HEIGHT: ${contentHeight} / ${rowHeight} = ${contentHeight / rowHeight} => ceil: ${totalRows}` );
-    }
 
     this.setState({
       rows: totalRows >= minRows ? totalRows : minRows,

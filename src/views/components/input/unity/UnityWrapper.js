@@ -1,8 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { object } from 'prop-types';
 import Unity, { UnityContent } from 'react-unity-webgl';
+import { connect } from 'react-redux';
+import dlv from 'dlv';
 import { Box, ActivityIndicator, Text } from '../../../components';
-import { Bridge, isObject } from '../../../../utils';
+import { Bridge, isObject, isString } from '../../../../utils';
 import UnityProvider from './provider';
 
 // const buildPath = '/unity/unison_webgl.json';
@@ -10,6 +13,10 @@ const buildPath = '/unity/safeTrafficTown.json';
 // const buildPath = '';
 
 class UnityWrapper extends React.Component {
+  static propTypes = {
+    attributes: object,
+  }
+
   constructor( props ) {
     super( props );
     this.unityContent = new UnityContent(
@@ -63,8 +70,6 @@ class UnityWrapper extends React.Component {
   }
 
   updateScene = ( sceneContext ) => {
-    // console.warn( 'updateScene', sceneContext, this.sceneContexts );
-
     const { questionCode, sceneCode } = sceneContext;
 
     const updatedSceneContexts = {
@@ -105,19 +110,41 @@ class UnityWrapper extends React.Component {
     this.setState( state => ({
       currentSceneCode: shouldUpdateCurrentSceneCode ? sceneCode : state.currentSceneCode,
     }), () => {
-      // console.warn( 'UPDATE CALLBACK', this.state.currentSceneCode, updatedSceneContexts );
+      const unityEntityData = dlv( this.props.attributes, `${this.state.currentSceneCode}.PRI_UNITY_SCENE.value` );
 
-      this.sendEventToUnity( this.state.currentSceneCode );
+      // this.sendEventToUnity( 'changeScene', this.state.currentSceneCode );
+      if ( unityEntityData != null ) {
+        this.sendEventToUnity( 'changeScene', unityEntityData );
+      }
     });
   }
 
-  sendEventToUnity = ( SceneIndex ) => {
-    // console.warn({ index: SceneIndex });
-    this.unityContent.send(
-      'Main Camera',
-      'ChangeScene',
-      SceneIndex
-    );
+  sendEventToUnity = ( method, params ) => {
+    if (
+      !isString( method ) ||
+      params == null
+    ) {
+      const invalidMethodAndParams = !isString( method ) && params == null;
+
+      console.warn( // eslint-disable-line
+        `Error sendingEventToUnity, argument${invalidMethodAndParams ? 's' : ''} ${!isString( method ) ? '"method" ' : ''}${invalidMethodAndParams ? 'and ' : ''}${params == null ? '"params" ' : ''}${invalidMethodAndParams ? 'are' : 'is'} invalid`,
+        {
+          ...( !isString( method ) ? { method } : {}),
+          ...( params == null ? { params } : {}),
+        }
+      );
+    }
+
+    if (
+      isString( method ) &&
+      params != null
+    ) {
+      this.unityContent.send(
+        'reactObject',
+        method,
+        params,
+      );
+    }
   }
 
   handleClick = ( SceneIndex ) => {
@@ -151,16 +178,32 @@ class UnityWrapper extends React.Component {
     }
   }
 
-  handleChange = ( data ) => {
+  handleChange = ( unityData ) => {
     const sceneContextsKeys = Object.keys( this.sceneContexts );
 
-    if ( sceneContextsKeys.length === 1 ) {
-      if ( this.props.onChangeValue ) {
-        this.props.onChangeValue( data, this.sceneContexts[sceneContextsKeys[0]] );
+    function isJson( str ) {
+      try {
+        JSON.parse( str );
+      } catch ( e ) {
+        return false;
       }
+
+      return true;
     }
-    else {
-      console.warn( 'Error: Invalid unity scene contexts' ); // eslint-disable-line
+
+    if ( isJson( unityData )) {
+      const { data } = JSON.parse( unityData );
+
+      // console.warn({ data });
+
+      if ( sceneContextsKeys.length === 1 ) {
+        if ( this.props.onChangeValue ) {
+          this.props.onChangeValue( data, this.sceneContexts[sceneContextsKeys[0]] );
+        }
+      }
+      else {
+        console.warn( 'Error: Invalid unity scene contexts' ); // eslint-disable-line
+      }
     }
   }
 
@@ -170,8 +213,6 @@ class UnityWrapper extends React.Component {
   }
 
   handleUnsetScene = ( questionCode ) => {
-    // console.warn( 'handleUnsetScene', questionCode );
-
     const updatedSceneContexts = {
       ...this.sceneContexts,
     };
@@ -189,7 +230,7 @@ class UnityWrapper extends React.Component {
     // console.warn( 'updatedSceneContexts', questionCode, updatedSceneContexts );
 
     // check number of remaining values
-    const numberOfCurrentSceneCodes = Object.keys( updatedSceneContexts ).length === 1;
+    const numberOfCurrentSceneCodes = Object.keys( updatedSceneContexts ).length;
 
     this.sceneContexts = updatedSceneContexts,
 
@@ -205,6 +246,12 @@ class UnityWrapper extends React.Component {
     }));
   }
 
+  // handleButtonPress = ( method, params ) => {
+  //   this.sendEventToUnity(
+  //     method, params,
+  //   );
+  // }
+
   render() {
     const { children, renderHeader } = this.props;
     const { progression, currentSceneCode, isLoading, error } = this.state;
@@ -216,6 +263,7 @@ class UnityWrapper extends React.Component {
           setScene: this.handleSetScene,
           unsetScene: this.handleUnsetScene,
           progression: progression,
+          sendEventToUnity: this.sendEventToUnity,
         }}
       >
         {renderHeader}
@@ -279,4 +327,12 @@ class UnityWrapper extends React.Component {
   }
 }
 
-export default UnityWrapper;
+// export default UnityWrapper;
+
+export { UnityWrapper };
+
+const mapStateToProps = state => ({
+  attributes: state.vertx.baseEntities.attributes,
+});
+
+export default connect( mapStateToProps )( UnityWrapper );
