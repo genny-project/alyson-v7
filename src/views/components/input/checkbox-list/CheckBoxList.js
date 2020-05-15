@@ -54,24 +54,45 @@ class CheckBoxList extends React.Component {
   }
 
   componentDidUpdate( prevProps, prevState ) {
-    if  ( this.props.items !== prevProps.items ) {
-      this.prePopulate( 'items', this.props.items );
+    if  (( this.props.items !== prevProps.items &&
+        this.state.items !== this.props.items ) || prevState.items !== this.state.items ) {
+      this.setItems( this.props.items !== prevProps.items || (
+        this.props.items === prevProps.items &&
+          this.props.items !== null
+      )
+        ? this.props.items
+        : this.state.items
+      );
     }
+
     if ((
       prevProps.value !== this.props.value &&
         this.state.selected !== this.props.value
     ) ||
         prevState.selected !== this.state.selected
     ) {
-      this.prePopulate( 'selected', this.props.value );
+      this.setValue(
+        this.props.value !== prevProps.value || (
+          this.props.value === prevProps.value &&
+          this.props.value !== null
+        )
+          ? this.props.value
+          : this.state.selected
+      );
     }
   }
 
-  prePopulate = ( key, value ) => {
+  setValue = ( value ) => {
     this.setState({
-      [key]: value,
+      selected: value,
     });
   }
+
+    setItems = ( value ) => {
+      this.setState({
+        items: value,
+      });
+    }
 
   handlePress = value => () => {
     const { selected } = this.state;
