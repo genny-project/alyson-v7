@@ -18,7 +18,9 @@ class VisualControlLabel extends Component {
 
     return (
       <Box
-        flex={1}
+        flexGrow={0}
+        flexShrink={0}
+        flexBasis="auto"
         {...restProps}
       >
         <Text

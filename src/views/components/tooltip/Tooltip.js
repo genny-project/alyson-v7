@@ -24,12 +24,13 @@ class Tooltip extends Component {
             'group-content-wrapper': {
               ...contentWrapperProps,
               position: 'right',
-              width: '100%',
-              borderRadius: '8px',
+              // width: '100%',
+              width: 200,
+              borderRadius: 8,
               backgroundColor: '#d3d3d3',
-              padding: '5px',
-              marginBottom: '5px',
-              opacity: '0.8',
+              padding: 4,
+              marginBottom: 4,
+              // opacity: '0.8',
             },
             'group-clickable-wrapper': {
               ...clickableWrapperProps,

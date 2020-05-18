@@ -74,7 +74,7 @@ class VisualControl extends Component {
     type: string,
     rootQuestionGroupCode: string,
     dttCode: string,
-
+    hint: string,
   }
 
   state = {
@@ -221,10 +221,9 @@ class VisualControl extends Component {
       flexWrapper,
       index,
       onBlur,
+      hint,
       ...restProps
     } = this.props;
-
-    const { description } = this.props.question.attribute;
 
     let properties = {};
 
@@ -304,32 +303,23 @@ class VisualControl extends Component {
                 )}
                 {/* HINT */}
                 {(
+                  // true
                   properties.renderVisualControlHint
                 ) && (
-                  description !== undefined
+                  isString( hint, { ofMinLength: 1 })
                 ) && (
                   <VisualControlHint
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-hint']}
-                    iconProps={componentProps['vcl-hint-icon']}
-                    textProps={componentProps ['vcl-hint-text']}
-                    contentWrapperProps={componentProps['vcl-hint-content-wrapper']}
-                    clickableWrapperProps={componentProps['vcl-hint-clickable-wrapper']}
-                    headerWrapperProps={componentProps['vcl-hint-header-wrapper']}
-                    description={description}
+                    // iconProps={componentProps['vcl-hint-icon']}
+                    // textProps={componentProps ['vcl-hint-text']}
+                    // contentWrapperProps={componentProps['vcl-hint-content-wrapper']}
+                    // clickableWrapperProps={componentProps['vcl-hint-clickable-wrapper']}
+                    // headerWrapperProps={componentProps['vcl-hint-header-wrapper']}
+                    text={hint}
                   />
                 )}
               </Box>
-              )}
-
-              {/* DESCRIPTION */}
-              {(
-                properties.renderVisualControlDescription
-              ) && (
-                <VisualControlDescription
-                  questionCode={this.props.ask.questionCode}
-                  {...componentProps['vcl-description']}
-                />
               )}
 
               {/* INPUT COMPONENT */}
@@ -381,6 +371,19 @@ class VisualControl extends Component {
                     );
                   }}
                 </StatefulThemeHandler>
+              )}
+
+              {/* DESCRIPTION */}
+              {(
+                // properties.renderVisualControlDescription
+                !isString( this.props.error ) &&
+                isString( hint, { ofMinLength: 1 })
+              ) && (
+                <VisualControlDescription
+                  questionCode={this.props.ask.questionCode}
+                  text={hint}
+                  {...componentProps['vcl-description']}
+                />
               )}
 
               {/* ERROR MESSAGE */}

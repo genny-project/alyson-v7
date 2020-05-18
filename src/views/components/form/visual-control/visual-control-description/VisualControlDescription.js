@@ -6,11 +6,13 @@ import { Box, Text } from '../../../../components';
 class VisualControlDescription extends Component {
   static propTypes = {
     questionCode: string,
+    text: string,
   }
 
   render() {
     const {
       questionCode,
+      text,
       ...restProps
     } = this.props;
 
@@ -19,11 +21,14 @@ class VisualControlDescription extends Component {
         paddingBottom={5}
         componentID="VCL-DESCRIPTION"
         componentCode={questionCode}
+        paddingTop={4}
+        paddingLeft={4}
         {...restProps}
       >
         <Text
           size="xxs"
-          text="Description text goes here"
+          color="#888"
+          text={text}
           componentID="VCL-DESCRIPTION"
           componentCode={questionCode}
           {...restProps}

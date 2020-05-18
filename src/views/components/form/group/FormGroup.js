@@ -344,6 +344,8 @@ class FormGroup extends Component {
       isClosed: this.props.isClosed,
       placeholder: placeholder || question.placeholder,
       index,
+      hint: baseEntityDefinition && baseEntityDefinition.description,
+      description: baseEntityDefinition && baseEntityDefinition.description,
     };
 
     return (
