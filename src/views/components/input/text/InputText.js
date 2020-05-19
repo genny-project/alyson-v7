@@ -38,6 +38,7 @@ class InputText extends Component {
     updateValueWhenFocused: false,
     alignSelf: 'center',
     returnKeyType: 'next',
+    outline: 'none',
   }
 
   static propTypes = {
