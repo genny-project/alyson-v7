@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { array, bool, number, object, func, string } from 'prop-types';
 import debounce from 'lodash.debounce';
@@ -40,7 +41,7 @@ class CheckBoxList extends React.Component {
 
   state = {
     items: [],
-    selected: null,
+    selected: [],
   };
 
   componentDidMount() {
@@ -54,39 +55,41 @@ class CheckBoxList extends React.Component {
   }
 
   componentDidUpdate( prevProps, prevState ) {
+    const { multiSelect } = this.props;
+
     if  (( this.props.items !== prevProps.items &&
         this.state.items !== this.props.items ) || prevState.items !== this.state.items ) {
-      this.setItems( this.props.items !== prevProps.items || (
-        this.props.items === prevProps.items &&
-          this.props.items !== null
-      )
+      this.setItems( this.props.items !== prevProps.items
         ? this.props.items
         : this.state.items
       );
     }
-
-    if ((
-      prevProps.value !== this.props.value &&
-        this.state.selected !== this.props.value
-    ) ||
-        prevState.selected !== this.state.selected
-    ) {
-      this.setValue(
-        this.props.value !== prevProps.value || (
-          this.props.value === prevProps.value &&
-          this.props.value !== null
-        )
-          ? this.props.value
-          : this.state.selected
-      );
+    if  ( this.props.value !== prevProps.value && this.props.value ) {
+      // eslint-disable-next-line max-len
+      multiSelect ? this.setValueMultiSelect( this.props.value ) : this.setValue( this.props.value );
     }
   }
 
-  setValue = ( value ) => {
-    this.setState({
-      selected: value,
-    });
-  }
+    setValueMultiSelect = ( value ) => {
+      const { selected } = this.state;
+
+      const finalValue = this.state.selected.slice();
+
+      finalValue.concat( value ) ;
+
+      this.setState( state => ({
+        selected: finalValue,
+      }));
+      this.setState({
+        selected: value,
+      });
+    }
+
+    setValue = ( value ) => {
+      this.setState({
+        selected: [value],
+      });
+    }
 
     setItems = ( value ) => {
       this.setState({
@@ -118,10 +121,14 @@ class CheckBoxList extends React.Component {
           return { selected: state.selected.filter( item => item !== value ) };
         }
 
-        return { selected: [...state.selected, value] };
+        return {
+          selected: [...state.selected, value],
+        };
       },
       () => {
-        this.handleChangeDebounced ( value );
+        multiSelect
+          ? this.handleChangeDebounced ( this.state.selected )
+          : this.handleChangeDebounced ( value );
       }
     );
   };
@@ -166,7 +173,6 @@ class CheckBoxList extends React.Component {
                 flexWrap="wrap"
               >
                 {isArray( items, { ofMinLength: 1 }) ? (
-
                   items.map(( item, index ) => {
                     const isBeforeSelectedItem = index < filteredValue;
 
@@ -187,7 +193,7 @@ class CheckBoxList extends React.Component {
                                 ? true
                                 : false
                             : (
-                              ( isArray( selected ) || isString( selected )) &&
+                              isArray( selected )  &&
                           selected.includes( item.value )
                                 ? true
                                 : false
