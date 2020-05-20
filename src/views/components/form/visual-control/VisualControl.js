@@ -7,8 +7,8 @@ import { Box, Fragment, MenuItem } from '../../../components';
 import FormInput from '../input';
 import { StatefulThemeHandler, StatelessThemeHandler } from '../theme-handlers';
 import VisualControlLabel from './visual-control-label';
-import VisualControlHint from './visual-control-hint';
-import VisualControlRequired from './visual-control-required';
+// import VisualControlHint from './visual-control-hint';
+// import VisualControlRequired from './visual-control-required';
 import VisualControlDescription from './visual-control-description';
 import VisualControlError from './visual-control-error';
 
@@ -18,14 +18,14 @@ const components = [
   'vcl-icon',
   'vcl-label',
   'vcl-description',
-  'vcl-hint',
+  // 'vcl-hint',
   'vcl-error',
   'vcl-required',
-  'vcl-hint-icon',
-  'vcl-hint-text',
-  'vcl-hint-content-wrapper',
-  'vcl-hint-clickable-wrapper',
-  'vcl-hint-header-wrapper',
+  // 'vcl-hint-icon',
+  // 'vcl-hint-text',
+  // 'vcl-hint-content-wrapper',
+  // 'vcl-hint-clickable-wrapper',
+  // 'vcl-hint-header-wrapper',
 ];
 
 /*
@@ -74,7 +74,7 @@ class VisualControl extends Component {
     type: string,
     rootQuestionGroupCode: string,
     dttCode: string,
-    hint: string,
+    description: string,
   }
 
   state = {
@@ -221,7 +221,7 @@ class VisualControl extends Component {
       flexWrapper,
       index,
       onBlur,
-      hint,
+      description,
       ...restProps
     } = this.props;
 
@@ -289,10 +289,14 @@ class VisualControl extends Component {
                 <VisualControlLabel
                   question={this.props.question}
                   questionCode={this.props.ask.questionCode}
+                  showRequired={(
+                    properties.renderVisualControlRequired &&
+                    this.props.required
+                  )}
                   {...componentProps['vcl-label']}
                 />
 
-                {(
+                {/* {(
                   properties.renderVisualControlRequired &&
                   this.props.required
                 ) && (
@@ -300,9 +304,9 @@ class VisualControl extends Component {
                     questionCode={this.props.ask.questionCode}
                     {...componentProps['vcl-required']}
                   />
-                )}
+                )} */}
                 {/* HINT */}
-                {(
+                {/* {(
                   // true
                   properties.renderVisualControlHint
                 ) && (
@@ -318,7 +322,7 @@ class VisualControl extends Component {
                     // headerWrapperProps={componentProps['vcl-hint-header-wrapper']}
                     text={hint}
                   />
-                )}
+                )} */}
               </Box>
               )}
 
@@ -375,13 +379,22 @@ class VisualControl extends Component {
 
               {/* DESCRIPTION */}
               {(
-                // properties.renderVisualControlDescription
                 !isString( this.props.error ) &&
-                isString( hint, { ofMinLength: 1 })
+                properties.renderVisualControlDescription && (
+                  isString( description, { ofMinLength: 1 }) ||
+                  (
+                    properties.renderVisualControlRequired &&
+                    this.props.required
+                  )
+                )
               ) && (
                 <VisualControlDescription
                   questionCode={this.props.ask.questionCode}
-                  text={hint}
+                  text={description}
+                  showRequired={(
+                    properties.renderVisualControlRequired &&
+                    this.props.required
+                  )}
                   {...componentProps['vcl-description']}
                 />
               )}
