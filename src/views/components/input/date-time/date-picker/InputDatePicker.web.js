@@ -264,6 +264,7 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-month ${testID}`}
                         nonTabable
                         editable
+                        placeholder="Select month"
                       />
                     </Box>
 
@@ -291,6 +292,7 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-year ${testID}`}
                         nonTabable
                         editable
+                        placeholder="Select year"
                       />
                     </Box>
 
