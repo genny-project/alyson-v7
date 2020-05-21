@@ -30,11 +30,7 @@ class VisualControlDescription extends Component {
         <Text
           size="xxs"
           color="#888"
-          text={`
-            ${showRequired ? '*Required' : ''}
-            ${showRequired && isString( text ) ? '. ' : ''}
-            ${isString( text ) ? text : ''}
-          `}
+          text={`${showRequired ? '*Required' : ''}${showRequired && isString( text ) ? '. ' : ''}${isString( text ) ? text : ''}`}
           componentID="VCL-DESCRIPTION"
           componentCode={questionCode}
           {...restProps}
