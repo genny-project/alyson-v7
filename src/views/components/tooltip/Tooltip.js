@@ -1,122 +1,50 @@
 import React, { Component } from 'react';
-import { string, integer, number, node, oneOf, oneOfType, object, func } from 'prop-types';
-// import debounce from 'lodash.debounce';
-import { Box, Text, Fragment } from '../../components';
-
-var timeoutID;
+import { object } from 'prop-types';
+import { Dropdown }  from '../../components';
 
 class Tooltip extends Component {
-  static defaultProps = {
-    text: 'test-id',
-    debounce: 300,
-    top: 0 ,
-    left: '-50%',
-    position: 'absolute',
-    zIndex: 100,
-    transform: 'translate(-50%)',
-    containerProps: {
-      backgroundColor: '#fff',
-      padding: 5,
-    },
-  }
+    static propTypes = {
+      contentWrapperProps: object,
+      headerWrapperProps: object,
+      clickableWrapperProps: object,
+    }
 
-  static propTypes = {
-    children: node,
-    text: string,
-    debounce: integer,
-    top: oneOfType( [
-      number, string,
-    ] ),
-    left: oneOfType( [
-      number, string,
-    ] ),
-    position: oneOf( [
-      'absolute', 'fixed',
-    ] ),
-    zIndex: integer,
-    transform: string,
-    containerProps: object,
-    onMouseOver: func,
-    onMouseOut: func,
-  }
+    render() {
+      const {
+        contentWrapperProps,
+        clickableWrapperProps,
+        headerWrapperProps,
+        ...restProps
+      } = this.props;
 
-  state = {
-    isOpen: false,
-  }
-
-  handleMouseOverDebounced = () => {
-    timeoutID = window.setTimeout(
-      () => {
-        this.handleMouseOver();
-      },
-      this.props.debounce,
-    );
-  }
-
-  handleMouseOver = () => {
-    this.setState({
-      isOpen: true,
-    }, () => {
-      if ( this.props.onMouseOver ) this.props.onMouseOver();
-    });
-  }
-
-  handleMouseOut = () => {
-    window.clearTimeout( timeoutID );
-    this.setState({
-      isOpen: false,
-    }, () => {
-      if ( this.props.onMouseOut ) this.props.onMouseOut();
-    });
-  }
-
-  // TODO update Tooltip to use Portal and Area components
-
-  render() {
-    const {
-      children,
-      text,
-      position,
-      top,
-      left,
-      zIndex,
-      transform,
-      containerProps,
-    } = this.props;
-    const { isOpen  } = this.state;
-
-    return (
-      <Fragment>
-        {
-          isOpen
-            ? (
-              <Box
-                position={position}
-                top={top}
-                left={left}
-                transform={transform}
-                zIndex={zIndex}
-                {...containerProps}
-              >
-                <Text
-                  size="xxs"
-                  text={text}
-                />
-              </Box>
-            ) : null
-        }
-        {
-          React.Children.map( children, child => (
-            React.cloneElement( child, {
-              ...child.props,
-              onMouseOver: this.handleMouseOverDebounced,
-              onMouseOut: this.handleMouseOut,
-            })
-          ))
-        }
-      </Fragment>
-    );
-  }
+      return (
+        <Dropdown
+          {...restProps}
+          subcomponentProps={{
+            'group-content-wrapper': {
+              ...contentWrapperProps,
+              position: 'right',
+              // width: '100%',
+              width: 200,
+              borderRadius: 8,
+              backgroundColor: '#d3d3d3',
+              padding: 4,
+              marginBottom: 4,
+              // opacity: '0.8',
+            },
+            'group-clickable-wrapper': {
+              ...clickableWrapperProps,
+            },'group-header-wrapper': {
+              marginLeft: 'auto',
+              ...headerWrapperProps,
+            },
+          }}
+          showIcon={false}
+          allowHoverEvents
+          allowPressEvents={false}
+        />
+      );
+    }
 }
 
 export default Tooltip;

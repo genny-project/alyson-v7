@@ -1,32 +1,51 @@
 import React, { Component } from 'react';
+import { string, object } from 'prop-types';
 // import { string, object, bool, number, func } from 'prop-types';
 // import { isArray } from '../../../../../../utils';
-import { Box, Icon } from '../../../../components';
+import { Icon, Tooltip, Text, Box } from '../../../../components';
 
 class VisualControlHint extends Component {
   static propTypes = {
+    questionCode: string,
+    iconProps: object,
+    textProps: object,
+    subcomponentProps: object,
+    text: string,
   }
 
   render() {
     const {
+      iconProps,
+      textProps,
+      text,
       ...restProps
     } = this.props;
 
     return (
-      <Box
-        paddingLeft={5}
-        paddingRight={5}
-        cursor="pointer"
+
+      <Tooltip
+        renderHeader={(
+          <Box
+            marginLeft="auto"
+          >
+            <Icon
+              name="help"
+              size="xs"
+              color="grey"
+              cursor="help"
+              {...iconProps}
+            />
+          </Box>
+          )}
         {...restProps}
       >
-        <Icon
-          name="help"
+        <Text
+          text={text}
           size="xs"
-          color="grey"
-          cursor="help"
-          {...restProps}
+          {...textProps}
         />
-      </Box>
+
+      </Tooltip>
     );
   }
 }
