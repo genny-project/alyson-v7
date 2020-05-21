@@ -54,7 +54,6 @@ class FormInput extends Component {
   };
 
   render() {
-    // console.log( 'inisde of formInput--->',this.props );
     const { type, question } = this.props;
 
     const inputProps = {

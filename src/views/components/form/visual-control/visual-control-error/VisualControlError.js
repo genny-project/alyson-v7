@@ -21,6 +21,8 @@ class VisualControlError extends Component {
         flexDirection="column"
         componentID="VCL-ERROR"
         componentCode={questionCode}
+        paddingTop={4}
+        paddingLeft={4}
         {...restProps}
       >
         <Text

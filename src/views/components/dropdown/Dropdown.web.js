@@ -31,6 +31,8 @@ class Dropdown extends Component {
     subcomponentProps: object,
     showIcon: bool,
     questionCode: string,
+    allowHoverEvents: bool,
+    allowPressEvents: bool,
   }
 
   render() {
@@ -46,6 +48,8 @@ class Dropdown extends Component {
       questionCode,
       // backgroundColor,
       subcomponentProps,
+      allowHoverEvents,
+      allowPressEvents,
     } = this.props;
 
     return (
@@ -71,6 +75,8 @@ class Dropdown extends Component {
                     ? (
                       <MenuButton
                         disabled={disabled}
+                        allowHoverEvents={allowHoverEvents}
+                        allowPressEvents={allowPressEvents}
                         style={{
                           color,
                         }}

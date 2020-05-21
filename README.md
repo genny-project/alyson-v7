@@ -185,7 +185,6 @@ The basic components of a Visual Control are as follows:
 | Wrapper | `VCL_WRAPPER` | `Box` | box containing all the other components of the visual control |
 | Label | `VCL_LABEL` | `Text` | text displaying the question name |
 | Required | `VCL_REQUIRED` | `Icon` | symbol indicating if a question is mandatory |
-| Hint | `VCL_HINT` | `Tooltip` | icon which renders a tooltip if hovered over, typically provides more information about how to interact with the input |
 | Description | `VCL_DESCRIPTION` | `Text` | additional text to provide for information or context |
 | Icon | `VCL_ICON` | `Icon` | icon rendered as part of the input |
 | Error | `VCL_ERROR` | `Text` | text render if answer is invalid or an error occurs |
@@ -314,3 +313,13 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 * Added description of the **FRAME** Panel type.
 * Updated Visual Control section to include the `visualControlType` needed to assign a Theme to a specific Visual Control Element.
 * Added section on Input Subcomponents.
+
+----
+
+* Hint Icon will show the hint description as a tooltip if there is any description for the particular attribute code of that question
+
+---
+* In order to show the hint component:
+1. Create a theme THM_HAS_LABEL_DEFAULT with attribute code PRI_HAS_LABEL and set the value to true and attach it to the question group.
+2. Create a theme THM_HAS_HINT_DEFAULT with attribute code PRI_HAS_HINT and set the value to true and attach it to the question group.
+3. Create a theme THM_HINT_DEFAULT with all the styling attributes and attach it to the question group with the VCL type set to 'VCL_HINT_CONTENT_WRAPPER'.
