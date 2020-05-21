@@ -9,7 +9,6 @@ import InputTimePicker from './date-time/time-picker';
 import InputDateTimePicker from './date-time/date-time-picker';
 import InputFile from './file';
 import InputScroll from './scroll';
-import InputRating from './rating';
 import InputText from './text';
 import InputTextArea from './textarea';
 import InputTextWithDynamicWidth from './text-with-dynamic-width';
@@ -78,11 +77,6 @@ class Input extends Component {
   };
 
   render() {
-    // const { valuePath, value } = this.props;
-
-    // if ( this.props.ask.questionCode === 'QUE_DAYS_PER_WEEK' || this.props.ask.questionCode === 'QUE_INTERN_SOFTWARE' ) {
-    //   console.log( 'valueProps=====>', { valuePath, value });
-    // }
     const { type, dynamicWidth, inputFieldProps, ...restProps } = this.props;
 
     const inputProps = {
@@ -201,14 +195,6 @@ class Input extends Component {
           />
         );
 
-      case 'rating':
-        return (
-          <InputRating
-            {...inputProps}
-            ref={input => ( this.input = input )}
-          />
-        );
-
       case 'autocomplete':
         return (
           <InputAutocomplete
@@ -239,7 +225,23 @@ class Input extends Component {
         return (
           <CheckBoxList
             {...inputProps}
+            icons={{ true: 'radio_button_checked', false: 'radio_button_unchecked', null: 'indeterminate_check_box' }}
+            multiSelect={false}
+            numberOfColumns={3}
             radio
+            ref={input => this.input = input}
+          />
+        );
+
+      case 'rating':
+        return (
+          <CheckBoxList
+            {...inputProps}
+            icons={{ true: 'star', false: 'star_border', null: 'star_outline' }}
+            multiSelect={false}
+            numberOfColumns={5}
+            updateIconForPreviousItems
+            rating
             ref={input => this.input = input}
           />
         );

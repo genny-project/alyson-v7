@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { array, bool, number, object, func, string } from 'prop-types';
+import debounce from 'lodash.debounce';
 import { Box, Text } from '../../index';
 import { isArray, isString } from '../../../../utils';
 import BaseCheckBox from '../base-checkbox';
@@ -10,7 +12,8 @@ class CheckBoxList extends React.Component {
     items: [],
     // value: [],
     multiSelect: true,
-    numberOfColumns: 1,
+    numberOfColumns: 3,
+    updateIconForPreviousItems: false,
   };
 
   static propTypes = {
@@ -25,22 +28,74 @@ class CheckBoxList extends React.Component {
     editable: bool,
     disabled: bool,
     error: string,
+    radio: bool,
+    updateIconForPreviousItems: bool,
+    rating: bool,
   };
+
+  constructor( props ) {
+    super( props );
+
+    this.handleChangeDebounced = debounce( this.handleChangeDebounced, 1000 );
+  }
 
   state = {
-    data: this.props.items,
-    selectedItems: 0,
-    selected: this.props.value,
+    items: [],
+    selected: [],
   };
 
-  componentDidUpdate( prevProps ) {
-    if ( this.props.items !== prevProps.items ) {
-      // eslint-disable-next-line react/no-did-update-set-state
+  componentDidMount() {
+    // eslint-disable-next-line max-len
+    if ( isArray( this.props.value, { ofMinLength: 1 }) && isArray(( this.props.items, { ofMinLength: 1 }))) {
       this.setState({
-        data: this.props.items,
+        items: this.props.items,
+        selected: this.props.value,
       });
     }
   }
+
+  componentDidUpdate( prevProps, prevState ) {
+    const { multiSelect } = this.props;
+
+    if  (( this.props.items !== prevProps.items &&
+        this.state.items !== this.props.items ) || prevState.items !== this.state.items ) {
+      this.setItems( this.props.items !== prevProps.items
+        ? this.props.items
+        : this.state.items
+      );
+    }
+    if  ( this.props.value !== prevProps.value && this.props.value ) {
+      // eslint-disable-next-line max-len
+      multiSelect ? this.setValueMultiSelect( this.props.value ) : this.setValue( this.props.value );
+    }
+  }
+
+    setValueMultiSelect = ( value ) => {
+      const { selected } = this.state;
+
+      const finalValue = this.state.selected.slice();
+
+      finalValue.concat( value ) ;
+
+      this.setState( state => ({
+        selected: finalValue,
+      }));
+      this.setState({
+        selected: value,
+      });
+    }
+
+    setValue = ( value ) => {
+      this.setState({
+        selected: [value],
+      });
+    }
+
+    setItems = ( value ) => {
+      this.setState({
+        items: value,
+      });
+    }
 
   handlePress = value => () => {
     const { selected } = this.state;
@@ -52,12 +107,13 @@ class CheckBoxList extends React.Component {
           !isArray( state.selected ) ||
           !isString( value )
         ) {
-          return { selected: [] };
+          return { selected: [value] };
         }
 
         /* Dont allow to select more than one button/icon */
         if ( !multiSelect && selected.length >= 1 ) {
           /* if the selected value is more or equal to 1 dont allow to add the value */
+
           return { selected: [value] };
         }
 
@@ -65,73 +121,105 @@ class CheckBoxList extends React.Component {
           return { selected: state.selected.filter( item => item !== value ) };
         }
 
-        return { selected: [...state.selected, value] };
+        return {
+          selected: [...state.selected, value],
+        };
       },
       () => {
-        if ( this.props.onChangeValue ) this.props.onChangeValue( this.state.selected );
-
-        console.warn(this.state); //eslint-disable-line
+        multiSelect
+          ? this.handleChangeDebounced ( this.state.selected )
+          : this.handleChangeDebounced ( value );
       }
     );
   };
 
-  render() {
-    const { numberOfColumns, icons } = this.props;
+    handleChangeDebounced = ( value ) => {
+      this.props.onChangeValue( value );
+    };
 
-    const { data, selected } = this.state;
+    render() {
+      const { numberOfColumns, icons, radio, updateIconForPreviousItems, rating } = this.props;
 
-    return (
-      <SubcomponentThemeHandler
-        subcomponentProps={this.props.subcomponentProps}
-        editable={this.props.editable}
-        disabled={this.props.disabled}
-        error={this.props.error}
-      >
-        {({
-          filterComponentProps,
-        }) => {
-          return (
-            <Box
-              flexDirection="row"
-              flexWrap="wrap"
-            >
-              {isArray( data, { ofMinLength: 1 }) ? (
-                data.map( item => (
-                  <Box
-                    width={`${100 / numberOfColumns}%`}
-                    key={item.value}
-                  >
-                    <BaseCheckBox
-                      icons={icons}
-                      onPress={this.handlePress( item.value )}
-                      key={item.value}
-                      checkBoxStatus={(
-                          isArray( selected ) &&
+      const numberOfButtonsToRender = radio
+        ? numberOfColumns > 3 ? 3 : numberOfColumns
+        : rating
+          ? numberOfColumns > 5 ? 5 : numberOfColumns
+          : numberOfColumns;
+
+      const { items, selected } = this.state;
+
+      const filteredValue = items.map(( item, index ) => {
+        // eslint-disable-next-line max-len
+        if (( isArray( selected ) || isString( selected )) && ( selected[0] === item.value || this.state.selected === item.value )) {
+          var  selectedIndex = index;
+
+          return selectedIndex;
+        }
+      }).filter(( item ) => ( item !== undefined ));
+
+      return (
+        <SubcomponentThemeHandler
+          subcomponentProps={this.props.subcomponentProps}
+          editable={this.props.editable}
+          disabled={this.props.disabled}
+          error={this.props.error}
+        >
+          {({
+            filterComponentProps,
+          }) => {
+            return (
+              <Box
+                flexDirection="row"
+                flexWrap="wrap"
+              >
+                {isArray( items, { ofMinLength: 1 }) ? (
+                  items.map(( item, index ) => {
+                    const isBeforeSelectedItem = index < filteredValue;
+
+                    return (
+                      <Box
+                        width={rating  ? `${100 / ( numberOfButtonsToRender * 4 )}%` : `${100 / numberOfButtonsToRender}%`}
+                        key={item.value}
+                      >
+                        <BaseCheckBox
+                          icons={icons}
+                          onPress={this.handlePress( item.value )}
+                          key={item.value}
+                          checkBoxStatus={updateIconForPreviousItems
+                            ?  ( isArray( selected ) || isString( selected )) &&
+                              selected.includes( item.value )
+                              ? true
+                              : isBeforeSelectedItem
+                                ? true
+                                : false
+                            : (
+                              isArray( selected )  &&
                           selected.includes( item.value )
-                            ? true
-                            : false
-                      )}
-                      id={item.value}
-                      label={item.label}
-                      stateBasedProps={
+                                ? true
+                                : false
+                            )}
+                          id={item.value}
+                          label={rating ? null : item.label}
+                          stateBasedProps={
                         filterComponentProps( 'input-item', { selected: isArray( selected ) && selected.includes( item.value ) })
                       }
-                    />
-                  </Box>
-                ))
-              ) : (
-                <Text
-                  text="No Items to Show"
-                />
-              )}
-            </Box>
-          );
-        }
+                        />
+                      </Box>
+                    );
+                  })
+                ) : (
+                  <Text
+                    text="No Items to Show"
+                  />
+                )}
+              </Box>
+            );
+          }
     }
-      </SubcomponentThemeHandler>
+        </SubcomponentThemeHandler>
 
-    );
-  }
+      );
+    }
 }
 
 export default CheckBoxList;
