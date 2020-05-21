@@ -96,8 +96,8 @@ class MessageHandler {
     return output;
   };
 
-  handleBulkPullMessage = async ( message ) => {
-    console.log( 'Processing QBulkPullMessage...' ); // eslint-disable-line
+  handleBulkPullMessage = async message => {
+    console.log('Processing QBulkPullMessage...'); // eslint-disable-line
 
     const { data = {}, accessToken } = store.getState().keycloak;
     const { api_url } = data;
@@ -113,10 +113,10 @@ class MessageHandler {
       if ( apiUrl.endsWith( ':' )) {
         apiUrl = `${api_url.substring( 0, api_url.length - 1 )}/`;
 
-        console.warn( 'Changing api_url from:', api_url, 'to:', apiUrl ); // eslint-disable-line
+        console.warn('Changing api_url from:', api_url, 'to:', apiUrl); // eslint-disable-line
       }
       const url = `${apiUrl}${message.pullUrl}`;
-      console.warn( 'Making GET request to:', url ); // eslint-disable-line
+      console.warn('Making GET request to:', url); // eslint-disable-line
 
       try {
         const result = await Api.promiseCall({
@@ -144,12 +144,12 @@ class MessageHandler {
         console.error( 'QBulkPullMessage Error:', error );
       }
     }
-  }
+  };
 
   onMessage = message => {
     if ( !message ) return;
 
-    const { msg_type, data_type, messages } = message;
+    const { msg_type, data_type, messages, asks } = message;
     const isValidMessage = this.validMessageTypes.includes( msg_type );
 
     if ( data_type === 'QBulkPullMessage' ) {
@@ -169,8 +169,21 @@ class MessageHandler {
       return;
     }
 
-    if ( data_type === 'QBulkMessage' && isArray( messages, { ofMinLength: 1 })) {
-      messages.forEach( this.onMessage );
+    if ( data_type === 'QBulkMessage' ) {
+      this.log( 'Processing QBulkMessage...', 'warn' );
+      console.log({ message }); // eslint-disable-line
+      if ( isArray( messages, { ofMinLength: 1 }) || isArray( asks, { ofMinLength: 1 })) {
+        if ( isArray( messages, { ofMinLength: 1 })) {
+          this.log( 'Processing QBulkMessage "messages"...', 'warn' );
+          messages.forEach( this.onMessage );
+        }
+        if ( isArray( asks, { ofMinLength: 1 })) {
+          this.log( 'Processing QBulkMessage "asks"...', 'warn' );
+          asks.forEach( this.onMessage );
+        }
+      } else {
+        this.log( 'No "messages" or "asks" supplied with QBulkMessage', 'warn' );
+      }
 
       return;
     }
@@ -209,7 +222,7 @@ class MessageHandler {
       }
 
       if ( payload.is_pull_message ) {
-        console.warn( 'Dispatching Pull message:', event, payload.pull_id, payload ); // eslint-disable-line
+        console.warn('Dispatching Pull message:', event, payload.pull_id, payload); // eslint-disable-line
       }
 
       store.dispatch( action( payload ));
