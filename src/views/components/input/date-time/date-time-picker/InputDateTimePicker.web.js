@@ -129,6 +129,7 @@ class InputDatePicker extends PureComponent {
                   paddingRight={20}
                   iconProps={componentProps['input-icon']}
                   onChangeState={updateState( 'input-field' )}
+                  // {...this.props.inputFieldProps} // eslint-disable-line
                 />
                 {
                   editable ? (

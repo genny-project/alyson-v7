@@ -4,7 +4,7 @@
 
 import React, { PureComponent } from 'react';
 import { string, func, oneOfType, object, bool } from 'prop-types';
-import { Input, Box } from '../../../../components';
+import { Input, Box, Touchable, Icon } from '../../../../components';
 import DateTimeBase from '../date-time-base';
 
 class InputDatePicker extends PureComponent {
@@ -41,6 +41,7 @@ class InputDatePicker extends PureComponent {
       displayFormat,
       value,
       testID,
+      editable,
       onChangeValue, // eslint-disable-line no-unused-vars
       ...restProps
     } = this.props;
@@ -65,6 +66,8 @@ class InputDatePicker extends PureComponent {
           onBlur,
           onKeyPress,
           onSelectionChange,
+          isOpen,
+          toggle,
         }) => {
           return (
             <Box
@@ -96,27 +99,38 @@ class InputDatePicker extends PureComponent {
                 identifier="timepicker"
                 {...this.props.inputFieldProps} // eslint-disable-line
               />
-              {/* <Touchable
-                withFeedback
-                disabled={!this.props.editable}
-                onPress={this.props.editable ? this.handleCalendarToggle : null}
-                onFocus={this.handleCalendarOpen}
-                accessibilityRole="link"
-              >
-                <Box
-                  position="absolute"
-                  height="100%"
-                  alignItems="center"
-                  right={0}
-                  zIndex={5}
-                >
-                  <Icon
-                    name={isOpen ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
-                    color="black"
-                    size="md"
-                  />
-                </Box>
-              </Touchable> */}
+              {
+                  editable ? (
+                    <Touchable
+                      withFeedback
+                      disabled={!this.props.editable}
+                      onPress={this.props.editable ? toggle : null}
+                      onFocus={open}
+                      accessibilityRole="link"
+                      testID={`input-date-picker ${testID}`}
+                      position="absolute"
+                      right={0}
+                      zIndex={5}
+                      transform={[{ translateY: '-50%' }]}
+                      top="50%"
+                    >
+                      <Box
+                        height="100%"
+                        alignItems="center"
+                        transform={[
+                          { rotate: isOpen ? '0deg' : '180deg' },
+                        ]}
+                      >
+                        <Icon
+                          name="keyboard-arrow-up"
+                          color="black"
+                          size="md"
+                          cursor="pointer"
+                        />
+                      </Box>
+                    </Touchable>
+                  ) : null
+                }
             </Box>
           );
         }}
