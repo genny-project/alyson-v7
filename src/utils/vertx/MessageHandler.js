@@ -44,7 +44,7 @@ class MessageHandler {
 
     const message = this.beBatch.reduce( this.handleReduceMessageBatch, this.beBatch[0] );
 
-    // console.log( 'drain message', message );
+    console.log( 'drain message', message ); // eslint-disable-line
 
     store.dispatch( message );
 
@@ -98,7 +98,7 @@ class MessageHandler {
 
   handleBulkPullMessage = async message => {
     console.log('Processing QBulkPullMessage...'); // eslint-disable-line
-
+    console.log({ message }); // eslint-disable-line
     const { data = {}, accessToken } = store.getState().keycloak;
     const { api_url } = data;
 
