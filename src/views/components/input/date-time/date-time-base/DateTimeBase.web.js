@@ -23,12 +23,20 @@ import { Box, Touchable } from '../../../../components';
 import { SubcomponentThemeHandler } from '../../../form/theme-handlers';
 
 const NUMBER_OF_DOB_YEARS = 125;
+const NUMBER_OF_CLOCK_HOURS = 12;
+const NUMBER_OF_MINUTES = 60;
+
 const separatorRegex = /(,|\s|\/|-|_|:)/g;
 
 const currentYear = new Date().getFullYear();
 const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const years = range( NUMBER_OF_DOB_YEARS ).map( year => currentYear + 2 - year );
+const hours = range( NUMBER_OF_CLOCK_HOURS ).map( day => day + 1 );
+const clockFormat = ['Am', 'Pm'];
+const minutes = range( NUMBER_OF_MINUTES ).map( minutes => minutes );
+
+// console.warn( 'minutes', minutes );
 
 const dateTimeFormats = {
   // dayOfWeek: ['d', 'do', 'dd', 'ddd', 'dddd'],
@@ -769,6 +777,9 @@ class DateTimeBase extends PureComponent {
                           daysOfTheWeek,
                           months,
                           years,
+                          hours,
+                          clockFormat,
+                          minutes,
                           selection: this.selectionValues[this.state.currentInputSection],
                           onRef: this.handleRef,
                           close: this.handleCalendarClose,

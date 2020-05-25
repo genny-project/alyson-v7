@@ -77,6 +77,9 @@ class InputDatePicker extends PureComponent {
           setDate,
           months,
           years,
+          hours,
+          clockFormat,
+          minutes,
           selection,
           onRef,
           open,
@@ -213,8 +216,8 @@ class InputDatePicker extends PureComponent {
                     >
                       <Input
                         type="dropdown"
-                        items={months.map(( m, index ) => (
-                          { value: m, label: m, weight: index }
+                        items={hours.map(( hour, index ) => (
+                          { value: hour, label: hour, weight: index }
                         ))}
                         identifier="MONTHDROPDOWN"
                         value={monthValue}
@@ -230,7 +233,37 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-month ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Select month"
+                        placeholder="Select Time"
+                      />
+                    </Box>
+
+                    {/*  ----------------------------
+                            MINUTES DROPDOWN
+                    ------------------------------*/}
+
+                    <Box
+                      flex={1}
+                    >
+                      <Input
+                        type="dropdown"
+                        items={minutes.map(( minute, index ) => (
+                          { value: minute, label: minute, weight: index }
+                        ))}
+                        identifier="MONTHDROPDOWN"
+                        value={monthValue}
+                        sortByWeight
+                        onChangeValue={selectMonth( setDate, date )}
+                        color="#000"
+                        backgroundColor="#FFF"
+                        padding={5}
+                        borderRadius={10}
+                        borderWidth={0}
+                        textAlign="center"
+                        cursor="pointer"
+                        testID={`input-date-picker-month ${testID}`}
+                        nonTabable
+                        editable
+                        placeholder="Select Time"
                       />
                     </Box>
 
@@ -243,8 +276,8 @@ class InputDatePicker extends PureComponent {
                     >
                       <Input
                         type="dropdown"
-                        items={years.map(( y, index ) => (
-                          { value: y, label: y, weight: index }
+                        items={clockFormat.map(( format, index ) => (
+                          { value: format, label: format, weight: index }
                         ))}
                         value={yearValue}
                         onChangeValue={selectYear( setDate, date )}
@@ -258,7 +291,7 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-year ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Select year"
+                        placeholder="Select Am/Pm"
                       />
                     </Box>
                   </Box>
