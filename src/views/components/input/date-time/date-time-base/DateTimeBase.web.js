@@ -32,11 +32,10 @@ const currentYear = new Date().getFullYear();
 const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const years = range( NUMBER_OF_DOB_YEARS ).map( year => currentYear + 2 - year );
-const hours = range( NUMBER_OF_CLOCK_HOURS ).map( day => day + 1 );
+const hours = range( NUMBER_OF_CLOCK_HOURS ).map( hour => hour < 9 ?  `0${hour + 1}` : `${hour + 1}` );
 const clockFormat = ['Am', 'Pm'];
-const minutes = range( NUMBER_OF_MINUTES ).map( minutes => minutes );
-
-// console.warn( 'minutes', minutes );
+const minutes = range( NUMBER_OF_MINUTES ).map( minute =>
+  minute < 10 ? `0${minute}` : `${minute}` );
 
 const dateTimeFormats = {
   // dayOfWeek: ['d', 'do', 'dd', 'ddd', 'dddd'],

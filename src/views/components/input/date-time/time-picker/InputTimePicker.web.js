@@ -233,7 +233,7 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-month ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Select Time"
+                        placeholder="Hours"
                       />
                     </Box>
 
@@ -263,7 +263,7 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-month ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Select Time"
+                        placeholder="Minutes"
                       />
                     </Box>
 
@@ -291,7 +291,7 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-year ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Select Am/Pm"
+                        placeholder="Am/Pm"
                       />
                     </Box>
                   </Box>
