@@ -110,7 +110,10 @@ class DateTimeBase extends PureComponent {
   }
 
   setFields = ( formattedDate ) => {
+    // console.warn( 'foramatted date', formattedDate );
     const selectionValuesForInputSections = ( datestring ) => {
+      // console.warn( 'date tring', datestring );
+
       return datestring.split( separatorRegex );
     };
 
@@ -659,6 +662,7 @@ class DateTimeBase extends PureComponent {
   }
 
   render() {
+    // console.warn( '%c Render-DateTimeBase', 'color: green', this.props );
     const {
       displayFormat,
       // value,

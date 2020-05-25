@@ -49,6 +49,7 @@ class InputDatePicker extends PureComponent {
   }
 
   render() {
+    // console.warn( '%c InputDatee', 'color:green', this.props );
     const {
       displayFormat,
       value,
