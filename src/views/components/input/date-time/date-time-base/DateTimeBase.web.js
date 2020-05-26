@@ -89,6 +89,7 @@ class DateTimeBase extends PureComponent {
 
   state = {
     isCalendarOpen: false,
+    // isClockOpen: false,
     currentInputSection: null,
     preventChange: false,
   }
@@ -210,6 +211,18 @@ class DateTimeBase extends PureComponent {
   handleCalendarClose = () => {
     this.setState({ isCalendarOpen: false });
   }
+
+  // handleClockToggle = () => {
+  //   this.setState( state => ({ isClockOpen: !state.isClockOpen }));
+  // }
+
+  // handleClockOpen = () => {
+  //   this.setState({ isClockOpen: true });
+  // }
+
+  // handleClockClose = () => {
+  //   this.setState({ isClockOpen: false });
+  // }
 
   handleFocus = ( selectItem, selectedItem, date ) => () => {
     // console.log( 'handleFocus', selectedItem, date );
@@ -495,6 +508,7 @@ class DateTimeBase extends PureComponent {
   }
 
   handleSelectDay = ( callback, selectItem, day ) => {
+    // console.warn( '%c selectDay', 'color: green', { callback: callback, selectItem: selectItem, day: day });
     selectItem( day.dateValue );
     callback();
   }
@@ -513,6 +527,29 @@ class DateTimeBase extends PureComponent {
 
     callback( newDate );
   }
+
+    handleSelectAmPm = ( callback, date ) => value => {
+      // console.warn( '%c AM/PM', 'color: green', { callback: callback, date: date });
+      const newDate = setHours( date, value );
+
+      callback( newDate );
+    }
+
+    handleSelectHour = ( callback, date ) => value => {
+      // console.warn( '%c Hour', 'color: yellow', { callback: callback, date: date });
+
+      const newDate = setHours( date, value );
+
+      callback( newDate );
+    }
+
+    handleSelectMinute = ( callback, date ) => value => {
+      // console.warn( '%c Minute', 'color: blue', { callback: callback, date: date });
+
+      const newDate = setMinutes( date, value );
+
+      callback( newDate );
+    }
 
   handleAutocompleteSection = ( value, key, callback, setDate ) => {
     const { currentInputSection } = this.state;
@@ -790,6 +827,9 @@ class DateTimeBase extends PureComponent {
                           selectDay: this.handleSelectDay,
                           selectMonth: this.handleSelectMonth,
                           selectYear: this.handleSelectYear,
+                          selectHour: this.handleSelectHour,
+                          selectMinute: this.handleSelectMinute,
+                          selectAmPm: this.handleSelectAmPm,
                           componentProps,
                           updateState,
                           filterComponentProps,

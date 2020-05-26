@@ -88,8 +88,9 @@ class InputDatePicker extends PureComponent {
           onBlur,
           onKeyPress,
           onSelectionChange,
-          selectMonth,
-          selectYear,
+          selectHour,
+          selectMinute,
+          selectAmPm,
           componentProps,
           updateState,
         }) => {
@@ -219,10 +220,10 @@ class InputDatePicker extends PureComponent {
                         items={hours.map(( hour, index ) => (
                           { value: hour, label: hour, weight: index }
                         ))}
-                        identifier="MONTHDROPDOWN"
+                        identifier="TIMEDROPDOWN"
                         value={monthValue}
                         sortByWeight
-                        onChangeValue={selectMonth( setDate, date )}
+                        onChangeValue={selectHour( setDate, date )}
                         color="#000"
                         backgroundColor="#FFF"
                         padding={5}
@@ -230,7 +231,7 @@ class InputDatePicker extends PureComponent {
                         borderWidth={0}
                         textAlign="center"
                         cursor="pointer"
-                        testID={`input-date-picker-month ${testID}`}
+                        testID={`input-date-picker-hour ${testID}`}
                         nonTabable
                         editable
                         placeholder="Hours"
@@ -249,10 +250,10 @@ class InputDatePicker extends PureComponent {
                         items={minutes.map(( minute, index ) => (
                           { value: minute, label: minute, weight: index }
                         ))}
-                        identifier="MONTHDROPDOWN"
+                        identifier="MINUTEDROPDOWN"
                         value={monthValue}
                         sortByWeight
-                        onChangeValue={selectMonth( setDate, date )}
+                        onChangeValue={selectMinute( setDate, date )}
                         color="#000"
                         backgroundColor="#FFF"
                         padding={5}
@@ -260,7 +261,7 @@ class InputDatePicker extends PureComponent {
                         borderWidth={0}
                         textAlign="center"
                         cursor="pointer"
-                        testID={`input-date-picker-month ${testID}`}
+                        testID={`input-date-picker-minute ${testID}`}
                         nonTabable
                         editable
                         placeholder="Minutes"
@@ -280,7 +281,7 @@ class InputDatePicker extends PureComponent {
                           { value: format, label: format, weight: index }
                         ))}
                         value={yearValue}
-                        onChangeValue={selectYear( setDate, date )}
+                        onChangeValue={selectAmPm( setDate, date )}
                         color="#000"
                         backgroundColor="#FFF"
                         padding={5}
@@ -288,7 +289,7 @@ class InputDatePicker extends PureComponent {
                         borderWidth={0}
                         textAlign="center"
                         cursor="pointer"
-                        testID={`input-date-picker-year ${testID}`}
+                        testID={`input-date-picker-ampm ${testID}`}
                         nonTabable
                         editable
                         placeholder="Am/Pm"
