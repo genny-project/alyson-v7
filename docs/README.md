@@ -4,10 +4,10 @@
 
 A list of all display components in v3.
 
-### [Layouts](LAYOUTS.md)
+### [Layouts](CREATING_LAYOUT_WALKTHROUGH.md)
 
 A guide on how to build layouts.
 
-### [Data Queries](DATA-QUERY.md)
+### [Redux store](../src/redux/REDUX_STORE.md)
 
 A guide on how to use data queries inside layouts.

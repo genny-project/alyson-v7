@@ -1,1 +1,1 @@
-2020-05-15-tooltip-update
+v3.1.0
