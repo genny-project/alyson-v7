@@ -44,7 +44,7 @@ class MessageHandler {
 
     const message = this.beBatch.reduce( this.handleReduceMessageBatch, this.beBatch[0] );
 
-    console.log( 'drain message', message ); // eslint-disable-line
+    // console.log( 'drain message', message ); // eslint-disable-line
 
     store.dispatch( message );
 
@@ -97,8 +97,7 @@ class MessageHandler {
   };
 
   handleBulkPullMessage = async message => {
-    console.log('Processing QBulkPullMessage...'); // eslint-disable-line
-    console.log({ message }); // eslint-disable-line
+    console.log('Processing QBulkPullMessage...', { message }); // eslint-disable-line
     const { data = {}, accessToken } = store.getState().keycloak;
     const { api_url } = data;
 
@@ -170,8 +169,7 @@ class MessageHandler {
     }
 
     if ( data_type === 'QBulkMessage' ) {
-      this.log( 'Processing QBulkMessage...', 'warn' );
-      console.log({ message }); // eslint-disable-line
+      console.log('Processing QBulkMessage...', { message }); // eslint-disable-line
       if ( isArray( messages, { ofMinLength: 1 }) || isArray( asks, { ofMinLength: 1 })) {
         if ( isArray( messages, { ofMinLength: 1 })) {
           this.log( 'Processing QBulkMessage "messages"...', 'warn' );
