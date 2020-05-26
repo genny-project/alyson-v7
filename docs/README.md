@@ -10,4 +10,4 @@ A guide on how to build layouts.
 
 ### [Redux store](../src/redux/REDUX_STORE.md)
 
-A guide on how to use data queries inside layouts.
+Explanation of contents of the Redux Store.

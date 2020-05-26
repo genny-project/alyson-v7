@@ -15,20 +15,18 @@ Alyson v7 is the updated Frontend for the Genny system.
 - [Creating a Layout](#Creating-a-Layout)
 
 ## Overview
-### What Has Changed
-The previous version used json files called 'layouts' to describe component structures, which were then converted to React Element trees.
 
-This version aims to removes the dependance on a predefined layout. The Backend sends **Base Entities**, **Question Sets**, and **Links** to the Frontend, then, starting from one root Base Entity, it recursively renders the entire component tree.
+The Backend sends **Base Entities**, **Question Sets**, and **Links** to the Frontend, then, starting from one root Base Entity, it recursively renders the entire component tree.
 
-### What Does This Affect
 Instead of defining each page, and navigating between them to change the display, the Backend only needs to add, remove, or change **Base Entities** or the **Links** between **Base Entities**.
 
 The styling for all Components is defined by the Backend, meaning that the Backend can control the styling and apply changes to as many instances of the system as desired.
 
-## Store
-*coming soon*
-*explain what the store is and how to view it*
-*detail the different fields in the store*
+## Redux Store
+
+Alyson v7 uses Redux to handle data storage.
+
+[Click here to see the documentation for the Redux Store.](./src/redux/REDUX_STORE.md)
 
 ## Layout Basics
 A layout is constructed of from the following objects:
@@ -222,9 +220,10 @@ The type of link is defined by the `attributeCode` field. The valid types of lin
 - LNK_THEME: Indicates that the child is a **Theme** base entity.
 - LNK_ASK: Indicates that the child is an **Question Sets**.
 
-***Important:*** *While Themes are linked to Frames, they aren't actually applied to Frames directy, but instead are applied to a specific Panel based on the value of the Link.*
+***Important:*** *While Themes are linked to Frames, they aren't actually applied to Frames directy, but instead are applied to a specific Panel based on the value of the Link. To attach a Theme to the Frame, use the linkValue **WRAPPER**.*
 
 The **Panel** the child will be linked to is defined by the `linkValue` field. The valid values are **NORTH**, **SOUTH**, **EAST**, **WEST**, **CENTRE**, and **FRAME**.
+
 
 If **FRAME** is  supplied, the Theme will be applied to the Frame itself, not any of it's **Panels**.
 
@@ -286,6 +285,10 @@ The default entry point for the Layout structure is `FRM_ROOT`. Any **Themes** t
 [Click here to view a step by step walkthrough of creating a layout.](./docs/CREATING_LAYOUT_WALKTHROUGH.md)
 
 ## New Changes
+
+* Added link to Redux Store documentation.
+
+----
 
 * Added new Theme Attribute **PRI_HAS_QUESTION_GRP_ICON**.
 * Added new Input Subcomponent **INPUT_PLACEHOLDER**.
