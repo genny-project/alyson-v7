@@ -4,7 +4,6 @@
 
 import React, { PureComponent } from 'react';
 import { string, func, oneOfType, object, bool, shape } from 'prop-types';
-import { getMonth, getYear } from 'date-fns';
 import { Input, Box, Touchable, Icon, Fragment } from '../../../../components';
 import { getDeviceSize } from '../../../../../utils';
 import DateTimeBase from '../date-time-base';
@@ -69,14 +68,12 @@ class InputDatePicker extends PureComponent {
         {({
           getInputProps,
           // getWeeksInMonth,
-          inputValue,
-          date,
-          selectedItem,
+          inputValue, //
+          date, //
+          selectedItem, //
           selectItem,
           isOpen,
           setDate,
-          months,
-          years,
           hours,
           clockFormat,
           minutes,
@@ -102,9 +99,6 @@ class InputDatePicker extends PureComponent {
           //   selectedItem &&
           //   format( selectedItem ) === format( date )
           // );
-
-          const monthValue = [months[getMonth( date )]];
-          const yearValue = [years[years.findIndex( year => year === getYear( date ))]];
 
           return (
             <Fragment>
@@ -136,7 +130,6 @@ class InputDatePicker extends PureComponent {
                   showLogs
                   identifier="timepicker"
                   onChangeState={updateState( 'input-field' )}
-
                   // {...this.props.inputFieldProps}
                 />
                 {
@@ -209,7 +202,7 @@ class InputDatePicker extends PureComponent {
                   >
 
                     {/*  ----------------------------
-                            TIME DROPDOWN
+                            HOUR DROPDOWN
                     ------------------------------*/}
 
                     <Box
@@ -221,7 +214,6 @@ class InputDatePicker extends PureComponent {
                           { value: hour, label: hour, weight: index }
                         ))}
                         identifier="TIMEDROPDOWN"
-                        value={monthValue}
                         sortByWeight
                         onChangeValue={selectHour( setDate, date )}
                         color="#000"
@@ -235,6 +227,7 @@ class InputDatePicker extends PureComponent {
                         nonTabable
                         editable
                         placeholder="Hours"
+                        onChangeState={updateState( 'input-field' )}
                       />
                     </Box>
 
@@ -251,7 +244,6 @@ class InputDatePicker extends PureComponent {
                           { value: minute, label: minute, weight: index }
                         ))}
                         identifier="MINUTEDROPDOWN"
-                        value={monthValue}
                         sortByWeight
                         onChangeValue={selectMinute( setDate, date )}
                         color="#000"
@@ -265,6 +257,7 @@ class InputDatePicker extends PureComponent {
                         nonTabable
                         editable
                         placeholder="Minutes"
+                        onChangeState={updateState( 'input-field' )}
                       />
                     </Box>
 
@@ -280,7 +273,6 @@ class InputDatePicker extends PureComponent {
                         items={clockFormat.map(( format, index ) => (
                           { value: format, label: format, weight: index }
                         ))}
-                        value={yearValue}
                         onChangeValue={selectAmPm( setDate, date )}
                         color="#000"
                         backgroundColor="#FFF"

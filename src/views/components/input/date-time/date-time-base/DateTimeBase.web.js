@@ -23,7 +23,7 @@ import { Box, Touchable } from '../../../../components';
 import { SubcomponentThemeHandler } from '../../../form/theme-handlers';
 
 const NUMBER_OF_DOB_YEARS = 125;
-const NUMBER_OF_CLOCK_HOURS = 12;
+const NUMBER_OF_CLOCK_HOURS = 24;
 const NUMBER_OF_MINUTES = 60;
 
 const separatorRegex = /(,|\s|\/|-|_|:)/g;
@@ -89,7 +89,6 @@ class DateTimeBase extends PureComponent {
 
   state = {
     isCalendarOpen: false,
-    // isClockOpen: false,
     currentInputSection: null,
     preventChange: false,
   }
@@ -349,7 +348,7 @@ class DateTimeBase extends PureComponent {
             break;
           default:
             // eslint-disable-next-line no-console
-            console.warn( 'invalid this.state.currentInputSection' );
+            // console.warn( 'invalid this.state.currentInputSection' );
         }
         break;
       case 'ArrowLeft':
@@ -519,34 +518,48 @@ class DateTimeBase extends PureComponent {
     const monthIndex = months.findIndex( m => m === newMonth );
     const newDate = setMonth( date, monthIndex );
 
+    // console.warn( '%c Month', 'color: pink', { callback: callback, date: date, newdate: newDate });
+
     callback( newDate );
   }
 
   handleSelectYear = ( callback, date ) => value => {
     const newDate = setYear( date, value );
 
+    // console.warn( '%c Year', 'color: purple', { callback: callback, date: date, newdate: newDate });
+
     callback( newDate );
   }
 
     handleSelectAmPm = ( callback, date ) => value => {
-      // console.warn( '%c AM/PM', 'color: green', { callback: callback, date: date });
-      const newDate = setHours( date, value );
+      const hoursIndex = date.getHours();
+
+      let newIndex = hoursIndex;
+
+      if ( newIndex < 12 && value[0] === 'Pm' ) {
+        newIndex = newIndex + 12;
+      }
+      else if ( newIndex >= 12 && value[0] === 'Am' ) {
+        newIndex = newIndex - 12;
+      }
+
+      const newDate = setHours( date, newIndex );
 
       callback( newDate );
     }
 
     handleSelectHour = ( callback, date ) => value => {
-      // console.warn( '%c Hour', 'color: yellow', { callback: callback, date: date });
-
       const newDate = setHours( date, value );
+
+      // console.warn( '%c Hour', 'color: yellow', { callback: callback, date: date, newdate: newDate });
 
       callback( newDate );
     }
 
     handleSelectMinute = ( callback, date ) => value => {
-      // console.warn( '%c Minute', 'color: blue', { callback: callback, date: date });
-
       const newDate = setMinutes( date, value );
+
+      // console.warn( '%c Minute', 'color: blue', { callback: callback, date: date, newdate: newDate });
 
       callback( newDate );
     }
@@ -605,6 +618,7 @@ class DateTimeBase extends PureComponent {
           const hoursIndex = getHours( value );
           let offsetHour = hoursIndex;
 
+          // console.warn( 'aaaammmmpppmmm',{ value: value, hoursIndex: hoursIndex });
           if ( offsetHour < 12 && amPm === 'p' ) {
             offsetHour = offsetHour + 12;
           }
@@ -676,7 +690,7 @@ class DateTimeBase extends PureComponent {
         break;
       default:
         // eslint-disable-next-line no-console
-        console.log( 'invalid this.state.currentInputSection' );
+        // console.log( 'invalid this.state.currentInputSection' );
     }
   }
 
@@ -706,7 +720,7 @@ class DateTimeBase extends PureComponent {
   }
 
   render() {
-    // console.warn( '%c Render-DateTimeBase', 'color: green', this.props );
+    // console.warn( '%c Render-DateTimeBase', 'color: green', this.state );
     const {
       displayFormat,
       // value,
