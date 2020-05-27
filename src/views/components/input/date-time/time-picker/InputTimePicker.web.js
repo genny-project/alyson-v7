@@ -4,6 +4,7 @@
 
 import React, { PureComponent } from 'react';
 import { string, func, oneOfType, object, bool, shape } from 'prop-types';
+import { getHours, getMinutes } from 'date-fns';
 import { Input, Box, Touchable, Icon, Fragment } from '../../../../components';
 import { getDeviceSize } from '../../../../../utils';
 import DateTimeBase from '../date-time-base';
@@ -226,8 +227,13 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-hour ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Hours"
+                        placeholder={selectedItem
+                          ? getHours( selectedItem ) > 9
+                            ? getHours( selectedItem ) > 12 ? `0${getHours( selectedItem ) - 12}` : getHours( selectedItem )
+                            : `0${getHours( selectedItem )}`
+                          : 'Hours'}
                         onChangeState={updateState( 'input-field' )}
+                        value={selectedItem}
                       />
                     </Box>
 
@@ -256,7 +262,11 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-minute ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Minutes"
+                        placeholder={selectedItem
+                          ? getMinutes( selectedItem ) > 9
+                            ? getMinutes( selectedItem )
+                            : `0${getMinutes( selectedItem )}`
+                          : 'Minutes'}
                         onChangeState={updateState( 'input-field' )}
                       />
                     </Box>
@@ -284,7 +294,10 @@ class InputDatePicker extends PureComponent {
                         testID={`input-date-picker-ampm ${testID}`}
                         nonTabable
                         editable
-                        placeholder="Am/Pm"
+                        placeholder={selectedItem
+                          ?  getHours( selectedItem ) < 12 ? 'Am' : 'Pm'
+                          : 'Am / Pm'
+                        }
                       />
                     </Box>
                   </Box>

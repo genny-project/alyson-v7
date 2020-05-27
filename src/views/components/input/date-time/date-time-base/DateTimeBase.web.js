@@ -23,7 +23,7 @@ import { Box, Touchable } from '../../../../components';
 import { SubcomponentThemeHandler } from '../../../form/theme-handlers';
 
 const NUMBER_OF_DOB_YEARS = 125;
-const NUMBER_OF_CLOCK_HOURS = 24;
+const NUMBER_OF_CLOCK_HOURS = 12;
 const NUMBER_OF_MINUTES = 60;
 
 const separatorRegex = /(,|\s|\/|-|_|:)/g;
@@ -235,6 +235,7 @@ class DateTimeBase extends PureComponent {
   }
 
   handleChange = value => {
+    // console.warn( 'handleChange', value );
     const formattedDate = format( value, this.props.displayFormat );
 
     this.setSelectionValues( formattedDate );
@@ -534,18 +535,21 @@ class DateTimeBase extends PureComponent {
     handleSelectAmPm = ( callback, date ) => value => {
       const hoursIndex = date.getHours();
 
-      let newIndex = hoursIndex;
+      let currentHour = hoursIndex;
 
-      if ( newIndex < 12 && value[0] === 'Pm' ) {
-        newIndex = newIndex + 12;
+      if ( currentHour < 12 && value[0] === 'Pm' ) {
+        currentHour = currentHour + 12;
       }
-      else if ( newIndex >= 12 && value[0] === 'Am' ) {
-        newIndex = newIndex - 12;
+      else if ( currentHour >= 12 && value[0] === 'Am' ) {
+        currentHour = currentHour - 12;
       }
 
-      const newDate = setHours( date, newIndex );
+      const newDate = setHours( date, currentHour );
+
+      // console.warn( '%c AM/PM', 'color: green', { callback: callback, date: date, newdate: newDate , value: value[0], currentHour: currentHour });
 
       callback( newDate );
+      this.handleChange( newDate );
     }
 
     handleSelectHour = ( callback, date ) => value => {
@@ -554,6 +558,7 @@ class DateTimeBase extends PureComponent {
       // console.warn( '%c Hour', 'color: yellow', { callback: callback, date: date, newdate: newDate });
 
       callback( newDate );
+      this.handleChange( newDate );
     }
 
     handleSelectMinute = ( callback, date ) => value => {
@@ -562,6 +567,7 @@ class DateTimeBase extends PureComponent {
       // console.warn( '%c Minute', 'color: blue', { callback: callback, date: date, newdate: newDate });
 
       callback( newDate );
+      this.handleChange( newDate );
     }
 
   handleAutocompleteSection = ( value, key, callback, setDate ) => {
