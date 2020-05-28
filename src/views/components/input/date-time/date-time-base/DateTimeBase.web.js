@@ -33,7 +33,7 @@ const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const years = range( NUMBER_OF_DOB_YEARS ).map( year => currentYear + 2 - year );
 const hours = range( NUMBER_OF_CLOCK_HOURS ).map( hour => hour < 9 ?  `0${hour + 1}` : `${hour + 1}` );
-const clockFormat = ['Am', 'Pm'];
+const clockFormat = ['AM', 'PM'];
 const minutes = range( NUMBER_OF_MINUTES ).map( minute =>
   minute < 10 ? `0${minute}` : `${minute}` );
 
@@ -537,10 +537,10 @@ class DateTimeBase extends PureComponent {
 
       let currentHour = hoursIndex;
 
-      if ( currentHour < 12 && value[0] === 'Pm' ) {
+      if ( currentHour < 12 && value[0] === 'PM' ) {
         currentHour = currentHour + 12;
       }
-      else if ( currentHour >= 12 && value[0] === 'Am' ) {
+      else if ( currentHour >= 12 && value[0] === 'AM' ) {
         currentHour = currentHour - 12;
       }
 

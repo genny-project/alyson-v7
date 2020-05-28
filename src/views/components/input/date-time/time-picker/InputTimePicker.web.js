@@ -103,7 +103,6 @@ class InputDatePicker extends PureComponent {
                     color="#000"
                     backgroundColor="#FFF"
                     padding={5}
-
                     textAlign="left"
                     size={7}
                     cursor="pointer"
