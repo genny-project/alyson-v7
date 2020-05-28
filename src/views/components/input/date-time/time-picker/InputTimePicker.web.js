@@ -75,14 +75,23 @@ class InputDatePicker extends PureComponent {
         }) => {
           return (
             <Fragment>
-              <Box>
+              <Box
+                padding={5}
+                marginTop={5}
+                flexDirection="row"
+                shadowColor="#000"
+                shadowOpacity={0.4}
+                shadowRadius={5}
+                shadowOffset={{
+                  width: 0,
+                  height: 0,
+                }}
+              >
                 {/*  ----------------------------
                             HOUR DROPDOWN
                     ------------------------------*/}
 
-                <Box
-                  flex={1}
-                >
+                <Box>
                   <Input
                     type="dropdown"
                     items={hours.map(( hour, index ) => (
@@ -94,9 +103,9 @@ class InputDatePicker extends PureComponent {
                     color="#000"
                     backgroundColor="#FFF"
                     padding={5}
-                    borderRadius={10}
-                    borderWidth={0}
-                    textAlign="center"
+
+                    textAlign="left"
+                    size={7}
                     cursor="pointer"
                     testID={`input-date-picker-hour ${testID}`}
                     nonTabable
@@ -115,9 +124,7 @@ class InputDatePicker extends PureComponent {
                             MINUTES DROPDOWN
                     ------------------------------*/}
 
-                <Box
-                  flex={1}
-                >
+                <Box>
                   <Input
                     type="dropdown"
                     items={minutes.map(( minute, index ) => (
@@ -129,9 +136,8 @@ class InputDatePicker extends PureComponent {
                     color="#000"
                     backgroundColor="#FFF"
                     padding={5}
-                    borderRadius={10}
-                    borderWidth={0}
-                    textAlign="center"
+                    textAlign="left"
+                    size={7}
                     cursor="pointer"
                     testID={`input-date-picker-minute ${testID}`}
                     nonTabable
@@ -149,9 +155,7 @@ class InputDatePicker extends PureComponent {
                             AMPM DROPDOWN
                     ------------------------------*/}
 
-                <Box
-                  flex={1}
-                >
+                <Box>
                   <Input
                     type="dropdown"
                     items={clockFormat.map(( format, index ) => (
@@ -161,9 +165,8 @@ class InputDatePicker extends PureComponent {
                     color="#000"
                     backgroundColor="#FFF"
                     padding={5}
-                    borderRadius={10}
-                    borderWidth={0}
-                    textAlign="center"
+                    textAlign="left"
+                    size={7}
                     cursor="pointer"
                     testID={`input-date-picker-ampm ${testID}`}
                     nonTabable
