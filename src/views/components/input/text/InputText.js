@@ -583,7 +583,7 @@ class InputText extends Component {
             />
           ) : (
             <TextInput
-              size={10}
+              size={size}
               testID={`input-text ${testID}`}
               autoCapitalize={autoCapitalize}
               autoComplete={autoComplete}
