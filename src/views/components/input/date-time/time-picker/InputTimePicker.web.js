@@ -169,8 +169,8 @@ class InputDatePicker extends PureComponent {
                     nonTabable
                     editable
                     placeholder={selectedItem
-                      ?  getHours( selectedItem ) < 12 ? 'Am' : 'Pm'
-                      : 'Am / Pm'
+                      ?  getHours( selectedItem ) < 12 ? 'AM' : 'PM'
+                      : 'AM / PM'
                         }
                   />
                 </Box>
