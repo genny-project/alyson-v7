@@ -103,8 +103,10 @@ class InputDatePicker extends PureComponent {
                     color="#000"
                     backgroundColor="#FFF"
                     padding={5}
-                    textAlign="left"
+                    textAlign="center"
                     size={7}
+                    borderRightWidth={1}
+                    borderRightColor="#C0c0c0"
                     cursor="pointer"
                     testID={`input-date-picker-hour ${testID}`}
                     nonTabable
@@ -116,6 +118,7 @@ class InputDatePicker extends PureComponent {
                       : 'Hours'}
                     onChangeState={updateState( 'input-field' )}
                     value={selectedItem}
+                    hideDropdownIcon
                   />
                 </Box>
 
@@ -135,8 +138,10 @@ class InputDatePicker extends PureComponent {
                     color="#000"
                     backgroundColor="#FFF"
                     padding={5}
-                    textAlign="left"
+                    textAlign="center"
                     size={7}
+                    borderRightWidth={1}
+                    borderRightColor="#c0c0c0"
                     cursor="pointer"
                     testID={`input-date-picker-minute ${testID}`}
                     nonTabable
@@ -147,6 +152,8 @@ class InputDatePicker extends PureComponent {
                         : `0${getMinutes( selectedItem )}`
                       : 'Minutes'}
                     onChangeState={updateState( 'input-field' )}
+                    hideDropdownIcon
+
                   />
                 </Box>
 
@@ -157,6 +164,7 @@ class InputDatePicker extends PureComponent {
                 <Box>
                   <Input
                     type="dropdown"
+                    hideDropdownIcon
                     items={clockFormat.map(( format, index ) => (
                       { value: format, label: format, weight: index }
                     ))}
@@ -164,7 +172,7 @@ class InputDatePicker extends PureComponent {
                     color="#000"
                     backgroundColor="#FFF"
                     padding={5}
-                    textAlign="left"
+                    textAlign="center"
                     size={7}
                     cursor="pointer"
                     testID={`input-date-picker-ampm ${testID}`}
