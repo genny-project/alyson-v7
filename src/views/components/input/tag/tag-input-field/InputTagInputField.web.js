@@ -25,6 +25,7 @@ class InputTagInputField extends Component {
     stateBasedProps: object,
     onChangeState: func,
     placeholder: string,
+    hideDropdownIcon: bool,
   }
 
   state = {
@@ -72,6 +73,7 @@ class InputTagInputField extends Component {
       nonTabable,
       iconProps,
       stateBasedProps,
+      hideDropdownIcon,
       ...restProps
     } = this.props;
     const selectedItem = selectedItems.map( item => item.label ).join();
@@ -118,21 +120,25 @@ class InputTagInputField extends Component {
           blurOnSubmit={allowMultipleSelection ? false : true}
           onChangeState={this.props.onChangeState}
         />
-        <Box
-          position="absolute"
-          height="100%"
-          alignItems="center"
-          right={10}
-          zIndex={5}
-          pointerEvents="none"
-        >
-          <Icon
-            name={isOpen ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-            color="blue"
-            size="md"
-            {...iconProps}
-          />
-        </Box>
+        {hideDropdownIcon
+          ? null
+          : (
+            <Box
+              position="absolute"
+              height="100%"
+              alignItems="center"
+              right={10}
+              zIndex={5}
+              pointerEvents="none"
+            >
+              <Icon
+                name={isOpen ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+                color="blue"
+                size="md"
+                {...iconProps}
+              />
+            </Box>
+          )}
         {children}
       </MenuButton>
     );
