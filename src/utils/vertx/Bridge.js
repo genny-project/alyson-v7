@@ -83,6 +83,7 @@ class Bridge {
   }
 
   sendEvent({ event, eventType, data, sendWithToken }) {
+    console.log( event, events );
     const token = this.__getAccessToken();
     const eventObject = sendWithToken
       ? events[event]( eventType, data, token )
@@ -95,22 +96,21 @@ class Bridge {
     });
 
     if ( isArray( foundCachedActions )) {
-      console.warn( 'Triggering Cached Action...' ); // eslint-disable-line
+      console.warn('Triggering Cached Action...'); // eslint-disable-line
 
       foundCachedActions.forEach( item => {
         if ( isObject( item )) {
           Vertx.handleIncomingMessage( item, true );
 
           if ( item.send !== false ) {
-            console.warn( 'sending event', eventObject ); // eslint-disable-line
+            console.warn('sending event', eventObject); // eslint-disable-line
 
             Vertx.sendMessage( eventObject );
           }
         }
       });
-    }
-    else {
-      console.warn( 'sending event', eventObject );  // eslint-disable-line
+    } else {
+      console.warn('sending event', eventObject); // eslint-disable-line
 
       Vertx.sendMessage( eventObject );
     }
@@ -181,20 +181,19 @@ class Bridge {
     value,
     ...restProps
   }) {
-    if (
-      isString( sourceCode, { ofMinLength: 1 }) &&
-      isString( targetCode, { ofMinLength: 1 })
-    ) {
+    if ( isString( sourceCode, { ofMinLength: 1 }) && isString( targetCode, { ofMinLength: 1 })) {
       this.sendEvent({
         event: messageType,
         sendWithToken: true,
         eventType,
-        data: [{
-          targetCode,
-          sourceCode,
-          value,
-          ...restProps,
-        }],
+        data: [
+          {
+            targetCode,
+            sourceCode,
+            value,
+            ...restProps,
+          },
+        ],
       });
     }
   }
@@ -205,15 +204,12 @@ class Bridge {
     if ( isObject( data, { withProperties: ['code', 'parentCode'] })) {
       const actionId = `${data.rootCode}:${data.parentCode}:${data.code}`;
 
-      const getAllMatchingCacheActions = ( code ) => {
+      const getAllMatchingCacheActions = code => {
         let matches = [];
 
-        const addToMatchingArray = ( code ) => {
-          if (
-            code &&
-            isArray( actionCache[code], { ofMinLength: 1 })
-          ) {
-            matches =  matches.concat( actionCache[code] );
+        const addToMatchingArray = code => {
+          if ( code && isArray( actionCache[code], { ofMinLength: 1 })) {
+            matches = matches.concat( actionCache[code] );
           }
         };
 
@@ -230,10 +226,10 @@ class Bridge {
         }
         if ( actionCache[idVarParent] ) {
           addToMatchingArray( idVarParent );
-        };
+        }
         if ( actionCache[idVarCode] ) {
           addToMatchingArray( idVarCode );
-        };
+        }
 
         return matches;
       };

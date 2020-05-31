@@ -8,6 +8,7 @@ import App from './views/app';
 import { VertxProvider, GoogleProvider, ErrorBoundary } from './views/components';
 import { store, persistor } from './redux';
 import './utils/layouts-dev';
+import { ThemeProvider } from '@material-ui/core'
 
 // const { store, persistor } = reduxStore();
 
@@ -32,7 +33,9 @@ const Root = () => (
       >
         <VertxProvider>
           <GoogleProvider>
-            <App />
+            <ThemeProvider>
+              <App />
+            </ThemeProvider>
           </GoogleProvider>
         </VertxProvider>
       </PersistGate>

@@ -5,7 +5,17 @@ import { object, array, string, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import dlv from 'dlv';
 import { findNodeHandle } from 'react-native';
-import { Box, Text, Recurser, Swipeable, ActivityIndicator, Touchable, Icon, Dropdown, Fragment } from '../../components';
+import {
+  Box,
+  Text,
+  Recurser,
+  Swipeable,
+  ActivityIndicator,
+  Touchable,
+  Icon,
+  Dropdown,
+  Fragment,
+} from '../../components';
 import Panel from './panel';
 import {
   isArray,
@@ -22,6 +32,8 @@ import {
   setTitle,
   saveElementAsPdf,
 } from '../../../utils';
+
+import Sam from './sam';
 
 const defaultStyle = {
   wrapper: {
@@ -51,7 +63,6 @@ const defaultStyle = {
   south: {
     width: '100%',
     flexDirection: 'column-reverse',
-
   },
   east: {
     flexDirection: 'row-reverse',
@@ -167,15 +178,12 @@ class Frame extends Component {
     const hasUpdatedTheme = linkedThemes.some( theme => {
       // console.log( 'theme', theme, currentThemes, nextThemes );
 
-      const currentThemeData =  dlv( currentThemes, `${theme.code}` );
-      const nextThemeData =  dlv( nextThemes, `${theme.code}` );
+      const currentThemeData = dlv( currentThemes, `${theme.code}` );
+      const nextThemeData = dlv( nextThemes, `${theme.code}` );
 
       // console.log( 'themeData', currentThemeData, nextThemeData );
 
-      if (
-        !isObject( currentThemeData ) ||
-        !isObject( nextThemeData )
-      ) {
+      if ( !isObject( currentThemeData ) || !isObject( nextThemeData )) {
         return true;
       }
 
@@ -207,7 +215,7 @@ class Frame extends Component {
     });
 
     return hasUpdatedTheme;
-  }
+  };
 
   getChildLayouts = () => {
     const { rootCode, frames } = this.props;
@@ -219,7 +227,12 @@ class Frame extends Component {
 
     /* filter each of the links based on their type */
     const linkedFrames = getLayoutLinksOfType( rootFrame.links, this.props, 'frame' );
-    const linkedAsks = getLayoutLinksOfType( rootFrame.links, this.props, 'ask', this.props.rootCode === 'FRM_SIDEBAR' );
+    const linkedAsks = getLayoutLinksOfType(
+      rootFrame.links,
+      this.props,
+      'ask',
+      this.props.rootCode === 'FRM_SIDEBAR'
+    );
     const linkedThemes = getLayoutLinksOfType( rootFrame.links, this.props, 'theme' );
 
     /* update the state  */
@@ -282,18 +295,17 @@ class Frame extends Component {
     return properties;
   };
 
-  handleRef = ( ref ) => {
+  handleRef = ref => {
     this.frame = ref;
-  }
+  };
 
   handlePress = () => {
     if ( this.frame ) {
       const element = findNodeHandle( this.frame );
 
-      if ( element )
-        saveElementAsPdf( element, { code: this.props.rootCode });
+      if ( element ) saveElementAsPdf( element, { code: this.props.rootCode });
     }
-  }
+  };
 
   render() {
     const { rootCode, frames, isRootFrame, isClosed, wrapperThemes } = this.props;
@@ -304,7 +316,7 @@ class Frame extends Component {
     const projectName = dlv( projectAttributes, 'PRI_NAME.value' );
 
     if ( !rootFrame ) {
-      console.warn( 'waiting for Root Frame...' ); // eslint-disable-line
+      console.warn('waiting for Root Frame...'); // eslint-disable-line
 
       setTitle( projectName );
 
@@ -325,310 +337,7 @@ class Frame extends Component {
       );
     }
 
-    const filterByPanel = ( array, panel ) => {
-      return array.filter( item => item.panel === panel );
-    };
-
-    const panelContent = this.state.frames.concat( this.state.asks );
-
-    const hasContent = panel => {
-      return isArray( filterByPanel( panelContent, panel ), { ofMinLength: 1 });
-    };
-
-    /* Compile  all styling for the panel*/
-    const getStylingByPanel = panel => {
-      const checkPanelFlex = panel => {
-        switch ( panel ) {
-          case 'north':
-          case 'south':
-            return hasContent( 'CENTRE' ) || hasContent( 'EAST' ) || hasContent( 'WEST' )
-              ? {}
-              : { flex: 1 };
-          case 'east':
-          case 'west':
-            return hasContent( 'CENTRE' ) ? {} : { flex: 1 };
-          case 'centre':
-          case 'frame':
-          default:
-            return {};
-        }
-      };
-
-      return {
-        ...defaultStyle.panel,
-        ...defaultStyle[panel],
-        /* If the centre panel is rendered, then it is the only panel that expands.
-          If not, then the other panels need to have flex 1 to expand. */
-        ...checkPanelFlex( panel ),
-      };
-    };
-
-    const getStyling = panel => {
-      // filter links for panel
-      const panelLinks = [
-        ...filterThemes( this.state.themes, this.props.themes, {
-          panel: panel.toUpperCase(),
-        }),
-      ];
-
-      // get props from theme links
-      const themeProps = getPropsFromThemes( panelLinks, this.props.themes );
-
-      const combinedThemeProps = objectMerge( this.props.inheritedProps, themeProps );
-
-      // console.log( inheritedThemeProps, themeProps, combinedThemeProps );
-      // console.warn({ inheritedLinks });
-
-      return {
-        ...combinedThemeProps,
-      };
-    };
-
-    const isExpandable = panel =>
-      isArray( rootFrame.expandablePanels ) ? rootFrame.expandablePanels.includes( panel ) : false;
-
-    const shouldUseSwipeable =
-      getDeviceSize() === 'sm' &&
-      !isRootFrame &&
-      hasContent( 'CENTRE' ) &&
-      ( hasContent( 'WEST' ) || hasContent( 'EAST' ));
-
-    const RowComponent = shouldUseSwipeable ? Swipeable : Box;
-
-    const inheritableWrapperThemes = {
-      ...objectMerge( wrapperThemes, this.getInhertiableThemes( 'WRAPPER' )),
-    };
-
-    const frameProperties = this.getPropertiesByPanel( 'FRAME' );
-
-    return (
-      <Box
-        componentID="FRAME-WRAPPER"
-        componentCode={rootCode}
-        {...defaultStyle.wrapper}
-        // {...wrapperThemes['default']}
-        // {...getStyling( 'wrapper' )['default']}
-        position="relative"
-        {...objectMerge( wrapperThemes, getStyling( 'wrapper' ))['default']}
-        {...( frameProperties.shareable ? {
-          height: 'fit-content',
-          // width: 'fit-content',
-          backgroundColor: 'blue',
-        } : {})}
-        onRef={this.handleRef}
-      >
-        {
-          // !isExpandable
-          frameProperties.shareable
-            ? (
-              <Box
-                position="absolute"
-                top={0}
-                right={0}
-                zIndex={1000}
-              >
-                <Dropdown
-                  subcomponentProps={{
-                    'group-content-wrapper': {
-                      // width: 100,
-                      flexDirection: 'row',
-                      backgroundColor: 'white',
-                      offsetY: -50,
-                    },
-                  }}
-                  // isClosed={this.props.isClosed}
-                  // testID={`${parentGroupCode || questionCode}:${questionCode}`}
-                  showIcon={false}
-                  renderHeader={(
-                    <Fragment>
-                      <Box
-                        padding={5}
-                      >
-                        <Icon
-                          // size="sm"
-                          // color="black"
-                          size="sm"
-                          color="black"
-                          name="share"
-                          cursor="pointer"
-                        />
-                      </Box>
-                    </Fragment>
-                  )}
-                >
-                  <Touchable
-                    onPress={this.handlePress}
-                    withFeedback
-                  >
-                    <Box
-                      padding={5}
-                    >
-                      <Icon
-                        // size="sm"
-                        // color="black"
-                        size="sm"
-                        color="black"
-                        // name="picture_as_pdf"
-                        name="save-alt"
-                        cursor="pointer"
-                      />
-                    </Box>
-                  </Touchable>
-                  {/* <Box
-                    paddingRight={5}
-                  />
-                  <Box
-                    padding={5}
-                  >
-                    <Icon
-                      // size="sm"
-                      // color="black"
-                      size="sm"
-                      color="black"
-                      name="email"
-                      cursor="pointer"
-                    />
-                  </Box> */}
-                </Dropdown>
-                {/* <Touchable
-                  // onPress={this.handleToggleMaximised}
-                  onPress={this.handlePress}
-                  withFeedback
-                  opacity={0}
-                  hoverProps={{
-                    style: {
-                      opacity: 1,
-                    },
-                  }}
-                >
-                  <Box
-                    padding={5}
-                    // backgroundColor="black"
-                    // opacity={0.5}
-                  >
-                    <Icon
-                      // size="sm"
-                      // color="black"
-                      size="lg"
-                      color="black"
-                      name="share"
-                      cursor="pointer"
-                    />
-                  </Box>
-                </Touchable> */}
-              </Box>
-            ) : null
-        }
-        {hasContent( 'NORTH' ) ? (
-          <Panel
-            rootCode={rootCode}
-            location="NORTH"
-            style={getStylingByPanel( 'north' )} // theme props for this element filterThemes() -> getPropsFromThemes()
-            inheritedProps={getStyling( 'north' )}
-            isExpandable={isExpandable( 'NORTH' )}
-            // onLayout={this.handlePanelOnLayout}
-          >
-            <Recurser
-              content={filterByPanel( panelContent, 'NORTH' )}
-              themes={this.getInhertiableThemes( 'NORTH' )}
-              wrapperThemes={inheritableWrapperThemes}
-              // delimiterProps={this.getDelimiterStyling( 'NORTH' )}
-              hasDelimiter={this.getPropertiesByPanel( 'NORTH' )['renderDelimiter']}
-              isClosed={isClosed}
-            />
-          </Panel>
-        ) : null}
-        {hasContent( 'WEST' ) || hasContent( 'CENTRE' ) || hasContent( 'EAST' ) ? (
-          <RowComponent
-            id="row"
-            componentID="FRAME-ROW"
-            componentCode={rootCode}
-            {...( shouldUseSwipeable ? defaultStyle.rowMobile : defaultStyle.row )}
-          >
-            {hasContent( 'WEST' ) ? (
-              <Panel
-                rootCode={rootCode}
-                location="WEST"
-                style={getStylingByPanel( 'west' )}
-                inheritedProps={getStyling( 'west' )}
-                isExpandable={isExpandable( 'WEST' )}
-                // onLayout={this.handlePanelOnLayout}
-              >
-                <Recurser
-                  content={filterByPanel( panelContent, 'WEST' )}
-                  // themes={{ ...this.getStyling( 'WEST', true ) }}
-                  themes={this.getInhertiableThemes( 'WEST' )}
-                  wrapperThemes={inheritableWrapperThemes}
-                  // delimiterProps={this.getDelimiterStyling( 'WEST' )}
-                  hasDelimiter={this.getPropertiesByPanel( 'WEST' )['renderDelimiter']}
-                  isClosed={isClosed}
-                />
-              </Panel>
-            ) : null}
-            {hasContent( 'CENTRE' ) ? (
-              <Panel
-                rootCode={rootCode}
-                location="CENTRE"
-                style={getStylingByPanel( 'centre' )}
-                inheritedProps={getStyling( 'centre' )}
-                isExpandable={isExpandable( 'CENTRE' )}
-                // onLayout={this.handlePanelOnLayout}
-              >
-                <Recurser
-                  content={filterByPanel( panelContent, 'CENTRE' )}
-                  // themes={{ ...this.getStyling( 'CENTRE', true ) }}
-                  themes={this.getInhertiableThemes( 'CENTRE' )}
-                  wrapperThemes={inheritableWrapperThemes}
-                  // delimiterProps={this.getDelimiterStyling( 'CENTRE' )}
-                  hasDelimiter={this.getPropertiesByPanel( 'CENTER' )['renderDelimiter']}
-                  isClosed={isClosed}
-                />
-              </Panel>
-            ) : null}
-            {hasContent( 'EAST' ) ? (
-              <Panel
-                rootCode={rootCode}
-                location="EAST"
-                style={getStylingByPanel( 'east' )}
-                inheritedProps={getStyling( 'east' )}
-                isExpandable={isExpandable( 'EAST' )}
-                // onLayout={this.handlePanelOnLayout}
-              >
-                <Recurser
-                  content={filterByPanel( panelContent, 'EAST' )}
-                  // themes={{ ...this.getStyling( 'EAST', true ) }}
-                  themes={this.getInhertiableThemes( 'EAST' )}
-                  wrapperThemes={inheritableWrapperThemes}
-                  // delimiterProps={this.getDelimiterStyling( 'EAST' )}
-                  hasDelimiter={this.getPropertiesByPanel( 'EAST' )['renderDelimiter']}
-                  isClosed={isClosed}
-                />
-              </Panel>
-            ) : null}
-          </RowComponent>
-        ) : null}
-        {hasContent( 'SOUTH' ) ? (
-          <Panel
-            rootCode={rootCode}
-            location="SOUTH"
-            style={getStylingByPanel( 'south' )}
-            inheritedProps={getStyling( 'south' )}
-            isExpandable={isExpandable( 'SOUTH' )}
-            // onLayout={this.handlePanelOnLayout}
-          >
-            <Recurser
-              content={filterByPanel( panelContent, 'SOUTH' )}
-              // themes={{ ...this.getStyling( 'SOUTH', true ) }}
-              themes={this.getInhertiableThemes( 'SOUTH' )}
-              wrapperThemes={inheritableWrapperThemes}
-              // delimiterProps={this.getDelimiterStyling( 'SOUTH' )}
-              hasDelimiter={this.getPropertiesByPanel( 'SOUTH' )['renderDelimiter']}
-              isClosed={isClosed}
-            />
-          </Panel>
-        ) : null}
-      </Box>
-    );
+    return <Sam {...this.props} />;
   }
 }
 
