@@ -32,7 +32,7 @@ const MainSideBar = ({ items, asks, frames, user, agencyCompany, viewing, setVie
         name={items[0].name}
         questionCode={items[0].questionCode}
         childAsks={items[0].childAsks}
-        currentViewing={last( viewing )}
+        currentViewing={prop( 'code', viewing )}
         setViewing={setViewing}
       />
     ))( dropDowns )

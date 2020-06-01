@@ -4,7 +4,7 @@ import { Button, Menu, MenuItem } from '@material-ui/core';
 
 const buildGroupCode = str => str.replace( 'MENU', 'GRP' );
 
-const HeaderMenu = ({ group, setViewing }) => {
+const HeaderMenu = ({ group, setViewing, parentCode }) => {
   const [menu, setMenu] = useState( null );
 
   return (
@@ -24,7 +24,12 @@ const HeaderMenu = ({ group, setViewing }) => {
         {map(({ name, questionCode }) => (
           <MenuItem
             key={`menuItem${questionCode}`}
-            onClick={() => setViewing( [buildGroupCode( questionCode )] )}
+            onClick={() =>
+              setViewing({
+                code: questionCode,
+                parentCode,
+              })
+            }
           >
             {name}
           </MenuItem>

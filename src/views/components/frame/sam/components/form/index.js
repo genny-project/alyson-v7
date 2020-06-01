@@ -1,6 +1,8 @@
 import React from 'react';
-import { path, map } from 'ramda';
+import { path, map, prop } from 'ramda';
 import { Grid, Typography } from '@material-ui/core';
+
+import onSubmit from './field/actions/on-submit';
 
 import Field from './field';
 
@@ -9,6 +11,11 @@ import useStyles from './styles';
 const Form = ({ formView, asks, baseEntities, links }) => {
   const title = path( ['question', 'name'], formView );
   const formFields = path( ['childAsks'], formView );
+
+  console.log( formView );
+
+  const parentCode = prop( 'questionCode', formView );
+  const rootCode = prop( 'questionCode', formView );
 
   const classes = useStyles();
 
@@ -41,6 +48,7 @@ const Form = ({ formView, asks, baseEntities, links }) => {
             fieldData={field}
             baseEntities={baseEntities}
             links={links}
+            onSubmit={onSubmit({ parentCode, rootCode })}
           />
         </Grid>
       ))( formFields )}

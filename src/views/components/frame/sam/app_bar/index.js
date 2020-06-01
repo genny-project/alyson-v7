@@ -35,6 +35,7 @@ const MainAppBar = ({ items, frames, asks, user, setViewing }) => {
           <HeaderMenu
             group={asks['QUE_ADD_ITEMS_GRP']}
             setViewing={setViewing}
+            parentCode="QUE_ADD_ITEMS_GRP"
           />
           <IconButton
             edge="end"

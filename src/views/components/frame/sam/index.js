@@ -25,19 +25,21 @@ const Sam = props => {
   const agency = path( ['attributes', 'LNK_AGENCY', 'value'], user );
   const agencyCompany = path( [agency, 'name'], baseEntities );
 
-  const [viewing, setViewing] = useState( ['QUE_DASHBOARD_VIEW'] );
+  const [viewing, setViewing] = useState({});
 
   console.log( viewing );
-  const data = { code: viewing[0] };
+  const data = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
 
   useEffect(
     () => {
-      Bridge.sendEvent({
-        event: 'BTN',
-        data,
-        eventType: 'BTN_CLICK',
-        sendWithToken: true,
-      });
+      if ( viewing.parentCode ) {
+        Bridge.sendEvent({
+          event: 'BTN',
+          data,
+          eventType: 'BTN_CLICK',
+          sendWithToken: true,
+        });
+      }
     },
     [viewing]
   );

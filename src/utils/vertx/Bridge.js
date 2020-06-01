@@ -181,6 +181,7 @@ class Bridge {
     value,
     ...restProps
   }) {
+    console.warn( sourceCode, targetCode, 'SEND FORMATTED ANSWER' );
     if ( isString( sourceCode, { ofMinLength: 1 }) && isString( targetCode, { ofMinLength: 1 })) {
       this.sendEvent({
         event: messageType,
