@@ -19,6 +19,7 @@
   "dependencies": {
     "@material-ui/core": "^4.10.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.54",
     "@reach/dialog": "^0.1.2",
     "@reach/menu-button": "^0.1.8",
     "@reach/observe-rect": "^1.0.3",
@@ -31,6 +32,7 @@
     "appcenter-analytics": "^1.6.0",
     "appcenter-crashes": "^1.6.0",
     "au-bn-validator": "^1.2.2",
+    "autosuggest-highlight": "^3.1.1",
     "axios": "^0.18.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-react-native-web": "^0.8.6",
@@ -76,6 +78,7 @@
     "lodash.range": "^3.2.0",
     "lodash.uppercase": "^4.3.0",
     "match-sorter": "2.3.0",
+    "material-ui-image": "^3.2.3",
     "memoize-one": "^4.0.2",
     "moment": "^2.22.2",
     "nprogress": "^0.2.0",

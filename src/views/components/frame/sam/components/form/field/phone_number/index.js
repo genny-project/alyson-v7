@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import MaskedInput from 'react-text-mask';
 import { TextField } from '@material-ui/core';
+import useStyles from './styles';
 
 const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate }) => {
   const [value, setValue] = useState( fieldType === 'mobile' ? '(61)   -   -   ' : '0 -    -    ' );
@@ -61,6 +62,8 @@ const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate }) => {
       />
     );
 
+  const classes = useStyles();
+
   return (
     <TextField
       label={label}
@@ -71,6 +74,7 @@ const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate }) => {
       }}
       variant="outlined"
       onBlur={handleUpdate}
+      className={classes.inputField}
     />
   );
 };

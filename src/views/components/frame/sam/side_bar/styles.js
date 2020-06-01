@@ -13,9 +13,18 @@ const useStyles = makeStyles( theme => ({
     width: DRAWER_WIDTH,
     overflowY: 'scroll',
   },
+  grow: {
+    flexGrow: 1,
+  },
   title: {
     paddingTop: theme.spacing( 1 ),
+    minHeight: APP_BAR_HEIGHT,
+  },
+  logo: {
     height: APP_BAR_HEIGHT,
+  },
+  poweredBy: {
+    marginBottom: theme.spacing( 1 ),
   },
 }));
 

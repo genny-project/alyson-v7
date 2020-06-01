@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { path, map, prop } from 'ramda';
 import { Grid, Typography } from '@material-ui/core';
 
@@ -12,14 +12,12 @@ const Form = ({ formView, asks, baseEntities, links }) => {
   const title = path( ['question', 'name'], formView );
   const formFields = path( ['childAsks'], formView );
 
-  console.log( formView );
-
   const parentCode = prop( 'questionCode', formView );
   const rootCode = prop( 'questionCode', formView );
 
   const classes = useStyles();
 
-  console.log( formFields );
+  const [errors, setErrors] = useState({});
 
   return (
     <Grid
@@ -49,6 +47,8 @@ const Form = ({ formView, asks, baseEntities, links }) => {
             baseEntities={baseEntities}
             links={links}
             onSubmit={onSubmit({ parentCode, rootCode })}
+            errors={errors}
+            setErrors={setErrors}
           />
         </Grid>
       ))( formFields )}

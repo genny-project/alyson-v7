@@ -8,7 +8,6 @@ import App from './views/app';
 import { VertxProvider, GoogleProvider, ErrorBoundary } from './views/components';
 import { store, persistor } from './redux';
 import './utils/layouts-dev';
-import { ThemeProvider } from '@material-ui/core'
 
 // const { store, persistor } = reduxStore();
 
@@ -28,14 +27,10 @@ if ( typeof window !== 'undefined' ) {
 const Root = () => (
   <ErrorBoundary>
     <ReduxProvider store={store}>
-      <PersistGate
-        persistor={persistor}
-      >
+      <PersistGate persistor={persistor}>
         <VertxProvider>
           <GoogleProvider>
-            <ThemeProvider>
-              <App />
-            </ThemeProvider>
+            <App />
           </GoogleProvider>
         </VertxProvider>
       </PersistGate>

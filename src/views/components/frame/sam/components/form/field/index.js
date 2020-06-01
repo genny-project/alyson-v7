@@ -10,7 +10,7 @@ import SubmitButton from './submit_button';
 import AddressSelect from './address_select';
 import TextInput from './text_input';
 
-const Field = ({ fieldData, baseEntities, links, onSubmit }) => {
+const Field = ({ fieldData, baseEntities, links, onSubmit, errors, setErrors }) => {
   const label = path( ['name'], fieldData );
   const dataType = path( ['question', 'attribute', 'dataType'], fieldData );
   const fieldType = toLower( path( ['typeName'], dataType ));
@@ -18,13 +18,15 @@ const Field = ({ fieldData, baseEntities, links, onSubmit }) => {
 
   console.log( fieldType );
 
-  return fieldType === 'text' || fieldType === 'email' ? (
+  return fieldType === 'text' || fieldType === 'email' || fieldType === 'abn number' ? (
     <TextInput
       fieldData={fieldData}
       label={label}
       variant="outlined"
       fullWidth
       onUpdate={onUpdate}
+      errors={errors}
+      setErrors={setErrors}
     />
   ) : fieldType === 'radio' ? (
     <RadioGroup
@@ -35,6 +37,8 @@ const Field = ({ fieldData, baseEntities, links, onSubmit }) => {
       baseEntities={baseEntities}
       links={links}
       onUpdate={onUpdate}
+      errors={errors}
+      setErrors={setErrors}
     />
   ) : fieldType === 'mobile' || fieldType === 'landline' ? (
     <PhoneNumberInput
@@ -42,6 +46,8 @@ const Field = ({ fieldData, baseEntities, links, onSubmit }) => {
       label={label}
       onUpdate={onUpdate}
       fieldType={fieldType}
+      errors={errors}
+      setErrors={setErrors}
     />
   ) : fieldType === 'dropdown' || fieldType === 'dropdownmultiple' ? (
     <DropdownSelect
@@ -51,12 +57,16 @@ const Field = ({ fieldData, baseEntities, links, onSubmit }) => {
       label={label}
       multiple={includes( 'multiple', fieldType )}
       onUpdate={onUpdate}
+      errors={errors}
+      setErrors={setErrors}
     />
   ) : fieldType === 'buttonevent' ? (
     <SubmitButton
       fieldData={fieldData}
       label={label}
       onSubmit={onSubmit}
+      errors={errors}
+      setErrors={setErrors}
     />
   ) : fieldType === 'address' ? (
     <AddressSelect onUpdate={onUpdate} />

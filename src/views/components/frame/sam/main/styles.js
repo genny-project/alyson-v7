@@ -8,7 +8,8 @@ const useStyles = makeStyles( theme => ({
     marginLeft: DRAWER_WIDTH,
     padding: theme.spacing( 3 ),
     backgroundColor: theme.palette.background.default,
-    height: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
+    height: `calc(100vh - ${APP_BAR_HEIGHT * 2}px)`,
+    paddingBottom: APP_BAR_HEIGHT,
     overflowY: 'scroll',
   },
   mainPaper: {

@@ -24,12 +24,13 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
         {map(({ name, questionCode }) => (
           <MenuItem
             key={`menuItem${questionCode}`}
-            onClick={() =>
+            onClick={() => {
+              setMenu( null );
               setViewing({
                 code: questionCode,
                 parentCode,
-              })
-            }
+              });
+            }}
           >
             {name}
           </MenuItem>

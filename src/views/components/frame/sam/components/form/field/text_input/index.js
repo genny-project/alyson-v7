@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { TextField } from '@material-ui/core';
+import { prop } from 'ramda';
 
-const TextInput = ({ onUpdate, fieldData, label, initialValue, ...rest }) => {
+const TextInput = ({ errors, setErrors, onUpdate, fieldData, label, initialValue, ...rest }) => {
   const [value, setValue] = useState( initialValue || '' );
 
   const {
     attributeCode,
-    question: { code: questionCode },
+    question: {
+      code: questionCode,
+      attribute: {
+        dataType: { validationList },
+      },
+    },
     sourceCode,
     targetCode,
     weight,
+    mandatory,
   } = fieldData;
 
   const handleUpdate = () =>
@@ -24,13 +31,24 @@ const TextInput = ({ onUpdate, fieldData, label, initialValue, ...rest }) => {
       value,
     });
 
+  const handleChange = ({ target: { value } }) => {
+    setValue( value );
+    if ( mandatory && !value ) {
+      setErrors( errors => ({ ...errors, [questionCode]: true }));
+    } else if ( prop( questionCode, errors )) {
+      setErrors( errors => ({ ...errors, [questionCode]: false }));
+    }
+  };
+
   return (
     <TextField
       {...rest}
+      error={errors[questionCode] || false}
       value={value}
-      onChange={event => setValue( event.target.value )}
+      onChange={handleChange}
       onBlur={handleUpdate}
       label={label}
+      required={mandatory}
     />
   );
 };

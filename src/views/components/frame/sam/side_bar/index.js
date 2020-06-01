@@ -1,14 +1,7 @@
 import React from 'react';
-import { map, filter, compose, includes, prop, pickBy, values, last } from 'ramda';
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  Divider,
-  Container,
-} from '@material-ui/core';
+import { map, filter, compose, includes, prop, pickBy, values, path } from 'ramda';
+import { Grid, Drawer, List, Typography, Container } from '@material-ui/core';
+import Image from 'material-ui-image';
 
 import NavigationItem from './navigation_item';
 
@@ -16,7 +9,16 @@ import { getLinksFrom } from '../helpers/get-components';
 
 import useStyles from './styles';
 
-const MainSideBar = ({ items, asks, frames, user, agencyCompany, viewing, setViewing }) => {
+const MainSideBar = ({
+  items,
+  asks,
+  frames,
+  user,
+  agencyCompany,
+  viewing,
+  setViewing,
+  attributes,
+}) => {
   const components = compose(
     map( map( code => prop( code, asks ))),
     map( filter( includes( 'QUE' ))),
@@ -38,6 +40,11 @@ const MainSideBar = ({ items, asks, frames, user, agencyCompany, viewing, setVie
     ))( dropDowns )
   );
 
+  const { targetCode } = components.FRM_LOGO[0];
+  const logoUrl = path( [targetCode, 'PRI_LOGO', 'value'], attributes )[0].uploadURL;
+  const title = path( [targetCode, 'PRI_NAME', 'value'], attributes );
+  const poweredBy = path( [targetCode, 'PRI_POWERED_BY', 'value'], attributes );
+
   const classes = useStyles();
 
   return (
@@ -48,13 +55,28 @@ const MainSideBar = ({ items, asks, frames, user, agencyCompany, viewing, setVie
       classes={{ paper: classes.drawerPaper }}
     >
       <Container className={classes.title}>
-        <Typography variant="h6">
-          {agencyCompany}
+        <Image
+          src={logoUrl}
+          className={classes.logo}
+        />
+      </Container>
+      <Container className={classes.title}>
+        <Typography
+          variant="h6"
+          color="primary"
+        >
+          {title}
         </Typography>
       </Container>
       <List>
         {dropDownComponents}
       </List>
+      <div className={classes.grow} />
+      <Container className={classes.poweredBy}>
+        <Typography variant="caption">
+          {`Powered By ${poweredBy}`}
+        </Typography>
+      </Container>
     </Drawer>
   );
 };

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import { Bridge } from '../../../../utils/vertx/index';
 
+import { ThemeProvider, createMuiTheme } from '@material-ui/core';
+
 import {
   getDrawerItems,
   getAppBarItems,
@@ -21,14 +23,22 @@ const Sam = props => {
   const asks = props.asks || {};
   const themes = props.themes || {};
   const user = props.user || {};
+  const attributes = props.attributes || {};
 
   const agency = path( ['attributes', 'LNK_AGENCY', 'value'], user );
   const agencyCompany = path( [agency, 'name'], baseEntities );
 
   const [viewing, setViewing] = useState({});
 
-  console.log( viewing );
   const data = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
+
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: path( ['PRJ_INTERNMATCH', 'PRI_COLOR_PRIMARY', 'value'], attributes ),
+      },
+    },
+  });
 
   useEffect(
     () => {
@@ -45,37 +55,41 @@ const Sam = props => {
   );
 
   return (
-    <div>
-      <AppBar
-        items={getAppBarItems( frames, asks, themes )}
-        asks={asks}
-        frames={frames}
-        user={user}
-        setViewing={setViewing}
-      />
-      <Sidebar
-        items={getDrawerItems( frames, asks, themes )}
-        asks={asks}
-        frames={frames}
-        user={user}
-        agencyCompany={agencyCompany}
-        setViewing={setViewing}
-        viewing={viewing}
-      />
-      <Main
-        viewing={viewing}
-        asks={asks}
-        frames={frames}
-        user={user}
-        baseEntities={baseEntities}
-        links={links}
-      />
-    </div>
+    <ThemeProvider theme={theme}>
+      <div>
+        <AppBar
+          items={getAppBarItems( frames, asks, themes )}
+          asks={asks}
+          frames={frames}
+          user={user}
+          setViewing={setViewing}
+        />
+        <Sidebar
+          items={getDrawerItems( frames, asks, themes )}
+          asks={asks}
+          frames={frames}
+          user={user}
+          agencyCompany={agencyCompany}
+          setViewing={setViewing}
+          viewing={viewing}
+          attributes={attributes}
+        />
+        <Main
+          viewing={viewing}
+          asks={asks}
+          frames={frames}
+          user={user}
+          baseEntities={baseEntities}
+          links={links}
+        />
+      </div>
+    </ThemeProvider>
   );
 };
 
 const mapStateToProps = state => ({
   baseEntities: state.vertx.baseEntities.data,
+  attributes: state.vertx.baseEntities.attributes,
   links: state.vertx.baseEntities.links,
   asks: state.vertx.asks,
   themes: state.vertx.layouts.themes,
