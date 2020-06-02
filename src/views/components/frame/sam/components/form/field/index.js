@@ -28,6 +28,8 @@ const Field = ({
     mandatory,
   } = fieldData;
 
+  if ( mandatory && not( has( questionCode, errors ))) setErrors({ ...errors, [questionCode]: true });
+
   return fieldType === 'text' || fieldType === 'email' || fieldType === 'abn number' ? (
     <TextInput
       fieldData={fieldData}

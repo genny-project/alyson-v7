@@ -14,6 +14,7 @@ const TextInput = ({
   ...rest
 }) => {
   const [value, setValue] = useState( initialValue || '' );
+  const [touched, setTouched] = useState( false );
 
   const {
     attributeCode,
@@ -44,6 +45,7 @@ const TextInput = ({
   const handleChange = ({ target: { value } }) => {
     setValue( value );
     if ( pristine ) setPristine( false );
+    if ( !touched ) setTouched( true );
     if ( mandatory && !value ) {
       setErrors( errors => ({ ...errors, [questionCode]: true }));
     } else if ( prop( questionCode, errors )) {
@@ -54,7 +56,7 @@ const TextInput = ({
   return (
     <TextField
       {...rest}
-      error={errors[questionCode] || false}
+      error={touched && errors[questionCode]}
       value={value}
       onChange={handleChange}
       onBlur={handleUpdate}
