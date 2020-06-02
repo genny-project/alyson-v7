@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { path } from 'ramda';
 import { connect } from 'react-redux';
+import Geocode from 'react-geocode';
 
 import { Bridge } from '../../../../utils/vertx/index';
 
@@ -24,6 +25,7 @@ const Sam = props => {
   const themes = props.themes || {};
   const user = props.user || {};
   const attributes = props.attributes || {};
+  const googleApiKey = props.keycloak.data.ENV_GOOGLE_MAPS_APIKEY;
 
   const agency = path( ['attributes', 'LNK_AGENCY', 'value'], user );
   const agencyCompany = path( [agency, 'name'], baseEntities );
@@ -32,6 +34,7 @@ const Sam = props => {
 
   const data = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
 
+  Geocode.setApiKey( googleApiKey );
   const theme = createMuiTheme({
     palette: {
       primary: {
@@ -81,6 +84,7 @@ const Sam = props => {
           user={user}
           baseEntities={baseEntities}
           links={links}
+          googleApiKey={googleApiKey}
         />
       </div>
     </ThemeProvider>
@@ -96,6 +100,7 @@ const mapStateToProps = state => ({
   frames: state.vertx.layouts.frames,
   user: state.vertx.user,
   vertx: state.vertx,
+  keycloak: state.keycloak,
 });
 
 export default connect( mapStateToProps )( Sam );

@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { func, number, object, array, string, oneOf } from 'prop-types';
 import debounce from 'lodash.debounce';
 import dlv from 'dlv';
-import { flag /* code, name, countries */  } from 'country-emoji';
+import { flag /* code, name, countries */ } from 'country-emoji';
 import { Input, GoogleConsumer, Touchable, Box, Text } from '../../index';
 import { isString } from '../../../../utils';
 
-const iconInternational = String.fromCodePoint( 0x1F30E );
+const iconInternational = String.fromCodePoint( 0x1f30e );
 const iconAU = flag( 'AU' );
 
 class InputAddress extends Component {
@@ -32,7 +32,7 @@ class InputAddress extends Component {
     placeholder: 'Please enter an address...',
     getShortNameForAddressComponents: ['country'],
     restrictCountry: 'au',
-  }
+  };
 
   static propTypes = {
     placeholder: string,
@@ -46,75 +46,61 @@ class InputAddress extends Component {
     injectCustomAddressComponents: object,
     getShortNameForAddressComponents: array,
     testID: string,
-    restrictCountry: oneOf( [
-      'au',
-    ] ),
-  }
+    restrictCountry: oneOf( ['au'] ),
+  };
 
   constructor( props ) {
     super( props );
 
-    this.autocompleteAddress = debounce(
-      this.autocompleteAddress,
-      this.props.debounceTimer
-    );
+    this.autocompleteAddress = debounce( this.autocompleteAddress, this.props.debounceTimer );
   }
 
   state = {
     items: [],
     countryLock: true,
-  }
+  };
 
   autocompleteAddress = async address => {
     const { google, restrictCountry } = this.props;
 
     const options = {
-      ...(
-        isString( restrictCountry, { ofMinLength: 1 }) &&
-        this.state.countryLock === true
-          ? {
-            componentRestrictions: {
-              country: restrictCountry,
-            },
-          }
-          : {}
-      ),
+      ...( isString( restrictCountry, { ofMinLength: 1 }) && this.state.countryLock === true
+        ? {
+          componentRestrictions: {
+            country: restrictCountry,
+          },
+        }
+        : {}),
     };
 
     if ( isString( address, { ofMinLength: 1 })) {
       try {
-        const items = await google.autocompleteAddress(
-          address,
-          options
-        );
+        const items = await google.autocompleteAddress( address, options );
 
         this.setState({ items });
-      }
-      catch ( error ) {
+      } catch ( error ) {
         // eslint-disable-next-line no-console
         console.warn( error );
 
         this.setState({ items: [] });
       }
-    }
-    else {
+    } else {
       this.setState({ items: [] });
     }
-  }
+  };
 
   geocodeAddress = async address => {
     const { google } = this.props;
 
     try {
       await google.geocodeAddress( address );
-    }
-    catch ( error ) {
+    } catch ( error ) {
       // eslint-disable-next-line no-console
       console.warn( error );
 
       this.setState({ items: [] });
     }
-  }
+  };
 
   formatPlace( place ) {
     // console.log( 'formatPlace', place );
@@ -123,15 +109,13 @@ class InputAddress extends Component {
       const { injectCustomAddressComponents } = this.props;
       const { formatted_address, address_components, geometry } = place;
 
-      const components =
-        address_components
-          .filter( this.handleFilterAddressComponents )
-          .reduce( this.handleReduceAddressComponent, {});
+      const components = address_components
+        .filter( this.handleFilterAddressComponents )
+        .reduce( this.handleReduceAddressComponent, {});
 
-      const customComponents =
-        injectCustomAddressComponents
-          ? this.createCustomAddressComponents( components )
-          : {};
+      const customComponents = injectCustomAddressComponents
+        ? this.createCustomAddressComponents( components )
+        : {};
 
       return {
         ...components,
@@ -140,8 +124,7 @@ class InputAddress extends Component {
         longitude: geometry.location.lng(),
         ...customComponents,
       };
-    }
-    catch ( error ) {
+    } catch ( error ) {
       throw new Error( 'Attempted to invoke `formatPlace` without a valid place object', error );
     }
   }
@@ -149,19 +132,19 @@ class InputAddress extends Component {
   createCustomAddressComponents( addressComponents ) {
     const { injectCustomAddressComponents } = this.props;
 
-    return Object
-      .keys( injectCustomAddressComponents )
-      .reduce(( resultant, customAddressComponent ) => {
-        const component =
-          injectCustomAddressComponents[customAddressComponent]
-            .split( '{{' )
-            .map( this.handleFillCustomAddressPath( addressComponents ))
-            .join( '' );
+    return Object.keys( injectCustomAddressComponents ).reduce(
+      ( resultant, customAddressComponent ) => {
+        const component = injectCustomAddressComponents[customAddressComponent]
+          .split( '{{' )
+          .map( this.handleFillCustomAddressPath( addressComponents ))
+          .join( '' );
 
         resultant[customAddressComponent] = component;
 
         return resultant;
-      }, {});
+      },
+      {}
+    );
   }
 
   handleFillCustomAddressPath = addressComponents => path => {
@@ -179,22 +162,19 @@ class InputAddress extends Component {
 
     /* Re-combine tokens back to a single string. */
     return tokens.join( '' );
-  }
+  };
 
   handleFilterAddressComponents = ({ types }) => {
     const { includeAddressFields, excludeAddressFields } = this.props;
 
     for ( const type of types ) {
-      if (
-        includeAddressFields.includes( type ) &&
-        !excludeAddressFields.includes( type )
-      ) {
+      if ( includeAddressFields.includes( type ) && !excludeAddressFields.includes( type )) {
         return true;
       }
     }
 
     return false;
-  }
+  };
 
   handleReduceAddressComponent = ( resultant, addressComponent ) => {
     const {
@@ -209,15 +189,13 @@ class InputAddress extends Component {
       if ( includeAddressFields.includes( type )) {
         const key = mapAddressComponentToField[type] || type;
 
-        if ( getShortNameForAddressComponents.includes( key ))
-          resultant[key] = short_name;
-        else
-          resultant[key] = long_name;
+        if ( getShortNameForAddressComponents.includes( key )) resultant[key] = short_name;
+        else resultant[key] = long_name;
       }
     });
 
     return resultant;
-  }
+  };
 
   handleChange = async item => {
     // console.log( 'handleChange', item );
@@ -230,11 +208,7 @@ class InputAddress extends Component {
         placeId: place_id,
       });
 
-      if (
-        !places ||
-        !( places instanceof Array ) ||
-        !places.length
-      ) {
+      if ( !places || !( places instanceof Array ) || !places.length ) {
         throw new Error( `Unable to find geocoded results for placeId ${place_id}` );
       }
 
@@ -248,25 +222,23 @@ class InputAddress extends Component {
         });
       }
 
-      if ( this.props.onChangeValue )
-        this.props.onChangeValue( formattedPlace );
-    }
-    catch ( error ) {
+      if ( this.props.onChangeValue ) this.props.onChangeValue( formattedPlace );
+    } catch ( error ) {
       // eslint-disable-next-line no-console
       console.warn( error );
     }
-  }
+  };
 
   handleToggleCountryLock = () => {
     this.setState( state => ({
       countryLock: !state.countryLock,
     }));
-  }
+  };
 
   handleType = text => {
     // console.log( 'handleType', text );
     this.autocompleteAddress( text );
-  }
+  };
 
   render() {
     const { testID, onChangeValue, onBlur, ...restProps } = this.props; // eslint-disable-line
@@ -280,23 +252,19 @@ class InputAddress extends Component {
         {/*
           This can be turned into a dropdown menu to allow any country to be selected.
         */}
-        {
-          restProps.editable ? (
-            <Touchable
-              withFeedback
-              onPress={this.handleToggleCountryLock}
-            >
-              <Text
-                text={countryLock ? iconAU : iconInternational}
-                size="sm"
-              />
-            </Touchable>
-          ) : null
-        }
+        {restProps.editable ? (
+          <Touchable
+            withFeedback
+            onPress={this.handleToggleCountryLock}
+          >
+            <Text
+              text={countryLock ? iconAU : iconInternational}
+              size="sm"
+            />
+          </Touchable>
+        ) : null}
 
-        <Box
-          paddingLeft={5}
-        />
+        <Box paddingLeft={5} />
 
         <Input
           {...restProps}
@@ -309,7 +277,6 @@ class InputAddress extends Component {
           onChange={this.handleChange}
           testID={testID}
         />
-
       </Box>
     );
   }

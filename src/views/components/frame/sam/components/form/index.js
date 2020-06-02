@@ -8,7 +8,7 @@ import Field from './field';
 
 import useStyles from './styles';
 
-const Form = ({ formView, asks, baseEntities, links }) => {
+const Form = ({ formView, asks, baseEntities, links, googleApiKey }) => {
   const title = path( ['question', 'name'], formView );
   const formFields = path( ['childAsks'], formView );
 
@@ -56,6 +56,7 @@ const Form = ({ formView, asks, baseEntities, links }) => {
             baseEntities={baseEntities}
             links={links}
             meta={meta}
+            googleApiKey={googleApiKey}
           />
         </Grid>
       ))( formFields )}
