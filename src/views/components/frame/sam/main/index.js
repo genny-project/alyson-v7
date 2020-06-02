@@ -7,7 +7,7 @@ import { Form } from '../components';
 
 import useStyles from './styles';
 
-const Main = ({ viewing, baseEntities, asks, links, frames, user }) => {
+const Main = ({ viewing, baseEntities, asks, links, frames, user, googleApiKey }) => {
   const classes = useStyles();
 
   const view = not( isEmpty( viewing )) ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] : null;
@@ -23,6 +23,7 @@ const Main = ({ viewing, baseEntities, asks, links, frames, user }) => {
             asks={asks}
             baseEntities={baseEntities}
             links={links}
+            googleApiKey={googleApiKey}
           />
         ) : (
           <div>

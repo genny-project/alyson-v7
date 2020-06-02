@@ -1,6 +1,6 @@
 import React from 'react';
 import { path, toLower, includes, has, not } from 'ramda';
-
+import { GoogleConsumer } from '../../../../../../components/index';
 import onUpdate from './actions/on-update';
 
 import RadioGroup from './radio_group';
@@ -16,7 +16,7 @@ const Field = ({
   baseEntities,
   links,
   meta: { onSubmit, errors, setErrors, pristine, setPristine },
-  meta,
+  googleApiKey,
 }) => {
   const label = path( ['name'], fieldData );
   const dataType = path( ['question', 'attribute', 'dataType'], fieldData );
@@ -84,7 +84,11 @@ const Field = ({
       pristine={pristine}
     />
   ) : fieldType === 'address' ? (
-    <AddressSelect onUpdate={onUpdate} />
+    <AddressSelect
+      onUpdate={onUpdate}
+      fieldData={fieldData}
+      googleApiKey={googleApiKey}
+    />
   ) : fieldType === 'image' ? (
     <ImageUpload
       fieldData={fieldData}

@@ -8,6 +8,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import parse from 'autosuggest-highlight/parse';
 import throttle from 'lodash/throttle';
 
+import Geocode from 'react-geocode';
+
+import makeAddressData from './helpers/make-address-data';
+
 function loadScript( src, position, id ) {
   if ( !position ) {
     return;
@@ -33,7 +37,27 @@ const useStyles = makeStyles( theme => ({
   },
 }));
 
-export default function GoogleMaps() {
+const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
+  const {
+    attributeCode,
+    question: { code: questionCode },
+    sourceCode,
+    targetCode,
+    weight,
+  } = fieldData;
+
+  const handleUpdate = value =>
+    onUpdate({
+      ask: {
+        attributeCode,
+        questionCode,
+        sourceCode,
+        targetCode,
+        weight,
+      },
+      value,
+    });
+
   const classes = useStyles();
   const [value, setValue] = React.useState( null );
   const [inputValue, setInputValue] = React.useState( '' );
@@ -43,7 +67,7 @@ export default function GoogleMaps() {
   if ( typeof window !== 'undefined' && !loaded.current ) {
     if ( !document.querySelector( '#google-maps' )) {
       loadScript(
-        'https://maps.googleapis.com/maps/api/js?key=AIzaSyBwRp1e12ec1vOTtGiA4fcCt2sCUS78UYc&libraries=places',
+        `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}=places`,
         document.querySelector( 'head' ),
         'google-maps'
       );
@@ -100,9 +124,19 @@ export default function GoogleMaps() {
     [value, inputValue, fetch]
   );
 
+  const handleBlur = async () => {
+    const result = await Geocode.fromAddress( value.description || '' );
+
+    if ( result ) {
+      const addressData = makeAddressData( result );
+
+      handleUpdate( addressData );
+    }
+  };
+
   return (
     <Autocomplete
-      id="google-map-demo"
+      id="google-map-select"
       style={{ width: 300 }}
       getOptionLabel={option => ( typeof option === 'string' ? option : option.description )}
       filterOptions={x => x}
@@ -125,6 +159,7 @@ export default function GoogleMaps() {
           variant="outlined"
           fullWidth
           className={classes.inputField}
+          onBlur={handleBlur}
         />
       )}
       renderOption={option => {
@@ -167,4 +202,6 @@ export default function GoogleMaps() {
       }}
     />
   );
-}
+};
+
+export default AddressSelect;
