@@ -18,6 +18,15 @@ const Form = ({ formView, asks, baseEntities, links }) => {
   const classes = useStyles();
 
   const [errors, setErrors] = useState({});
+  const [pristine, setPristine] = useState( true );
+
+  const meta = {
+    errors,
+    setErrors,
+    pristine,
+    setPristine,
+    onSubmit: onSubmit({ parentCode, rootCode }),
+  };
 
   return (
     <Grid
@@ -46,9 +55,7 @@ const Form = ({ formView, asks, baseEntities, links }) => {
             fieldData={field}
             baseEntities={baseEntities}
             links={links}
-            onSubmit={onSubmit({ parentCode, rootCode })}
-            errors={errors}
-            setErrors={setErrors}
+            meta={meta}
           />
         </Grid>
       ))( formFields )}

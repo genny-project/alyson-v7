@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { prop } from 'ramda';
 
-const TextInput = ({ errors, setErrors, onUpdate, fieldData, label, initialValue, ...rest }) => {
+const TextInput = ({
+  errors,
+  setErrors,
+  onUpdate,
+  fieldData,
+  label,
+  initialValue,
+  pristine,
+  setPristine,
+  ...rest
+}) => {
   const [value, setValue] = useState( initialValue || '' );
 
   const {
@@ -33,6 +43,7 @@ const TextInput = ({ errors, setErrors, onUpdate, fieldData, label, initialValue
 
   const handleChange = ({ target: { value } }) => {
     setValue( value );
+    if ( pristine ) setPristine( false );
     if ( mandatory && !value ) {
       setErrors( errors => ({ ...errors, [questionCode]: true }));
     } else if ( prop( questionCode, errors )) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { path, toLower, includes } from 'ramda';
+import { path, toLower, includes, has, not } from 'ramda';
 
 import onUpdate from './actions/on-update';
 
@@ -9,14 +9,24 @@ import DropdownSelect from './dropdown';
 import SubmitButton from './submit_button';
 import AddressSelect from './address_select';
 import TextInput from './text_input';
+import ImageUpload from './image_upload';
 
-const Field = ({ fieldData, baseEntities, links, onSubmit, errors, setErrors }) => {
+const Field = ({
+  fieldData,
+  baseEntities,
+  links,
+  meta: { onSubmit, errors, setErrors, pristine, setPristine },
+  meta,
+}) => {
   const label = path( ['name'], fieldData );
   const dataType = path( ['question', 'attribute', 'dataType'], fieldData );
   const fieldType = toLower( path( ['typeName'], dataType ));
   const validationList = path( ['validationList'], dataType );
 
-  console.log( fieldType );
+  const {
+    question: { code: questionCode },
+    mandatory,
+  } = fieldData;
 
   return fieldType === 'text' || fieldType === 'email' || fieldType === 'abn number' ? (
     <TextInput
@@ -27,6 +37,8 @@ const Field = ({ fieldData, baseEntities, links, onSubmit, errors, setErrors }) 
       onUpdate={onUpdate}
       errors={errors}
       setErrors={setErrors}
+      pristine={pristine}
+      setPristine={setPristine}
     />
   ) : fieldType === 'radio' ? (
     <RadioGroup
@@ -67,9 +79,15 @@ const Field = ({ fieldData, baseEntities, links, onSubmit, errors, setErrors }) 
       onSubmit={onSubmit}
       errors={errors}
       setErrors={setErrors}
+      pristine={pristine}
     />
   ) : fieldType === 'address' ? (
     <AddressSelect onUpdate={onUpdate} />
+  ) : fieldType === 'image' ? (
+    <ImageUpload
+      fieldData={fieldData}
+      label={label}
+    />
   ) : null;
 };
 
