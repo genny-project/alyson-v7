@@ -74,7 +74,12 @@ const MainSideBar = ({
       <div className={classes.grow} />
       <Container className={classes.poweredBy}>
         <Typography variant="caption">
-          {`Powered By ${poweredBy}`}
+          {'Powered By'}
+        </Typography>
+      </Container>
+      <Container className={classes.poweredName}>
+        <Typography variant="caption">
+          {poweredBy}
         </Typography>
       </Container>
     </Drawer>

@@ -26,6 +26,9 @@ const useStyles = makeStyles( theme => ({
   poweredBy: {
     marginBottom: theme.spacing( 1 ),
   },
+  poweredName: {
+    marginBottom: theme.spacing( 1 ),
+  },
 }));
 
 export default useStyles;
