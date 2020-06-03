@@ -17,6 +17,7 @@
     "setup-env": "node generate-env.js"
   },
   "dependencies": {
+    "@date-io/date-fns": "^2.6.2",
     "@material-ui/core": "^4.10.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.54",
@@ -78,6 +79,7 @@
     "lodash.range": "^3.2.0",
     "lodash.uppercase": "^4.3.0",
     "match-sorter": "2.3.0",
+    "material-table": "^1.59.0",
     "material-ui-dropzone": "^3.0.0",
     "material-ui-image": "^3.2.3",
     "memoize-one": "^4.0.2",

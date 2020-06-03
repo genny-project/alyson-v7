@@ -3,14 +3,16 @@ import React from 'react';
 import { prop, not, isEmpty, replace } from 'ramda';
 import { Paper, CircularProgress } from '@material-ui/core';
 
-import { Form } from '../components';
+import { Form, Table } from '../components';
 
 import useStyles from './styles';
 
-const Main = ({ viewing, baseEntities, asks, links, frames, user, googleApiKey }) => {
+const Main = ({ attributes, viewing, baseEntities, asks, links, frames, user, googleApiKey }) => {
   const classes = useStyles();
 
-  const view = not( isEmpty( viewing )) ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] : null;
+  const view = not( isEmpty( viewing ))
+    ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || 'TABLE'
+    : 'TABLE';
 
   return (
     <div className={classes.root}>
@@ -26,9 +28,12 @@ const Main = ({ viewing, baseEntities, asks, links, frames, user, googleApiKey }
             googleApiKey={googleApiKey}
           />
         ) : (
-          <div>
-            {view.name}
-          </div>
+          <Table
+            frames={frames}
+            attributes={attributes}
+            baseEntities={baseEntities}
+            asks={asks}
+          />
         )}
       </Paper>
     </div>
