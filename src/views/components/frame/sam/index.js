@@ -85,6 +85,7 @@ const Sam = props => {
           baseEntities={baseEntities}
           links={links}
           googleApiKey={googleApiKey}
+          attributes={attributes}
         />
       </div>
     </ThemeProvider>
