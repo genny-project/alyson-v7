@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, ContentState, convertFromHTML } from 'draft-js';
-
 import { stateToHTML } from 'draft-js-export-html';
 import { func, string, object, bool } from 'prop-types';
 import style from './style.css'; //eslint-disable-line
-import { isObject, isArray } from './../../../../utils';
+import { isObject, isArray, isString } from './../../../../utils';
 
 class RichEditor extends Component {
   static defaultProps = {
@@ -17,6 +16,7 @@ class RichEditor extends Component {
     testID: string,
     value: string,
     editable: bool,
+    showAllOptions: bool,
   };
 
   constructor( props ) {
@@ -128,7 +128,7 @@ class RichEditor extends Component {
   render() {
     // console.log( '*****FINAL******', this.state );
     // console.log( '*********AGAIN*******', this.props );
-    const { testID, editable } = this.props;
+    const { testID, editable, showAllOptions } = this.props;
     const { editorState /* , isFocused */  } = this.state;
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -147,18 +147,25 @@ class RichEditor extends Component {
     }
 
     return (
-      <div className={editable ? 'RichEditor-root' : null}>
+      <div
+        className={editable ? 'RichEditor-root' : null}
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         { editable ? (
-          <BlockStyleControls
-            editorState={editorState}
-            onToggle={this.handleToggleBlockType}
-          />
-        ) : null }
-        { editable ? (
-          <InlineStyleControls
-            editorState={editorState}
-            onToggle={this.handleToggleInlineStyle}
-          />
+          <div
+            style={{ display: 'flex' }}
+          >
+            <InlineStyleControls
+              editorState={editorState}
+              onToggle={this.handleToggleInlineStyle}
+              showAllOptions={showAllOptions}
+            />
+            <BlockStyleControls
+              editorState={editorState}
+              onToggle={this.handleToggleBlockType}
+              showAllOptions={showAllOptions}
+            />
+          </div>
         ) : null }
         <div
           className={editable ? className : null}
@@ -214,18 +221,28 @@ class StyleButton extends React.Component {
   }
 
   render() {
+    const { active, icon, label } = this.props;
+
     let className = 'RichEditor-styleButton';
 
-    if ( this.props.active ) {
+    if ( active ) {
       className += ' RichEditor-activeButton';
     }
+
+    const hasIcon = isString( icon, { ofMinLength: 1 });
 
     return (
       <span
         className={className}
         onMouseDown={this.onToggle} //eslint-disable-line
+        style={{ fontSize: hasIcon ? '18px' : null, fontFamily: hasIcon ? 'Material Icons' : null }}
+
       >
-        {this.props.label}
+        {
+          hasIcon
+            ? icon
+            : label
+        }
       </span>
     );
   }
@@ -234,29 +251,33 @@ class StyleButton extends React.Component {
 StyleButton.propTypes = {
   onToggle: func,
   label: string,
+  icon: string,
   active: bool,
   style: string,
 };
-const BLOCK_TYPES = [
-  { label: 'H1', style: 'header-one' },
-  { label: 'H2', style: 'header-two' },
-  { label: 'H3', style: 'header-three' },
-  { label: 'H4', style: 'header-four' },
-  { label: 'H5', style: 'header-five' },
-  { label: 'H6', style: 'header-six' },
-  { label: 'Blockquote', style: 'blockquote' },
-  { label: 'UL', style: 'unordered-list-item' },
-  { label: 'OL', style: 'ordered-list-item' },
-  { label: 'Code Block', style: 'code-block' },
-];
 
 const BlockStyleControls = props => {
-  const { editorState } = props;
+  const { editorState, showAllOptions } = props;
   const selection = editorState.getSelection();
   const blockType = editorState
     .getCurrentContent()
     .getBlockForKey( selection.getStartKey())
     .getType();
+
+  const BLOCK_TYPES = [
+    ...showAllOptions ? [
+      { label: 'H1', style: 'header-one' },
+      { label: 'H2', style: 'header-two' },
+      { label: 'H3', style: 'header-three' },
+      { label: 'H4', style: 'header-four' },
+      { label: 'H5', style: 'header-five' },
+      { label: 'H6', style: 'header-six' },
+    ] : [],
+    { label: 'UL', style: 'unordered-list-item', icon: 'format_list_bulleted' },
+    { label: 'OL', style: 'ordered-list-item', icon: 'format_list_numbered' },
+    { label: 'Blockquote', style: 'blockquote', icon: 'format_quote' },
+    ...showAllOptions ? { label: 'Code Block', style: 'code-block' } : {},
+  ];
 
   return (
     <div className="RichEditor-controls">
@@ -267,6 +288,7 @@ const BlockStyleControls = props => {
           label={type.label}
           onToggle={props.onToggle}
           style={type.style}
+          icon={type.icon}
         />
       ))}
     </div>
@@ -276,17 +298,20 @@ const BlockStyleControls = props => {
 BlockStyleControls.propTypes = {
   onToggle: func,
   editorState: object,
+  showAllOptions: bool,
 };
 
-var INLINE_STYLES = [
-  { label: 'Bold', style: 'BOLD' },
-  { label: 'Italic', style: 'ITALIC' },
-  { label: 'Underline', style: 'UNDERLINE' },
-  { label: 'Monospace', style: 'CODE' },
-];
-
 const InlineStyleControls = props => {
-  const currentStyle = props.editorState.getCurrentInlineStyle();
+  const { editorState, showAllOptions } = props;
+  const currentStyle = editorState.getCurrentInlineStyle();
+
+  const INLINE_STYLES = [
+    { label: 'Bold', style: 'BOLD', icon: 'format_bold' },
+    { label: 'Italic', style: 'ITALIC', icon: 'format_italic' },
+    { label: 'Underline', style: 'UNDERLINE', icon: 'format_underlined' },
+    { label: 'Strikethrough', style: 'STRIKETHROUGH', icon: 'strikethrough_s' },
+    ...showAllOptions ? { label: 'Monospace', style: 'CODE' } : {},
+  ];
 
   return (
     <div className="RichEditor-controls">
@@ -297,6 +322,7 @@ const InlineStyleControls = props => {
           label={type.label}
           onToggle={props.onToggle}
           style={type.style}
+          icon={type.icon}
         />
       ))}
     </div>
@@ -306,6 +332,7 @@ const InlineStyleControls = props => {
 InlineStyleControls.propTypes = {
   onToggle: func,
   editorState: object,
+  showAllOptions: bool,
 };
 
 export default RichEditor;

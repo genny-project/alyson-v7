@@ -53,6 +53,7 @@ class DebugDisplay extends React.Component {
           right={20}
           cursor="pointer"
           height={40}
+          zIndex={100}
         >
           <Touchable
             withFeedback
