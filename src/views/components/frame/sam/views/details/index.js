@@ -104,7 +104,7 @@ const Details = ({ attributes, targetCode }) => {
         </Typography>
         <Rating
           value={rating}
-          onChange={( event, newValue ) => setValue( newValue )}
+          onChange={( event, newValue ) => setRating( newValue )}
         />
       </Grid>
       <Grid item>

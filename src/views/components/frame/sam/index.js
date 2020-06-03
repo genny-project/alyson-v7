@@ -38,7 +38,7 @@ const Sam = props => {
   const theme = createMuiTheme({
     palette: {
       primary: {
-        main: path( ['PRJ_INTERNMATCH', 'PRI_COLOR_PRIMARY', 'value'], attributes ),
+        main: path( ['PRJ_INTERNMATCH', 'PRI_COLOR_PRIMARY', 'value'], attributes ) || '#2196f3',
       },
     },
   });

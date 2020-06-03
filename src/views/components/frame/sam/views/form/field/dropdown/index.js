@@ -44,7 +44,7 @@ const DropdownSelect = ({
     });
 
   const findOption = code => find( propEq( 'code', code ))( options );
-  const [value, setValue] = useState( initialValue || '' );
+  const [value, setValue] = useState( initialValue || multiple ? [] : '' );
   const classes = useStyles();
 
   const handleChange = ({ target: { value } }) => {
