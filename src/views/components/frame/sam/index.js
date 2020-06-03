@@ -13,35 +13,27 @@ import {
   getLinksFrom,
   getComponents,
 } from './helpers/get-components';
+import getAgency from './helpers/get-agency';
+import getAgencyCompany from './helpers/get-agency-company';
+
 import Sidebar from './side_bar';
 import AppBar from './app_bar';
 import Main from './main';
 
-const Sam = props => {
-  const baseEntities = props.baseEntities || {};
-  const links = props.links || {};
-  const frames = props.frames || {};
-  const asks = props.asks || {};
-  const themes = props.themes || {};
-  const user = props.user || {};
-  const attributes = props.attributes || {};
-  const googleApiKey = props.keycloak.data.ENV_GOOGLE_MAPS_APIKEY;
+import makeTheme from './helpers/make-theme';
 
-  const agency = path( ['attributes', 'LNK_AGENCY', 'value'], user );
-  const agencyCompany = path( [agency, 'name'], baseEntities );
+const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keycloak }) => {
+  const googleApiKey = path( ['data', 'ENV_GOOGLE_MAPS_APIKEY'], keycloak );
+  const agency = getAgency( user );
+  const agencyCompany = getAgencyCompany( agency )( baseEntities );
 
   const [viewing, setViewing] = useState({});
 
   const dataForEvent = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
 
   Geocode.setApiKey( googleApiKey );
-  const theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: path( ['PRJ_INTERNMATCH', 'PRI_COLOR_PRIMARY', 'value'], attributes ) || '#2196f3',
-      },
-    },
-  });
+
+  const theme = makeTheme({ attributes, asks });
 
   useEffect(
     () => {

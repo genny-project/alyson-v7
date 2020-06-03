@@ -132,6 +132,7 @@ const Details = ({ attributes, targetCode }) => {
             {'Rating'}
           </Typography>
           <Rating
+            name="rating"
             value={rating}
             onChange={( event, newValue ) => setRating( newValue )}
           />
