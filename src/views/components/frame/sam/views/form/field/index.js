@@ -1,6 +1,6 @@
 import React from 'react';
 import { path, toLower, includes, has, not } from 'ramda';
-import { GoogleConsumer } from '../../../../../../components/index';
+import { GoogleConsumer } from '../../../../../index';
 import onUpdate from './actions/on-update';
 
 import RadioGroup from './radio_group';

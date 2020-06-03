@@ -3,7 +3,7 @@ import React from 'react';
 import { prop, not, isEmpty, replace, contains } from 'ramda';
 import { Paper, CircularProgress } from '@material-ui/core';
 
-import { Form, Table, Details } from '../components';
+import { Form, Table, Details } from '../views';
 
 import useStyles from './styles';
 
