@@ -1,17 +1,29 @@
 import React from 'react';
 
-import { prop, not, isEmpty, replace } from 'ramda';
+import { prop, not, isEmpty, replace, contains } from 'ramda';
 import { Paper, CircularProgress } from '@material-ui/core';
 
-import { Form, Table } from '../components';
+import { Form, Table, Details } from '../components';
 
 import useStyles from './styles';
 
-const Main = ({ attributes, viewing, baseEntities, asks, links, frames, user, googleApiKey }) => {
+const Main = ({
+  attributes,
+  viewing,
+  setViewing,
+  baseEntities,
+  asks,
+  links,
+  frames,
+  user,
+  googleApiKey,
+}) => {
   const classes = useStyles();
 
   const view = not( isEmpty( viewing ))
-    ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || 'TABLE'
+    ? prop( 'targetCode', viewing )
+      ? 'DETAIL'
+      : asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || 'TABLE'
     : 'TABLE';
 
   return (
@@ -27,12 +39,18 @@ const Main = ({ attributes, viewing, baseEntities, asks, links, frames, user, go
             links={links}
             googleApiKey={googleApiKey}
           />
+        ) : view === 'DETAIL' ? (
+          <Details
+            attributes={attributes}
+            targetCode={prop( 'targetCode', viewing )}
+          />
         ) : (
           <Table
             frames={frames}
             attributes={attributes}
             baseEntities={baseEntities}
             asks={asks}
+            setViewing={setViewing}
           />
         )}
       </Paper>

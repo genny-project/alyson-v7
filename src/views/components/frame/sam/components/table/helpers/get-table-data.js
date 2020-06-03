@@ -20,6 +20,7 @@ const makeColumns = compose(
 
 const makeCell = attributes =>
   compose(({ targetCode, attributeCode }) => ({
+    targetCode,
     [attributeCode]: path( [targetCode, attributeCode, 'value'], attributes ),
   }));
 

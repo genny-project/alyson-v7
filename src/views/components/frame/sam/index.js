@@ -79,6 +79,7 @@ const Sam = props => {
         />
         <Main
           viewing={viewing}
+          setViewing={setViewing}
           asks={asks}
           frames={frames}
           user={user}
