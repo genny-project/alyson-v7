@@ -99,6 +99,7 @@
     "react-geocode": "^0.2.1",
     "react-google-autocomplete": "^1.2.6",
     "react-google-maps": "^9.4.5",
+    "react-google-places-autocomplete": "^2.0.6",
     "react-helmet": "^5.2.0",
     "react-json-view": "^1.19.1",
     "react-markdown": "3.4.1",

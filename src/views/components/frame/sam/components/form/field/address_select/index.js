@@ -1,31 +1,20 @@
-import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import parse from 'autosuggest-highlight/parse';
-import throttle from 'lodash/throttle';
+import React, { useState, useEffect } from 'react';
 
+import {
+  TextField,
+  makeStyles,
+  Tooltip,
+  Grid,
+  IconButton,
+  CircularProgress,
+} from '@material-ui/core';
+import LockIcon from '@material-ui/icons/LockOutlined';
+import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
 import Geocode from 'react-geocode';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import GoogleAutocompleteSuggestions from './google_autocomplete_suggestions';
 
 import makeAddressData from './helpers/make-address-data';
-
-function loadScript( src, position, id ) {
-  if ( !position ) {
-    return;
-  }
-
-  const script = document.createElement( 'script' );
-
-  script.setAttribute( 'async', '' );
-  script.setAttribute( 'id', id );
-  script.src = src;
-  position.appendChild( script );
-}
-
-const autocompleteService = { current: null };
 
 const useStyles = makeStyles( theme => ({
   icon: {
@@ -59,72 +48,10 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
     });
 
   const classes = useStyles();
-  const [value, setValue] = React.useState( null );
-  const [inputValue, setInputValue] = React.useState( '' );
-  const [options, setOptions] = React.useState( [] );
-  const loaded = React.useRef( false );
+  const [value, setValue] = useState( null );
+  const [restrictCountry, setRestrictCountry] = useState( true );
 
-  if ( typeof window !== 'undefined' && !loaded.current ) {
-    if ( !document.querySelector( '#google-maps' )) {
-      loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}=places`,
-        document.querySelector( 'head' ),
-        'google-maps'
-      );
-    }
-
-    loaded.current = true;
-  }
-
-  const fetch = React.useMemo(
-    () =>
-      throttle(( request, callback ) => {
-        autocompleteService.current.getPlacePredictions( request, callback );
-      }, 200 ),
-    []
-  );
-
-  React.useEffect(
-    () => {
-      let active = true;
-
-      if ( !autocompleteService.current && window.google ) {
-        autocompleteService.current = new window.google.maps.places.AutocompleteService();
-      }
-      if ( !autocompleteService.current ) {
-        return undefined;
-      }
-
-      if ( inputValue === '' ) {
-        setOptions( value ? [value] : [] );
-
-        return undefined;
-      }
-
-      fetch({ input: inputValue }, results => {
-        if ( active ) {
-          let newOptions = [];
-
-          if ( value ) {
-            newOptions = [value];
-          }
-
-          if ( results ) {
-            newOptions = [...newOptions, ...results];
-          }
-
-          setOptions( newOptions );
-        }
-      });
-
-      return () => {
-        active = false;
-      };
-    },
-    [value, inputValue, fetch]
-  );
-
-  const handleBlur = async () => {
+  const handleSend = async () => {
     const result = await Geocode.fromAddress( value.description || '' );
 
     if ( result ) {
@@ -134,73 +61,66 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
     }
   };
 
+  useEffect(
+    () => {
+      if ( value ) {
+        handleSend();
+      }
+    },
+    [value]
+  );
+
   return (
-    <Autocomplete
-      id="google-map-select"
-      style={{ width: 300 }}
-      getOptionLabel={option => ( typeof option === 'string' ? option : option.description )}
-      filterOptions={x => x}
-      options={options}
-      autoComplete
-      includeInputInList
-      filterSelectedOptions
-      value={value}
-      onChange={( event, newValue ) => {
-        setOptions( newValue ? [newValue, ...options] : options );
-        setValue( newValue );
-      }}
-      onInputChange={( event, newInputValue ) => {
-        setInputValue( newInputValue );
-      }}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label="Address"
-          variant="outlined"
-          fullWidth
-          className={classes.inputField}
-          onBlur={handleBlur}
+    <Grid
+      container
+      row
+    >
+      <Grid
+        item
+        className={classes.icon}
+      >
+        <Tooltip title={restrictCountry ? 'Unlock region' : 'Lock to Australia'}>
+          <IconButton onClick={() => setRestrictCountry( !restrictCountry )}>
+            {restrictCountry ? <LockIcon /> : <LockOpenIcon />}
+          </IconButton>
+        </Tooltip>
+      </Grid>
+      <Grid
+        item
+        className={classes.inputField}
+      >
+        <GooglePlacesAutocomplete
+          apiKey={googleApiKey}
+          onSelect={selection => setValue( selection )}
+          autocompletionRequest={
+            restrictCountry
+              ? {
+                componentRestrictions: {
+                  country: 'au',
+                },
+              }
+              : {}
+          }
+          renderInput={params => (
+            <TextField
+              {...params}
+              label="Address"
+              variant="outlined"
+              fullWidth
+              className={classes.inputField}
+            />
+          )}
+          loader={<CircularProgress />}
+          renderSuggestions={( active, suggestions, onSelectSuggestion ) => (
+            <GoogleAutocompleteSuggestions
+              active={active}
+              suggestions={suggestions}
+              onSelectSuggestion={onSelectSuggestion}
+            />
+          )}
         />
-      )}
-      renderOption={option => {
-        const matches = option.structured_formatting.main_text_matched_substrings;
-        const parts = parse(
-          option.structured_formatting.main_text,
-          matches.map( match => [match.offset, match.offset + match.length] )
-        );
-
-        return (
-          <Grid
-            container
-            alignItems="center"
-          >
-            <Grid item>
-              <LocationOnIcon className={classes.icon} />
-            </Grid>
-            <Grid
-              item
-              xs
-            >
-              {parts.map(( part, index ) => (
-                <span
-                  key={index}
-                  style={{ fontWeight: part.highlight ? 700 : 400 }}
-                >
-                  {part.text}
-                </span>
-              ))}
-
-              <Typography
-                variant="body2"
-                color="textSecondary"
-              >
-                {option.structured_formatting.secondary_text}
-              </Typography>
-            </Grid>
-          </Grid>
-        );
-      }}
-    />
+      </Grid>
+    </Grid>
   );
 };
 

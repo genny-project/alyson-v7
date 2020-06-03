@@ -72,11 +72,11 @@ const Text = ({
 
   return (
     <Typography
-      style={ style }
+      style={style}
       data-component-type="TEXT"
       data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
       data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
-      color={color || 'inherit'}
+      color="inherit"
     >
       {child}
     </Typography>

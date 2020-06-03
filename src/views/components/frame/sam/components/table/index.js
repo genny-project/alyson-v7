@@ -27,6 +27,8 @@ const TableView = ({ attributes, frames, baseEntities, asks }) => {
           data={data}
           actions={[
             {
+              icon: 'moreVert',
+              tooltip: 'actions',
               onClick: ( event, rowData ) => setMenu( event.currentTarget ),
             },
           ]}

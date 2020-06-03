@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { map, path, pick, values, prop, sortBy, find, propEq, head } from 'ramda';
+import React, { useState } from 'react';
+import { map, path, pick, values, prop, sortBy, find, propEq, head, compose } from 'ramda';
 import { FormControl, InputLabel, MenuItem, Select, Chip, Typography } from '@material-ui/core';
 
 import useStyles from './styles';
@@ -13,10 +13,15 @@ const DropdownSelect = ({
   multiple,
   onUpdate,
 }) => {
-  const optionsGrpName = validationList[0].selectionBaseEntityGroupList[0];
-  const optionsLinkList = path( [optionsGrpName, 'links'], baseEntities );
-  const targetCodes = map( path( ['link', 'targetCode'] ), optionsLinkList );
-  const options = sortBy( prop( 'name' ))( values( pick( values( targetCodes ), baseEntities )));
+  const optionsGrpName = compose(
+    head,
+    prop( 'selectionBaseEntityGroupList' ),
+    head
+  )( validationList );
+
+  const optionsLinkList = path( [optionsGrpName, 'links'], baseEntities ) || [];
+  const targetCodes = map( path( ['link', 'targetCode'] ), optionsLinkList ) || [];
+  const options = sortBy( prop( 'name' ))( values( pick( values( targetCodes ), baseEntities ))) || [];
 
   const {
     attributeCode,
@@ -39,7 +44,7 @@ const DropdownSelect = ({
     });
 
   const findOption = code => find( propEq( 'code', code ))( options );
-  const [value, setValue] = useState( initialValue || [] );
+  const [value, setValue] = useState( initialValue || '' );
   const classes = useStyles();
 
   const handleChange = ({ target: { value } }) => {
@@ -58,7 +63,7 @@ const DropdownSelect = ({
       <Select
         label={label}
         multiple={multiple}
-        value={value || ''}
+        value={value}
         onChange={handleChange}
         renderValue={selected =>
           multiple ? (
@@ -81,11 +86,17 @@ const DropdownSelect = ({
           )
         }
       >
-        {map(({ code, name }) => (
-          <MenuItem value={code}>
-            {name}
-          </MenuItem>
-        ), options || [] )}
+        {map(
+          ({ code, name }) => (
+            <MenuItem
+              value={code}
+              key={`menuItem${code}`}
+            >
+              {name}
+            </MenuItem>
+          ),
+          options || []
+        )}
       </Select>
     </FormControl>
   );

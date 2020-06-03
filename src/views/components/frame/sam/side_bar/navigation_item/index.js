@@ -36,12 +36,13 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
             {map(
               ({ name, questionCode: childCode }) => (
                 <ListItem
+                  key={`listItem${childCode}`}
                   className={classes.listItem}
                   button
                   onClick={() => setViewing({ parentCode: questionCode, code: childCode })}
                 >
                   <ListItemText
-                    key={`nested${name}`}
+                    key={`nestedListItem${name}`}
                     secondary={name}
                     className={classes.nested}
                     secondaryTypographyProps={

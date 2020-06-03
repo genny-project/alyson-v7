@@ -32,7 +32,7 @@ const Sam = props => {
 
   const [viewing, setViewing] = useState({});
 
-  const data = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
+  const dataForEvent = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
 
   Geocode.setApiKey( googleApiKey );
   const theme = createMuiTheme({
@@ -48,7 +48,7 @@ const Sam = props => {
       if ( viewing.parentCode ) {
         Bridge.sendEvent({
           event: 'BTN',
-          data,
+          data: dataForEvent,
           eventType: 'BTN_CLICK',
           sendWithToken: true,
         });

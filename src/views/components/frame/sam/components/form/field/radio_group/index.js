@@ -58,6 +58,7 @@ const BuiltRadioGroup = ({
       >
         {map(({ code, name }) => (
           <FormControlLabel
+            key={`radio${code}`}
             value={code}
             control={<Radio />}
             label={name}
