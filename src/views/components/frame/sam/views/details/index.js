@@ -59,77 +59,122 @@ const Details = ({ attributes, targetCode }) => {
         </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Mobile'}
-        </Typography>
-        <Typography>
-          {print( 'mobile' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Mobile'}
+          </Typography>
+          <Typography>
+            {print( 'mobile' )}
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Industry'}
-        </Typography>
-        <Typography>
-          {print( 'industry' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Industry'}
+          </Typography>
+          <Typography>
+            {print( 'industry' )}
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Education Provider'}
-        </Typography>
-        <Typography>
-          {print( 'education_provider' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Education Provider'}
+          </Typography>
+          <Typography>
+            {print( 'education_provider' )}
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Current Course'}
-        </Typography>
-        <Typography>
-          {print( 'current_course' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Current Course'}
+          </Typography>
+          <Typography>
+            {print( 'current_course' )}
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Specialisation'}
-        </Typography>
-        <Typography>
-          {print( 'specialisation' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Specialisation'}
+          </Typography>
+          <Typography>
+            {print( 'specialisation' )}
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Rating'}
-        </Typography>
-        <Rating
-          value={rating}
-          onChange={( event, newValue ) => setRating( newValue )}
-        />
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Rating'}
+          </Typography>
+          <Rating
+            value={rating}
+            onChange={( event, newValue ) => setRating( newValue )}
+          />
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Transport Options'}
-        </Typography>
-        <Typography>
-          {print( 'transport_options' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Transport Options'}
+          </Typography>
+          <Typography>
+            {print( 'transport_options' )}
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Region'}
-        </Typography>
-        <Typography>
-          {print( 'region' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Region'}
+          </Typography>
+          <Typography>
+            {print( 'region' )}
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item>
-        <Typography className={classes.label}>
-          {'Next Scheduled Interview'}
-        </Typography>
-        <Typography>
-          {print( 'interview' )}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Next Scheduled Interview'}
+          </Typography>
+          <Typography>
+            {print( 'interview' )}
+          </Typography>
+        </Grid>
       </Grid>
     </Grid>
   );
