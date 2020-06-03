@@ -1,50 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Table from 'material-table';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, IconButton, Menu, MenuItem } from '@material-ui/core';
+import MoreIcon from '@material-ui/icons/MoreVert';
 
-import { path, compose, head, prop, map, replace, tail, mergeAll } from 'ramda';
+import { path } from 'ramda';
 
-const makeColumns = compose(
-  map(({ attributeCode, name }) => ({ title: name, field: replace( '_HEADER', '', attributeCode ) })),
-  prop( 'childAsks' )
-);
-
-const makeCell = attributes =>
-  compose(({ targetCode, attributeCode }) => ({
-    [attributeCode]: path( [targetCode, attributeCode, 'value'], attributes ),
-  }));
-
-const makeRow = attributes =>
-  compose(
-    mergeAll,
-    map( makeCell( attributes )),
-    prop( 'childAsks' )
-  );
-
-const makeRows = attributes => compose( map( makeRow( attributes )));
+import { getColumns, getData, getTitle } from './helpers/get-table-data';
 
 const TableView = ({ attributes, frames, baseEntities, asks }) => {
   const table = path( ['QUE_TABLE_RESULTS_GRP', 'childAsks'], asks );
 
+  const [menu, setMenu] = useState( null );
+
   if ( table && table.length ) {
-    const title = compose(
-      ({ attributeCode, targetCode }) => path( [targetCode, attributeCode, 'value'], attributes ),
-      ({ code }) => prop( code, asks ),
-      head,
-      path( ['FRM_TABLE_TITLE', 'links'] )
-    )( frames );
+    const title = getTitle({ asks, attributes, frames });
+    const columns = getColumns({ table });
+    const data = getData({ table, attributes });
 
-    console.log( title );
-
-    const columns = compose(
-      makeColumns,
-      head
-    )( table );
-
-    const data = compose(
-      makeRows( attributes ),
-      tail
-    )( table );
+    const handleOpenMenu = event => setMenu( event.currentTarget );
 
     return (
       <div>
@@ -52,14 +25,38 @@ const TableView = ({ attributes, frames, baseEntities, asks }) => {
           title={title || ''}
           columns={columns}
           data={data}
+          actions={[
+            {
+              onClick: ( event, rowData ) => setMenu( event.currentTarget ),
+            },
+          ]}
           components={{
             Container: props => (
               <div>
                 {props.children}
               </div>
             ),
+            Action: props => (
+              <IconButton
+                onClick={event => {
+                  event.persist();
+                  props.action.onClick( event, props.data );
+                }}
+              >
+                <MoreIcon />
+              </IconButton>
+            ),
           }}
         />
+        <Menu
+          open={!!menu}
+          anchorEl={menu}
+          onClose={() => setMenu( null )}
+        >
+          <MenuItem>
+HI
+          </MenuItem>
+        </Menu>
       </div>
     );
   }
