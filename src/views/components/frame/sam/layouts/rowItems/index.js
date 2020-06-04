@@ -5,7 +5,7 @@ import { Grid, Typography } from '@material-ui/core';
 import useStyles from '../styles';
 
 const RowItems = props => map(({ attributeName , value = ''  }) => {
-  const text = useStyles();
+  const classes = useStyles();
 
   return (
     <Grid item>
@@ -13,7 +13,10 @@ const RowItems = props => map(({ attributeName , value = ''  }) => {
         container
         direction="row"
       >
-        <Typography className={text.label}>
+        <Typography
+          color="secondary"
+          className={classes.label}
+        >
           {attributeName}
         </Typography>
         <Typography>

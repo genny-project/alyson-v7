@@ -7,12 +7,15 @@ import { Rating } from '@material-ui/lab';
 import useStyles from './styles';
 import { ColumnItems, RowItems } from '../../layouts';
 
+const listOfItems = ['mobile', 'email', 'address_full', 'gender', 'is_agent', 'is_admin'];
+
 const Details = ({ attributes, targetCode }) => {
   const detailView = prop( targetCode, attributes );
 
   const print = prop => path( [`PRI_${toUpper( prop )}`, 'value'], detailView ) || '';
 
   const getProps =  prop  => path( [`PRI_${toUpper( prop )}`], detailView );
+  const makeRows = map( getProps ,listOfItems );
 
   const [rating, setRating] = useState( 0 );
   const classes = useStyles();
@@ -24,10 +27,6 @@ const Details = ({ attributes, targetCode }) => {
       spacing={4}
       className={classes.detailsContainer}
     >
-      <ColumnItems>
-        {[print( 'name' ),  print( 'address_full' )]}
-      </ColumnItems>
-
       <Grid item>
         <Typography variant="h5">
           {print( 'name' )}
@@ -52,7 +51,7 @@ const Details = ({ attributes, targetCode }) => {
               direction="column"
             >
               <ColumnItems>
-                {[print( 'address_full' ),  `${print( 'email' )}`]}
+                {[print( 'name' ),  `${print( 'address_full' )}`]}
               </ColumnItems>
 
             </Grid>
@@ -60,73 +59,8 @@ const Details = ({ attributes, targetCode }) => {
         </Grid>
       </Grid>
       <RowItems>
-        {[getProps( 'mobile' ), getProps( 'email' ), getProps( 'address_full' ), getProps( 'gender' ), getProps( 'is_agent' ), getProps( 'is_admin' )]}
+        {makeRows}
       </RowItems>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Mobile'}
-          </Typography>
-          <Typography>
-            {print( 'mobile' )}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Industry'}
-          </Typography>
-          <Typography>
-            {print( 'industry' )}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Education Provider'}
-          </Typography>
-          <Typography>
-            {print( 'education_provider' )}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Current Course'}
-          </Typography>
-          <Typography>
-            {print( 'current_course' )}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Specialisation'}
-          </Typography>
-          <Typography>
-            {print( 'specialisation' )}
-          </Typography>
-        </Grid>
-      </Grid>
       <Grid item>
         <Grid
           container
@@ -140,45 +74,6 @@ const Details = ({ attributes, targetCode }) => {
             value={rating}
             onChange={( event, newValue ) => setRating( newValue )}
           />
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Transport Options'}
-          </Typography>
-          <Typography>
-            {print( 'transport_options' )}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Region'}
-          </Typography>
-          <Typography>
-            {print( 'region' )}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          direction="row"
-        >
-          <Typography className={classes.label}>
-            {'Next Scheduled Interview'}
-          </Typography>
-          <Typography>
-            {print( 'interview' )}
-          </Typography>
         </Grid>
       </Grid>
     </Grid>
