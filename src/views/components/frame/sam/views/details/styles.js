@@ -7,7 +7,7 @@ const useStyles = makeStyles( theme => ({
   label: {
     fontWeight: 500,
     paddingRight: theme.spacing( 4 ),
-    width: theme.spacing( 20 ),
+    width: theme.spacing( 17.5 ),
   },
 }));
 

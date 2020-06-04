@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 import {
   TextField,
-  makeStyles,
   Tooltip,
   Grid,
   IconButton,
   CircularProgress,
+  Typography,
 } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
@@ -16,16 +16,8 @@ import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 
 import makeAddressData from './helpers/make-address-data';
 import makeHandleUpdate from '../../helpers/make-handle-update';
-
-const useStyles = makeStyles( theme => ({
-  icon: {
-    color: theme.palette.text.secondary,
-    marginRight: theme.spacing( 2 ),
-  },
-  inputField: {
-    minWidth: theme.spacing( 50 ),
-  },
-}));
+import { getIsMobile } from '../../../../utils';
+import useStyles from './styles';
 
 const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
   const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
@@ -63,9 +55,20 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
         className={classes.icon}
       >
         <Tooltip title={restrictCountry ? 'Unlock region' : 'Lock to Australia'}>
-          <IconButton onClick={() => setRestrictCountry( !restrictCountry )}>
-            {restrictCountry ? <LockIcon /> : <LockOpenIcon />}
-          </IconButton>
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+          >
+            <IconButton onClick={() => setRestrictCountry( !restrictCountry )}>
+              {restrictCountry ? <LockIcon /> : <LockOpenIcon />}
+            </IconButton>
+            {getIsMobile() ? (
+              <Typography>
+                {'Toggle restricted to Australia'}
+              </Typography>
+            ) : null}
+          </Grid>
         </Tooltip>
       </Grid>
       <Grid

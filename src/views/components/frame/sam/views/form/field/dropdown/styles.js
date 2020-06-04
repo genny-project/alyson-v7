@@ -9,7 +9,7 @@ const useStyles = makeStyles( theme => ({
     margin: theme.spacing( 0.5 ),
   },
   select: {
-    minWidth: theme.spacing( 50 ),
+    width: '100%',
   },
 }));
 

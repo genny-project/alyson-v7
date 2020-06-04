@@ -47,6 +47,7 @@ const Form = ({ formView, asks, baseEntities, links, googleApiKey }) => {
       </Grid>
       {map( field => (
         <Grid
+          className={classes.formItem}
           item
           key={`gridItem${field.questionCode}`}
         >

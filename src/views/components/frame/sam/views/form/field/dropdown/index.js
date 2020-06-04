@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
-  append,
-  uniq,
+  includes,
   map,
   path,
   pick,
@@ -89,7 +88,9 @@ const DropdownSelect = ({
               value={code}
               key={`menuItem${code}`}
             >
-              {name}
+              <Typography color={includes( code, multiple ? value : [value] ) ? 'primary' : ''}>
+                {name}
+              </Typography>
             </MenuItem>
           ),
           options || []
