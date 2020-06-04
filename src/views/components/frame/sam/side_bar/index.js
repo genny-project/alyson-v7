@@ -7,6 +7,8 @@ import NavigationItem from './navigation_item';
 
 import { getLinksFrom } from '../helpers/get-components';
 
+import { getIsMobile } from '../utils';
+
 import useStyles from './styles';
 
 const MainSideBar = ({
@@ -18,6 +20,8 @@ const MainSideBar = ({
   viewing,
   setViewing,
   attributes,
+  open,
+  setOpen,
 }) => {
   const components = compose(
     map( map( code => prop( code, asks ))),
@@ -49,10 +53,13 @@ const MainSideBar = ({
 
   return (
     <Drawer
-      variant="permanent"
+      variant={getIsMobile() ? 'temporary' : 'permanent'}
       anchor="left"
       className={classes.drawer}
       classes={{ paper: classes.drawerPaper }}
+      open={open}
+      onClose={() => setOpen( false )}
+      keepMounted
     >
       <Container className={classes.title}>
         <Image

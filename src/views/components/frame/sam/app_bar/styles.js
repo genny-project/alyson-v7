@@ -3,7 +3,7 @@ import { DRAWER_WIDTH } from '../side_bar/styles';
 
 const useStyles = makeStyles( theme => ({
   appBar: {
-    marginLeft: DRAWER_WIDTH,
+    marginLeft: theme.breakpoints.down( 'xs' ) ? 0 : DRAWER_WIDTH,
   },
   search: {
     'position': 'relative',

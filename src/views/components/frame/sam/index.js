@@ -27,6 +27,7 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
   const agencyCompany = getAgencyCompany( agency )( baseEntities );
 
   const [viewing, setViewing] = useState({});
+  const [sidebarOpen, setSidebarOpen] = useState( false );
 
   const dataForEvent = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
 
@@ -55,6 +56,8 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
           frames={frames}
           user={user}
           setViewing={setViewing}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
         />
         <Sidebar
           items={getDrawerItems( frames, asks, themes )}
@@ -65,6 +68,8 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
           setViewing={setViewing}
           viewing={viewing}
           attributes={attributes}
+          open={sidebarOpen}
+          setOpen={setSidebarOpen}
         />
         <Main
           viewing={viewing}

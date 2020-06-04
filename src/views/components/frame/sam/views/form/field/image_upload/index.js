@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import API from '../../../../../../../../utils/api/Api';
+import { Api } from '../../../../../../../../utils';
 
 import { DropzoneDialog } from 'material-ui-dropzone';
 import { Button, CircularProgress, Snackbar } from '@material-ui/core';
@@ -11,14 +11,15 @@ const UploadImage = ({ fieldData, label }) => {
   const [loading, setLoading] = useState( false );
   const [snackbar, setSnackbar] = useState({ open: false, alert: '' });
 
-  let formData = new FormData();
-
   const handleSave = async files => {
+    var formData = new FormData();
+
     formData = formData.append( 'file', files[0] );
+
     setOpen( false );
     setLoading( true );
     try {
-      const response = await API.postMediaFile({
+      const response = await Api.postMediaFile({
         data: formData,
       });
 
