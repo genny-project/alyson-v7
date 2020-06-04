@@ -41,6 +41,7 @@ const Field = ({
       setErrors={setErrors}
       pristine={pristine}
       setPristine={setPristine}
+      fieldType={fieldType}
     />
   ) : fieldType === 'radio' ? (
     <RadioGroup

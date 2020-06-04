@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
-import { map, path, pick, values, prop, sortBy, find, propEq, head, compose } from 'ramda';
+import {
+  append,
+  uniq,
+  map,
+  path,
+  pick,
+  values,
+  prop,
+  sortBy,
+  find,
+  propEq,
+  head,
+  compose,
+} from 'ramda';
 import { FormControl, InputLabel, MenuItem, Select, Chip, Typography } from '@material-ui/core';
+
+import makeHandleUpdate from '../../helpers/make-handle-update';
 
 import useStyles from './styles';
 
@@ -23,25 +38,7 @@ const DropdownSelect = ({
   const targetCodes = map( path( ['link', 'targetCode'] ), optionsLinkList ) || [];
   const options = sortBy( prop( 'name' ))( values( pick( values( targetCodes ), baseEntities ))) || [];
 
-  const {
-    attributeCode,
-    question: { code: questionCode },
-    sourceCode,
-    targetCode,
-    weight,
-  } = fieldData;
-
-  const handleUpdate = value =>
-    onUpdate({
-      ask: {
-        attributeCode,
-        questionCode,
-        sourceCode,
-        targetCode,
-        weight,
-      },
-      value,
-    });
+  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
 
   const findOption = code => find( propEq( 'code', code ))( options );
   const [value, setValue] = useState( initialValue || multiple ? [] : '' );

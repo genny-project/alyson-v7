@@ -24,6 +24,7 @@ const UploadImage = ({ fieldData, label }) => {
 
       setSnackbar({ open: true, alert: 'success' });
     } catch ( error ) {
+      console.log( error );
       setSnackbar({ open: true, alert: 'error' });
     }
     setLoading( false );

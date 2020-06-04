@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { path } from 'ramda';
 import { connect } from 'react-redux';
-import Geocode from 'react-geocode';
 
 import { Bridge } from '../../../../utils/vertx/index';
 
@@ -30,8 +29,6 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
   const [viewing, setViewing] = useState({});
 
   const dataForEvent = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
-
-  Geocode.setApiKey( googleApiKey );
 
   const theme = makeTheme({ attributes, asks });
 

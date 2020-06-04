@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { prop } from 'ramda';
 
+import makeHandleUpdate from '../../helpers/make-handle-update';
+
 const TextInput = ({
   errors,
   setErrors,
@@ -11,36 +13,18 @@ const TextInput = ({
   initialValue,
   pristine,
   setPristine,
+  fieldType,
   ...rest
 }) => {
   const [value, setValue] = useState( initialValue || '' );
   const [touched, setTouched] = useState( false );
 
   const {
-    attributeCode,
-    question: {
-      code: questionCode,
-      attribute: {
-        dataType: { validationList },
-      },
-    },
-    sourceCode,
-    targetCode,
-    weight,
+    question: { code: questionCode },
     mandatory,
   } = fieldData;
 
-  const handleUpdate = () =>
-    onUpdate({
-      ask: {
-        attributeCode,
-        questionCode,
-        sourceCode,
-        targetCode,
-        weight,
-      },
-      value,
-    });
+  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData, setErrors );
 
   const handleChange = ({ target: { value } }) => {
     setValue( value );
@@ -59,7 +43,7 @@ const TextInput = ({
       error={touched && errors[questionCode]}
       value={value}
       onChange={handleChange}
-      onBlur={handleUpdate}
+      onBlur={() => handleUpdate( value )}
       label={label}
       required={mandatory}
     />

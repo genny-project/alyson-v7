@@ -10,11 +10,12 @@ import {
 } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
-import Geocode from 'react-geocode';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import GoogleAutocompleteSuggestions from './google_autocomplete_suggestions';
+import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 
 import makeAddressData from './helpers/make-address-data';
+import makeHandleUpdate from '../../helpers/make-handle-update';
 
 const useStyles = makeStyles( theme => ({
   icon: {
@@ -27,32 +28,14 @@ const useStyles = makeStyles( theme => ({
 }));
 
 const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
-  const {
-    attributeCode,
-    question: { code: questionCode },
-    sourceCode,
-    targetCode,
-    weight,
-  } = fieldData;
-
-  const handleUpdate = value =>
-    onUpdate({
-      ask: {
-        attributeCode,
-        questionCode,
-        sourceCode,
-        targetCode,
-        weight,
-      },
-      value,
-    });
+  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
 
   const classes = useStyles();
   const [value, setValue] = useState( null );
   const [restrictCountry, setRestrictCountry] = useState( true );
 
   const handleSend = async () => {
-    const result = await Geocode.fromAddress( value.description || '' );
+    const result = await geocodeByPlaceId( value.place_id || '' );
 
     if ( result ) {
       const addressData = makeAddressData( result );
@@ -73,7 +56,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
   return (
     <Grid
       container
-      row
+      direction="row"
     >
       <Grid
         item

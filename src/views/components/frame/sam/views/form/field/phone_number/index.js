@@ -1,79 +1,33 @@
 import React, { useState } from 'react';
-
-import MaskedInput from 'react-text-mask';
+import { length, test } from 'ramda';
 import { TextField } from '@material-ui/core';
+
+import makeHandleUpdate from '../../helpers/make-handle-update';
+import getValidationList from '../../helpers/get-validation-list';
+
 import useStyles from './styles';
 
 const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate }) => {
-  const [value, setValue] = useState( fieldType === 'mobile' ? '(61)   -   -   ' : '0 -    -    ' );
-
-  const {
-    attributeCode,
-    question: { code: questionCode },
-    sourceCode,
-    targetCode,
-    weight,
-  } = fieldData;
-
-  const handleUpdate = () =>
-    onUpdate({
-      ask: {
-        attributeCode,
-        questionCode,
-        sourceCode,
-        targetCode,
-        weight,
-      },
-      value,
-    });
-
-  const PhoneNumberMask = ({ inputRef, ...rest }) =>
-    fieldType === 'mobile' ? (
-      <MaskedInput
-        {...rest}
-        ref={ref => inputRef( ref ? ref.inputElement : null )}
-        mask={[
-          '(',
-          '6',
-          '1',
-          ')',
-          /[4-5]/,
-          /\d/,
-          /\d/,
-          '-',
-          /\d/,
-          /\d/,
-          /\d/,
-          '-',
-          /\d/,
-          /\d/,
-          /\d/,
-        ]}
-        placeholderChar={'\u2000'}
-        showMask
-      />
-    ) : (
-      <MaskedInput
-        {...rest}
-        ref={ref => inputRef( ref ? ref.inputElement : null )}
-        mask={['0', /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-        placeholderChar={'\u2000'}
-        showMask
-      />
-    );
+  const [value, setValue] = useState( fieldType === 'mobile' ? '04' : '' );
+  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
+  const validationList = getValidationList( fieldData );
 
   const classes = useStyles();
+
+  const handleChange = ({ target: { value } }) =>
+    length( value ) <= 2 && fieldType === 'mobile'
+      ? setValue( '04' )
+      : length( value ) <= 10 && test( /^[0-9]+$/, value )
+        ? setValue( value )
+        : null;
 
   return (
     <TextField
       label={label}
       value={value}
-      onChange={event => setValue( event.target.value )}
-      InputProps={{
-        inputComponent: PhoneNumberMask,
-      }}
+      onChange={handleChange}
       variant="outlined"
-      onBlur={handleUpdate}
+      onBlur={() => handleUpdate( value )}
       className={classes.inputField}
     />
   );
