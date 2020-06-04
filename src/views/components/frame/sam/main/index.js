@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { prop, not, isEmpty, replace, contains } from 'ramda';
-import { Paper, CircularProgress } from '@material-ui/core';
+import { prop, not, isEmpty, replace, contains, keys, length } from 'ramda';
+import { Paper, CircularProgress, Grid, Typography } from '@material-ui/core';
 
 import { Form, Table, Details } from '../views';
 
@@ -17,43 +17,64 @@ const Main = ({
   frames,
   user,
   googleApiKey,
+  loading,
 }) => {
   const classes = useStyles();
 
   const view = not( isEmpty( viewing ))
-    ? prop( 'targetCode', viewing )
+    ? length( keys( viewing )) === 1
       ? 'DETAIL'
-      : asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || 'TABLE'
+      : contains( 'MENU', prop( 'code', viewing ))
+        ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))]
+        : 'TABLE'
     : 'TABLE';
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.mainPaper}>
-        {!view ? (
-          <CircularProgress />
-        ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
-          <Form
-            formView={view}
-            asks={asks}
-            baseEntities={baseEntities}
-            links={links}
-            googleApiKey={googleApiKey}
-          />
-        ) : view === 'DETAIL' ? (
-          <Details
-            attributes={attributes}
-            targetCode={prop( 'targetCode', viewing )}
-          />
-        ) : (
-          <Table
-            frames={frames}
-            attributes={attributes}
-            baseEntities={baseEntities}
-            asks={asks}
-            setViewing={setViewing}
-          />
-        )}
-      </Paper>
+      {loading || !view ? (
+        <Grid
+          spacing={2}
+          container
+          direction="column"
+          alignItems="center"
+          justify="flex-start"
+          className={classes.loadingContainer}
+        >
+          <Grid item>
+            <CircularProgress />
+          </Grid>
+          <Grid item>
+            <Typography variant="overline">
+              {'Preparing...'}
+            </Typography>
+          </Grid>
+        </Grid>
+      ) : (
+        <Paper className={classes.mainPaper}>
+          {view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
+            <Form
+              formView={view}
+              asks={asks}
+              baseEntities={baseEntities}
+              links={links}
+              googleApiKey={googleApiKey}
+            />
+          ) : view === 'DETAIL' ? (
+            <Details
+              attributes={attributes}
+              targetCode={prop( 'targetCode', viewing )}
+            />
+          ) : (
+            <Table
+              frames={frames}
+              attributes={attributes}
+              baseEntities={baseEntities}
+              asks={asks}
+              setViewing={setViewing}
+            />
+          )}
+        </Paper>
+      )}
     </div>
   );
 };

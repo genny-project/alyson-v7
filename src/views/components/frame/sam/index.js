@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { path } from 'ramda';
+import { path, contains, prop, replace } from 'ramda';
 import { connect } from 'react-redux';
 
 import { Bridge } from '../../../../utils/vertx/index';
 
-import { ThemeProvider, createMuiTheme } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core';
 
-import {
-  getDrawerItems,
-  getAppBarItems,
-  getLinksFrom,
-  getComponents,
-} from './helpers/get-components';
+import { getDrawerItems, getAppBarItems } from './helpers/get-components';
 import getAgency from './helpers/get-agency';
 import getAgencyCompany from './helpers/get-agency-company';
 
@@ -28,14 +23,28 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
 
   const [viewing, setViewing] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState( false );
+  const [loading, setLoading] = useState( false );
+  const [staleTarget, setStaleTarget] = useState( '' );
 
-  const dataForEvent = { ...viewing, rootCode: viewing.parentCode, targetCode: 'PER_USER1' };
+  const dataForEvent = {
+    ...viewing,
+    rootCode: viewing.parentCode,
+    targetCode: viewing.targetCode || 'PER_USER1',
+  };
 
   const theme = makeTheme({ attributes, asks });
 
   useEffect(
     () => {
-      if ( viewing.parentCode ) {
+      if ( viewing && viewing.parentCode ) {
+        setLoading( true );
+
+        if ( contains( 'MENU', prop( 'code', viewing ) || '' )) {
+          setStaleTarget(
+            prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {})
+          );
+        }
+
         Bridge.sendEvent({
           event: 'BTN',
           data: dataForEvent,
@@ -45,6 +54,22 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
       }
     },
     [viewing]
+  );
+
+  useEffect(
+    () => {
+      if ( contains( 'MENU', prop( 'code', viewing ) || '' )) {
+        if (
+          prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}) !==
+          staleTarget
+        ) {
+          setLoading( false );
+        }
+      } else {
+        setLoading( false );
+      }
+    },
+    [asks]
   );
 
   return (
@@ -72,6 +97,7 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
           setOpen={setSidebarOpen}
         />
         <Main
+          loading={loading}
           viewing={viewing}
           setViewing={setViewing}
           asks={asks}

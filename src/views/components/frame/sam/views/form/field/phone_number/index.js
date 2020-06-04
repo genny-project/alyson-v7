@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { length, test } from 'ramda';
 import { TextField } from '@material-ui/core';
 
@@ -7,10 +7,17 @@ import getValidationList from '../../helpers/get-validation-list';
 
 import useStyles from './styles';
 
-const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate }) => {
+const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate, errors, setErrors }) => {
   const [value, setValue] = useState( fieldType === 'mobile' ? '04' : '' );
-  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
+
+  const [pristine, setPristine] = useState( true );
+  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData, setErrors );
   const validationList = getValidationList( fieldData );
+
+  const {
+    mandatory,
+    question: { code: questionCode },
+  } = fieldData;
 
   const classes = useStyles();
 
@@ -21,8 +28,19 @@ const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate }) => {
         ? setValue( value )
         : null;
 
+  useEffect(
+    () => {
+      if ( value && mandatory ) {
+        setErrors( errors => ({ ...errors, [questionCode]: false }));
+      }
+      if ( pristine ) setPristine( false );
+    },
+    [value]
+  );
+
   return (
     <TextField
+      error={errors[questionCode] && !pristine}
       label={label}
       value={value}
       onChange={handleChange}

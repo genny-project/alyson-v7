@@ -26,6 +26,8 @@ const DropdownSelect = ({
   baseEntities,
   multiple,
   onUpdate,
+  setErrors,
+  errors,
 }) => {
   const optionsGrpName = compose(
     head,
@@ -36,15 +38,23 @@ const DropdownSelect = ({
   const optionsLinkList = path( [optionsGrpName, 'links'], baseEntities ) || [];
   const targetCodes = map( path( ['link', 'targetCode'] ), optionsLinkList ) || [];
   const options = sortBy( prop( 'name' ))( values( pick( values( targetCodes ), baseEntities ))) || [];
-
   const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
 
+  const {
+    mandatory,
+    question: { code: questionCode },
+  } = fieldData;
   const findOption = code => find( propEq( 'code', code ))( options );
   const [value, setValue] = useState( initialValue || multiple ? [] : '' );
+  const [pristine, setPristine] = useState( true );
   const classes = useStyles();
 
   const handleChange = ({ target: { value } }) => {
     setValue( value );
+    if ( pristine ) setPristine( false );
+    if ( mandatory && value ) {
+      setErrors( errors => ({ ...errors, [questionCode]: false }));
+    }
     handleUpdate( multiple ? value : [value] );
   };
 
@@ -57,10 +67,12 @@ const DropdownSelect = ({
         {label}
       </InputLabel>
       <Select
+        error={errors[questionCode] && !pristine}
         label={label}
         multiple={multiple}
         value={value}
         onChange={handleChange}
+        required={mandatory}
         renderValue={selected =>
           multiple ? (
             <div className={classes.chips}>

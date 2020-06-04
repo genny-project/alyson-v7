@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { map, prop } from 'ramda';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 
-const buildGroupCode = str => str.replace( 'MENU', 'GRP' );
-
 const HeaderMenu = ({ group, setViewing, parentCode }) => {
   const [menu, setMenu] = useState( null );
 
@@ -28,7 +26,8 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
               setMenu( null );
               setViewing({
                 code: prop( 'questionCode', item ),
-                parentCode: prop( 'parentCode', item ),
+                parentCode,
+                targetCode: prop( 'targetCode', item ),
               });
             }}
           >

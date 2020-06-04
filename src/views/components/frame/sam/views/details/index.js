@@ -93,7 +93,7 @@ const Details = ({ attributes, targetCode }) => {
             {'Education Provider'}
           </Typography>
           <Typography>
-            {print( 'education_provider' )}
+            {print( 'assoc_ep' )}
           </Typography>
         </Grid>
       </Grid>
@@ -107,6 +107,19 @@ const Details = ({ attributes, targetCode }) => {
           </Typography>
           <Typography>
             {print( 'current_course' )}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid item>
+        <Grid
+          container
+          direction="row"
+        >
+          <Typography className={classes.label}>
+            {'Student Id'}
+          </Typography>
+          <Typography>
+            {print( 'student_id' )}
           </Typography>
         </Grid>
       </Grid>

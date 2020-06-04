@@ -8,6 +8,8 @@ const useStyles = makeStyles( theme => ({
     marginLeft: DRAWER_WIDTH,
     [theme.breakpoints.down( 'xs' )]: {
       marginLeft: 0,
+      padding: theme.spacing( 1 ),
+      height: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
     },
     padding: theme.spacing( 3 ),
     backgroundColor: theme.palette.background.default,
@@ -18,6 +20,10 @@ const useStyles = makeStyles( theme => ({
   mainPaper: {
     marginBottom: theme.spacing( 1 ),
     padding: theme.spacing( 2 ),
+  },
+  loadingContainer: {
+    marginTop: theme.spacing( 10 ),
+    width: '100%',
   },
 }));
 

@@ -13,15 +13,17 @@ import {
 } from 'ramda';
 
 const makeColumns = compose(
-  map(({ attributeCode, name }) => ({ title: name, field: replace( '_HEADER', '', attributeCode ) })),
+  map(({ questionCode, name }) => ({ title: name, field: replace( 'QUE_', '', questionCode ) })),
   filter(({ attributeCode }) => !contains( 'PRI_EVENT', attributeCode )),
   prop( 'childAsks' )
 );
 
+const unnestIfNeeded = val => ( typeof val === 'array' ? val[0] : val );
+
 const makeCell = attributes =>
   compose(({ targetCode, attributeCode }) => ({
     targetCode,
-    [attributeCode]: path( [targetCode, attributeCode, 'value'], attributes ),
+    [attributeCode]: unnestIfNeeded( path( [targetCode, attributeCode, 'value'], attributes )),
   }));
 
 const makeRow = attributes =>
