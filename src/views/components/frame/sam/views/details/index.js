@@ -11,13 +11,8 @@ const Details = ({ attributes, targetCode }) => {
   const detailView = prop( targetCode, attributes );
 
   const print = prop => path( [`PRI_${toUpper( prop )}`, 'value'], detailView ) || '';
-  const name = path( ['PRI_NAME'], detailView );
-  const email = path( ['PRI_EMAIL'], detailView );
-  const mobile = path ( ['PRI_MOBILE'], detailView );
 
-  const getName =  prop  => path( [`PRI_${toUpper( prop )}`], detailView );
-
-  console.warn( 'details',{ attributes: attributes, targetCode: targetCode, detailView: detailView, name: name });
+  const getProps =  prop  => path( [`PRI_${toUpper( prop )}`], detailView );
 
   const [rating, setRating] = useState( 0 );
   const classes = useStyles();
@@ -65,7 +60,7 @@ const Details = ({ attributes, targetCode }) => {
         </Grid>
       </Grid>
       <RowItems>
-        {[getName( 'mobile' ), getName( 'email' ), getName( 'address_full' ), getName( 'gender' ), getName( 'is_agent' ), getName( 'is_admin' )]}
+        {[getProps( 'mobile' ), getProps( 'email' ), getProps( 'address_full' ), getProps( 'gender' ), getProps( 'is_agent' ), getProps( 'is_admin' )]}
       </RowItems>
       <Grid item>
         <Grid

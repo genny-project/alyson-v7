@@ -5,8 +5,6 @@ import { Grid, Typography } from '@material-ui/core';
 import useStyles from '../styles';
 
 const RowItems = props => map(({ attributeName , value = ''  }) => {
-  console.warn({ attributeName: attributeName, value: value });
-
   const text = useStyles();
 
   return (
