@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { compose, prop, path, toUpper } from 'ramda';
+import { compose, prop, path, toUpper, map } from 'ramda';
 
 import { Grid, Typography, Avatar } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 
 import useStyles from './styles';
+import { ColumnItems, RowItems } from '../../layouts';
 
 const Details = ({ attributes, targetCode }) => {
   const detailView = prop( targetCode, attributes );
 
   const print = prop => path( [`PRI_${toUpper( prop )}`, 'value'], detailView ) || '';
+  const name = path( ['PRI_NAME'], detailView );
+  const email = path( ['PRI_EMAIL'], detailView );
+  const mobile = path ( ['PRI_MOBILE'], detailView );
+
+  const getName =  prop  => path( [`PRI_${toUpper( prop )}`], detailView );
+
+  console.warn( 'details',{ attributes: attributes, targetCode: targetCode, detailView: detailView, name: name });
 
   const [rating, setRating] = useState( 0 );
   const classes = useStyles();
@@ -21,6 +29,10 @@ const Details = ({ attributes, targetCode }) => {
       spacing={4}
       className={classes.detailsContainer}
     >
+      <ColumnItems>
+        {[print( 'name' ),  print( 'address_full' )]}
+      </ColumnItems>
+
       <Grid item>
         <Typography variant="h5">
           {print( 'name' )}
@@ -44,20 +56,17 @@ const Details = ({ attributes, targetCode }) => {
               container
               direction="column"
             >
-              <Grid item>
-                <Typography>
-                  {print( 'address_full' )}
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography>
-                  {`${print( 'email' )}`}
-                </Typography>
-              </Grid>
+              <ColumnItems>
+                {[print( 'address_full' ),  `${print( 'email' )}`]}
+              </ColumnItems>
+
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+      <RowItems>
+        {[getName( 'mobile' ), getName( 'email' ), getName( 'address_full' ), getName( 'gender' ), getName( 'is_agent' ), getName( 'is_admin' )]}
+      </RowItems>
       <Grid item>
         <Grid
           container
