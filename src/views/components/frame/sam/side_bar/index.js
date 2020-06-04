@@ -11,18 +11,7 @@ import { getIsMobile } from '../utils';
 
 import useStyles from './styles';
 
-const MainSideBar = ({
-  items,
-  asks,
-  frames,
-  user,
-  agencyCompany,
-  viewing,
-  setViewing,
-  attributes,
-  open,
-  setOpen,
-}) => {
+const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, open, setOpen }) => {
   const components = compose(
     map( map( code => prop( code, asks ))),
     map( filter( includes( 'QUE' ))),
@@ -32,16 +21,19 @@ const MainSideBar = ({
   const dropDowns = compose( pickBy(( val, key ) => includes( 'TREE', key )))( components );
 
   const dropDownComponents = values(
-    map( items => (
-      <NavigationItem
-        key={`navItem${items[0].name}`}
-        name={items[0].name}
-        questionCode={items[0].questionCode}
-        childAsks={items[0].childAsks}
-        currentViewing={prop( 'code', viewing )}
-        setViewing={setViewing}
-      />
-    ))( dropDowns )
+    map(
+      items =>
+        console.log( items ) || (
+          <NavigationItem
+            key={`navItem${items[0].name}`}
+            name={items[0].name}
+            questionCode={items[0].questionCode}
+            childAsks={items[0].childAsks}
+            currentViewing={prop( 'code', viewing )}
+            setViewing={setViewing}
+          />
+        )
+    )( dropDowns )
   );
 
   const { targetCode } = components.FRM_LOGO[0];

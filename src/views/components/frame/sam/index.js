@@ -14,10 +14,12 @@ import Sidebar from './side_bar';
 import AppBar from './app_bar';
 import Main from './main';
 
+import getDataForEvent from './helpers/get-data-for-event';
+import getGoogleApiKey from './helpers/get-google-api-key';
 import makeTheme from './helpers/make-theme';
 
 const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keycloak }) => {
-  const googleApiKey = path( ['data', 'ENV_GOOGLE_MAPS_APIKEY'], keycloak );
+  const googleApiKey = getGoogleApiKey( keycloak );
   const agency = getAgency( user );
   const agencyCompany = getAgencyCompany( agency )( baseEntities );
 
@@ -26,11 +28,7 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
   const [loading, setLoading] = useState( false );
   const [staleTarget, setStaleTarget] = useState( '' );
 
-  const dataForEvent = {
-    ...viewing,
-    rootCode: viewing.parentCode,
-    targetCode: viewing.targetCode || 'PER_USER1',
-  };
+  const dataForEvent = getDataForEvent( viewing );
 
   const theme = makeTheme({ attributes, asks });
 

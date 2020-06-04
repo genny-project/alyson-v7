@@ -10,7 +10,7 @@ import HeaderMenu from './header_menu';
 import { getIsMobile } from '../utils';
 import useStyles from './styles';
 
-const MainAppBar = ({ items, frames, asks, user, setViewing, sidebarOpen, setSidebarOpen }) => {
+const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen }) => {
   const profilePictureURL = path( ['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user );
   const userFullName = path( ['data', 'name'], user );
 
