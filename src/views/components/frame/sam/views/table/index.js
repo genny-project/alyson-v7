@@ -5,6 +5,7 @@ import { CircularProgress } from '@material-ui/core';
 import { path, prop } from 'ramda';
 
 import { getColumns, getData, getTitle } from './helpers/get-table-data';
+import getActionData from './helpers/get-action-data';
 
 const TableView = ({ attributes, frames, asks, setViewing }) => {
   const table = path( ['QUE_TABLE_RESULTS_GRP', 'childAsks'], asks );
@@ -24,7 +25,8 @@ const TableView = ({ attributes, frames, asks, setViewing }) => {
             {
               icon: 'visibility',
               tooltip: 'View',
-              onClick: ( event, rowData ) => setViewing({ targetCode: prop( 'targetCode', rowData ) }),
+              onClick: ( event, rowData ) =>
+                setViewing( getActionData({ table, rowData, actionCode: 'PRI_EVENT_VIEW' })),
             },
           ]}
           components={{

@@ -21,7 +21,7 @@ const Main = ({
 }) => {
   const classes = useStyles();
 
-  const view = getView( viewing );
+  const view = getView({ viewing, asks });
 
   return (
     <div className={classes.root}>
@@ -54,7 +54,7 @@ const Main = ({
               links={links}
               googleApiKey={googleApiKey}
             />
-          ) : view === 'DETAILS' ? (
+          ) : view === 'DETAIL' ? (
             <Details
               attributes={attributes}
               targetCode={prop( 'targetCode', viewing )}

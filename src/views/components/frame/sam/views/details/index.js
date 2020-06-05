@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { compose, prop, path, toUpper } from 'ramda';
+import { prop, path, toUpper } from 'ramda';
 
 import { Grid, Typography, Avatar } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';

@@ -1,12 +1,12 @@
 import { contains, length, prop, replace, keys } from 'ramda';
 
-const getView = viewing =>
-  length( keys( viewing )) === 1
-    ? prop( 'code', viewing ) === 'QUE_DASHBOARD_VIEW'
-      ? 'DASHBOARD'
-      : 'DETAILS'
-    : contains( 'MENU', prop( 'code', viewing ))
-      ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))]
-      : 'TABLE';
+const getView = ({ viewing: { code = '' }, asks }) =>
+  contains( 'DASHBOARD', code )
+    ? 'DASHBOARD'
+    : contains( 'MENU', code )
+      ? prop( replace( 'MENU', 'GRP', code ), asks )
+      : contains( 'GRP', code )
+        ? 'TABLE'
+        : 'DETAIL';
 
 export default getView;
