@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { prop, not, isEmpty, replace, contains, keys, length } from 'ramda';
-import { Paper, CircularProgress, Grid, Typography } from '@material-ui/core';
+import { prop } from 'ramda';
+import { Paper, Grid, Typography } from '@material-ui/core';
 
 import { Form, Table, Details } from '../views';
-
+import getView from './helpers/get-view';
 import useStyles from './styles';
 
 const Main = ({
@@ -21,15 +21,7 @@ const Main = ({
 }) => {
   const classes = useStyles();
 
-  const view = not( isEmpty( viewing ))
-    ? length( keys( viewing )) === 1
-      ? prop( 'code', viewing ) === 'QUE_DASHBOARD_VIEW'
-        ? 'DASHBOARD'
-        : 'DETAILS'
-      : contains( 'MENU', prop( 'code', viewing ))
-        ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))]
-        : 'TABLE'
-    : 'TABLE';
+  const view = getView( viewing );
 
   return (
     <div className={classes.root}>
@@ -62,7 +54,7 @@ const Main = ({
               links={links}
               googleApiKey={googleApiKey}
             />
-          ) : view === 'DETAIL' ? (
+          ) : view === 'DETAILS' ? (
             <Details
               attributes={attributes}
               targetCode={prop( 'targetCode', viewing )}
