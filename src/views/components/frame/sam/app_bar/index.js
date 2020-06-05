@@ -53,7 +53,7 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen }) => 
             aria-haspopup="true"
             color="inherit"
           >
-            {profilePictureURL.length ? (
+            {profilePictureURL && profilePictureURL.length ? (
               <Avatar
                 alt={userFullName}
                 src={profilePictureURL}

@@ -19,7 +19,7 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
         anchorEl={menu}
         onClose={() => setMenu( null )}
       >
-        {map(( item = {}) => (
+        {map( item => (
           <MenuItem
             key={`menuItem${prop( 'questionCode', item )}`}
             onClick={() => {
@@ -31,7 +31,7 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
               });
             }}
           >
-            {prop( 'name', item )}
+            {prop( 'name', item || {})}
           </MenuItem>
         ))( prop( 'childAsks', group ))}
       </Menu>

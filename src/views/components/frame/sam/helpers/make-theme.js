@@ -1,7 +1,7 @@
 import { path } from 'ramda';
 import { createMuiTheme } from '@material-ui/core';
 
-const getProjectKey = path( ['QUE_PROJECT_NAME_GRP', 'targetCode'] );
+import getProjectKey from './get-project-key';
 
 const makeTheme = ({ attributes, asks }) =>
   createMuiTheme({

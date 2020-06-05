@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { path, contains, prop, replace } from 'ramda';
-import { connect } from 'react-redux';
 
+import { contains, prop, replace, isEmpty } from 'ramda';
+import { connect } from 'react-redux';
 import { Bridge } from '../../../../utils/vertx/index';
 
-import { ThemeProvider } from '@material-ui/core';
+import { ThemeProvider, CircularProgress } from '@material-ui/core';
 
 import { getDrawerItems, getAppBarItems } from './helpers/get-components';
 import getAgency from './helpers/get-agency';
@@ -14,6 +14,7 @@ import Sidebar from './side_bar';
 import AppBar from './app_bar';
 import Main from './main';
 
+import getProjectKey from './helpers/get-project-key';
 import getDataForEvent from './helpers/get-data-for-event';
 import getGoogleApiKey from './helpers/get-google-api-key';
 import makeTheme from './helpers/make-theme';

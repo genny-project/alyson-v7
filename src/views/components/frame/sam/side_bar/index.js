@@ -1,6 +1,6 @@
 import React from 'react';
-import { map, filter, compose, includes, prop, pickBy, values, path } from 'ramda';
-import { Grid, Drawer, List, Typography, Container } from '@material-ui/core';
+import { map, filter, compose, includes, prop, pickBy, values, path, head } from 'ramda';
+import { Drawer, List, Typography, Container } from '@material-ui/core';
 import Image from 'material-ui-image';
 
 import NavigationItem from './navigation_item';
@@ -18,30 +18,32 @@ const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, ope
     map(({ code }) => getLinksFrom( code, frames ))
   )( items );
 
-  const dropDowns = compose( pickBy(( val, key ) => includes( 'TREE', key )))( components );
+  const targetCode = path( ['FRM_LOGO', 0, 'targetCode'], components );
 
-  const dropDownComponents = values(
-    map(
-      items =>
-        console.log( items ) || (
-          <NavigationItem
-            key={`navItem${items[0].name}`}
-            name={items[0].name}
-            questionCode={items[0].questionCode}
-            childAsks={items[0].childAsks}
-            currentViewing={prop( 'code', viewing )}
-            setViewing={setViewing}
-          />
-        )
-    )( dropDowns )
-  );
+  if ( !targetCode ) {
+    return <div />;
+  }
 
-  const { targetCode } = components.FRM_LOGO[0];
-  const logoUrl = path( [targetCode, 'PRI_LOGO', 'value'], attributes )[0].uploadURL;
+  const logoUrl = path( [targetCode, 'PRI_LOGO', 'value', 0, 'uploadURL'], attributes );
   const title = path( [targetCode, 'PRI_NAME', 'value'], attributes );
   const poweredBy = path( [targetCode, 'PRI_POWERED_BY', 'value'], attributes );
 
   const classes = useStyles();
+
+  const dropDowns = compose( pickBy(( val, key ) => includes( 'TREE', key )))( components );
+
+  const dropDownComponents = values(
+    map( items => (
+      <NavigationItem
+        key={`navItem${prop( 'name', head( items || [] ) || {})}`}
+        name={prop( 'name', head( items || [] ) || {})}
+        questionCode={prop( 'questionCode', head( items || [] ) || {})}
+        childAsks={prop( 'childAsks', head( items || [] ) || {})}
+        currentViewing={prop( 'code', viewing )}
+        setViewing={setViewing}
+      />
+    ))( dropDowns )
+  );
 
   return (
     <Drawer
@@ -53,12 +55,16 @@ const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, ope
       onClose={() => setOpen( false )}
       keepMounted
     >
-      <Container className={classes.title}>
-        <Image
-          src={logoUrl}
-          className={classes.logo}
-        />
-      </Container>
+      {logoUrl ? (
+        <Container className={classes.title}>
+          <Image
+            src={logoUrl}
+            className={classes.logo}
+            disableSpinner
+          />
+        </Container>
+      ) : null}
+
       <Container className={classes.title}>
         <Typography
           variant="h6"

@@ -1,38 +1,45 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { path } from 'ramda';
-import { Container, CircularProgress, Typography } from '@material-ui/core';
+import { not, path } from 'ramda';
+import { Grid, LinearProgress, Typography } from '@material-ui/core';
 
 import { storeQuery, setTitle } from '../../../utils';
+import getAppIsLoaded from './sam/helpers/get-app-is-loaded';
 
 import Sam from './sam';
 
 import useStyles from './styles';
 
 const Frame = props => {
-  const { rootCode, frames } = props;
+  const { rootCode, frames, asks, attributes } = props;
 
   const rootFrame = frames[rootCode];
 
   const projectAttributes = storeQuery.getProjectAttributes();
-  const projectName = path( ['PRI_NAME', 'value'], projectAttributes );
+  const projectName = path( ['PRI_NAME', 'value'], projectAttributes || {});
+
+  setTitle( projectName );
 
   const classes = useStyles();
 
-  if ( !rootFrame ) {
-    setTitle( projectName );
-
+  if ( not( getAppIsLoaded({ attributes, asks, rootFrame }))) {
     return (
       <div className={classes.rootLoadingContainer}>
-        <Container>
-          <CircularProgress />
-        </Container>
-        <Container>
-          <Typography variant="overline">
-            {'Loading...'}
-          </Typography>
-        </Container>
+        <LinearProgress />
+        <Grid
+          container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          className={classes.loadingGrid}
+        >
+          <Grid item>
+            <Typography variant="overline">
+              {rootFrame ? 'Finishing up...' : 'Loading...'}
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
     );
   }
@@ -48,6 +55,7 @@ const mapStateToProps = state => ({
   themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
   vertx: state.vertx.layouts,
+  attributes: state.vertx.baseEntities.attributes,
 });
 
 export default connect( mapStateToProps )( Frame );

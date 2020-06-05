@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { map } from 'ramda';
+import { map, length } from 'ramda';
 
 import { List, ListItem, ListItemText, Collapse } from '@material-ui/core';
 
@@ -10,7 +10,7 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
 
   const classes = useStyles();
 
-  const hasChildren = childAsks.length >= 1;
+  const hasChildren = length( childAsks || [] ) >= 1;
 
   return (
     <div>
