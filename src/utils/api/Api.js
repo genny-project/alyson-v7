@@ -17,7 +17,7 @@ class Api {
       },
       ...options,
     });
-  }
+  };
 
   promiseCall = ( options = {}) => {
     return axios({
@@ -29,36 +29,29 @@ class Api {
       },
       ...options,
     });
-  }
+  };
 
   gennyCall = ( options = {}) => {
     return this.observableCall({
       ...options,
       url: `${config.genny.host}/${options.url}`,
     });
-  }
+  };
 
   eventCall = options => {
     return this.gennyCall({
       ...options,
       url: `${config.genny.bridge.endpoints.events}/${options.url}`,
     });
-  }
+  };
 
   googleMapsCall = async ( options = {}) => {
-    const queryPrefix = (
-      options.url &&
-      options.url.includes( '?' )
-    )
-      ? '&'
-      : '?';
+    const queryPrefix = options.url && options.url.includes( '?' ) ? '&' : '?';
 
     const { keycloak } = store.getState();
 
-    let apiKey = (
-      process.env.ENV_GOOGLE_MAPS_APIKEY ||
-      ( keycloak.data && keycloak.data.ENV_GOOGLE_MAPS_APIKEY )
-    );
+    let apiKey =
+      process.env.ENV_GOOGLE_MAPS_APIKEY || ( keycloak.data && keycloak.data.ENV_GOOGLE_MAPS_APIKEY );
 
     /* If we can't find an API key, use the below util to keep trying. */
     if ( !apiKey ) {
@@ -75,16 +68,14 @@ class Api {
               clearInterval( this.interval );
               apiKey = data.ENV_GOOGLE_MAPS_APIKEY;
               resolve();
-            }
-            else if ( ++counter > MAX_ATTEMPTS ) {
+            } else if ( ++counter > MAX_ATTEMPTS ) {
               reject();
               clearInterval( this.interval );
             }
           }, 200 );
         });
-      }
-      /* If it doesn't happen within MAX_ATTEMPTS, stop trying. */
-      catch ( error ) {
+      } catch ( error ) {
+        /* If it doesn't happen within MAX_ATTEMPTS, stop trying. */
         // do nothing, let the network request fail so we can debug easier
       }
     }
@@ -93,7 +84,7 @@ class Api {
       ...options,
       url: `https://maps.googleapis.com/maps/api/${options.url}${queryPrefix}key=${apiKey}`,
     });
-  }
+  };
 
   getPlaceAutocomplete = ( options = {}) => {
     const query = queryString.stringify({
@@ -104,25 +95,23 @@ class Api {
       method: 'get',
       url: `place/autocomplete/json?${query}`,
     });
-  }
+  };
 
-  getGeocodedAddress = ( components ) => {
+  getGeocodedAddress = components => {
     const query = queryString.stringify( components );
 
     return this.googleMapsCall({
       method: 'get',
       url: `geocode/json?${query}`,
     });
-  }
+  };
 
   getKeycloakConfig = () => {
     let initUrl;
 
     if ( process.env.NODE_ENV === 'development' ) {
       initUrl = process.env.ENV_GENNY_INIT_URL;
-    }
-
-    else {
+    } else {
       initUrl = process.env.ENV_GENNY_BRIDGE_URL;
     }
 
@@ -140,9 +129,9 @@ class Api {
     return this.eventCall({
       url: `init?url=${initUrl}`,
     });
-  }
+  };
 
-  postMediaFile = async ( options = {}) => {
+  postMediaFile = async ({ data }) => {
     const token = store.getState().keycloak.accessToken;
     const keycloakData = store.getState().keycloak.data;
     const mediaURL = `${keycloakData.ENV_MEDIA_PROXY_URL}`;
@@ -156,7 +145,7 @@ class Api {
       url: mediaURL,
       headers: headers,
       timeout: 10000,
-      ...options,
+      data,
     });
 
     if ( isArray( result.data.files )) {
@@ -166,9 +155,9 @@ class Api {
     }
 
     return result;
-  }
+  };
 
-  deleteMediaFile = async ( fileURL ) => {
+  deleteMediaFile = async fileURL => {
     const token = store.getState().keycloak.accessToken;
     const headers = {
       Authorization: `bearer ${token}`,
@@ -182,7 +171,7 @@ class Api {
     });
 
     return result;
-  }
+  };
 }
 
 export default new Api();

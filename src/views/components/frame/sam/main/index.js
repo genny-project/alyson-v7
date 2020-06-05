@@ -23,6 +23,8 @@ const Main = ({
 
   const view = getView({ viewing, asks });
 
+  console.log( viewing );
+
   return (
     <div className={classes.root}>
       {loading || !view ? (

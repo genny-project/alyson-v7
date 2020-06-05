@@ -89,11 +89,13 @@ const Field = ({
       onUpdate={onUpdate}
       fieldData={fieldData}
       googleApiKey={googleApiKey}
+      setErrors={setErrors}
     />
   ) : fieldType === 'image' ? (
     <ImageUpload
       fieldData={fieldData}
       label={label}
+      onUpdate={onUpdate}
     />
   ) : null;
 };

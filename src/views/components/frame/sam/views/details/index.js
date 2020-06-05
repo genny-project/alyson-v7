@@ -14,6 +14,8 @@ const Details = ({ attributes, targetCode }) => {
   const [rating, setRating] = useState( 0 );
   const classes = useStyles();
 
+  console.log( detailView );
+
   return (
     <Grid
       container
@@ -36,7 +38,7 @@ const Details = ({ attributes, targetCode }) => {
           <Grid item>
             <Avatar
               alt={print( 'name' )}
-              src={print( 'image_url' )}
+              src={print( 'user_profile_picture' )}
             />
           </Grid>
           <Grid item>

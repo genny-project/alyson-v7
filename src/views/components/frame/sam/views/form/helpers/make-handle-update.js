@@ -1,4 +1,4 @@
-import { all, test } from 'ramda';
+import { all, test, filter, identity } from 'ramda';
 
 const handleUpdate = onUpdate => (
   {
@@ -16,7 +16,7 @@ const handleUpdate = onUpdate => (
   },
   setErrors
 ) => value =>
-  all(({ regex }) => test( new RegExp( regex ), value ))( validationList )
+  all(({ regex }) => test( new RegExp( regex ), value ))( filter( identity, validationList || [] ))
     ? onUpdate({
       ask: {
         askId,

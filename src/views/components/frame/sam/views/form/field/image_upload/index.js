@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Api } from '../../../../../../../../utils';
-
+import { head, path, length } from 'ramda';
 import { DropzoneDialog } from 'material-ui-dropzone';
-import { Button, CircularProgress, Snackbar } from '@material-ui/core';
+import { Button, CircularProgress, Snackbar, Avatar } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Alert from '@material-ui/lab/Alert';
+import makeHandleUpdate from '../../helpers/make-handle-update';
 
-const UploadImage = ({ fieldData, label }) => {
+const UploadImage = ({ fieldData, label, onUpdate }) => {
   const [open, setOpen] = useState( false );
   const [loading, setLoading] = useState( false );
   const [snackbar, setSnackbar] = useState({ open: false, alert: '' });
+  const [imageUrl, setImageUrl] = useState( '' );
+
+  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
 
   const handleSave = async files => {
-    var formData = new FormData();
-
-    formData = formData.append( 'file', files[0] );
-
     setOpen( false );
     setLoading( true );
+
+    var form_data = new FormData();
+
+    form_data.append( 'file', head( files ));
+
     try {
       const response = await Api.postMediaFile({
-        data: formData,
+        data: form_data,
       });
+
+      setImageUrl( path( ['data', 'files', 0, 'url'], response ));
 
       setSnackbar({ open: true, alert: 'success' });
     } catch ( error ) {
@@ -39,10 +46,19 @@ const UploadImage = ({ fieldData, label }) => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  useEffect(
+    () => {
+      if ( length( imageUrl )) handleUpdate( imageUrl );
+    },
+    [imageUrl]
+  );
+
   return (
     <div>
       {loading ? (
         <CircularProgress />
+      ) : length( imageUrl ) ? (
+        <Avatar src={imageUrl} />
       ) : (
         <div>
           <Button
@@ -73,7 +89,7 @@ const UploadImage = ({ fieldData, label }) => {
           elevation={6}
           variant="filled"
         >
-          {alert === 'success' ? 'Image uploaded!' : 'Sorry there was an error'}
+          {snackbar.alert === 'success' ? 'Image uploaded!' : 'Sorry there was an error'}
         </Alert>
       </Snackbar>
     </div>

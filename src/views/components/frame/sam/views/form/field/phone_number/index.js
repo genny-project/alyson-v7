@@ -8,7 +8,7 @@ import getValidationList from '../../helpers/get-validation-list';
 import useStyles from './styles';
 
 const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate, errors, setErrors }) => {
-  const [value, setValue] = useState( fieldType === 'mobile' ? '04' : '' );
+  const [value, setValue] = useState( fieldType === 'mobile' ? '04' : '0' );
 
   const [pristine, setPristine] = useState( true );
   const handleUpdate = makeHandleUpdate( onUpdate )( fieldData, setErrors );

@@ -19,8 +19,13 @@ import makeHandleUpdate from '../../helpers/make-handle-update';
 import { getIsMobile } from '../../../../utils';
 import useStyles from './styles';
 
-const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
+const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
   const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
+
+  const {
+    mandatory,
+    question: { code: questionCode },
+  } = fieldData;
 
   const classes = useStyles();
   const [value, setValue] = useState( null );
@@ -39,6 +44,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
   useEffect(
     () => {
       if ( value ) {
+        setErrors( errors => ({ ...errors, [questionCode]: false }));
         handleSend();
       }
     },
@@ -99,6 +105,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
           renderInput={params => (
             <TextField
               {...params}
+              required={mandatory}
               label="Address"
               variant="outlined"
               fullWidth
