@@ -53,7 +53,7 @@ const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, ope
       classes={{ paper: classes.drawerPaper }}
       open={open}
       onClose={() => setOpen( false )}
-      keepMounted
+      ModalProps={{ keepMounted: true }}
     >
       {logoUrl ? (
         <Container className={classes.title}>

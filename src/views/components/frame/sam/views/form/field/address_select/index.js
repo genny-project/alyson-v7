@@ -48,32 +48,41 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
   return (
     <Grid
       container
-      direction="row"
+      direction={getIsMobile() ? 'column' : 'row'}
+      spacing={2}
     >
       <Grid
         item
         className={classes.icon}
+        {...( getIsMobile() ? '' : { xs: 1 })}
       >
-        <Tooltip title={restrictCountry ? 'Unlock region' : 'Lock to Australia'}>
-          <Grid
-            container
-            direction="row"
-            alignItems="center"
-          >
-            <IconButton onClick={() => setRestrictCountry( !restrictCountry )}>
-              {restrictCountry ? <LockIcon /> : <LockOpenIcon />}
-            </IconButton>
+        <Grid
+          container
+          direction="row"
+          alignItems="center"
+          className={classes.iconGrid}
+        >
+          <Grid item>
+            <Tooltip title={restrictCountry ? 'Unlock region' : 'Lock to Australia'}>
+              <div>
+                <IconButton onClick={() => setRestrictCountry( !restrictCountry )}>
+                  {restrictCountry ? <LockIcon /> : <LockOpenIcon />}
+                </IconButton>
+              </div>
+            </Tooltip>
+          </Grid>
+          <Grid item>
             {getIsMobile() ? (
               <Typography>
                 {'Toggle restricted to Australia'}
               </Typography>
             ) : null}
           </Grid>
-        </Tooltip>
+        </Grid>
       </Grid>
       <Grid
         item
-        className={classes.inputField}
+        {...( getIsMobile() ? '' : { xs: 11 })}
       >
         <GooglePlacesAutocomplete
           apiKey={googleApiKey}

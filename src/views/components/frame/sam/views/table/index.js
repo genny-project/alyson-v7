@@ -39,11 +39,7 @@ const TableView = ({ attributes, frames, asks, setViewing }) => {
     );
   }
 
-  return (
-    <div>
-      <CircularProgress />
-    </div>
-  );
+  return <div />;
 };
 
 export default TableView;

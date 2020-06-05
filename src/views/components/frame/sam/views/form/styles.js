@@ -7,7 +7,7 @@ const useStyles = makeStyles( theme => ({
   },
   formItem: {
     width: '50%',
-    [theme.breakpoints.down( 'xs' )]: {
+    [theme.breakpoints.down( 'md' )]: {
       width: '100%',
     },
   },

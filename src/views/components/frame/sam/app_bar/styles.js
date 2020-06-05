@@ -48,6 +48,9 @@ const useStyles = makeStyles( theme => ({
   grow: {
     flexGrow: 1,
   },
+  loadingBar: {
+    height: theme.spacing( 0.2 ),
+  },
 }));
 
 export default useStyles;

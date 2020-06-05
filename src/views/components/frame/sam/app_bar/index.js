@@ -1,7 +1,7 @@
 import React from 'react';
 import { path } from 'ramda';
 
-import { AppBar, Toolbar, InputBase, IconButton, Avatar } from '@material-ui/core';
+import { AppBar, Toolbar, InputBase, IconButton, Avatar, LinearProgress } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -10,7 +10,7 @@ import HeaderMenu from './header_menu';
 import { getIsMobile } from '../utils';
 import useStyles from './styles';
 
-const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen }) => {
+const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loading }) => {
   const profilePictureURL = path( ['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user );
   const userFullName = path( ['data', 'name'], user );
 
@@ -63,6 +63,7 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen }) => 
             )}
           </IconButton>
         </Toolbar>
+        {loading ? <LinearProgress className={classes.loadingBar} /> : null}
       </AppBar>
     </div>
   );

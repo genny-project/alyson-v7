@@ -23,7 +23,9 @@ const Main = ({
 
   const view = not( isEmpty( viewing ))
     ? length( keys( viewing )) === 1
-      ? 'DETAIL'
+      ? prop( 'code', viewing ) === 'QUE_DASHBOARD_VIEW'
+        ? 'DASHBOARD'
+        : 'DETAILS'
       : contains( 'MENU', prop( 'code', viewing ))
         ? asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))]
         : 'TABLE'
@@ -41,9 +43,6 @@ const Main = ({
           className={classes.loadingContainer}
         >
           <Grid item>
-            <CircularProgress />
-          </Grid>
-          <Grid item>
             <Typography variant="overline">
               {'Preparing...'}
             </Typography>
@@ -51,7 +50,11 @@ const Main = ({
         </Grid>
       ) : (
         <Paper className={classes.mainPaper}>
-          {view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
+          {view === 'DASHBOARD' ? (
+            <div>
+              {'Dashboard'}
+            </div>
+          ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={view}
               asks={asks}

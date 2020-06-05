@@ -6,7 +6,12 @@ const useStyles = makeStyles( theme => ({
   },
   icon: {
     color: theme.palette.text.secondary,
-    marginRight: theme.spacing( 2 ),
+    [theme.breakpoints.down( 'xs' )]: {
+      width: '100%',
+    },
+  },
+  iconGrid: {
+    width: '100%',
   },
 }));
 
