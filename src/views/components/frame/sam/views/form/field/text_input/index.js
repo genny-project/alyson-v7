@@ -14,26 +14,27 @@ const TextInput = ({
   pristine,
   setPristine,
   fieldType,
+  inputType,
   ...rest
 }) => {
-  const [value, setValue] = useState( initialValue || '' );
-  const [touched, setTouched] = useState( false );
+  const [value, setValue] = useState(initialValue || '');
+  const [touched, setTouched] = useState(false);
 
   const {
     question: { code: questionCode },
     mandatory,
   } = fieldData;
 
-  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData, setErrors );
+  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData, setErrors);
 
   const handleChange = ({ target: { value } }) => {
-    setValue( value );
-    if ( pristine ) setPristine( false );
-    if ( !touched ) setTouched( true );
-    if ( mandatory && !value ) {
-      setErrors( errors => ({ ...errors, [questionCode]: true }));
-    } else if ( prop( questionCode, errors )) {
-      setErrors( errors => ({ ...errors, [questionCode]: false }));
+    setValue(value);
+    if (pristine) setPristine(false);
+    if (!touched) setTouched(true);
+    if (mandatory && !value) {
+      setErrors(errors => ({ ...errors, [questionCode]: true }));
+    } else if (prop(questionCode, errors)) {
+      setErrors(errors => ({ ...errors, [questionCode]: false }));
     }
   };
 
@@ -43,9 +44,10 @@ const TextInput = ({
       error={touched && errors[questionCode]}
       value={value}
       onChange={handleChange}
-      onBlur={() => handleUpdate( value )}
+      onBlur={() => handleUpdate(value)}
       label={label}
       required={mandatory}
+      type={inputType || 'text'}
     />
   );
 };

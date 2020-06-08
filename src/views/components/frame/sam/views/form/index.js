@@ -28,6 +28,8 @@ const Form = ({ setLoading, formView, asks, baseEntities, links, googleApiKey })
     onSubmit: onSubmit({ parentCode, rootCode, setLoading }),
   };
 
+  console.log(formFields);
+
   return (
     <Grid
       container

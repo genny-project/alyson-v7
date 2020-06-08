@@ -11,6 +11,7 @@ import {
   propEq,
   head,
   compose,
+  length,
 } from 'ramda';
 import { FormControl, InputLabel, MenuItem, Select, Chip, Typography } from '@material-ui/core';
 
@@ -31,41 +32,36 @@ const DropdownSelect = ({
 }) => {
   const optionsGrpName = compose(
     head,
-    prop( 'selectionBaseEntityGroupList' ),
+    prop('selectionBaseEntityGroupList'),
     head
-  )( validationList );
+  )(validationList);
 
-  const optionsLinkList = path( [optionsGrpName, 'links'], baseEntities ) || [];
-  const targetCodes = map( path( ['link', 'targetCode'] ), optionsLinkList ) || [];
-  const options = sortBy( prop( 'name' ))( values( pick( values( targetCodes ), baseEntities ))) || [];
-  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
+  const optionsLinkList = path([optionsGrpName, 'links'], baseEntities) || [];
+  const targetCodes = map(path(['link', 'targetCode']), optionsLinkList) || [];
+  const options = sortBy(prop('index'))(values(pick(values(targetCodes), baseEntities))) || [];
+  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData);
 
   const {
     mandatory,
     question: { code: questionCode },
   } = fieldData;
-  const findOption = code => find( propEq( 'code', code ))( options );
-  const [value, setValue] = useState( initialValue || multiple ? [] : '' );
-  const [pristine, setPristine] = useState( true );
+  const findOption = code => find(propEq('code', code))(options);
+  const [value, setValue] = useState(initialValue || multiple ? [] : '');
+  const [pristine, setPristine] = useState(true);
   const classes = useStyles();
 
   const handleChange = ({ target: { value } }) => {
-    setValue( value );
-    if ( pristine ) setPristine( false );
-    if ( mandatory && value ) {
-      setErrors( errors => ({ ...errors, [questionCode]: false }));
+    setValue(value);
+    if (pristine) setPristine(false);
+    if (mandatory && value) {
+      setErrors(errors => ({ ...errors, [questionCode]: false }));
     }
-    handleUpdate( multiple ? value : [value] );
+    handleUpdate(multiple ? value : [value]);
   };
 
   return (
-    <FormControl
-      variant="outlined"
-      className={classes.select}
-    >
-      <InputLabel>
-        {label}
-      </InputLabel>
+    <FormControl variant="outlined" className={classes.select}>
+      <InputLabel>{label}</InputLabel>
       <Select
         error={errors[questionCode] && !pristine}
         label={label}
@@ -80,7 +76,7 @@ const DropdownSelect = ({
                 code => (
                   <Chip
                     key={code}
-                    label={prop( 'name', findOption( code ) || {})}
+                    label={prop('name', findOption(code) || {})}
                     className={classes.chip}
                   />
                 ),
@@ -88,24 +84,27 @@ const DropdownSelect = ({
               )}
             </div>
           ) : (
-            <Typography>
-              {prop( 'name', findOption( selected ) || {})}
-            </Typography>
+            <Typography>{prop('name', findOption(selected) || {})}</Typography>
           )
         }
       >
-        {map(
-          ({ code, name }) => (
-            <MenuItem
-              value={code}
-              key={`menuItem${code}`}
-            >
-              <Typography color={includes( code, multiple ? value : [value] ) ? 'primary' : ''}>
-                {name}
-              </Typography>
-            </MenuItem>
-          ),
-          options || []
+        {length(options) ? (
+          map(
+            ({ code, name }) => (
+              <MenuItem value={code} key={`menuItem${code}`}>
+                <Typography
+                  color={includes(code, multiple ? value : [value]) ? 'primary' : 'textPrimary'}
+                >
+                  {name}
+                </Typography>
+              </MenuItem>
+            ),
+            options || []
+          )
+        ) : (
+          <MenuItem disabled>
+            <Typography color="textSecondary"> No Options Found </Typography>
+          </MenuItem>
         )}
       </Select>
     </FormControl>
