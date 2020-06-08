@@ -3,7 +3,7 @@ import React from 'react';
 import { prop } from 'ramda';
 import { Paper, Grid, Typography } from '@material-ui/core';
 
-import { Form, Table, Details } from '../views';
+import { Form, Table, Details, Dashboard } from '../views';
 import getView from './helpers/get-view';
 import useStyles from './styles';
 
@@ -42,7 +42,7 @@ const Main = ({
       ) : (
         <Paper className={classes.mainPaper}>
           {view === 'DASHBOARD' ? (
-            <div>{'Dashboard'}</div>
+            <Dashboard />
           ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={view}

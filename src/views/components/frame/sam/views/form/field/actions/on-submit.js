@@ -1,9 +1,10 @@
 import Bridge from '../../../../../../../../utils/vertx/Bridge';
 import debounce from 'lodash.debounce';
 
-const onSubmit = ({ parentCode, rootCode, setLoading }) => ({ ask, value }) => {
+const onSubmit = ({ parentCode, rootCode, setLoading, setViewing }) => ({ ask, value }) => {
   const { attributeCode, questionCode, sourceCode, targetCode } = ask;
 
+  setViewing({ code: `QUE_PRI_EVENT_VIEW_${targetCode}`, targetCode });
   setLoading(true);
 
   Bridge.sendFormattedEvent({

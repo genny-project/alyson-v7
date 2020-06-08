@@ -8,7 +8,15 @@ import Field from './field';
 
 import useStyles from './styles';
 
-const Form = ({ setLoading, formView, attributes, baseEntities, links, googleApiKey }) => {
+const Form = ({
+  setViewing,
+  setLoading,
+  formView,
+  attributes,
+  baseEntities,
+  links,
+  googleApiKey,
+}) => {
   const title = path(['question', 'name'], formView);
   const formFields = path(['childAsks'], formView);
   const defaultValues = path([prop('targetCode', formView)], attributes);
@@ -26,7 +34,7 @@ const Form = ({ setLoading, formView, attributes, baseEntities, links, googleApi
     setErrors,
     pristine,
     setPristine,
-    onSubmit: onSubmit({ parentCode, rootCode, setLoading }),
+    onSubmit: onSubmit({ parentCode, rootCode, setLoading, setViewing }),
   };
 
   return (

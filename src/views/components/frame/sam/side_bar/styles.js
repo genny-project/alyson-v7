@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core';
 const DRAWER_WIDTH = 180;
 const APP_BAR_HEIGHT = 64;
 
-const useStyles = makeStyles( theme => ({
+const useStyles = makeStyles(theme => ({
   drawer: {
     width: DRAWER_WIDTH,
     flexShrink: 0,
@@ -17,17 +17,16 @@ const useStyles = makeStyles( theme => ({
     flexGrow: 1,
   },
   title: {
-    paddingTop: theme.spacing( 1 ),
-    minHeight: APP_BAR_HEIGHT,
+    paddingTop: theme.spacing(1),
   },
   logo: {
     height: APP_BAR_HEIGHT,
   },
   poweredBy: {
-    marginBottom: theme.spacing( 1 ),
+    marginBottom: theme.spacing(1),
   },
   poweredName: {
-    marginBottom: theme.spacing( 1 ),
+    marginBottom: theme.spacing(1),
   },
 }));
 

@@ -33,7 +33,7 @@ const TextInput = ({
     if (!touched) setTouched(true);
     if (mandatory && !value) {
       setErrors(errors => ({ ...errors, [questionCode]: true }));
-    } else if (prop(questionCode, errors)) {
+    } else {
       setErrors(errors => ({ ...errors, [questionCode]: false }));
     }
   };
