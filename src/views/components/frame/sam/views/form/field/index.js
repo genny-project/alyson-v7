@@ -1,5 +1,5 @@
 import React from 'react';
-import { path, toLower, includes, has, not } from 'ramda';
+import { path, toLower, includes, has, not, prop } from 'ramda';
 import onUpdate from './actions/on-update';
 
 import RadioGroup from './radio_group';
@@ -18,6 +18,7 @@ const Field = ({
   links,
   meta: { onSubmit, errors, setErrors, pristine, setPristine },
   googleApiKey,
+  defaultValues,
 }) => {
   const label = path(['name'], fieldData);
   const dataType = path(['question', 'attribute', 'dataType'], fieldData);
@@ -25,18 +26,21 @@ const Field = ({
   const validationList = path(['validationList'], dataType);
 
   const {
+    attributeCode,
     question: { code: questionCode },
     mandatory,
   } = fieldData;
 
   if (mandatory && not(has(questionCode, errors))) setErrors({ ...errors, [questionCode]: true });
 
-  if (fieldType === 'tag') console.log(fieldData);
+  const initialValue = path([attributeCode, 'value'], defaultValues) || false;
+
   return fieldType === 'text' ||
     fieldType === 'email' ||
     fieldType === 'abn number' ||
     fieldType === 'java.lang.integer' ? (
     <TextInput
+      initialValue={initialValue}
       fieldData={fieldData}
       label={label}
       variant="outlined"
@@ -74,6 +78,7 @@ const Field = ({
     />
   ) : fieldType === 'dropdown' || fieldType === 'dropdownmultiple' || fieldType === 'tag' ? (
     <DropdownSelect
+      initialValue={initialValue}
       fieldData={fieldData}
       baseEntities={baseEntities}
       validationList={validationList}

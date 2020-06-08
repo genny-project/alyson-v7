@@ -9,7 +9,7 @@ import makeHandleUpdate from '../../helpers/make-handle-update';
 
 const limitMenu = {
   marks: {
-    ...pickAll(['em'], menu.marks),
+    ...pickAll(['em', 'strong', 'underline'], menu.marks),
   },
   blocks: {
     ...pickAll(['plain', 'bullet_list', 'ordered_list'], menu.blocks),
@@ -57,7 +57,9 @@ const RichTextEditor = ({
         render={({ editor, view }) => (
           <div>
             <MenuBar menu={limitMenu} view={view} />
-            <Typography className={classes.labelText}>{label}</Typography>
+            <Typography color="textSecondary" className={classes.labelText}>
+              {label}
+            </Typography>
             {editor}
           </div>
         )}

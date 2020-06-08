@@ -8,9 +8,10 @@ import Field from './field';
 
 import useStyles from './styles';
 
-const Form = ({ setLoading, formView, asks, baseEntities, links, googleApiKey }) => {
+const Form = ({ setLoading, formView, attributes, baseEntities, links, googleApiKey }) => {
   const title = path(['question', 'name'], formView);
   const formFields = path(['childAsks'], formView);
+  const defaultValues = path([prop('targetCode', formView)], attributes);
 
   const parentCode = prop('questionCode', formView);
   const rootCode = prop('questionCode', formView);
@@ -27,8 +28,6 @@ const Form = ({ setLoading, formView, asks, baseEntities, links, googleApiKey })
     setPristine,
     onSubmit: onSubmit({ parentCode, rootCode, setLoading }),
   };
-
-  console.log(formFields);
 
   return (
     <Grid
@@ -53,6 +52,7 @@ const Form = ({ setLoading, formView, asks, baseEntities, links, googleApiKey })
             links={links}
             meta={meta}
             googleApiKey={googleApiKey}
+            defaultValues={defaultValues}
           />
         </Grid>
       ))(formFields)}

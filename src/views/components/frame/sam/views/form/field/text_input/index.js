@@ -38,19 +38,13 @@ const TextInput = ({
     }
   };
 
-  useEffect(
-    () => {
-      if (touched) handleUpdate(value);
-    },
-    [value]
-  );
-
   return (
     <TextField
       {...rest}
       error={touched && errors[questionCode]}
       value={value}
       onChange={handleChange}
+      onBlur={() => handleUpdate(value)}
       label={label}
       required={mandatory}
       type={inputType || 'text'}

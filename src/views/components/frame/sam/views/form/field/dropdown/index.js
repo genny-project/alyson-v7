@@ -1,19 +1,7 @@
-import React, { useState } from 'react';
-import {
-  includes,
-  map,
-  path,
-  pick,
-  values,
-  prop,
-  sortBy,
-  find,
-  propEq,
-  head,
-  compose,
-  length,
-} from 'ramda';
-import { FormControl, InputLabel, MenuItem, Select, Chip, Typography } from '@material-ui/core';
+import React, { useState, useEffect, useRef } from 'react';
+import { map, path, pick, prop, sortBy, values, head, compose, equals } from 'ramda';
+import { TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 import makeHandleUpdate from '../../helpers/make-handle-update';
 
@@ -37,77 +25,53 @@ const DropdownSelect = ({
   )(validationList);
 
   const optionsLinkList = path([optionsGrpName, 'links'], baseEntities) || [];
-  const targetCodes = map(path(['link', 'targetCode']), optionsLinkList) || [];
-  const options = sortBy(prop('index'))(values(pick(values(targetCodes), baseEntities))) || [];
+  const targetCodes =
+    map(path(['link', 'targetCode']), sortBy(prop('weight'))(optionsLinkList)) || [];
+
+  const options =
+    map(pick(['name', 'code']), values(pick(values(targetCodes), baseEntities))) || [];
+
   const handleUpdate = makeHandleUpdate(onUpdate)(fieldData);
 
   const {
     mandatory,
     question: { code: questionCode },
   } = fieldData;
-  const findOption = code => find(propEq('code', code))(options);
-  const [value, setValue] = useState(initialValue || multiple ? [] : '');
+  const prepareData = map(prop('code'));
+  const [value, setValue] = useState(initialValue || multiple ? [] : null);
   const [pristine, setPristine] = useState(true);
   const classes = useStyles();
 
-  const handleChange = ({ target: { value } }) => {
-    setValue(value);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
     if (pristine) setPristine(false);
     if (mandatory && value) {
       setErrors(errors => ({ ...errors, [questionCode]: false }));
     }
-    handleUpdate(multiple ? value : [value]);
+    handleUpdate(prepareData(multiple ? newValue : [newValue]));
   };
 
+  useEffect(
+    () => {
+      if (initialValue === ' ') setValue(multiple ? [] : null);
+    },
+    [initialValue]
+  );
+
   return (
-    <FormControl variant="outlined" className={classes.select}>
-      <InputLabel>{label}</InputLabel>
-      <Select
-        error={errors[questionCode] && !pristine}
-        label={label}
-        multiple={multiple}
-        value={value}
-        onChange={handleChange}
-        required={mandatory}
-        renderValue={selected =>
-          multiple ? (
-            <div className={classes.chips}>
-              {map(
-                code => (
-                  <Chip
-                    key={code}
-                    label={prop('name', findOption(code) || {})}
-                    className={classes.chip}
-                  />
-                ),
-                selected
-              )}
-            </div>
-          ) : (
-            <Typography>{prop('name', findOption(selected) || {})}</Typography>
-          )
-        }
-      >
-        {length(options) ? (
-          map(
-            ({ code, name }) => (
-              <MenuItem value={code} key={`menuItem${code}`}>
-                <Typography
-                  color={includes(code, multiple ? value : [value]) ? 'primary' : 'textPrimary'}
-                >
-                  {name}
-                </Typography>
-              </MenuItem>
-            ),
-            options || []
-          )
-        ) : (
-          <MenuItem disabled>
-            <Typography color="textSecondary"> No Options Found </Typography>
-          </MenuItem>
-        )}
-      </Select>
-    </FormControl>
+    <Autocomplete
+      className={classes.select}
+      error={errors[questionCode] && !pristine}
+      label={label}
+      multiple={multiple}
+      value={value}
+      onChange={handleChange}
+      required={mandatory}
+      options={options}
+      getOptionLabel={prop('name')}
+      getOptionSelected={(option, value) => option.code === value.code}
+      renderInput={params => <TextField {...params} label={label} variant="outlined" />}
+    />
   );
 };
 

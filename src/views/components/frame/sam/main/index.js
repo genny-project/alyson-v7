@@ -48,6 +48,7 @@ const Main = ({
               formView={view}
               asks={asks}
               baseEntities={baseEntities}
+              attributes={attributes}
               links={links}
               googleApiKey={googleApiKey}
               setViewing={setViewing}

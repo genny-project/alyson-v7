@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import DateFnsUtils from '@date-io/date-fns';
+import { format } from 'date-fns';
 
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, DatePicker, TimePicker } from '@material-ui/pickers';
 
 import makeHandleUpdate from '../../helpers/make-handle-update';
 
@@ -23,43 +20,42 @@ const DateTimePicker = ({
   inputType = 'date',
   ...rest
 }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData, setErrors);
+  const handleUpdate = date =>
+    makeHandleUpdate(onUpdate)(fieldData, setErrors)(format(date, 'yyyy-MM-dd'));
+
+  const handleUpdateTime = time =>
+    makeHandleUpdate(onUpdate)(fieldData, setErrors)(format(time, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
 
   const handleDateChange = date => {
     setSelectedDate(date);
-    handleUpdate(date);
   };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       {inputType === 'date' ? (
-        <KeyboardDatePicker
+        <DatePicker
           disableToolbar
+          autoOk
+          onAccept={handleUpdate}
           variant="inline"
           inputVariant="outlined"
           format="dd/MM/yyyy"
-          margin="normal"
           id="date-picker-inline"
           label={label}
           value={selectedDate}
           onChange={handleDateChange}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
         />
       ) : (
-        <KeyboardTimePicker
-          margin="normal"
+        <TimePicker
+          autoOk
+          onAccept={handleUpdateTime}
           id="time-picker"
           inputVariant="outlined"
           label={label}
           value={selectedDate}
           onChange={handleDateChange}
-          KeyboardButtonProps={{
-            'aria-label': 'change time',
-          }}
         />
       )}
     </MuiPickersUtilsProvider>
