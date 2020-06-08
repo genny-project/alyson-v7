@@ -18,12 +18,11 @@ const Main = ({
   user,
   googleApiKey,
   loading,
+  setLoading,
 }) => {
   const classes = useStyles();
 
-  const view = getView({ viewing, asks });
-
-  console.log( viewing );
+  const view = getView({ viewing, asks, frames });
 
   return (
     <div className={classes.root}>
@@ -37,17 +36,13 @@ const Main = ({
           className={classes.loadingContainer}
         >
           <Grid item>
-            <Typography variant="overline">
-              {'Preparing...'}
-            </Typography>
+            <Typography variant="overline">{'Preparing...'}</Typography>
           </Grid>
         </Grid>
       ) : (
         <Paper className={classes.mainPaper}>
           {view === 'DASHBOARD' ? (
-            <div>
-              {'Dashboard'}
-            </div>
+            <div>{'Dashboard'}</div>
           ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={view}
@@ -55,12 +50,11 @@ const Main = ({
               baseEntities={baseEntities}
               links={links}
               googleApiKey={googleApiKey}
+              setViewing={setViewing}
+              setLoading={setLoading}
             />
           ) : view === 'DETAIL' ? (
-            <Details
-              attributes={attributes}
-              targetCode={prop( 'targetCode', viewing )}
-            />
+            <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
           ) : (
             <Table
               frames={frames}

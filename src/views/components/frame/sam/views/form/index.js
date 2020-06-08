@@ -8,27 +8,25 @@ import Field from './field';
 
 import useStyles from './styles';
 
-const Form = ({ formView, asks, baseEntities, links, googleApiKey }) => {
-  const title = path( ['question', 'name'], formView );
-  const formFields = path( ['childAsks'], formView );
+const Form = ({ setLoading, formView, asks, baseEntities, links, googleApiKey }) => {
+  const title = path(['question', 'name'], formView);
+  const formFields = path(['childAsks'], formView);
 
-  const parentCode = prop( 'questionCode', formView );
-  const rootCode = prop( 'questionCode', formView );
+  const parentCode = prop('questionCode', formView);
+  const rootCode = prop('questionCode', formView);
 
   const classes = useStyles();
 
   const [errors, setErrors] = useState({});
-  const [pristine, setPristine] = useState( true );
+  const [pristine, setPristine] = useState(true);
 
   const meta = {
     errors,
     setErrors,
     pristine,
     setPristine,
-    onSubmit: onSubmit({ parentCode, rootCode }),
+    onSubmit: onSubmit({ parentCode, rootCode, setLoading }),
   };
-
-  console.log( formFields, errors );
 
   return (
     <Grid
@@ -40,19 +38,12 @@ const Form = ({ formView, asks, baseEntities, links, googleApiKey }) => {
       spacing={2}
     >
       <Grid item>
-        <Typography
-          color="textSecondary"
-          variant="h5"
-        >
+        <Typography color="textSecondary" variant="h5">
           {title}
         </Typography>
       </Grid>
-      {map( field => (
-        <Grid
-          className={classes.formItem}
-          item
-          key={`gridItem${field.questionCode}`}
-        >
+      {map(field => (
+        <Grid className={classes.formItem} item key={`gridItem${field.questionCode}`}>
           <Field
             key={field.questionCode}
             fieldData={field}
@@ -62,7 +53,7 @@ const Form = ({ formView, asks, baseEntities, links, googleApiKey }) => {
             googleApiKey={googleApiKey}
           />
         </Grid>
-      ))( formFields )}
+      ))(formFields)}
     </Grid>
   );
 };
