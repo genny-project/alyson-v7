@@ -72,8 +72,6 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
     [asks]
   );
 
-  console.log(viewing);
-
   return (
     <ThemeProvider theme={theme}>
       <div>

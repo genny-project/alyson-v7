@@ -36,7 +36,9 @@ const Main = ({
           className={classes.loadingContainer}
         >
           <Grid item>
-            <Typography variant="overline">{'Preparing...'}</Typography>
+            <Typography variant="overline">
+              {typeof loading === 'string' ? loading : 'Preparing...'}
+            </Typography>
           </Grid>
         </Grid>
       ) : (

@@ -5,7 +5,7 @@ const onSubmit = ({ parentCode, rootCode, setLoading, setViewing }) => ({ ask, v
   const { attributeCode, questionCode, sourceCode, targetCode } = ask;
 
   setViewing({ code: `QUE_PRI_EVENT_VIEW_${targetCode}`, targetCode });
-  setLoading(true);
+  setLoading('Saving...');
 
   Bridge.sendFormattedEvent({
     code: questionCode,
