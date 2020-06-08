@@ -8,6 +8,8 @@ import {
   KeyboardTimePicker,
 } from '@material-ui/pickers';
 
+import makeHandleUpdate from '../../helpers/make-handle-update';
+
 const DateTimePicker = ({
   errors,
   setErrors,
@@ -23,8 +25,11 @@ const DateTimePicker = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData, setErrors);
+
   const handleDateChange = date => {
     setSelectedDate(date);
+    handleUpdate(date);
   };
 
   return (

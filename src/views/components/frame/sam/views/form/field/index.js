@@ -105,30 +105,25 @@ const Field = ({
     <RichTextEditor
       fieldData={fieldData}
       label={label}
-      onSubmit={onSubmit}
       errors={errors}
       setErrors={setErrors}
-      pristine={pristine}
+      onUpdate={onUpdate}
     />
   ) : fieldType === 'java.time.localdate' ? (
     <DateTimePicker
-      label={label}
+      onUpdate={onUpdate}
       fieldData={fieldData}
       label={label}
-      onSubmit={onSubmit}
       errors={errors}
       setErrors={setErrors}
-      pristine={pristine}
     />
   ) : fieldType === 'time' ? (
     <DateTimePicker
-      label={label}
+      onUpdate={onUpdate}
       fieldData={fieldData}
       label={label}
-      onSubmit={onSubmit}
       errors={errors}
       setErrors={setErrors}
-      pristine={pristine}
       inputType={'time'}
     />
   ) : null;

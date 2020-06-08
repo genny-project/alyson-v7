@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField } from '@material-ui/core';
 import { prop } from 'ramda';
 
@@ -38,13 +38,19 @@ const TextInput = ({
     }
   };
 
+  useEffect(
+    () => {
+      if (touched) handleUpdate(value);
+    },
+    [value]
+  );
+
   return (
     <TextField
       {...rest}
       error={touched && errors[questionCode]}
       value={value}
       onChange={handleChange}
-      onBlur={() => handleUpdate(value)}
       label={label}
       required={mandatory}
       type={inputType || 'text'}

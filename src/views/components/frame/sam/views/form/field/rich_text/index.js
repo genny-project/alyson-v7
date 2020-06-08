@@ -5,6 +5,8 @@ import { HtmlEditor, MenuBar } from '@aeaton/react-prosemirror';
 import { options, menu } from '@aeaton/react-prosemirror-config-default';
 import { Typography } from '@material-ui/core';
 
+import makeHandleUpdate from '../../helpers/make-handle-update';
+
 const limitMenu = {
   marks: {
     ...pickAll(['em'], menu.marks),
@@ -19,8 +21,31 @@ const limitMenu = {
 
 import useStyles from './styles';
 
-const RichTextEditor = ({ label }) => {
+const RichTextEditor = ({
+  errors,
+  setErrors,
+  onUpdate,
+  fieldData,
+  label,
+  initialValue,
+  pristine,
+  setPristine,
+  fieldType,
+  inputType,
+  ...rest
+}) => {
   const [value, setValue] = useState('');
+  const {
+    question: { code: questionCode },
+    mandatory,
+  } = fieldData;
+
+  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData, setErrors);
+
+  const handleChange = value => {
+    setValue(value);
+    handleUpdate(value);
+  };
 
   const classes = useStyles();
   return (
@@ -28,7 +53,7 @@ const RichTextEditor = ({ label }) => {
       <HtmlEditor
         options={options}
         value={value}
-        onChange={value => setValue(value)}
+        onChange={handleChange}
         render={({ editor, view }) => (
           <div>
             <MenuBar menu={limitMenu} view={view} />

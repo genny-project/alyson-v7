@@ -1,4 +1,7 @@
 import { all, test, filter, identity } from 'ramda';
+import debounce from 'lodash.debounce';
+
+const getDebouncedUpdate = onUpdate => debounce(onUpdate, 400);
 
 const handleUpdate = onUpdate => (
   {
@@ -15,19 +18,23 @@ const handleUpdate = onUpdate => (
     weight,
   },
   setErrors
-) => value =>
-  all(({ regex }) => test( new RegExp( regex ), value ))( filter( identity, validationList || [] ))
-    ? onUpdate({
-      ask: {
-        askId,
-        attributeCode,
-        questionCode,
-        sourceCode,
-        targetCode,
-        weight,
-      },
-      value,
-    })
-    : setErrors( errors => ({ ...errors, [questionCode]: true }));
+) => {
+  const debouncedUpdate = getDebouncedUpdate(onUpdate);
+
+  return value =>
+    all(({ regex }) => test(new RegExp(regex), value))(filter(identity, validationList || []))
+      ? debouncedUpdate({
+          ask: {
+            askId,
+            attributeCode,
+            questionCode,
+            sourceCode,
+            targetCode,
+            weight,
+          },
+          value,
+        })
+      : setErrors(errors => ({ ...errors, [questionCode]: true }));
+};
 
 export default handleUpdate;
