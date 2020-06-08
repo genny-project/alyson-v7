@@ -9,7 +9,7 @@ const Dashboard = ({ frames, asks, user, attributes }) => {
     <Grid container direction="column" justify="flex-start" alignItems="center">
       <Grid item>
         <Container>
-          <Typography>{`${user.data.name} with ${companyName}`}</Typography>
+          <Typography>{`${'Gerard'} with ${'OutcomeLife'}`}</Typography>
         </Container>
       </Grid>
     </Grid>
