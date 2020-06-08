@@ -42,8 +42,6 @@ const Details = ({ attributes, targetCode }) => {
   const [rating, setRating] = useState(0);
   const classes = useStyles();
 
-  console.log(targetCode);
-
   return (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
       <Grid item>

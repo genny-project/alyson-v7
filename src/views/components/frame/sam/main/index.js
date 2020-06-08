@@ -44,7 +44,7 @@ const Main = ({
       ) : (
         <Paper className={classes.mainPaper}>
           {view === 'DASHBOARD' ? (
-            <Dashboard />
+            <Dashboard frames={frames} asks={asks} user={user} attributes={attributes} />
           ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={view}
