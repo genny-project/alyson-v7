@@ -36,13 +36,6 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
 
   useEffect(
     () => {
-      setLoading(false);
-    },
-    [loading]
-  );
-
-  useEffect(
-    () => {
       if (viewing.parentCode || viewing.targetCode) {
         if (viewing.parentCode) setLoading(true);
 

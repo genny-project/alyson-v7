@@ -3,7 +3,7 @@ import React from 'react';
 import { prop } from 'ramda';
 import { Paper, Grid, Typography } from '@material-ui/core';
 
-import { Form, Table, Details, Dashboard } from '../views';
+import { Form, Table, Details, Dashboard, Unity } from '../views';
 import getView from './helpers/get-view';
 import useStyles from './styles';
 
@@ -58,6 +58,15 @@ const Main = ({
             />
           ) : view === 'DETAIL' ? (
             <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
+          ) : view === 'UNITY' ? (
+            <Unity
+              frames={frames}
+              attributes={attributes}
+              baseEntities={baseEntities}
+              asks={asks}
+              setViewing={setViewing}
+              viewing={viewing}
+            />
           ) : (
             <Table
               frames={frames}
