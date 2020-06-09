@@ -39,6 +39,7 @@ const Details = ({ attributes, targetCode }) => {
 
   const print = prop => path([`PRI_${toUpper(prop)}`, 'value'], detailView) || '';
 
+  console.log(detailView);
   const [rating, setRating] = useState(0);
   const classes = useStyles();
 
@@ -76,7 +77,7 @@ const Details = ({ attributes, targetCode }) => {
             classes={classes}
           />
         ),
-        contains('PER', targetCode) ? printPer : printBeg
+        contains('PER', targetCode || '') ? printPer : printBeg
       )}
     </Grid>
   );

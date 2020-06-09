@@ -30,13 +30,13 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
   const [loading, setLoading] = useState(false);
   const [staleTarget, setStaleTarget] = useState('');
 
-  const dataForEvent = getDataForEvent(viewing);
+  const dataForEvent = getDataForEvent(viewing, user);
 
   const theme = makeTheme({ attributes, asks });
 
   useEffect(
     () => {
-      if (viewing.parentCode || viewing.targetCode) {
+      if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (viewing.parentCode) setLoading(true);
 
         if (contains('MENU', prop('code', viewing) || '')) {

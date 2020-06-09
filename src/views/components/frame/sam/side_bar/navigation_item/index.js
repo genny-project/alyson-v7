@@ -6,17 +6,17 @@ import { List, ListItem, ListItemText, Collapse } from '@material-ui/core';
 import useStyles from './styles';
 
 const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setViewing }) => {
-  const [open, setOpen] = useState( false );
+  const [open, setOpen] = useState(false);
 
   const classes = useStyles();
 
-  const hasChildren = length( childAsks || [] ) >= 1;
+  const hasChildren = length(childAsks || []) >= 1;
 
   return (
     <div>
       <ListItem
         button
-        onClick={hasChildren ? () => setOpen( !open ) : () => setViewing({ code: questionCode })}
+        onClick={hasChildren ? () => setOpen(!open) : () => setViewing({ code: questionCode })}
         className={classes.listItem}
       >
         <ListItemText
@@ -25,14 +25,8 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
         />
       </ListItem>
       {hasChildren ? (
-        <Collapse
-          in={open}
-          timeout="auto"
-        >
-          <List
-            component="div"
-            disablePadding
-          >
+        <Collapse in={open} timeout="auto">
+          <List component="div" disablePadding>
             {map(
               ({ name, questionCode: childCode }) => (
                 <ListItem
