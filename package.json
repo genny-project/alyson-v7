@@ -61,6 +61,7 @@
     "express": "^4.16.3",
     "fast-copy": "^1.2.1",
     "fast-xml-parser": "^3.11.1",
+    "file-saver": "^2.0.2",
     "formik": "^1.5.7",
     "google-map-react": "1.0.8",
     "history": "^4.7.2",

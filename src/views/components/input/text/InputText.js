@@ -466,7 +466,7 @@ class InputText extends Component {
       borderTopLeftRadius,
       borderTopRightRadius,
       color,
-      outline,
+      outline: outline === 'none' ? null : outline,
       overflow,
       fontStyle,
       fontFamily,
