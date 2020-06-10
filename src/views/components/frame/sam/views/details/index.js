@@ -6,25 +6,20 @@ import { Rating } from '@material-ui/lab';
 import { format, parseISO } from 'date-fns';
 import useStyles from './styles';
 
-const RowItem = ({ type, label, code, classes, print, rating, setRating }) =>
-  console.log(print(code)) || (
-    <Grid item>
-      <Grid container direction="row">
-        <Typography className={classes.label}>{label}</Typography>
-        {type === 'rating' ? (
-          <Rating
-            name="rating"
-            value={rating}
-            onChange={(event, newValue) => setRating(newValue)}
-          />
-        ) : type === 'time' ? (
-          <Typography>{`${format(parseISO(print(code)), 'h:mm a')}`}</Typography>
-        ) : (
-          <Typography>{print(code)}</Typography>
-        )}
-      </Grid>
+const RowItem = ({ type, label, code, classes, print, rating, setRating }) => (
+  <Grid item>
+    <Grid container direction="row">
+      <Typography className={classes.label}>{label}</Typography>
+      {type === 'rating' ? (
+        <Rating name="rating" value={rating} onChange={(event, newValue) => setRating(newValue)} />
+      ) : type === 'time' ? (
+        <Typography>{`${format(parseISO(print(code)), 'h:mm a')}`}</Typography>
+      ) : (
+        <Typography>{print(code)}</Typography>
+      )}
     </Grid>
-  );
+  </Grid>
+);
 
 // TODO: Backend should send us the correct detail view specs
 
