@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
 import { map, prop } from 'ramda';
-import { Button, Menu, MenuItem } from '@material-ui/core';
+import { Button, Menu, MenuItem, IconButton, Avatar } from '@material-ui/core';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
-const HeaderMenu = ({ group, setViewing, parentCode }) => {
-  console.warn( '%c headerMenu', 'color:green', { group: group, setViewing: setViewing, parentCode: parentCode });
+const ProfileMenu = ({ group, setViewing, parentCode, profilePictureURL, userFullName }) => {
   const [menu, setMenu] = useState( null );
 
   return (
     <div>
-      <Button
-        color="inherit"
-        variant="outlined"
+      <IconButton
         onClick={event => setMenu( event.currentTarget )}
+        color="inherit"
       >
-        ADD
-      </Button>
+        {profilePictureURL && profilePictureURL.length ? (
+          <Avatar
+            alt={userFullName}
+            src={profilePictureURL}
+          />
+        ) : (
+          <AccountCircle />
+        )}
+      </IconButton>
       <Menu
         open={!!menu}
         anchorEl={menu}
@@ -35,9 +41,12 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
             {prop( 'name', item || {})}
           </MenuItem>
         ))( prop( 'childAsks', group ))}
+        <MenuItem>
+            My settings
+        </MenuItem>
       </Menu>
     </div>
   );
 };
 
-export default HeaderMenu;
+export default ProfileMenu;

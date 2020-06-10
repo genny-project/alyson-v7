@@ -8,7 +8,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import HeaderMenu from './header_menu';
-
+import ProfileMenu from './profile_menu';
 import { getIsMobile } from '../utils';
 import useStyles from './styles';
 
@@ -83,20 +83,13 @@ Logout
             setViewing={setViewing}
             parentCode="QUE_ADD_ITEMS_GRP"
           />
-          <IconButton
-            aria-controls={menuId}
-            onClick={handleProfileMenuOpen}
-            color="inherit"
-          >
-            {profilePictureURL && profilePictureURL.length ? (
-              <Avatar
-                alt={userFullName}
-                src={profilePictureURL}
-              />
-            ) : (
-              <AccountCircle />
-            )}
-          </IconButton>
+          <ProfileMenu
+            group={asks['QUE_OPTIONS_GRP']}
+            setViewing={setViewing}
+            parentCode="QUE_OPTIONS_GRP"
+            profilePictureURL={profilePictureURL}
+            userFullName={userFullName}
+          />
         </Toolbar>
         {loading ? <LinearProgress className={classes.loadingBar} /> : null}
       </AppBar>
