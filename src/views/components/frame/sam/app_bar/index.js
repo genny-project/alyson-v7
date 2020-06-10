@@ -5,6 +5,8 @@ import { AppBar, Toolbar, InputBase, IconButton, Avatar, LinearProgress } from '
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import HeaderMenu from './header_menu';
 
 import { getIsMobile } from '../utils';
@@ -13,8 +15,42 @@ import useStyles from './styles';
 const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loading }) => {
   const profilePictureURL = path( ['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user );
   const userFullName = path( ['data', 'name'], user );
-
   const classes = useStyles();
+  const [openMenu, setOpenMenu] = React.useState( null );
+
+  const isMenuOpen = Boolean( openMenu );
+
+  const handleProfileMenuOpen = ( event ) => {
+    setOpenMenu( event.currentTarget );
+  };
+
+  const handleMenuClose = () => {
+    setOpenMenu( null );
+  };
+
+  const menuId = 'primary-search-account-menu';
+
+  const renderMenu = (
+    <Menu
+      anchorEl={openMenu}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>
+Profile
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+Settings
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+Logout
+      </MenuItem>
+    </Menu>
+  );
 
   return (
     <div className={classes.grow}>
@@ -48,9 +84,8 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
             parentCode="QUE_ADD_ITEMS_GRP"
           />
           <IconButton
-            edge="end"
-            aria-label="account of current user"
-            aria-haspopup="true"
+            aria-controls={menuId}
+            onClick={handleProfileMenuOpen}
             color="inherit"
           >
             {profilePictureURL && profilePictureURL.length ? (
@@ -65,6 +100,7 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
         </Toolbar>
         {loading ? <LinearProgress className={classes.loadingBar} /> : null}
       </AppBar>
+      {renderMenu}
     </div>
   );
 };
