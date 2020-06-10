@@ -6,13 +6,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import HeaderMenu from './header_menu';
+import MoreViews from './more_views';
 
 import { getIsMobile } from '../utils';
 import useStyles from './styles';
 
 const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loading }) => {
-  const profilePictureURL = path( ['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user );
-  const userFullName = path( ['data', 'name'], user );
+  const profilePictureURL = path(['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user);
+  const userFullName = path(['data', 'name'], user);
 
   const classes = useStyles();
 
@@ -21,10 +22,7 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
       <AppBar position="fixed">
         <Toolbar className={classes.appBar}>
           {getIsMobile() ? (
-            <IconButton
-              color="inherit"
-              onClick={() => setSidebarOpen( !sidebarOpen )}
-            >
+            <IconButton color="inherit" onClick={() => setSidebarOpen(!sidebarOpen)}>
               <MenuIcon color="inherit" />
             </IconButton>
           ) : null}
@@ -42,6 +40,7 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
             />
           </div>
           <div className={classes.grow} />
+          <MoreViews asks={asks} setViewing={setViewing} />
           <HeaderMenu
             group={asks['QUE_ADD_ITEMS_GRP']}
             setViewing={setViewing}
@@ -54,10 +53,7 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
             color="inherit"
           >
             {profilePictureURL && profilePictureURL.length ? (
-              <Avatar
-                alt={userFullName}
-                src={profilePictureURL}
-              />
+              <Avatar alt={userFullName} src={profilePictureURL} />
             ) : (
               <AccountCircle />
             )}
