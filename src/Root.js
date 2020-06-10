@@ -27,9 +27,7 @@ if ( typeof window !== 'undefined' ) {
 const Root = () => (
   <ErrorBoundary>
     <ReduxProvider store={store}>
-      <PersistGate
-        persistor={persistor}
-      >
+      <PersistGate persistor={persistor}>
         <VertxProvider>
           <GoogleProvider>
             <App />

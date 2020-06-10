@@ -15,10 +15,10 @@ const buildPath = '/unity/safeTrafficTown.json';
 class UnityWrapper extends React.Component {
   static propTypes = {
     attributes: object,
-  }
+  };
 
-  constructor( props ) {
-    super( props );
+  constructor(props) {
+    super(props);
     this.unityContent = new UnityContent(
       // '/unity/unison_webgl_genny.json',
 
@@ -26,50 +26,50 @@ class UnityWrapper extends React.Component {
       '/unity/UnityLoader.js',
       {
         adjustOnWindowResize: false,
-      },
+      }
     );
 
-    this.unityContent.on( 'progress', progression => {
+    this.unityContent.on('progress', progression => {
       this.setState({
         progression: progression,
       });
     });
 
-    this.unityContent.on( 'loaded', () => {
+    this.unityContent.on('loaded', () => {
       this.setState({
         isLoading: false,
       });
     });
 
-    this.unityContent.on( 'error', message => {
-      console.warn( 'error', { message }); // eslint-disable-line
+    this.unityContent.on('error', message => {
+      console.warn('error', { message }); // eslint-disable-line
 
       this.setState({
         error: message.message,
       });
     });
 
-    this.unityContent.on( 'unityEvent', ( data ) => {
-      console.warn( 'unityEvent', { data }); // eslint-disable-line
-      this.handleEvent( data );
+    this.unityContent.on('unityEvent', data => {
+      console.warn('unityEvent', { data }); // eslint-disable-line
+      this.handleEvent(data);
     });
 
-    this.unityContent.on( 'unityAnswer', ( data ) => {
-      console.warn( 'unityAnswer', { data }); // eslint-disable-line
-      this.handleChange( data );
+    this.unityContent.on('unityAnswer', data => {
+      console.warn('unityAnswer', { data }); // eslint-disable-line
+      this.handleChange(data);
     });
   }
 
-  sceneContexts = {}
+  sceneContexts = {};
 
   state = {
     progression: null,
     currentSceneCode: null,
     isLoading: true,
     error: null,
-  }
+  };
 
-  updateScene = ( sceneContext ) => {
+  updateScene = sceneContext => {
     const { questionCode, sceneCode } = sceneContext;
 
     const updatedSceneContexts = {
@@ -77,22 +77,20 @@ class UnityWrapper extends React.Component {
     };
 
     // check if sceneContext questionCode is already stored
-    if ( isObject( updatedSceneContexts, { withProperty: questionCode })) {
-    // check if sceneContext sceneCode is same as stored value
-      if ( updatedSceneContexts[questionCode].sceneCode !== sceneCode ) {
+    if (isObject(updatedSceneContexts, { withProperty: questionCode })) {
+      // check if sceneContext sceneCode is same as stored value
+      if (updatedSceneContexts[questionCode].sceneCode !== sceneCode) {
         // if different, update
         updatedSceneContexts[questionCode] = {
           ...sceneContext,
         };
-      }
-      else {
+      } else {
         // if same, no update
         // console.warn( 'no update' );
 
         return;
       }
-    }
-    else {
+    } else {
       // if not stored, update
       updatedSceneContexts[questionCode] = {
         ...sceneContext,
@@ -101,57 +99,57 @@ class UnityWrapper extends React.Component {
 
     // if only one sceneContext, then update currentSceneCode
 
-    const shouldUpdateCurrentSceneCode = Object.keys( updatedSceneContexts ).length === 1;
+    const shouldUpdateCurrentSceneCode = Object.keys(updatedSceneContexts).length === 1;
 
     // console.warn( 'UPDATE STATE' );
 
-    this.sceneContexts = updatedSceneContexts,
+    (this.sceneContexts = updatedSceneContexts),
+      this.setState(
+        state => ({
+          currentSceneCode: shouldUpdateCurrentSceneCode ? sceneCode : state.currentSceneCode,
+        }),
+        () => {
+          const unityEntityData = dlv(
+            this.props.attributes,
+            `${this.state.currentSceneCode}.PRI_UNITY_SCENE.value`
+          );
 
-    this.setState( state => ({
-      currentSceneCode: shouldUpdateCurrentSceneCode ? sceneCode : state.currentSceneCode,
-    }), () => {
-      const unityEntityData = dlv( this.props.attributes, `${this.state.currentSceneCode}.PRI_UNITY_SCENE.value` );
+          // this.sendEventToUnity( 'changeScene', this.state.currentSceneCode );
+          if (unityEntityData != null) {
+            this.sendEventToUnity('changeScene', unityEntityData);
+          }
+        }
+      );
+  };
 
-      // this.sendEventToUnity( 'changeScene', this.state.currentSceneCode );
-      if ( unityEntityData != null ) {
-        this.sendEventToUnity( 'changeScene', unityEntityData );
-      }
-    });
-  }
+  sendEventToUnity = (method, params) => {
+    if (!isString(method) || params == null) {
+      const invalidMethodAndParams = !isString(method) && params == null;
 
-  sendEventToUnity = ( method, params ) => {
-    if (
-      !isString( method ) ||
-      params == null
-    ) {
-      const invalidMethodAndParams = !isString( method ) && params == null;
-
-      console.warn( // eslint-disable-line
-        `Error sendingEventToUnity, argument${invalidMethodAndParams ? 's' : ''} ${!isString( method ) ? '"method" ' : ''}${invalidMethodAndParams ? 'and ' : ''}${params == null ? '"params" ' : ''}${invalidMethodAndParams ? 'are' : 'is'} invalid`,
+      console.warn(
+        // eslint-disable-line
+        `Error sendingEventToUnity, argument${invalidMethodAndParams ? 's' : ''} ${
+          !isString(method) ? '"method" ' : ''
+        }${invalidMethodAndParams ? 'and ' : ''}${params == null ? '"params" ' : ''}${
+          invalidMethodAndParams ? 'are' : 'is'
+        } invalid`,
         {
-          ...( !isString( method ) ? { method } : {}),
-          ...( params == null ? { params } : {}),
+          ...(!isString(method) ? { method } : {}),
+          ...(params == null ? { params } : {}),
         }
       );
     }
 
-    if (
-      isString( method ) &&
-      params != null
-    ) {
-      this.unityContent.send(
-        'reactObject',
-        method,
-        params,
-      );
+    if (isString(method) && params != null) {
+      this.unityContent.send('reactObject', method, params);
     }
-  }
+  };
 
-  handleClick = ( SceneIndex ) => {
-    this.updateScene( SceneIndex );
-  }
+  handleClick = SceneIndex => {
+    this.updateScene(SceneIndex);
+  };
 
-  handleEvent = ( event = {}) => {
+  handleEvent = (event = {}) => {
     // const { ask = {}, parentGroupCode } = this.props;
     // const { question = {}, disabled } = ask;
     // const { code } = question;
@@ -165,64 +163,57 @@ class UnityWrapper extends React.Component {
 
     const { code, parentGroupCode } = event;
 
-    if (
-      code &&
-      parentGroupCode
-    ) {
-      Bridge.sendFormattedEvent(
-        {
-          code,
-          parentCode: parentGroupCode,
-        }
-      );
+    if (code && parentGroupCode) {
+      Bridge.sendFormattedEvent({
+        code,
+        parentCode: parentGroupCode,
+      });
     }
-  }
+  };
 
-  handleChange = ( unityData ) => {
-    const sceneContextsKeys = Object.keys( this.sceneContexts );
+  handleChange = unityData => {
+    const sceneContextsKeys = Object.keys(this.sceneContexts);
 
-    function isJson( str ) {
+    function isJson(str) {
       try {
-        JSON.parse( str );
-      } catch ( e ) {
+        JSON.parse(str);
+      } catch (e) {
         return false;
       }
 
       return true;
     }
 
-    if ( isJson( unityData )) {
-      const { data } = JSON.parse( unityData );
+    if (isJson(unityData)) {
+      const { data } = JSON.parse(unityData);
 
       // console.warn({ data });
 
-      if ( sceneContextsKeys.length === 1 ) {
-        if ( this.props.onChangeValue ) {
-          this.props.onChangeValue( data, this.sceneContexts[sceneContextsKeys[0]] );
+      if (sceneContextsKeys.length === 1) {
+        if (this.props.onChangeValue) {
+          this.props.onChangeValue(data, this.sceneContexts[sceneContextsKeys[0]]);
         }
-      }
-      else {
-        console.warn( 'Error: Invalid unity scene contexts' ); // eslint-disable-line
+      } else {
+        console.warn('Error: Invalid unity scene contexts'); // eslint-disable-line
       }
     }
-  }
+  };
 
-  handleSetScene = ( sceneContext ) => {
+  handleSetScene = sceneContext => {
     // console.warn( 'handleSetScene', sceneCode );
-    this.updateScene( sceneContext );
-  }
+    this.updateScene(sceneContext);
+  };
 
-  handleUnsetScene = ( questionCode ) => {
+  handleUnsetScene = questionCode => {
     const updatedSceneContexts = {
       ...this.sceneContexts,
     };
 
     // check if question code is in sceneContexts
-    if ( isObject( updatedSceneContexts, { withProperty: questionCode })) {
+    if (isObject(updatedSceneContexts, { withProperty: questionCode })) {
       // remove it
       delete updatedSceneContexts[questionCode];
-    }
-    else {
+    } else {
       // do nothing
       return;
     }
@@ -230,21 +221,21 @@ class UnityWrapper extends React.Component {
     // console.warn( 'updatedSceneContexts', questionCode, updatedSceneContexts );
 
     // check number of remaining values
-    const numberOfCurrentSceneCodes = Object.keys( updatedSceneContexts ).length;
+    const numberOfCurrentSceneCodes = Object.keys(updatedSceneContexts).length;
 
-    this.sceneContexts = updatedSceneContexts,
-
-    this.setState( state => ({
-      currentSceneCode: numberOfCurrentSceneCodes === 0
-        // if there are now 0 values, update currentSceneCode to null
-        ? null
-        : numberOfCurrentSceneCodes === 1
-          // if there is now 1 value, update currentSceneCode to match it
-          ? numberOfCurrentSceneCodes[0]
-          // if there is now 2+ values, dont update currentScene code
-          : state.currentSceneCode,
-    }));
-  }
+    (this.sceneContexts = updatedSceneContexts),
+      this.setState(state => ({
+        currentSceneCode:
+          numberOfCurrentSceneCodes === 0
+            ? // if there are now 0 values, update currentSceneCode to null
+              null
+            : numberOfCurrentSceneCodes === 1
+              ? // if there is now 1 value, update currentSceneCode to match it
+                numberOfCurrentSceneCodes[0]
+              : // if there is now 2+ values, dont update currentScene code
+                state.currentSceneCode,
+      }));
+  };
 
   // handleButtonPress = ( method, params ) => {
   //   this.sendEventToUnity(
@@ -253,6 +244,8 @@ class UnityWrapper extends React.Component {
   // }
 
   render() {
+    console.log(this.props);
+
     const { children, renderHeader } = this.props;
     const { progression, currentSceneCode, isLoading, error } = this.state;
 
@@ -267,59 +260,47 @@ class UnityWrapper extends React.Component {
         }}
       >
         {renderHeader}
-        <Box
-          position="relative"
-          overflow="hidden"
-        >
+        <Box position="relative" overflow="hidden">
           <Unity
             unityContent={this.unityContent}
             // height="300px"
             // width="450px"
           />
-          {
-            isLoading || error ? (
+          {isLoading || error ? (
+            <Box
+              position="absolute"
+              top={0}
+              bottom={0}
+              width="100%"
+              // opacity={0.75}
+              backgroundColor="white"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+            >
               <Box
-                position="absolute"
-                top={0}
-                bottom={0}
-                width="100%"
-                // opacity={0.75}
-                backgroundColor="white"
                 justifyContent="center"
                 alignItems="center"
+                backgroundColor={error ? '#fce8e6' : 'none'}
+                padding={10}
                 flexDirection="column"
+                maxWidth="calc(100% - 20px)"
               >
-
-                <Box
-                  justifyContent="center"
-                  alignItems="center"
-                  backgroundColor={error ? '#fce8e6' : 'none'}
-                  padding={10}
-                  flexDirection="column"
-                  maxWidth="calc(100% - 20px)"
-                >
-                  {error
-                    ? (
-                      <Text
-                        color="red"
-                        text="An error has occurred in Unity:"
-                      />
-                    )
-                    : <ActivityIndicator size="large" />}
-                  <Box
-                    padding={5}
-                  />
-                  <Text
-                    width="100%"
-                    text={error ? error : 'Loading...'}
-                    color={error ? 'red' : 'black'}
-                    textAlign="center"
-                  />
-                </Box>
+                {error ? (
+                  <Text color="red" text="An error has occurred in Unity:" />
+                ) : (
+                  <ActivityIndicator size="large" />
+                )}
+                <Box padding={5} />
+                <Text
+                  width="100%"
+                  text={error ? error : 'Loading...'}
+                  color={error ? 'red' : 'black'}
+                  textAlign="center"
+                />
               </Box>
-            )
-              : null
-          }
+            </Box>
+          ) : null}
         </Box>
         {children}
       </UnityProvider>
@@ -335,4 +316,4 @@ const mapStateToProps = state => ({
   attributes: state.vertx.baseEntities.attributes,
 });
 
-export default connect( mapStateToProps )( UnityWrapper );
+export default connect(mapStateToProps)(UnityWrapper);

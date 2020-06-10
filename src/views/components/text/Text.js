@@ -7,6 +7,8 @@ import lowerCase from 'lodash.lowercase';
 import { TEXT_SIZES } from '../../../constants';
 import { isString } from '../../../utils';
 
+import { Typography } from '@material-ui/core';
+
 const colors = {
   black: 'black',
   green: 'green',
@@ -50,10 +52,12 @@ const Text = ({
     textAlign,
     width,
     color: colors[color] || color,
-    fontFamily: fontFamily || Platform.select({
-      web: 'system-ui, sans-serif',
-      native: 'System',
-    }),
+    fontFamily:
+      fontFamily ||
+      Platform.select({
+        web: 'system-ui, sans-serif',
+        native: 'System',
+      }),
     cursor,
     whiteSpace,
     alignSelf: alignSelf,
@@ -62,69 +66,42 @@ const Text = ({
 
   let child = text || children;
 
-  if (
-    transform &&
-    transforms[transform]
-  ) {
+  if ( transform && transforms[transform] ) {
     child = transforms[transform]( child );
   }
 
   return (
-    <NativeText
-      // {...restProps}
-      style={[
-        style,
-      ]}
+    <Typography
+      style={style}
       data-component-type="TEXT"
       data-component-id={isString( componentID, { ofMinLength: 1 }) ? componentID : null}
       data-component-code={isString( componentCode, { ofMinLength: 1 }) ? componentCode : null}
+      color="inherit"
     >
       {child}
-    </NativeText>
+    </Typography>
   );
 };
 
 Text.propTypes = {
-  text: oneOfType(
-    [number, string]
-  ),
+  text: oneOfType( [number, string] ),
   color: string,
-  decoration: oneOf(
-    ['none', 'underline']
-  ),
+  decoration: oneOf( ['none', 'underline'] ),
   fontWeight: string,
   size: string,
-  height: oneOfType(
-    [number, string]
-  ),
-  children: oneOfType(
-    [number, string, node]
-  ),
-  textAlign: oneOf(
-    ['auto', 'left', 'right', 'center', 'justify']
-  ),
-  width: oneOfType(
-    [number, string]
-  ),
+  height: oneOfType( [number, string] ),
+  children: oneOfType( [number, string, node] ),
+  textAlign: oneOf( ['auto', 'left', 'right', 'center', 'justify'] ),
+  width: oneOfType( [number, string] ),
   bold: bool,
   fontFamily: string,
-  transform: oneOf(
-    ['upperCase', 'lowerCase', 'capitalize']
-  ),
-  whiteSpace: oneOf(
-    ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap', 'initial', 'inherit']
-  ),
-  cursor: oneOf(
-    ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text']
-  ),
-  alignSelf: oneOf(
-    ['normal', 'auto', 'center', 'flex-start', 'flex-end']
-  ),
+  transform: oneOf( ['upperCase', 'lowerCase', 'capitalize'] ),
+  whiteSpace: oneOf( ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap', 'initial', 'inherit'] ),
+  cursor: oneOf( ['default', 'none', 'auto', 'help', 'pointer', 'wait', 'text'] ),
+  alignSelf: oneOf( ['normal', 'auto', 'center', 'flex-start', 'flex-end'] ),
   componentID: string,
   componentCode: string,
-  fontStyle: oneOf(
-    ['normal', 'italic']
-  ),
+  fontStyle: oneOf( ['normal', 'italic'] ),
 };
 
 export default Text;
