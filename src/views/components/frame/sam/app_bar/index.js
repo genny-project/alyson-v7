@@ -8,8 +8,11 @@ import HeaderMenu from './header_menu';
 import ProfileMenu from './profile_menu';
 import { getIsMobile } from '../utils';
 import useStyles from './styles';
+import Search from './search';
+import Drafts from './drafts';
+import MoreViews from './more_views';
 
-const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loading }) => {
+const MainAppBar = ({ setLoading, asks, user, setViewing, sidebarOpen, setSidebarOpen, loading }) => {
   const profilePictureURL = path( ['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user );
   const userFullName = path( ['data', 'name'], user );
   const classes = useStyles();
@@ -26,20 +29,27 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
               <MenuIcon color="inherit" />
             </IconButton>
           ) : null}
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon color="inherit" />
-            </div>
-            <InputBase
-              placeholder="Search ..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
+          <Search
+            question={{
+              askId: 272,
+              attributeCode: 'PRI_SEARCH_TEXT',
+              code: 'QUE_SEARCH',
+              sourceCode: 'PER_USER1',
+              targetCode: 'PER_USER1',
+              weight: 1,
+            }}
+            setLoading={setLoading}
+          />
           <div className={classes.grow} />
+          <Drafts
+            drafts={path( ['QUE_DRAFTS_GRP', 'childAsks'], asks )}
+            asks={asks}
+            setViewing={setViewing}
+          />
+          <MoreViews
+            asks={asks}
+            setViewing={setViewing}
+          />
           <HeaderMenu
             group={asks['QUE_ADD_ITEMS_GRP']}
             setViewing={setViewing}

@@ -3,7 +3,7 @@ import React from 'react';
 import { prop } from 'ramda';
 import { Paper, Grid, Typography } from '@material-ui/core';
 
-import { Form, Table, Details, Dashboard, Unity } from '../views';
+import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
 import getView from './helpers/get-view';
 import useStyles from './styles';
 
@@ -75,6 +75,8 @@ const Main = ({
               setViewing={setViewing}
               viewing={viewing}
             />
+          ) : view === 'BUCKET' ? (
+            <Bucket attributes={attributes} baseEntities={baseEntities} asks={asks} />
           ) : (
             <Table
               frames={frames}

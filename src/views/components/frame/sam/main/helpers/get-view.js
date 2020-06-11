@@ -6,12 +6,14 @@ const getView = ({ viewing: { parentCode = '', code = '' }, asks, frames }) =>
     ? 'TABLE'
     : getBackendViewing( frames ) === 'UNITY'
       ? 'UNITY'
-      : contains( 'DASHBOARD', code )
-        ? 'DASHBOARD'
-        : contains( 'MENU', code )
-          ? prop( replace( 'MENU', 'GRP', code ), asks )
-          : contains( 'GRP', parentCode )
-            ? 'TABLE'
-            : 'DETAIL';
+      : contains( 'BUCKET', code )
+        ? 'BUCKET'
+        : contains( 'DASHBOARD', code )
+          ? 'DASHBOARD'
+          : contains( 'MENU', code )
+            ? prop( replace( 'MENU', 'GRP', code ), asks )
+            : contains( 'GRP', parentCode )
+              ? 'TABLE'
+              : 'DETAIL';
 
 export default getView;

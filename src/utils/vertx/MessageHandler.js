@@ -1,4 +1,5 @@
-import { prefixedLog, isArray, isObject, isString, Api, removeSubstring } from '../../utils';
+import { saveAs } from 'file-saver';
+import { prefixedLog, isArray, isObject, isString, Api, removeSubstring, isDevMode } from '../../utils';
 import { store } from '../../redux';
 import * as events from './events';
 
@@ -146,10 +147,25 @@ class MessageHandler {
   };
 
   onMessage = message => {
+    if ( isDevMode ) {
+      console.warn( 'INCOMING MESSAGE:', { message }); // eslint-disable-line
+    }
+
     if ( !message ) return;
 
-    const { msg_type, data_type, messages, asks } = message;
+    const { msg_type, data_type, cmd_type, messages, asks } = message;
     const isValidMessage = this.validMessageTypes.includes( msg_type );
+
+    if ( cmd_type === 'DOWNLOAD_FILE' ) {
+      console.log( 'Processing Download File cmd...', { message }); // eslint-disable-line
+
+      if ( isString( message.code, { ofMinLength: 1 })) {
+        console.log( 'Saving file...' ); // eslint-disable-line
+        saveAs( message.code );
+      }
+
+      return;
+    }
 
     if ( data_type === 'QBulkPullMessage' ) {
       this.handleBulkPullMessage( message );
