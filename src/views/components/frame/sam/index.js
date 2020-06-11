@@ -84,6 +84,7 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           loading={loading}
+          setLoading={setLoading}
         />
         <Sidebar
           items={getDrawerItems(frames, asks, themes)}

@@ -1,37 +1,46 @@
 import React, { useState, useEffect } from 'react';
 
-import { Bridge } from '../../../../../../utils/vertx/index';
-
+import { isEmpty, not } from 'ramda';
 import { InputBase } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
+import makeSearch from './helpers/make-search';
 import useStyles from './styles';
 
-const Search = ({ question }) => {
+const Search = ({ setLoading, question }) => {
   const { askId, attributeCode, code, sourceCode, targetCode, weight } = question;
 
   const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
 
-  const classes = useStyles();
+  const classes = useStyles({ focused });
+
+  const search = makeSearch({
+    askId,
+    attributeCode,
+    sourceCode,
+    targetCode,
+    code,
+    identifier: code,
+    weight,
+  });
 
   useEffect(
     () => {
-      Bridge.sendFormattedAnswer({
-        askId,
-        attributeCode,
-        sourceCode,
-        targetCode,
-        code,
-        identifier: code,
-        weight,
-        value,
-      });
+      if (not(isEmpty(value))) {
+        search(value);
+        setLoading(`Searching for ${value} everywhere...`);
+      }
     },
     [value]
   );
 
   return (
-    <div className={classes.search}>
+    <div
+      className={classes.search}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+    >
       <div className={classes.searchIcon}>
         <SearchIcon color="inherit" />
       </div>

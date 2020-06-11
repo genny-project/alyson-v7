@@ -7,11 +7,20 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import HeaderMenu from './header_menu';
 import MoreViews from './more_views';
 import Search from './search';
+import Drafts from './drafts';
 
 import { getIsMobile } from '../utils';
 import useStyles from './styles';
 
-const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loading }) => {
+const MainAppBar = ({
+  setLoading,
+  asks,
+  user,
+  setViewing,
+  sidebarOpen,
+  setSidebarOpen,
+  loading,
+}) => {
   const profilePictureURL = path(['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user);
   const userFullName = path(['data', 'name'], user);
 
@@ -35,8 +44,14 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
               targetCode: 'PER_USER1',
               weight: 1,
             }}
+            setLoading={setLoading}
           />
           <div className={classes.grow} />
+          <Drafts
+            drafts={path(['QUE_DRAFTS_GRP', 'childAsks'], asks)}
+            asks={asks}
+            setViewing={setViewing}
+          />
           <MoreViews asks={asks} setViewing={setViewing} />
           <HeaderMenu
             group={asks['QUE_ADD_ITEMS_GRP']}
@@ -50,7 +65,7 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
             color="inherit"
           >
             {profilePictureURL && profilePictureURL.length ? (
-              <Avatar alt={userFullName} src={profilePictureURL} />
+              <Avatar alt={userFullName} src={profilePictureURL[0]} />
             ) : (
               <AccountCircle />
             )}
