@@ -1,17 +1,18 @@
 import { contains, prop, replace } from 'ramda';
 import getBackendViewing from '../../helpers/get-backend-viewing';
+
 const getView = ({ viewing: { parentCode = '', code = '' }, asks, frames }) =>
-  getBackendViewing(frames) === 'TABLE'
+  getBackendViewing( frames ) === 'TABLE'
     ? 'TABLE'
-    : getBackendViewing(frames) === 'UNITY'
+    : getBackendViewing( frames ) === 'UNITY'
       ? 'UNITY'
-      : contains('BUCKET', code)
+      : contains( 'BUCKET', code )
         ? 'BUCKET'
-        : contains('DASHBOARD', code)
+        : contains( 'DASHBOARD', code )
           ? 'DASHBOARD'
-          : contains('MENU', code)
-            ? prop(replace('MENU', 'GRP', code), asks)
-            : contains('GRP', parentCode)
+          : contains( 'MENU', code )
+            ? prop( replace( 'MENU', 'GRP', code ), asks )
+            : contains( 'GRP', parentCode )
               ? 'TABLE'
               : 'DETAIL';
 

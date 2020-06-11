@@ -1,7 +1,7 @@
 import { path } from 'ramda';
 
 const getBackedView = frames => {
-  const contentSetByBackend = path(['FRM_CONTENT', 'links', 0, 'code'], frames);
+  const contentSetByBackend = path( ['FRM_CONTENT', 'links', 0, 'code'], frames );
 
   return contentSetByBackend === 'FRM_QUE_TAB_VIEW'
     ? 'TABLE'
