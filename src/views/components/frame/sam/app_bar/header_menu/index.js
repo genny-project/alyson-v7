@@ -3,7 +3,6 @@ import { map, prop } from 'ramda';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 
 const HeaderMenu = ({ group, setViewing, parentCode }) => {
-  console.warn( '%c headerMenu', 'color:green', { group: group, setViewing: setViewing, parentCode: parentCode });
   const [menu, setMenu] = useState( null );
 
   return (

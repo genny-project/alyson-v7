@@ -44,8 +44,13 @@ const Main = ({
       ) : (
         <Paper className={classes.mainPaper}>
           {view === 'DASHBOARD' ? (
-            <Dashboard frames={frames} asks={asks} user={user} attributes={attributes} />
-          ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
+            <Dashboard
+              frames={frames}
+              asks={asks}
+              user={user}
+              attributes={attributes}
+            />
+          ) : view.attributeCode === 'QQQ_QUESTION_GROUP' || 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT' ? (
             <Form
               formView={view}
               asks={asks}
@@ -57,7 +62,10 @@ const Main = ({
               setLoading={setLoading}
             />
           ) : view === 'DETAIL' ? (
-            <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
+            <Details
+              attributes={attributes}
+              targetCode={prop( 'targetCode', viewing )}
+            />
           ) : view === 'UNITY' ? (
             <Unity
               frames={frames}

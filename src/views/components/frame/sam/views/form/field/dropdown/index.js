@@ -20,40 +20,40 @@ const DropdownSelect = ({
 }) => {
   const optionsGrpName = compose(
     head,
-    prop('selectionBaseEntityGroupList'),
+    prop( 'selectionBaseEntityGroupList' ),
     head
-  )(validationList);
+  )( validationList );
 
-  const optionsLinkList = path([optionsGrpName, 'links'], baseEntities) || [];
+  const optionsLinkList = path( [optionsGrpName, 'links'], baseEntities ) || [];
   const targetCodes =
-    map(path(['link', 'targetCode']), sortBy(prop('weight'))(optionsLinkList)) || [];
+    map( path( ['link', 'targetCode'] ), sortBy( prop( 'weight' ))( optionsLinkList )) || [];
 
   const options =
-    map(pick(['name', 'code']), values(pick(values(targetCodes), baseEntities))) || [];
+    map( pick( ['name', 'code'] ), values( pick( values( targetCodes ), baseEntities ))) || [];
 
-  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData);
+  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
 
   const {
     mandatory,
     question: { code: questionCode },
   } = fieldData;
-  const prepareData = map(prop('code'));
-  const [value, setValue] = useState(initialValue || multiple ? [] : null);
-  const [pristine, setPristine] = useState(true);
+  const prepareData = map( prop( 'code' ));
+  const [value, setValue] = useState( initialValue || multiple ? [] : null );
+  const [pristine, setPristine] = useState( true );
   const classes = useStyles();
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-    if (pristine) setPristine(false);
-    if (mandatory && value) {
-      setErrors(errors => ({ ...errors, [questionCode]: false }));
+  const handleChange = ( event, newValue ) => {
+    setValue( newValue );
+    if ( pristine ) setPristine( false );
+    if ( mandatory && value ) {
+      setErrors( errors => ({ ...errors, [questionCode]: false }));
     }
-    handleUpdate(prepareData(multiple ? newValue : [newValue]));
+    handleUpdate( prepareData( multiple ? newValue : [newValue] ));
   };
 
   useEffect(
     () => {
-      if (initialValue === ' ') setValue(multiple ? [] : null);
+      if ( initialValue === ' ' ) setValue( multiple ? [] : null );
     },
     [initialValue]
   );
@@ -68,9 +68,15 @@ const DropdownSelect = ({
       onChange={handleChange}
       required={mandatory}
       options={options}
-      getOptionLabel={prop('name')}
-      getOptionSelected={(option, value) => option.code === value.code}
-      renderInput={params => <TextField {...params} label={label} variant="outlined" />}
+      getOptionLabel={prop( 'name' )}
+      getOptionSelected={( option, value ) => option.code === value.code}
+      renderInput={params => (
+        <TextField
+          {...params}
+          label={label}
+          variant="outlined"
+        />
+      )}
     />
   );
 };

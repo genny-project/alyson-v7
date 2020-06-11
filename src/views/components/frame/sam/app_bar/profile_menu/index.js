@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { map, prop } from 'ramda';
-import { Button, Menu, MenuItem, IconButton, Avatar } from '@material-ui/core';
+import {  Menu, MenuItem, IconButton, Avatar } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const ProfileMenu = ({ group, setViewing, parentCode, profilePictureURL, userFullName }) => {
