@@ -41,9 +41,7 @@ const ProfileMenu = ({ group, setViewing, parentCode, profilePictureURL, userFul
             {prop( 'name', item || {})}
           </MenuItem>
         ))( prop( 'childAsks', group ))}
-        <MenuItem>
-            My settings
-        </MenuItem>
+
       </Menu>
     </div>
   );
