@@ -29,7 +29,7 @@ const printIntern = [
   { label: 'Education Provider', code: 'assoc_ep' },
   { label: 'Current Course', code: 'current_course' },
   { label: 'Student Id', code: 'student_id' },
-  { label: 'Specialisation', code: 'assoc_specialisation' },
+  { label: 'Specialisation', code: 'assoc_occupation' },
   { label: 'Rating', code: 'rating', type: 'rating' },
   { label: 'Transport Options', code: 'transport_options' },
   { label: 'Region', code: 'region' },

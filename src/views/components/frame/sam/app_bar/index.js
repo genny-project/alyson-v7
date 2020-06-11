@@ -26,6 +26,9 @@ const MainAppBar = ({
 
   const classes = useStyles();
 
+  const fakePictureForDemo = path(['attributes', 'PRI_IMAGE_URL', 'value'], user);
+  console.log(user);
+
   return (
     <div className={classes.grow}>
       <AppBar position="fixed">
@@ -64,8 +67,8 @@ const MainAppBar = ({
             aria-haspopup="true"
             color="inherit"
           >
-            {profilePictureURL && profilePictureURL.length ? (
-              <Avatar alt={userFullName} src={profilePictureURL[0]} />
+            {fakePictureForDemo || (profilePictureURL && profilePictureURL.length) ? (
+              <Avatar alt={userFullName} src={fakePictureForDemo || profilePictureURL} />
             ) : (
               <AccountCircle />
             )}

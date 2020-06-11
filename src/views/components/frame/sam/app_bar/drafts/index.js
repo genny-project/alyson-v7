@@ -7,8 +7,6 @@ import { Button, Menu, MenuItem } from '@material-ui/core';
 const Drafts = ({ drafts, setViewing }) => {
   const [menu, setMenu] = useState(null);
 
-  console.log(drafts);
-
   return (
     <div>
       <Button
