@@ -17,6 +17,10 @@ const MainAppBar = ({ setLoading, asks, user, setViewing, sidebarOpen, setSideba
   const userFullName = path( ['data', 'name'], user );
   const classes = useStyles();
 
+  const fakePictureForDemo = path( ['attributes', 'PRI_IMAGE_URL', 'value'], user );
+
+  console.log( user );
+
   return (
     <div className={classes.grow}>
       <AppBar position="fixed">
@@ -61,6 +65,7 @@ const MainAppBar = ({ setLoading, asks, user, setViewing, sidebarOpen, setSideba
             parentCode="QUE_OPTIONS_GRP"
             profilePictureURL={profilePictureURL}
             userFullName={userFullName}
+            fakePictureForDemo={fakePictureForDemo}
           />
         </Toolbar>
         {loading ? <LinearProgress className={classes.loadingBar} /> : null}

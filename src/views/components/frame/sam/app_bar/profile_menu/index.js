@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { map, prop } from 'ramda';
+import { map, prop, path } from 'ramda';
 import {  Menu, MenuItem, IconButton, Avatar } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
-const ProfileMenu = ({ group, setViewing, parentCode, profilePictureURL, userFullName }) => {
+const ProfileMenu = ({ group, setViewing, parentCode, profilePictureURL, userFullName, fakePictureForDemo }) => {
   const [menu, setMenu] = useState( null );
 
   return (
@@ -12,10 +12,10 @@ const ProfileMenu = ({ group, setViewing, parentCode, profilePictureURL, userFul
         onClick={event => setMenu( event.currentTarget )}
         color="inherit"
       >
-        {profilePictureURL && profilePictureURL.length ? (
+        {fakePictureForDemo || ( profilePictureURL && profilePictureURL.length ) ? (
           <Avatar
             alt={userFullName}
-            src={profilePictureURL}
+            src={fakePictureForDemo || profilePictureURL}
           />
         ) : (
           <AccountCircle />
