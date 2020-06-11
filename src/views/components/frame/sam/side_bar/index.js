@@ -1,5 +1,17 @@
 import React from 'react';
-import { map, filter, compose, includes, prop, pickBy, values, path, head } from 'ramda';
+import {
+  map,
+  filter,
+  compose,
+  includes,
+  prop,
+  pickBy,
+  values,
+  path,
+  head,
+  length,
+  sortBy,
+} from 'ramda';
 import { Drawer, List, Typography, Container } from '@material-ui/core';
 import Image from 'material-ui-image';
 
@@ -30,20 +42,23 @@ const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, ope
 
   const classes = useStyles();
 
-  const dropDowns = compose(pickBy((val, key) => includes('TREE', key)))(components);
+  const dropDowns = compose(
+    sortBy(prop('childAsks')),
+    map(head),
+    values,
+    pickBy((val, key) => includes('TREE', key))
+  )(components);
 
-  const dropDownComponents = values(
-    map(items => (
-      <NavigationItem
-        key={`navItem${prop('name', head(items || []) || {})}`}
-        name={prop('name', head(items || []) || {})}
-        questionCode={prop('questionCode', head(items || []) || {})}
-        childAsks={prop('childAsks', head(items || []) || {})}
-        currentViewing={prop('code', viewing)}
-        setViewing={setViewing}
-      />
-    ))(dropDowns)
-  );
+  const dropDownComponents = map(({ name, questionCode, childAsks }) => (
+    <NavigationItem
+      key={`navItem${name}`}
+      name={name}
+      questionCode={questionCode}
+      childAsks={childAsks}
+      currentViewing={prop('code', viewing)}
+      setViewing={setViewing}
+    />
+  ))(dropDowns);
 
   return (
     <Drawer

@@ -69,7 +69,7 @@ const Details = ({ attributes, targetCode }) => {
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || '';
 
-  const detailType = contains('PRI_ASSOC_EP', keys(detailView))
+  const detailType = contains('PRI_STUDENT_ID', keys(detailView))
     ? printIntern
     : contains('PRI_START_DATE', keys(detailView))
       ? printBeg
