@@ -37,7 +37,7 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
   useEffect(
     () => {
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
-        if (viewing.parentCode) setLoading(true);
+        // if (viewing.parentCode) setLoading(true);
 
         if (contains('MENU', prop('code', viewing) || '')) {
           setStaleTarget(
