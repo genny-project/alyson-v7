@@ -1,12 +1,12 @@
 import React from 'react';
 import { path } from 'ramda';
 
-import { AppBar, Toolbar, InputBase, IconButton, Avatar, LinearProgress } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Avatar, LinearProgress } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import HeaderMenu from './header_menu';
 import MoreViews from './more_views';
+import Search from './search';
 
 import { getIsMobile } from '../utils';
 import useStyles from './styles';
@@ -26,19 +26,16 @@ const MainAppBar = ({ asks, user, setViewing, sidebarOpen, setSidebarOpen, loadi
               <MenuIcon color="inherit" />
             </IconButton>
           ) : null}
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon color="inherit" />
-            </div>
-            <InputBase
-              placeholder="Search ..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
+          <Search
+            question={{
+              askId: 272,
+              attributeCode: 'PRI_SEARCH_TEXT',
+              code: 'QUE_SEARCH',
+              sourceCode: 'PER_USER1',
+              targetCode: 'PER_USER1',
+              weight: 1,
+            }}
+          />
           <div className={classes.grow} />
           <MoreViews asks={asks} setViewing={setViewing} />
           <HeaderMenu

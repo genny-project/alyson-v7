@@ -16,7 +16,10 @@ const MoreViews = ({ asks, setViewing }) => {
       <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
         {map(
           ({ name, questionCode, targetCode }) => (
-            <MenuItem onClick={() => setViewing({ code: questionCode, targetCode })}>
+            <MenuItem
+              key={'moreViews' + questionCode}
+              onClick={() => setViewing({ code: questionCode, targetCode })}
+            >
               {name}
             </MenuItem>
           ),
