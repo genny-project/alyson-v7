@@ -10,8 +10,8 @@ import useStyles from './styles';
 const Search = ({ setLoading, question }) => {
   const { askId, attributeCode, code, sourceCode, targetCode, weight } = question;
 
-  const [value, setValue] = useState('');
-  const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState( '' );
+  const [focused, setFocused] = useState( false );
 
   const classes = useStyles({ focused });
 
@@ -27,9 +27,9 @@ const Search = ({ setLoading, question }) => {
 
   useEffect(
     () => {
-      if (not(isEmpty(value))) {
-        search(value);
-        setLoading(`Searching for ${value} everywhere...`);
+      if ( not( isEmpty( value ))) {
+        search( value );
+        setLoading( `Searching for ${value} everywhere...` );
       }
     },
     [value]
@@ -38,15 +38,15 @@ const Search = ({ setLoading, question }) => {
   return (
     <div
       className={classes.search}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
+      onFocus={() => setFocused( true )}
+      onBlur={() => setFocused( false )}
     >
       <div className={classes.searchIcon}>
         <SearchIcon color="inherit" />
       </div>
       <InputBase
         placeholder="Search..."
-        onChange={event => setValue(event.target.value)}
+        onChange={event => setValue( event.target.value )}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,

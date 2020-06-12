@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles( theme => ({
   listItem: {
     borderRadius: '3px',
   },
@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
   },
   secondaryText: {
     fontSize: '0.9rem',
-    paddingLeft: theme.spacing(1),
+    paddingLeft: theme.spacing( 1 ),
   },
 }));
 

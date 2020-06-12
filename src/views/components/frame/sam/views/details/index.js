@@ -8,14 +8,27 @@ import useStyles from './styles';
 
 const RowItem = ({ type, label, code, classes, print, rating, setRating }) => (
   <Grid item>
-    <Grid container direction="row">
-      <Typography className={classes.label}>{label}</Typography>
+    <Grid
+      container
+      direction="row"
+    >
+      <Typography className={classes.label}>
+        {label}
+      </Typography>
       {type === 'rating' ? (
-        <Rating name="rating" value={rating} onChange={(event, newValue) => setRating(newValue)} />
+        <Rating
+          name="rating"
+          value={rating}
+          onChange={( event, newValue ) => setRating( newValue )}
+        />
       ) : type === 'time' ? (
-        <Typography>{`${format(parseISO(print(code)), 'h:mm a')}`}</Typography>
+        <Typography>
+          {`${format( parseISO( print( code )), 'h:mm a' )}`}
+        </Typography>
       ) : (
-        <Typography>{print(code)}</Typography>
+        <Typography>
+          {print( code )}
+        </Typography>
       )}
     </Grid>
   </Grid>
@@ -37,8 +50,8 @@ const printIntern = [
 ];
 
 const printBeg = [
-  { label: 'Host Company', code: 'assoc_host_company' },
-  { label: 'Host Company Rep', code: 'assoc_host_company_rep' },
+  { label: 'Host Company', code: 'assoc_hc' },
+  { label: 'Host Company Rep', code: 'assoc_hcr' },
   { label: 'Intern Supervisor', code: 'assoc_intern_supervisor' },
   { label: 'Internship Address', code: 'address_full' },
   { label: 'Industry', code: 'assoc_industry' },
@@ -47,7 +60,7 @@ const printBeg = [
   { label: 'Start Time', code: 'time', type: 'time' },
   { label: 'Days Per Week', code: 'days_per_week' },
   { label: 'Duration', code: 'assoc_internship_duration' },
-  { label: 'Number of Interns', code: 'assoc_number_of_interns' },
+  { label: 'Number of Interns', code: 'assoc_num_interns' },
 ];
 
 const printCpy = [
@@ -65,40 +78,62 @@ const printHcr = [
 ];
 
 const Details = ({ attributes, targetCode }) => {
-  const detailView = prop(targetCode, attributes);
+  const detailView = prop( targetCode, attributes );
 
-  const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || '';
+  const print = prop => path( [`PRI_${toUpper( prop || '' )}`, 'value'], detailView ) || '';
 
-  const detailType = contains('PRI_STUDENT_ID', keys(detailView))
+  const detailType = contains( 'PRI_STUDENT_ID', keys( detailView ))
     ? printIntern
-    : contains('PRI_START_DATE', keys(detailView))
+    : contains( 'PRI_START_DATE', keys( detailView ))
       ? printBeg
-      : contains('LNK_HOST_COMPANY_REP', keys(detailView))
+      : contains( 'LNK_HOST_COMPANY_REP', keys( detailView ))
         ? printHcr
-        : contains('PRI_ABN')
+        : contains( 'PRI_ABN' )
           ? printCpy
           : [];
 
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState( 0 );
   const classes = useStyles();
 
   return (
-    <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
+    <Grid
+      container
+      direction="column"
+      spacing={4}
+      className={classes.detailsContainer}
+    >
       <Grid item>
-        <Typography variant="h5">{print('name')}</Typography>
+        <Typography variant="h5">
+          {print( 'name' )}
+        </Typography>
       </Grid>
       <Grid item>
-        <Grid container direction="row" spacing={2} alignItems="center">
+        <Grid
+          container
+          direction="row"
+          spacing={2}
+          alignItems="center"
+        >
           <Grid item>
-            <Avatar alt={print('name')} src={print('user_profile_picture')} />
+            <Avatar
+              alt={print( 'name' )}
+              src={print( 'user_profile_picture' )}
+            />
           </Grid>
           <Grid item>
-            <Grid container direction="column">
+            <Grid
+              container
+              direction="column"
+            >
               <Grid item>
-                <Typography>{print('address_full')}</Typography>
+                <Typography>
+                  {print( 'address_full' )}
+                </Typography>
               </Grid>
               <Grid item>
-                <Typography>{`${print('email')}`}</Typography>
+                <Typography>
+                  {`${print( 'email' )}`}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

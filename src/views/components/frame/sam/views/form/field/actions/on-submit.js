@@ -5,7 +5,7 @@ const onSubmit = ({ parentCode, rootCode, setLoading, setViewing }) => ({ ask, v
   const { attributeCode, questionCode, sourceCode, targetCode } = ask;
 
   setViewing({ code: `QUE_PRI_EVENT_VIEW_${targetCode}`, targetCode });
-  setLoading('Saving...');
+  setLoading( 'Saving...' );
 
   Bridge.sendFormattedEvent({
     code: questionCode,
@@ -18,6 +18,6 @@ const onSubmit = ({ parentCode, rootCode, setLoading, setViewing }) => ({ ask, v
   });
 };
 
-const debouncedOnSubmit = debounce(onSubmit, 400);
+const debouncedOnSubmit = debounce( onSubmit, 400 );
 
 export default debouncedOnSubmit;
