@@ -16,18 +16,18 @@ const handleUpdate = onUpdate => (
   },
   setErrors
 ) => value =>
-  all(({ regex }) => test(new RegExp(regex), value))(filter(identity, validationList || []))
+  all(({ regex }) => test( new RegExp( regex ), value ))( filter( identity, validationList || [] ))
     ? onUpdate({
-        ask: {
-          askId,
-          attributeCode,
-          questionCode,
-          sourceCode,
-          targetCode,
-          weight,
-        },
-        value,
-      })
-    : setErrors(errors => ({ ...errors, [questionCode]: true }));
+      ask: {
+        askId,
+        attributeCode,
+        questionCode,
+        sourceCode,
+        targetCode,
+        weight,
+      },
+      value,
+    })
+    : setErrors( errors => ({ ...errors, [questionCode]: true }));
 
 export default handleUpdate;

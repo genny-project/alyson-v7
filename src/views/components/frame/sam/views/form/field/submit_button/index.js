@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 const SubmitButton = ({ label, onSubmit, disabled, fieldData, pristine, errors }) => {
   const handleSubmit = () => onSubmit({ ask: fieldData });
 
-  const anyErrors = any(identity)(values(errors));
+  const anyErrors = any( identity )( values( errors ));
 
   return (
     <Button

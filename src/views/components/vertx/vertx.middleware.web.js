@@ -14,40 +14,40 @@ const persistActions = [
 ];
 
 const setPersistTimestamp = () => {
-  Storage.set('persist:timestamp', format(new Date(), 'x'));
+  Storage.set( 'persist:timestamp', format( new Date(), 'x' ));
 };
 
 const middleware = store => next => action => {
   /* Since we are not making any side effects to `action`, pass on next. */
-  next(action);
+  next( action );
 
-  if (persistActions.includes(action.type)) {
+  if ( persistActions.includes( action.type )) {
     setPersistTimestamp();
   }
 
-  if (action.type === 'AUTH_ATTEMPT_SUCCESS') {
-    store.dispatch(actions.initVertx());
-  } else if (action.type === 'VERTX_INIT_ATTEMPT') {
+  if ( action.type === 'AUTH_ATTEMPT_SUCCESS' ) {
+    store.dispatch( actions.initVertx());
+  } else if ( action.type === 'VERTX_INIT_ATTEMPT' ) {
     const { data, accessToken } = store.getState().keycloak;
 
-    Bridge.initVertx(data.vertx_url, accessToken);
-  } else if (action.type === 'VERTX_INIT_SUCCESS') {
+    Bridge.initVertx( data.vertx_url, accessToken );
+  } else if ( action.type === 'VERTX_INIT_SUCCESS' ) {
     const { accessToken } = store.getState().keycloak;
 
-    Bridge.sendAuthInit(accessToken);
-  } else if (action.type === 'ROUTE_CHANGE') {
+    Bridge.sendAuthInit( accessToken );
+  } else if ( action.type === 'ROUTE_CHANGE' ) {
     const { code, modal } = action.payload;
 
-    if (modal) {
+    if ( modal ) {
       store.dispatch(
         showDialog({
-          layoutName: removeStartingAndEndingSlashes(code),
+          layoutName: removeStartingAndEndingSlashes( code ),
         })
       );
     } else {
-      store.dispatch(push(code));
+      store.dispatch( push( code ));
     }
-  } else if (action.type === 'NOTIFICATION_MESSAGE') {
+  } else if ( action.type === 'NOTIFICATION_MESSAGE' ) {
     const { style, message } = action.payload;
 
     const title = style === 'warning' ? 'Warning!' : 'Notification';

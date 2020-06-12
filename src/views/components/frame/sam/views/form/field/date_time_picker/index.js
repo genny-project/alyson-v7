@@ -20,16 +20,16 @@ const DateTimePicker = ({
   inputType = 'date',
   ...rest
 }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState( null );
 
   const handleUpdate = date =>
-    makeHandleUpdate(onUpdate)(fieldData, setErrors)(format(date, 'yyyy-MM-dd'));
+    makeHandleUpdate( onUpdate )( fieldData, setErrors )( format( date, 'yyyy-MM-dd' ));
 
   const handleUpdateTime = time =>
-    makeHandleUpdate(onUpdate)(fieldData, setErrors)(format(time, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+    makeHandleUpdate( onUpdate )( fieldData, setErrors )( format( time, 'yyyy-MM-dd\'T\'HH:mm:ss.SSSxxx' ));
 
   const handleDateChange = date => {
-    setSelectedDate(date);
+    setSelectedDate( date );
   };
 
   return (
