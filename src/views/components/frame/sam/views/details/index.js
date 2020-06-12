@@ -52,7 +52,7 @@ const printIntern = [
 const printBeg = [
   { label: 'Host Company', code: 'assoc_hc' },
   { label: 'Host Company Rep', code: 'assoc_hcr' },
-  { label: 'Intern Supervisor', code: 'assoc_intern_supervisor' },
+  { label: 'Intern Supervisor', code: 'assoc_supervisor' },
   { label: 'Internship Address', code: 'address_full' },
   { label: 'Industry', code: 'assoc_industry' },
   { label: 'Specialisation', code: 'assoc_occupation' },
