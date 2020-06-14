@@ -19,7 +19,7 @@ import getDataForEvent from './helpers/get-data-for-event';
 import getGoogleApiKey from './helpers/get-google-api-key';
 import makeTheme from './helpers/make-theme';
 
-const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keycloak }) => {
+const Sam = ({ projectName, links, baseEntities, frames, asks, themes, user, attributes, keycloak }) => {
   const googleApiKey = getGoogleApiKey( keycloak );
   const agency = getAgency( user );
   const agencyCompany = getAgencyCompany( agency )( baseEntities );
@@ -97,6 +97,7 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
           attributes={attributes}
           open={sidebarOpen}
           setOpen={setSidebarOpen}
+          projectName={projectName}
         />
         <Main
           loading={loading}
@@ -110,6 +111,7 @@ const Sam = ({ links, baseEntities, frames, asks, themes, user, attributes, keyc
           links={links}
           googleApiKey={googleApiKey}
           attributes={attributes}
+          projectName={projectName}
         />
       </div>
     </ThemeProvider>

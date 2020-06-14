@@ -44,7 +44,7 @@ const Frame = props => {
     );
   }
 
-  return <Sam {...props} />;
+  return <Sam {...props} projectName={ projectName }/>;
 };
 
 export { Frame };
