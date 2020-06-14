@@ -23,7 +23,7 @@ import { getIsMobile } from '../utils';
 
 import useStyles from './styles';
 
-const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, open, setOpen }) => {
+const MainSideBar = ({ projectName, items, asks, frames, viewing, setViewing, attributes, open, setOpen }) => {
   const components = compose(
     map( map( code => prop( code, asks ))),
     map( filter( includes( 'QUE' ))),
@@ -40,7 +40,7 @@ const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, ope
   const title = path( [targetCode, 'PRI_NAME', 'value'], attributes );
   const poweredBy = path( [targetCode, 'PRI_POWERED_BY', 'value'], attributes );
 
-  const classes = useStyles();
+  const classes = useStyles({projectName});
 
   const dropDowns = compose(
     sortBy( prop( 'childAsks' )),
@@ -83,7 +83,7 @@ const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, ope
       <Container className={classes.title}>
         <Typography
           variant="h6"
-          color="primary"
+          className={classes.primaryText}
         >
           {title}
         </Typography>
@@ -93,12 +93,12 @@ const MainSideBar = ({ items, asks, frames, viewing, setViewing, attributes, ope
       </List>
       <div className={classes.grow} />
       <Container className={classes.poweredBy}>
-        <Typography variant="caption">
+        <Typography variant="caption" color="inherit">
           {'Powered By'}
         </Typography>
       </Container>
       <Container className={classes.poweredName}>
-        <Typography variant="caption">
+        <Typography variant="caption" color="inherit">
           {poweredBy}
         </Typography>
       </Container>

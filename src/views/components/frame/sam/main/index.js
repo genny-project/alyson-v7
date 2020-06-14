@@ -19,6 +19,7 @@ const Main = ({
   googleApiKey,
   loading,
   setLoading,
+  projectName,
 }) => {
   const classes = useStyles();
 
@@ -51,6 +52,7 @@ const Main = ({
               asks={asks}
               user={user}
               attributes={attributes}
+              projectName={projectName}
             />
           ) : view.attributeCode === 'QQQ_QUESTION_GROUP'  ? (
             <Form

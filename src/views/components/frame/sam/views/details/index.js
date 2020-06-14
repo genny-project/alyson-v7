@@ -82,7 +82,7 @@ const Details = ({ attributes, targetCode }) => {
 
   const print = prop => path( [`PRI_${toUpper( prop || '' )}`, 'value'], detailView ) || '';
 
-  const detailType = contains( 'PRI_STUDENT_ID', keys( detailView ))
+  const detailType = contains( 'PRI_STATUS', keys( detailView ))
     ? printIntern
     : contains( 'PRI_START_DATE', keys( detailView ))
       ? printBeg
@@ -94,6 +94,8 @@ const Details = ({ attributes, targetCode }) => {
 
   const [rating, setRating] = useState( 0 );
   const classes = useStyles();
+
+  console.log(detailView)
 
   return (
     <Grid

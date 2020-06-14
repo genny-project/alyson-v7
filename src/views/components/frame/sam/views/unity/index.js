@@ -1,7 +1,12 @@
 import React from 'react';
 import { path, propEq, find, prop } from 'ramda';
 
-import Unity from '../../../../input/unity';
+import Unity, { UnityContent } from 'react-unity-webgl';
+
+const makeUnityContent = loader => scene => new UnityContent(
+  "unity/safeTrafficTown.json",
+  "unity/UnityLoader.js"
+);
 
 const UnityRender = ({ frames, attributes, baseEntities, asks, setViewing, viewing }) => {
   const unityQuestionLinks = path( ['FRM_CONTENT_QUE_UNITY_ASK_GRP', 'links'], frames );
@@ -9,9 +14,12 @@ const UnityRender = ({ frames, attributes, baseEntities, asks, setViewing, viewi
   const unityAskGrp = prop( unityAskGrpCode, asks );
   const unityAskGrpChildAsks = prop( 'childAsks', unityAskGrp );
 
-  console.log( frames );
+  const unityContent = makeUnityContent()()
 
-  return <Unity />;
+
+  console.log( unityContent );
+
+  return <Unity unityContent={ unityContent }/>;
 };
 
 export default UnityRender;
