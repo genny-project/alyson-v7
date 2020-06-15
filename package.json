@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "get-git-info": "git rev-parse --abbrev-ref HEAD > src/static/git-info-branch.txt; git rev-parse HEAD > src/static/git-info-commit.txt; git log -1 --format=%cd > src/static/git-info-date.txt",
-    "start:web": "npm run get-git-info && ./node_modules/.bin/webpack-dev-server -d --config ./webpack.dev.js --inline --hot --colors",
-    "build:web": "npm run get-git-info && ./node_modules/.bin/webpack -p --config ./webpack.prod.js",
+    "start": "npm run get-git-info && ./node_modules/.bin/webpack-dev-server -d --config ./webpack.dev.js --inline --hot --colors",
+    "build": "npm run get-git-info && ./node_modules/.bin/webpack -p --config ./webpack.prod.js",
     "test": "jest",
-    "clear-cache:web": "rm -rf ./node_modules/.cache/babel-loader/*",
+    "clear-cache": "rm -rf ./node_modules/.cache/babel-loader/*",
     "lint": "eslint --fix ."
   },
   "dependencies": {

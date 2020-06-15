@@ -69,7 +69,7 @@ module.exports = {
 
   // configures where the build ends up
   output: {
-    filename: 'bundle.[hash].js',
+    filename: 'index_bundle.js',
     path: path.resolve( __dirname, 'dist' ),
     publicPath: '/',
   },
@@ -80,15 +80,9 @@ module.exports = {
     rules: [
       babelLoaderConfiguration,
       imageLoaderConfiguration,
-      styleLoaderConfiguration,
-      {
-        test: /\.txt$/i,
-        use: 'raw-loader',
-      },
-      {
-        test: /\.TextFile$/i,
-        use: 'raw-loader',
-      },
+      { test: /\.txt$/i, use: 'raw-loader'},
+      {test: /\.TextFile$/i,use: 'raw-loader'},
+      { test: /\.css$/, use: [ 'style-loader', 'css-loader' ]},
     ],
   },
 
