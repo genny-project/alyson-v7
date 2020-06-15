@@ -19,29 +19,39 @@ import getDataForEvent from './helpers/get-data-for-event';
 import getGoogleApiKey from './helpers/get-google-api-key';
 import makeTheme from './helpers/make-theme';
 
-const Sam = ({ projectName, links, baseEntities, frames, asks, themes, user, attributes, keycloak }) => {
-  const googleApiKey = getGoogleApiKey( keycloak );
-  const agency = getAgency( user );
-  const agencyCompany = getAgencyCompany( agency )( baseEntities );
-  const backendViewing = getBackendViewing( frames );
+const Sam = ({
+  projectName = '',
+  links = {},
+  baseEntities = {},
+  frames = {},
+  asks = {},
+  themes = {},
+  user = {},
+  attributes = {},
+  keycloak = {},
+}) => {
+  const googleApiKey = getGoogleApiKey(keycloak);
+  const agency = getAgency(user);
+  const agencyCompany = getAgencyCompany(agency)(baseEntities);
+  const backendViewing = getBackendViewing(frames);
 
   const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' });
-  const [sidebarOpen, setSidebarOpen] = useState( false );
-  const [loading, setLoading] = useState( false );
-  const [staleTarget, setStaleTarget] = useState( '' );
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [staleTarget, setStaleTarget] = useState('');
 
-  const dataForEvent = getDataForEvent( viewing, user );
+  const dataForEvent = getDataForEvent(viewing, user);
 
   const theme = makeTheme({ attributes, asks });
 
   useEffect(
     () => {
-      if ( viewing.code || viewing.parentCode || viewing.targetCode ) {
+      if (viewing.code || viewing.parentCode || viewing.targetCode) {
         // if (viewing.parentCode) setLoading(true);
 
-        if ( contains( 'MENU', prop( 'code', viewing ) || '' )) {
+        if (contains('MENU', prop('code', viewing) || '')) {
           setStaleTarget(
-            prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {})
+            prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {})
           );
         }
 
@@ -58,15 +68,15 @@ const Sam = ({ projectName, links, baseEntities, frames, asks, themes, user, att
 
   useEffect(
     () => {
-      if ( contains( 'MENU', prop( 'code', viewing ) || '' )) {
+      if (contains('MENU', prop('code', viewing) || '')) {
         if (
-          prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}) !==
+          prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
           staleTarget
         ) {
-          setLoading( false );
+          setLoading(false);
         }
       } else {
-        setLoading( false );
+        setLoading(false);
       }
     },
     [asks]
@@ -76,7 +86,7 @@ const Sam = ({ projectName, links, baseEntities, frames, asks, themes, user, att
     <ThemeProvider theme={theme}>
       <div>
         <AppBar
-          items={getAppBarItems( frames, asks, themes )}
+          items={getAppBarItems(frames, asks, themes)}
           asks={asks}
           frames={frames}
           user={user}
@@ -87,7 +97,7 @@ const Sam = ({ projectName, links, baseEntities, frames, asks, themes, user, att
           setLoading={setLoading}
         />
         <Sidebar
-          items={getDrawerItems( frames, asks, themes )}
+          items={getDrawerItems(frames, asks, themes)}
           asks={asks}
           frames={frames}
           user={user}
@@ -130,4 +140,4 @@ const mapStateToProps = state => ({
   keycloak: state.keycloak,
 });
 
-export default connect( mapStateToProps )( Sam );
+export default connect(mapStateToProps)(Sam);
