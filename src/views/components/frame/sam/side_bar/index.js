@@ -83,7 +83,7 @@ const MainSideBar = ({ projectName, items, asks, frames, viewing, setViewing, at
       <Container className={classes.title}>
         <Typography
           variant="h6"
-          className={classes.primaryText}
+          color="primary"
         >
           {title}
         </Typography>

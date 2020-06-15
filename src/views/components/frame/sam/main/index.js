@@ -25,7 +25,7 @@ const Main = ({
 
   const view = getView({ viewing, asks, frames });
 
-  console.warn( 'view', view );
+  console.warn( 'view', viewing );
 
   return (
     <div className={classes.root}>

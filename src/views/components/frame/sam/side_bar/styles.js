@@ -22,16 +22,12 @@ const useStyles = makeStyles( theme => ({
   },
   logo: {
     height: APP_BAR_HEIGHT,
-    backgroundColor: ({ projectName }) => projectName === 'Safe Traffic Town' ? theme.palette.primary.main : theme.palette.background.paper
   },
   poweredBy: {
     marginBottom: theme.spacing( 1 ),
   },
   poweredName: {
     marginBottom: theme.spacing( 1 ),
-  },
-  primaryText: {
-    color: theme.palette.background.paper
   }
 }));
 
