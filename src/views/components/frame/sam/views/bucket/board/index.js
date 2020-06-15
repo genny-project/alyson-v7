@@ -9,7 +9,7 @@ import Item from './item';
 
 import useStyles from './styles';
 
-const Board = ({ data: { lanes, meta } }) => {
+const Board = ({ data: { lanes, meta }, setViewing }) => {
   const classes = useStyles();
 
   return (
@@ -41,7 +41,11 @@ const Board = ({ data: { lanes, meta } }) => {
               {map(
                 item => (
                   <Grid item key={'gridItem' + id + item.email}>
-                    <Item item={item} key={'gridItemItem' + id + item.email} />
+                    <Item
+                      item={item}
+                      setViewing={setViewing}
+                      key={'gridItemItem' + id + item.email}
+                    />
                   </Grid>
                 ),
                 items
