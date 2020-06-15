@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { contains, pickBy, keys, map, replace, path, values, filter } from 'ramda';
+import { contains, pickBy, keys, map, replace, path, values, filter, pathOr } from 'ramda';
 
 import Board from './board';
 import useStyles from './styles';
 
-const BucketView = ({ asks, attributes }) => {
+const BucketView = ({ asks, attributes, setViewing }) => {
   const bucketHeaders = pickBy((val, key) => contains('QUE_BUCKET_HEADER', key), asks);
   const bucketContent = pickBy((val, key) => contains('QUE_BUCKET_CONTENT', key), asks);
 
@@ -24,23 +24,27 @@ const BucketView = ({ asks, attributes }) => {
   );
 
   const formattedInterns = map(
-    ({
-      PRI_NAME: { value: name } = {},
-      PRI_EMAIL: { value: email } = {},
-      PRI_STUDENT_ID: { value: studentId } = {},
-      PRI_STATUS_COLOR: { value: statusColor } = {},
-      PRI_MOBILE: { value: mobile } = {},
-      PRI_USER_PROFILE_PICTURE: { value: profilePicture } = {},
-    }) => ({ name, email, studentId, mobile, profilePicture, statusColor }),
+    intern => ({
+      status: pathOr('', ['PRI_STATUS', 'value'], intern),
+      name: pathOr('', ['PRI_NAME', 'value'], intern),
+      email: pathOr('', ['PRI_EMAIL', 'value'], intern),
+      studentId: pathOr('', ['PRI_STUDENT_ID', 'value'], intern),
+      mobile: pathOr('', ['PRI_MOBILE', 'value'], intern),
+      profilePicture: pathOr('', ['PRI_USER_PROFILE_PICTURE', 'value'], intern),
+      statusColor: pathOr('', ['PRI_STATUS_COLOR', 'value'], intern),
+      targetCode: pathOr('', ['PRI_EMAIL', 'baseEntityCode'], intern),
+    }),
     allInterns
   );
+
+  const availableInterns = filter(({ status }) => status === 'AVAILABLE', formattedInterns);
 
   const data = {
     lanes: map(
       key => ({
         id: replace('QUE_BUCKET_CONTENT_', '', key),
         title: path([key, 'name'], bucketHeaders),
-        items: contains('AVAILABLE', key) ? formattedInterns : [],
+        items: contains('AVAILABLE', key) ? availableInterns : [],
       }),
       keys(bucketHeaders || {})
     ),
@@ -50,7 +54,7 @@ const BucketView = ({ asks, attributes }) => {
 
   return (
     <div className={classes.boardContainer}>
-      <Board data={data} />
+      <Board data={data} setViewing={setViewing} />
     </div>
   );
 };
