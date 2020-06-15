@@ -25,12 +25,12 @@ const BucketView = ({ asks, attributes }) => {
 
   const formattedInterns = map(
     ({
-      PRI_NAME: { value: name },
-      PRI_EMAIL: { value: email },
-      PRI_STUDENT_ID: { value: studentId },
-      PRI_STATUS_COLOR: { value: statusColor },
-      PRI_MOBILE: { value: mobile },
-      PRI_USER_PROFILE_PICTURE: { value: profilePicture },
+      PRI_NAME: { value: name } = {},
+      PRI_EMAIL: { value: email } = {},
+      PRI_STUDENT_ID: { value: studentId } = {},
+      PRI_STATUS_COLOR: { value: statusColor } = {},
+      PRI_MOBILE: { value: mobile } = {},
+      PRI_USER_PROFILE_PICTURE: { value: profilePicture } = {},
     }) => ({ name, email, studentId, mobile, profilePicture, statusColor }),
     allInterns
   );
