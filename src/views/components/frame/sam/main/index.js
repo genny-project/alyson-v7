@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { prop } from 'ramda';
-import { Paper, Grid, Typography } from '@material-ui/core';
-
+import { Paper, Grid, Typography, Fab, Tooltip } from '@material-ui/core';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded';
 import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
 import getView from './helpers/get-view';
 import useStyles from './styles';
@@ -20,6 +20,8 @@ const Main = ({
   loading,
   setLoading,
   projectName,
+  notebarOpen,
+  setNotebarOpen,
 }) => {
   const classes = useStyles();
 
@@ -103,6 +105,20 @@ const Main = ({
               setViewing={setViewing}
             />
           )}
+          {
+            <Tooltip
+              title="Show side panel"
+              placement="top-start"
+            >
+              <Fab
+                color="primary"
+                onClick={() => setNotebarOpen( !notebarOpen )}
+                className={classes.fab}
+              >
+                <ArrowBackIosIcon color="inherit" />
+              </Fab>
+            </Tooltip>
+           }
         </Paper>
       )}
     </div>

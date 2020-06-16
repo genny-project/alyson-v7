@@ -12,6 +12,7 @@ import getAgencyCompany from './helpers/get-agency-company';
 import getBackendViewing from './helpers/get-backend-viewing';
 
 import Sidebar from './side_bar';
+import Notes from './notes_bar';
 import AppBar from './app_bar';
 import Main from './main';
 
@@ -37,6 +38,7 @@ const Sam = ({
 
   const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notebarOpen, setNotebarOpen] = useState( false );
   const [loading, setLoading] = useState(false);
   const [staleTarget, setStaleTarget] = useState('');
 
@@ -122,11 +124,13 @@ const Sam = ({
           googleApiKey={googleApiKey}
           attributes={attributes}
           projectName={projectName}
+          notebarOpen={notebarOpen}
+          setNotebarOpen={setNotebarOpen}
         />
       </div>
       <Notes
-          open={notebarOpen}
-          setOpen={setNotebarOpen}
+        open={notebarOpen}
+        setOpen={setNotebarOpen}
       />
     </ThemeProvider>
   );
