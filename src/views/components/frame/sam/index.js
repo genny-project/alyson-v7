@@ -43,8 +43,6 @@ const Sam = ({
 
   const theme = makeTheme({ attributes, asks });
 
-  console.log(viewing, baseEntities);
-
   useEffect(
     () => {
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
