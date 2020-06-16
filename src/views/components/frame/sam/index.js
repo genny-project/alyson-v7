@@ -124,6 +124,10 @@ const Sam = ({
           projectName={projectName}
         />
       </div>
+      <Notes
+          open={notebarOpen}
+          setOpen={setNotebarOpen}
+      />
     </ThemeProvider>
   );
 };
