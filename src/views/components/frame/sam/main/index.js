@@ -19,12 +19,13 @@ const Main = ({
   googleApiKey,
   loading,
   setLoading,
+  projectName,
 }) => {
   const classes = useStyles();
 
   const view = getView({ viewing, asks, frames });
 
-  console.warn( 'view', view );
+  console.warn('view', viewing);
 
   return (
     <div className={classes.root}>
@@ -51,8 +52,9 @@ const Main = ({
               asks={asks}
               user={user}
               attributes={attributes}
+              projectName={projectName}
             />
-          ) : view.attributeCode === 'QQQ_QUESTION_GROUP'  ? (
+          ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={view}
               asks={asks}
@@ -63,7 +65,7 @@ const Main = ({
               setViewing={setViewing}
               setLoading={setLoading}
             />
-          ) : view.attributeCode === 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT'  ? (
+          ) : view.attributeCode === 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT' ? (
             <Form
               formView={view}
               asks={asks}
@@ -75,10 +77,7 @@ const Main = ({
               setLoading={setLoading}
             />
           ) : view === 'DETAIL' ? (
-            <Details
-              attributes={attributes}
-              targetCode={prop( 'targetCode', viewing )}
-            />
+            <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
           ) : view === 'UNITY' ? (
             <Unity
               frames={frames}
@@ -93,6 +92,7 @@ const Main = ({
               attributes={attributes}
               baseEntities={baseEntities}
               asks={asks}
+              setViewing={setViewing}
             />
           ) : (
             <Table

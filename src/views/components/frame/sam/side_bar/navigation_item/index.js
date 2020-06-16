@@ -19,6 +19,7 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
           button
           onClick={hasChildren ? () => setOpen( !open ) : () => setViewing({ code: questionCode })}
           className={classes.listItem}
+          color="inherit"
         >
           <ListItemText
             primary={name}
