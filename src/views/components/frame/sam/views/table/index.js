@@ -12,8 +12,6 @@ const TableView = ({ currentSearch, setViewing }) => {
     const columns = getColumns(table);
     const data = getData(table);
 
-    console.log(columns, data);
-
     return (
       <div>
         <Table
