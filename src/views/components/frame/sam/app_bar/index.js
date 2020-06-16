@@ -19,8 +19,6 @@ const MainAppBar = ({ setLoading, asks, user, setViewing, sidebarOpen, setSideba
 
   const fakePictureForDemo = path( ['attributes', 'PRI_IMAGE_URL', 'value'], user );
 
-  console.log( user );
-
   return (
     <div className={classes.grow}>
       <AppBar position="fixed">

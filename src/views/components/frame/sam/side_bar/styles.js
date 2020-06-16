@@ -12,6 +12,7 @@ const useStyles = makeStyles( theme => ({
   drawerPaper: {
     width: DRAWER_WIDTH,
     overflowY: 'scroll',
+    backgroundColor: ({ projectName }) => projectName === 'Safe Traffic Town' ? theme.palette.primary.main : theme.palette.background.paper
   },
   grow: {
     flexGrow: 1,
@@ -27,7 +28,7 @@ const useStyles = makeStyles( theme => ({
   },
   poweredName: {
     marginBottom: theme.spacing( 1 ),
-  },
+  }
 }));
 
 export default useStyles;

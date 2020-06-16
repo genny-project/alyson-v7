@@ -52,10 +52,11 @@ const internships = [
   createData( 'Completed (Internships)', 0 ),
 ];
 
-const Dashboard = () => {
+const Dashboard = ({ projectName }) => {
   const classes = useStyles();
 
   return (
+  projectName === 'Safe Traffic Town' ? <Typography>{`STT Dashboard`}</Typography> :
     <Paper className={classes.paperContainer}>
       <Typography className={classes.titleInterns}>
 Interns
