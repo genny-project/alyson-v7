@@ -23,7 +23,7 @@ function formatEnvironmentVariables( envVars ) {
 
 module.exports = env => {
   const plugins = [
-    new Dotenv({ path: '../.env' }),
+    new Dotenv({ path: './.env' }),
   ];
 
   if ( env ) {
