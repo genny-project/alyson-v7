@@ -45,7 +45,11 @@ const Item = ({ setViewing, item }) => {
 
   return (
     <ClickAwayListener onClickAway={() => setExpand(false)}>
-      <div onClick={() => setExpand(!expand)}>
+      <div
+        onClick={() => {
+          setExpand(!expand);
+        }}
+      >
         <Card className={classes.itemRoot}>
           <CardHeader
             avatar={<Avatar alt={name} src={profilePicture} className={classes.profilePicture} />}
@@ -56,20 +60,16 @@ const Item = ({ setViewing, item }) => {
                 aria-label="settings"
                 onClick={event => {
                   setMenu(event.currentTarget);
-                  event.preventDefault();
                 }}
               >
                 <MoreVertIcon />
               </IconButton>
             }
-            classes={{
-              content: classes.cardContent,
-            }}
           />
-          <Collapse in={expand}>
+          <Collapse in={expand && !menu}>
             <CardContent>
-              <Typography variant="body2">{`Student Id: ${studentId}`}</Typography>
-              <Typography variant="body2">{`Mobile: ${mobile}`}</Typography>
+              <Typography variant="body2">{`Student ID ${studentId || ''}`}</Typography>
+              <Typography variant="body2">{`Mobile ${mobile || ''}`}</Typography>
             </CardContent>
           </Collapse>
         </Card>
