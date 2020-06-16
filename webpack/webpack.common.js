@@ -12,9 +12,9 @@ const babelLoaderConfiguration = {
   test: /\.js$/,
   // Add every directory that needs to be compiled by Babel during the build.
   include: [
-    path.resolve( __dirname, 'web/index.js' ),
-    path.resolve( __dirname, 'src' ),
-    path.resolve( __dirname, 'node_modules/react-native-uncompiled' ),
+    path.resolve( __dirname, '../web/index.js' ),
+    path.resolve( __dirname, '../src' ),
+    path.resolve( __dirname, '../node_modules/react-native-uncompiled' ),
   ],
   use: {
     loader: 'babel-loader',
@@ -62,15 +62,15 @@ const styleLoaderConfiguration = {
 };
 
 module.exports = {
-  context: path.resolve( __dirname, 'src' ),
+  context: path.resolve( __dirname, '../src' ),
 
   // your web-specific entry file
-  entry: path.resolve( __dirname, 'web/index.js' ),
+  entry: path.resolve( __dirname, '../web/index.js' ),
 
   // configures where the build ends up
   output: {
-    filename: 'bundle.[hash].js',
-    path: path.resolve( __dirname, 'dist' ),
+    filename: 'index_bundle.js',
+    path: path.resolve( __dirname, '../dist' ),
     publicPath: '/',
   },
 
@@ -80,15 +80,9 @@ module.exports = {
     rules: [
       babelLoaderConfiguration,
       imageLoaderConfiguration,
-      styleLoaderConfiguration,
-      {
-        test: /\.txt$/i,
-        use: 'raw-loader',
-      },
-      {
-        test: /\.TextFile$/i,
-        use: 'raw-loader',
-      },
+      { test: /\.txt$/i, use: 'raw-loader'},
+      {test: /\.TextFile$/i,use: 'raw-loader'},
+      { test: /\.css$/, use: [ 'style-loader', 'css-loader' ]},
     ],
   },
 
@@ -108,8 +102,8 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         {
-          from: path.resolve( __dirname, 'public' ),
-          to: path.resolve( __dirname, 'dist' ),
+          from: path.resolve( __dirname, '../public' ),
+          to: path.resolve( __dirname, '../dist' ),
         },
       ]
     ),
@@ -124,7 +118,7 @@ module.exports = {
   node: {
     fs: 'empty',
   },
-
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   devServer: {
     port: process.env.PORT || 3000,
     contentBase: path.resolve( __dirname, 'dist' ),
