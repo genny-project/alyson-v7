@@ -21,7 +21,6 @@ import makeTheme from './helpers/make-theme';
 
 const Sam = ({
   projectName = '',
-  links = {},
   baseEntities = {},
   frames = {},
   asks = {},
@@ -29,13 +28,13 @@ const Sam = ({
   user = {},
   attributes = {},
   keycloak = {},
+  currentSearch,
 }) => {
   const googleApiKey = getGoogleApiKey(keycloak);
   const agency = getAgency(user);
   const agencyCompany = getAgencyCompany(agency)(baseEntities);
-  const backendViewing = getBackendViewing(frames);
 
-  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' });
+  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD' });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [staleTarget, setStaleTarget] = useState('');
@@ -118,10 +117,10 @@ const Sam = ({
           frames={frames}
           user={user}
           baseEntities={baseEntities}
-          links={links}
           googleApiKey={googleApiKey}
           attributes={attributes}
           projectName={projectName}
+          currentSearch={currentSearch}
         />
       </div>
     </ThemeProvider>
@@ -129,11 +128,10 @@ const Sam = ({
 };
 
 const mapStateToProps = state => ({
+  currentSearch: state.vertx.bulkMessage.SAM.active,
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
-  links: state.vertx.baseEntities.links,
   asks: state.vertx.asks,
-  themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
   user: state.vertx.user,
   vertx: state.vertx,

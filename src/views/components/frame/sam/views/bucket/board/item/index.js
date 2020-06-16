@@ -16,12 +16,21 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import useStyles from './styles';
 
-const Item = ({
-  setViewing,
-  item: { email, name, profilePicture, mobile, studentId, statusColor, targetCode },
-}) => {
+const Item = ({ setViewing, item }) => {
   const [menu, setMenu] = useState(null);
   const [expand, setExpand] = useState(false);
+
+  const {
+    PRI_ASSOC_EP,
+    PRI_EMAIL: email,
+    PRI_INDUSTRY: industry,
+    PRI_MOBILE: mobile,
+    PRI_NAME: name,
+    PRI_STATUS_COLOR: statusColor,
+    PRI_STUDENT_ID: studentId,
+    PRI_PROFILE_PICTURE_URL: profilePicture,
+    targetCode,
+  } = item;
 
   const classes = useStyles({ statusColor });
   const handleView = () =>
@@ -32,12 +41,14 @@ const Item = ({
       targetCode,
     });
 
+  const handleOnHold = () => {};
+
   return (
     <ClickAwayListener onClickAway={() => setExpand(false)}>
       <div onClick={() => setExpand(!expand)}>
         <Card className={classes.itemRoot}>
           <CardHeader
-            avatar={<Avatar alt={name} src={profilePicture} />}
+            avatar={<Avatar alt={name} src={profilePicture} className={classes.profilePicture} />}
             title={name}
             subheader={email}
             action={

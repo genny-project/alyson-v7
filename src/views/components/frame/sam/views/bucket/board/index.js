@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { map } from 'ramda';
+import { map, mapObjIndexed, values } from 'ramda';
 
 import { Grid } from '@material-ui/core';
 
@@ -23,7 +23,13 @@ const Board = ({ data: { lanes, meta }, setViewing }) => {
       wrap="nowrap"
     >
       {map(
-        ({ title, items, id }) => (
+        ({
+          metaData: {
+            SCH_TITLE: { value: title },
+          },
+          data: items,
+          searchCode: id,
+        }) => (
           <Grid item key={'lane' + id}>
             <Grid
               className={classes.lane}
@@ -38,18 +44,19 @@ const Board = ({ data: { lanes, meta }, setViewing }) => {
               <Grid item key={'colItem' + id}>
                 <ColumnHeader title={title} key={'colHeader' + id} />
               </Grid>
-              {map(
-                item => (
-                  <Grid item key={'gridItem' + id + item.email}>
-                    <Item
-                      item={item}
-                      setViewing={setViewing}
-                      key={'gridItemItem' + id + item.email}
-                    />
-                  </Grid>
-                ),
-                items
-              )}
+              {map(item =>
+                values(
+                  mapObjIndexed((val, key) => (
+                    <Grid item key={'gridItem' + key}>
+                      <Item
+                        item={{ ...val, targetCode: key }}
+                        setViewing={setViewing}
+                        key={'gridItemItem' + key}
+                      />
+                    </Grid>
+                  ))(item)
+                )
+              )(items)}
             </Grid>
           </Grid>
         ),

@@ -13,19 +13,19 @@ const Main = ({
   setViewing,
   baseEntities,
   asks,
-  links,
   frames,
   user,
   googleApiKey,
   loading,
   setLoading,
   projectName,
+  currentSearch,
 }) => {
   const classes = useStyles();
 
   const view = getView({ viewing, asks, frames });
 
-  console.warn('view', viewing);
+  console.warn('currentSearch', currentSearch);
 
   return (
     <div className={classes.root}>
@@ -60,7 +60,6 @@ const Main = ({
               asks={asks}
               baseEntities={baseEntities}
               attributes={attributes}
-              links={links}
               googleApiKey={googleApiKey}
               setViewing={setViewing}
               setLoading={setLoading}
@@ -71,7 +70,6 @@ const Main = ({
               asks={asks}
               baseEntities={baseEntities}
               attributes={attributes}
-              links={links}
               googleApiKey={googleApiKey}
               setViewing={setViewing}
               setLoading={setLoading}
@@ -88,20 +86,9 @@ const Main = ({
               viewing={viewing}
             />
           ) : view === 'BUCKET' ? (
-            <Bucket
-              attributes={attributes}
-              baseEntities={baseEntities}
-              asks={asks}
-              setViewing={setViewing}
-            />
+            <Bucket currentSearch={currentSearch} setViewing={setViewing} />
           ) : (
-            <Table
-              frames={frames}
-              attributes={attributes}
-              baseEntities={baseEntities}
-              asks={asks}
-              setViewing={setViewing}
-            />
+            <Table setViewing={setViewing} currentSearch={currentSearch} />
           )}
         </Paper>
       )}
