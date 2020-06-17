@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
-import { contains, prop, replace, has, pathOr } from 'ramda';
-import { connect } from 'react-redux';
-import { Bridge } from '../../../../utils/vertx/index';
+import { contains, prop, replace, has, pathOr } from 'ramda'
+import { connect } from 'react-redux'
+import { Bridge } from '../../../../utils/vertx/index'
 
-import { ThemeProvider } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core'
 
-import { getDrawerItems, getAppBarItems } from './helpers/get-components';
-import getAgency from './helpers/get-agency';
-import getAgencyCompany from './helpers/get-agency-company';
-import getBackendViewing from './helpers/get-backend-viewing';
+import { getDrawerItems, getAppBarItems } from './helpers/get-components'
+import getAgency from './helpers/get-agency'
+import getAgencyCompany from './helpers/get-agency-company'
+import getBackendViewing from './helpers/get-backend-viewing'
 
-import Sidebar from './side_bar';
-import AppBar from './app_bar';
-import Main from './main';
+import Sidebar from './side_bar'
+import AppBar from './app_bar'
+import Main from './main'
 
-import getDataForEvent from './helpers/get-data-for-event';
-import getGoogleApiKey from './helpers/get-google-api-key';
-import makeTheme from './helpers/make-theme';
+import getDataForEvent from './helpers/get-data-for-event'
+import getGoogleApiKey from './helpers/get-google-api-key'
+import makeTheme from './helpers/make-theme'
 
 const Sam = ({
   projectName = '',
@@ -30,18 +30,19 @@ const Sam = ({
   keycloak = {},
   currentSearch,
 }) => {
-  const googleApiKey = getGoogleApiKey(keycloak);
-  const agency = getAgency(user);
-  const agencyCompany = getAgencyCompany(agency)(baseEntities);
+  const googleApiKey = getGoogleApiKey(keycloak)
+  const agency = getAgency(user)
+  const agencyCompany = getAgencyCompany(agency)(baseEntities)
 
-  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD' });
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [staleTarget, setStaleTarget] = useState('');
+  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD' })
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [staleTarget, setStaleTarget] = useState('')
 
-  const dataForEvent = getDataForEvent(viewing, user);
+  const dataForEvent = getDataForEvent(viewing, user)
+  console.log(viewing)
 
-  const theme = makeTheme({ attributes, asks });
+  const theme = makeTheme({ attributes, asks })
 
   useEffect(
     () => {
@@ -50,12 +51,12 @@ const Sam = ({
           (viewing.parentCode && !has(viewing.targetCode, baseEntities)) ||
           viewing.code === 'QUE_TAB_BUCKET_VIEW'
         )
-          setLoading(true);
+          setLoading(true)
 
         if (contains('MENU', prop('code', viewing) || '')) {
           setStaleTarget(
-            prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {})
-          );
+            prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
+          )
         }
 
         Bridge.sendEvent({
@@ -63,11 +64,11 @@ const Sam = ({
           data: dataForEvent,
           eventType: 'BTN_CLICK',
           sendWithToken: true,
-        });
+        })
       }
     },
-    [viewing]
-  );
+    [viewing],
+  )
 
   useEffect(
     () => {
@@ -76,14 +77,14 @@ const Sam = ({
           prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
           staleTarget
         ) {
-          setLoading(false);
+          setLoading(false)
         }
       } else {
-        setLoading(false);
+        setLoading(false)
       }
     },
-    [asks, currentSearch]
-  );
+    [asks, currentSearch],
+  )
 
   return (
     <ThemeProvider theme={theme}>
@@ -128,8 +129,8 @@ const Sam = ({
         />
       </div>
     </ThemeProvider>
-  );
-};
+  )
+}
 
 const mapStateToProps = state => ({
   currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
@@ -140,6 +141,6 @@ const mapStateToProps = state => ({
   user: state.vertx.user,
   vertx: state.vertx,
   keycloak: state.keycloak,
-});
+})
 
-export default connect(mapStateToProps)(Sam);
+export default connect(mapStateToProps)(Sam)

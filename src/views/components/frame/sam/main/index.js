@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { prop } from 'ramda'
-import { Paper, Grid, Typography } from '@material-ui/core'
+import { prop, isEmpty } from 'ramda'
+import { Paper, Grid, Typography, DialogTitle, Dialog } from '@material-ui/core'
 
-import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views'
+import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm } from '../views'
 import getView from './helpers/get-view'
+import getApplication from './helpers/get-application'
 import useStyles from './styles'
 
 const Main = ({
@@ -24,9 +25,15 @@ const Main = ({
   const classes = useStyles()
 
   const view = getView({ viewing, asks, frames })
+  const application = getApplication(attributes)
+
+  console.log(currentSearch)
 
   return (
     <div className={classes.root}>
+      <Dialog open={false && !isEmpty(application || {})}>
+        <DialogForm form={application} />
+      </Dialog>
       {loading || !view ? (
         <Grid
           spacing={2}

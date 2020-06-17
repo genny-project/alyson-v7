@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -6,13 +6,6 @@ const useStyles = makeStyles(theme => ({
     overflowX: 'scroll',
     height: '100%',
   },
-  lane: {
-    backgroundColor: theme.palette.grey[100],
-    height: '100%',
-    borderRadius: theme.spacing(0.5),
-    width: theme.spacing(40),
-    overflowY: 'scroll',
-  },
-}));
+}))
 
-export default useStyles;
+export default useStyles

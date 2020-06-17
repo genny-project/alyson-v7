@@ -1,9 +1,9 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
   boardContainer: {
-    height: theme.spacing(80),
+    height: theme.spacing(90),
   },
-}));
+}))
 
-export default useStyles;
+export default useStyles

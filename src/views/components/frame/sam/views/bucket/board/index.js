@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { map, mapObjIndexed, values, any, includes } from 'ramda'
+import { map, any } from 'ramda'
 
 import { Grid } from '@material-ui/core'
 
-import ColumnHeader from './column_header'
-import Item from './item'
+import Lane from './lane'
 
 import useStyles from './styles'
 
@@ -33,35 +32,7 @@ const Board = ({ data: { lanes, meta }, setViewing }) => {
           searchCode: id,
         }) =>
           isBucket(id) ? (
-            <Grid item key={'lane' + id}>
-              <Grid
-                className={classes.lane}
-                container
-                direction="column"
-                justify="flex-start"
-                alignItems="center"
-                key={'column' + id}
-                spacing={1}
-                wrap="nowrap"
-              >
-                <Grid item key={'colItem' + id}>
-                  <ColumnHeader title={title} key={'colHeader' + id} />
-                </Grid>
-                {map(item =>
-                  values(
-                    mapObjIndexed((val, key) => (
-                      <Grid item key={'gridItem' + key}>
-                        <Item
-                          item={{ ...val, targetCode: key }}
-                          setViewing={setViewing}
-                          key={'gridItemItem' + key}
-                        />
-                      </Grid>
-                    ))(item),
-                  ),
-                )(items)}
-              </Grid>
-            </Grid>
+            <Lane key={'lane' + id} setViewing={setViewing} title={title} items={items} id={id} />
           ) : (
             <div key={id} />
           ),
