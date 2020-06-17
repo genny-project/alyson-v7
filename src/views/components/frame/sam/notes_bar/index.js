@@ -14,6 +14,7 @@ const Notes = () => {
       variant="temporary"
       anchor="right"
       className={classes.drawer}
+      classes={{ paper: classes.drawerPaper }}
       open={sidePanelOpen}
       onClose={toggleSidePanel}
       ModalProps={{ keepMounted: true }}
