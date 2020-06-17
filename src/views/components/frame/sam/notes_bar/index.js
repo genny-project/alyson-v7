@@ -2,17 +2,19 @@ import React from 'react';
 import { Drawer, Typography, Container, TextareaAutosize, Fab, Tooltip } from '@material-ui/core';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import useStyles from './styles';
+import SidePanelContext from '../contexts/sidePanel'
 
-const Notes = ({ open, setOpen }) => {
+const Notes = () => {
   const classes = useStyles();
+  const { sidePanelOpen, toggleSidePanel } = React.useContext(SidePanelContext)
 
   return (
     <Drawer
       variant="temporary"
       anchor="right"
       className={classes.drawer}
-      open={open}
-      onClose={() => setOpen( false )}
+      open={sidePanelOpen}
+      onClose={toggleSidePanel}
       ModalProps={{ keepMounted: true }}
     >
       <Container className={classes.header}>
@@ -37,7 +39,7 @@ const Notes = ({ open, setOpen }) => {
         >
           <Fab
             color="primary"
-            onClick={() => setOpen( !open )}
+            onClick={toggleSidePanel}
             className={classes.fab}
           >
             <ArrowForwardIosIcon color="inherit" />

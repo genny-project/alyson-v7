@@ -11,33 +11,43 @@ const ProfileMenu = ({
   userFullName,
   fakePictureForDemo,
 }) => {
-  const [menu, setMenu] = useState(null);
+  const [menu, setMenu] = useState( null );
 
   return (
     <div>
-      <IconButton onClick={event => setMenu(event.currentTarget)} color="inherit">
-        {fakePictureForDemo || (profilePictureURL && profilePictureURL.length) ? (
-          <Avatar alt={userFullName} src={fakePictureForDemo || profilePictureURL} />
+      <IconButton
+        onClick={event => setMenu( event.currentTarget )}
+        color="inherit"
+      >
+        {fakePictureForDemo || ( profilePictureURL && profilePictureURL.length ) ? (
+          <Avatar
+            alt={userFullName}
+            src={fakePictureForDemo || profilePictureURL}
+          />
         ) : (
           <AccountCircle />
         )}
       </IconButton>
-      <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
-        {map(item => (
+      <Menu
+        open={!!menu}
+        anchorEl={menu}
+        onClose={() => setMenu( null )}
+      >
+        {map( item => (
           <MenuItem
-            key={`menuItem${prop('questionCode', item)}`}
+            key={`menuItem${prop( 'questionCode', item )}`}
             onClick={() => {
-              setMenu(null);
+              setMenu( null );
               setViewing({
-                code: prop('questionCode', item),
+                code: prop( 'questionCode', item ),
                 parentCode,
-                targetCode: prop('targetCode', item),
+                targetCode: prop( 'targetCode', item ),
               });
             }}
           >
-            {prop('name', item || {})}
+            {prop( 'name', item || {})}
           </MenuItem>
-        ))(prop('childAsks', group) || [])}
+        ))( prop( 'childAsks', group ) || [] )}
       </Menu>
     </div>
   );

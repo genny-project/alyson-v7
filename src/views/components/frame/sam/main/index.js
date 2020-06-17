@@ -6,6 +6,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded';
 import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
 import getView from './helpers/get-view';
 import useStyles from './styles';
+import SidePanelContext from '../contexts/sidePanel'
 
 const Main = ({
   attributes,
@@ -20,14 +21,12 @@ const Main = ({
   loading,
   setLoading,
   projectName,
-  notebarOpen,
-  setNotebarOpen,
 }) => {
   const classes = useStyles();
 
   const view = getView({ viewing, asks, frames });
 
-  console.warn('view', viewing);
+  const { toggleSidePanel } = React.useContext(SidePanelContext)
 
   return (
     <div className={classes.root}>
@@ -79,7 +78,10 @@ const Main = ({
               setLoading={setLoading}
             />
           ) : view === 'DETAIL' ? (
-            <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
+            <Details
+attributes={attributes}
+targetCode={prop('targetCode', viewing)}
+            />
           ) : view === 'UNITY' ? (
             <Unity
               frames={frames}
@@ -112,7 +114,7 @@ const Main = ({
             >
               <Fab
                 color="primary"
-                onClick={() => setNotebarOpen( !notebarOpen )}
+                onClick={toggleSidePanel}
                 className={classes.fab}
               >
                 <ArrowBackIosIcon color="inherit" />
