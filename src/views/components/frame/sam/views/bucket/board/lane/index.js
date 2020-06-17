@@ -8,7 +8,8 @@ import Item from '../item'
 import useStyles from './styles'
 
 const Lane = ({ title, id, items, setViewing }) => {
-  const classes = useStyles({ expand: length(items) > 0 })
+  const [expand, setExpand] = useState(true)
+  const classes = useStyles({ expand: expand && length(items) > 0 })
   return (
     <Grid item key={'lane' + id}>
       <Grid
@@ -22,13 +23,14 @@ const Lane = ({ title, id, items, setViewing }) => {
         wrap="nowrap"
       >
         <Grid item key={'colItem' + id}>
-          <ColumnHeader title={title} key={'colHeader' + id} />
+          <ColumnHeader title={title} key={'colHeader' + id} itemsCount={length(items || [])} />
         </Grid>
         {map(item =>
           values(
             mapObjIndexed((val, key) => (
               <Grid item key={'gridItem' + key}>
                 <Item
+                  expandedColumn={expand && length(items) > 0}
                   item={{ ...val, targetCode: key }}
                   setViewing={setViewing}
                   key={'gridItemItem' + key}

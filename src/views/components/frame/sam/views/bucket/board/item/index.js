@@ -19,7 +19,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 import useStyles from './styles'
 
-const Item = ({ setViewing, item }) => {
+const Item = ({ setViewing, item, expandedColumn }) => {
   const [menu, setMenu] = useState(null)
   const [expand, setExpand] = useState(false)
 
@@ -54,7 +54,7 @@ const Item = ({ setViewing, item }) => {
 
   const handleOnHold = () => {}
 
-  return (
+  return expandedColumn ? (
     <ClickAwayListener onClickAway={() => setExpand(false)}>
       <div
         onClick={() => {
@@ -76,6 +76,10 @@ const Item = ({ setViewing, item }) => {
                 <MoreVertIcon />
               </IconButton>
             }
+            classes={{
+              title: classes.profileText,
+              subheader: classes.profileText,
+            }}
           />
           <Collapse in={expand && !menu}>
             <CardContent>
@@ -109,6 +113,10 @@ const Item = ({ setViewing, item }) => {
         )}
       </div>
     </ClickAwayListener>
+  ) : (
+    <Card>
+      <CardHeader subheader={name || internName} />
+    </Card>
   )
 }
 
