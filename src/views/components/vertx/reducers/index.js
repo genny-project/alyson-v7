@@ -7,6 +7,7 @@ import user from './user.reducer';
 import layouts from './layouts.reducer';
 import actionCache from './actionCache.reducer';
 import controls from './controls.reducer';
+import bulkMessage from './bulkMessage.reducer';
 
 const reducer = combineReducers({
   baseEntities,
@@ -17,6 +18,7 @@ const reducer = combineReducers({
   layouts,
   actionCache,
   controls,
+  bulkMessage,
 });
 
 export default reducer;

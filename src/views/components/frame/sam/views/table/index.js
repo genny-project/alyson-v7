@@ -1,18 +1,16 @@
 import React from 'react';
 import Table from 'material-table';
 
-import { path } from 'ramda';
-
-import { getColumns, getData, getTitle } from './helpers/get-table-data';
+import { getColumns, getData, getTitle, getTable } from './helpers/get-table-data';
 import getActionData from './helpers/get-action-data';
 
-const TableView = ({ attributes, asks, setViewing }) => {
-  const table = path(['QUE_TABLE_RESULTS_GRP', 'childAsks'], asks) || [];
+const TableView = ({ currentSearch, setViewing }) => {
+  const table = getTable(currentSearch);
 
-  if (table && table.length) {
+  if (table) {
     const title = getTitle(table);
-    const columns = getColumns({ table });
-    const data = getData({ table, attributes });
+    const columns = getColumns(table);
+    const data = getData(table);
 
     return (
       <div>
@@ -24,8 +22,7 @@ const TableView = ({ attributes, asks, setViewing }) => {
             {
               icon: 'visibility',
               tooltip: 'View',
-              onClick: (event, rowData) =>
-                setViewing(getActionData({ table, rowData, actionCode: 'PRI_EVENT_VIEW' })),
+              onClick: (event, rowData) => console.log(rowData),
             },
           ]}
           components={{

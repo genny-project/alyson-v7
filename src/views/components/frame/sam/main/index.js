@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-import { prop } from 'ramda';
-import { Paper, Grid, Typography } from '@material-ui/core';
+import { prop } from 'ramda'
+import { Paper, Grid, Typography } from '@material-ui/core'
 
-import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
-import getView from './helpers/get-view';
-import useStyles from './styles';
+import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views'
+import getView from './helpers/get-view'
+import useStyles from './styles'
 
 const Main = ({
   attributes,
@@ -13,19 +13,17 @@ const Main = ({
   setViewing,
   baseEntities,
   asks,
-  links,
   frames,
   user,
   googleApiKey,
   loading,
   setLoading,
   projectName,
+  currentSearch,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
-  const view = getView({ viewing, asks, frames });
-
-  console.warn('view', viewing);
+  const view = getView({ viewing, asks, frames })
 
   return (
     <div className={classes.root}>
@@ -60,7 +58,6 @@ const Main = ({
               asks={asks}
               baseEntities={baseEntities}
               attributes={attributes}
-              links={links}
               googleApiKey={googleApiKey}
               setViewing={setViewing}
               setLoading={setLoading}
@@ -71,7 +68,6 @@ const Main = ({
               asks={asks}
               baseEntities={baseEntities}
               attributes={attributes}
-              links={links}
               googleApiKey={googleApiKey}
               setViewing={setViewing}
               setLoading={setLoading}
@@ -88,25 +84,14 @@ const Main = ({
               viewing={viewing}
             />
           ) : view === 'BUCKET' ? (
-            <Bucket
-              attributes={attributes}
-              baseEntities={baseEntities}
-              asks={asks}
-              setViewing={setViewing}
-            />
+            <Bucket currentSearch={currentSearch} setViewing={setViewing} />
           ) : (
-            <Table
-              frames={frames}
-              attributes={attributes}
-              baseEntities={baseEntities}
-              asks={asks}
-              setViewing={setViewing}
-            />
+            <Table setViewing={setViewing} currentSearch={currentSearch} />
           )}
         </Paper>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Main;
+export default Main

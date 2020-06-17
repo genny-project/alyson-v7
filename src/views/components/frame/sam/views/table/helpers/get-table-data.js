@@ -1,46 +1,44 @@
-import { path, compose, head, prop, map, replace, tail, mergeAll, contains, filter } from 'ramda';
+import {
+  path,
+  compose,
+  pickBy,
+  prop,
+  map,
+  contains,
+  values,
+  sortBy,
+  head,
+  keys,
+  replace,
+  not,
+  isEmpty,
+} from 'ramda';
 
-const makeColumns = compose(
-  map(({ questionCode, name }) => ({
-    title: name,
-    field: replace('QUE_', '', questionCode || ''),
-  })) || [],
-  filter(({ attributeCode }) => !contains('PRI_EVENT', attributeCode)) || [],
-  prop('childAsks') || []
+const getTitle = path(['metaData', 'SCH_TITLE', 'value']);
+
+const getColumns = compose(
+  map(col => ({
+    ...col,
+    title: prop('attributeName', col),
+    field: replace('COL_', '', prop('attributeCode', col)),
+  })),
+  sortBy(prop('weight')),
+  values,
+  pickBy((val, key) => contains('COL_', key || '') && !contains('_EVENT_', key || '')),
+  prop('metaData')
 );
 
-const unnestIfNeeded = val => (typeof val === 'array' ? val[0] : val);
-
-const makeCell = attributes =>
-  compose(({ targetCode, attributeCode }) => ({
-    targetCode,
-    [attributeCode]: unnestIfNeeded(path([targetCode, attributeCode, 'value'], attributes || {})),
-  }));
-
-const makeRow = attributes =>
-  compose(
-    mergeAll,
-    map(makeCell(attributes || {})) || [],
-    prop('childAsks') || []
-  );
-
-const makeRows = attributes => compose(map(makeRow(attributes)));
-
-const getTitle = compose(
-  prop('name'),
-  head
+const getData = compose(
+  map(row => ({ targetCode: head(keys(row)), ...prop(head(keys(row)), row) })),
+  prop('data')
 );
 
-const getColumns = ({ table }) =>
-  compose(
-    makeColumns,
-    head || {}
-  )(table || []);
+const getTable = currentSearch =>
+  not(isEmpty(currentSearch))
+    ? {
+        searchCode: head(keys(currentSearch)),
+        ...prop(head(keys(currentSearch)), currentSearch),
+      }
+    : false;
 
-const getData = ({ table, attributes }) =>
-  compose(
-    makeRows(attributes || []),
-    tail || []
-  )(table || []);
-
-export { getTitle, getColumns, getData };
+export { getTitle, getColumns, getData, getTable };

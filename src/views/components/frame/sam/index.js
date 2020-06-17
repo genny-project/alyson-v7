@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { contains, prop, replace } from 'ramda';
+import { contains, prop, replace, has, pathOr } from 'ramda';
 import { connect } from 'react-redux';
 import { Bridge } from '../../../../utils/vertx/index';
 
@@ -21,7 +21,6 @@ import makeTheme from './helpers/make-theme';
 
 const Sam = ({
   projectName = '',
-  links = {},
   baseEntities = {},
   frames = {},
   asks = {},
@@ -29,13 +28,13 @@ const Sam = ({
   user = {},
   attributes = {},
   keycloak = {},
+  currentSearch,
 }) => {
   const googleApiKey = getGoogleApiKey(keycloak);
   const agency = getAgency(user);
   const agencyCompany = getAgencyCompany(agency)(baseEntities);
-  const backendViewing = getBackendViewing(frames);
 
-  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' });
+  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD' });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [staleTarget, setStaleTarget] = useState('');
@@ -47,7 +46,11 @@ const Sam = ({
   useEffect(
     () => {
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
-        // if (viewing.parentCode) setLoading(true);
+        if (
+          (viewing.parentCode && !has(viewing.targetCode, baseEntities)) ||
+          viewing.code === 'QUE_TAB_BUCKET_VIEW'
+        )
+          setLoading(true);
 
         if (contains('MENU', prop('code', viewing) || '')) {
           setStaleTarget(
@@ -79,7 +82,7 @@ const Sam = ({
         setLoading(false);
       }
     },
-    [asks]
+    [asks, currentSearch]
   );
 
   return (
@@ -118,10 +121,10 @@ const Sam = ({
           frames={frames}
           user={user}
           baseEntities={baseEntities}
-          links={links}
           googleApiKey={googleApiKey}
           attributes={attributes}
           projectName={projectName}
+          currentSearch={currentSearch}
         />
       </div>
     </ThemeProvider>
@@ -129,11 +132,10 @@ const Sam = ({
 };
 
 const mapStateToProps = state => ({
+  currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
-  links: state.vertx.baseEntities.links,
   asks: state.vertx.asks,
-  themes: state.vertx.layouts.themes,
   frames: state.vertx.layouts.frames,
   user: state.vertx.user,
   vertx: state.vertx,

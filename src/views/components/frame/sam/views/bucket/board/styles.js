@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.grey[100],
     height: '100%',
     borderRadius: theme.spacing(0.5),
-    width: theme.spacing(34),
+    width: theme.spacing(40),
     overflowY: 'scroll',
   },
 }));
