@@ -11,6 +11,7 @@ import {
   getTable,
   getActions,
   getIcon,
+  makeActionData,
 } from './helpers/get-table-data'
 
 import useStyles from './styles'
@@ -35,7 +36,8 @@ const TableView = ({ currentSearch, setViewing }) => {
           actions={map(({ attributeCode, attributeName, baseEntityCode }) => ({
             icon: getIcon(attributeName),
             tooltip: attributeName,
-            onClick: ({ targetCode }) => () => setViewing({ targetCode, code: attributeCode }),
+            onClick: ({ targetCode }) => () =>
+              setViewing(makeActionData({ targetCode, attributeCode, baseEntityCode })),
           }))(actions)}
           components={{
             Container: props => <div>{props.children}</div>,

@@ -60,4 +60,10 @@ const icons = {
 }
 const getIcon = name => prop(name, icons)
 
-export { getTitle, getColumns, getData, getTable, getActions, getIcon }
+const makeActionData = ({ attributeCode, targetCode }) => ({
+  rootCode: 'QUE_TABLE_RESULTS_GRP',
+  code: `${attributeCode}_${targetCode}`,
+  parentCode: `QUE_${targetCode}_GRP`,
+  targetCode,
+})
+export { getTitle, getColumns, getData, getTable, getActions, getIcon, makeActionData }
