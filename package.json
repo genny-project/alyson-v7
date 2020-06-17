@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "get-git-info": "git rev-parse --abbrev-ref HEAD > src/static/git-info-branch.txt; git rev-parse HEAD > src/static/git-info-commit.txt; git log -1 --format=%cd > src/static/git-info-date.txt",
-    "start:web": "npm run get-git-info && ./node_modules/.bin/webpack-dev-server -d --config ./webpack.dev.js --inline --hot --colors",
-    "build:web": "npm run get-git-info && ./node_modules/.bin/webpack -p --config ./webpack.prod.js",
+    "start": "npm run get-git-info && webpack-dev-server --config ./webpack/webpack.dev.js --inline --hot --colors",
+    "build": "npm run get-git-info && NODE_ENV='production' webpack -p --config ./webpack/webpack.prod.js",
     "test": "jest",
-    "clear-cache:web": "rm -rf ./node_modules/.cache/babel-loader/*",
+    "clear-cache": "rm -rf ./node_modules/.cache/babel-loader/*",
     "lint": "eslint --fix ."
   },
   "dependencies": {
@@ -134,18 +134,19 @@
     "zstd-codec": "^0.1.1"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
+    "babel-eslint": "^8.2.5",
     "babel-jest": "23.2.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "copy-webpack-plugin": "^5.0.4",
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.21.2",
-    "eslint-plugin-react": "^7.20.0",
-    "eslint-plugin-react-hooks": "^4.0.4",
-    "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
+    "eslint": "^5.0.1",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.10.0",
+    "prettier": "^1.13.7",
+    "prettier-bytes": "^1.0.4",
+    "prettier-eslint": "^8.8.2",
+    "prettier-eslint-cli": "^4.7.1",
     "react-test-renderer": "16.3.1",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-merge": "^4.1.4"
