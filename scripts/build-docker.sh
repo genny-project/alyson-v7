@@ -12,7 +12,7 @@ fi
 # build docker imges
 echo "Git branch:" "${branch}"
 echo "Last git commit hash:" "${commit_hash}"
-docker build -t gennyproject/${project}:"${version}" -f ../Dockerfile .
+docker build -t gennyproject/${project}:"${version}" -f ../Dockerfile ..
 
 #clean up
 image_ids=$(docker images | grep ${project} | grep none)
