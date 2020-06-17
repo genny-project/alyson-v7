@@ -24,6 +24,10 @@ const useStyles = makeStyles( theme => ({
   loadingContainer: {
     marginTop: theme.spacing( 10 ),
     width: '100%',
+  },fab: {
+    position: 'fixed',
+    bottom: theme.spacing( 4 ),
+    right: theme.spacing( 1 ),
   },
 }));
 
