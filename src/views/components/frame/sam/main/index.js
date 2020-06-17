@@ -27,7 +27,7 @@ const Main = ({
   const view = getView({ viewing, asks, frames })
   const application = getApplication(attributes)
 
-  console.log(currentSearch)
+  console.log(currentSearch, 'git')
 
   return (
     <div className={classes.root}>
