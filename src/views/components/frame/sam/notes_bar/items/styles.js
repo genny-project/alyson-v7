@@ -4,15 +4,8 @@ const DRAWER_WIDTH = 180;
 const APP_BAR_HEIGHT = 64;
 
 const useStyles = makeStyles( theme => ({
-  drawer: {
-    width: DRAWER_WIDTH,
-    flexShrink: 0,
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  footer: {
-    marginBottom: theme.spacing( 1 ),
+  header: {
+    paddingTop: theme.spacing( 1 ),
   },
 }));
 
