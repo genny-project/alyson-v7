@@ -1,16 +1,18 @@
-import React from 'react';
+import React from 'react'
 
-import { map, mapObjIndexed, values } from 'ramda';
+import { map, mapObjIndexed, values, any, includes } from 'ramda'
 
-import { Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core'
 
-import ColumnHeader from './column_header';
-import Item from './item';
+import ColumnHeader from './column_header'
+import Item from './item'
 
-import useStyles from './styles';
+import useStyles from './styles'
+
+const isBucket = key => any(test => key.indexOf(test) >= 0)(['APPLICATIONS', 'AVAILABLE_INTERNS'])
 
 const Board = ({ data: { lanes, meta }, setViewing }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Grid
@@ -29,41 +31,44 @@ const Board = ({ data: { lanes, meta }, setViewing }) => {
           },
           data: items,
           searchCode: id,
-        }) => (
-          <Grid item key={'lane' + id}>
-            <Grid
-              className={classes.lane}
-              container
-              direction="column"
-              justify="flex-start"
-              alignItems="center"
-              key={'column' + id}
-              spacing={1}
-              wrap="nowrap"
-            >
-              <Grid item key={'colItem' + id}>
-                <ColumnHeader title={title} key={'colHeader' + id} />
+        }) =>
+          isBucket(id) ? (
+            <Grid item key={'lane' + id}>
+              <Grid
+                className={classes.lane}
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="center"
+                key={'column' + id}
+                spacing={1}
+                wrap="nowrap"
+              >
+                <Grid item key={'colItem' + id}>
+                  <ColumnHeader title={title} key={'colHeader' + id} />
+                </Grid>
+                {map(item =>
+                  values(
+                    mapObjIndexed((val, key) => (
+                      <Grid item key={'gridItem' + key}>
+                        <Item
+                          item={{ ...val, targetCode: key }}
+                          setViewing={setViewing}
+                          key={'gridItemItem' + key}
+                        />
+                      </Grid>
+                    ))(item),
+                  ),
+                )(items)}
               </Grid>
-              {map(item =>
-                values(
-                  mapObjIndexed((val, key) => (
-                    <Grid item key={'gridItem' + key}>
-                      <Item
-                        item={{ ...val, targetCode: key }}
-                        setViewing={setViewing}
-                        key={'gridItemItem' + key}
-                      />
-                    </Grid>
-                  ))(item)
-                )
-              )(items)}
             </Grid>
-          </Grid>
-        ),
-        lanes || []
+          ) : (
+            <div key={id} />
+          ),
+        lanes || [],
       )}
     </Grid>
-  );
-};
+  )
+}
 
-export default Board;
+export default Board

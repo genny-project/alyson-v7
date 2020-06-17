@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-import { prop } from 'ramda';
-import { Paper, Grid, Typography } from '@material-ui/core';
+import { prop } from 'ramda'
+import { Paper, Grid, Typography } from '@material-ui/core'
 
-import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
-import getView from './helpers/get-view';
-import useStyles from './styles';
+import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views'
+import getView from './helpers/get-view'
+import useStyles from './styles'
 
 const Main = ({
   attributes,
@@ -21,11 +21,9 @@ const Main = ({
   projectName,
   currentSearch,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
-  const view = getView({ viewing, asks, frames });
-
-  console.warn('currentSearch', currentSearch);
+  const view = getView({ viewing, asks, frames })
 
   return (
     <div className={classes.root}>
@@ -93,7 +91,7 @@ const Main = ({
         </Paper>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Main;
+export default Main

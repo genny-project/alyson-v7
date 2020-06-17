@@ -1,22 +1,36 @@
-import { compose, map, prop, filter, has, mergeAll, mapObjIndexed, not, pathOr } from 'ramda';
+import {
+  compose,
+  map,
+  prop,
+  filter,
+  has,
+  mergeAll,
+  mapObjIndexed,
+  not,
+  pathOr,
+  head,
+  keys,
+  any,
+} from 'ramda'
 
-const initialState = { SAM: { active: {}, cached: {} } };
+const initialState = { SAM: { active: {}, cached: {} } }
 
 const mapAndMergeAll = mapper =>
   compose(
     mergeAll,
-    map(mapper)
-  );
+    map(mapper),
+  )
 
 const isMetaData = compose(
   not,
-  has('parentCode')
-);
+  has('parentCode'),
+)
+
 const reducer = (state = initialState, { type, payload }) => {
   if (type === 'SAM_MSG') {
-    const messages = prop('messages', payload) || [];
-    const dataMessages = filter(has('parentCode'), messages);
-    const metaDataMessages = filter(isMetaData, messages);
+    const messages = prop('messages', payload) || []
+    const dataMessages = filter(has('parentCode'), messages)
+    const metaDataMessages = filter(isMetaData, messages)
 
     const data = mapAndMergeAll(({ parentCode, items }) => ({
       [parentCode]: {
@@ -28,7 +42,7 @@ const reducer = (state = initialState, { type, payload }) => {
           },
         }))(items),
       },
-    }))(dataMessages);
+    }))(dataMessages)
 
     const metaData = mapAndMergeAll(({ items }) => ({
       ...mapAndMergeAll(({ code, baseEntityAttributes }) => ({
@@ -38,28 +52,47 @@ const reducer = (state = initialState, { type, payload }) => {
           }))(baseEntityAttributes),
         },
       }))(items),
-    }))(metaDataMessages);
+    }))(metaDataMessages)
 
     const fullData = mapObjIndexed((val, key) => ({
       ...val,
       metaData: { ...(prop(key, metaData) || {}) },
-    }))(data);
+    }))(data)
 
+    const key = head(keys(fullData))
+
+    const isBucket = key =>
+      any(test => key.indexOf(test) >= 0)(['APPLICATIONS', 'AVAILABLE_INTERNS'])
+
+    if (!isBucket(key)) {
+      return {
+        ...state,
+        ...{
+          SAM: {
+            active: { ...fullData },
+            cached: {
+              ...pathOr({}, ['SAM', 'cached'], state),
+              ...pathOr({}, ['SAM', 'active'], state),
+            },
+          },
+        },
+      }
+    }
     return {
       ...state,
       ...{
         SAM: {
-          active: { ...fullData },
+          active: { ...pathOr({}, ['SAM', 'active'], state), ...fullData },
           cached: {
             ...pathOr({}, ['SAM', 'cached'], state),
             ...pathOr({}, ['SAM', 'active'], state),
           },
         },
       },
-    };
+    }
   } else {
-    return state || {};
+    return state || {}
   }
-};
+}
 
-export default reducer;
+export default reducer

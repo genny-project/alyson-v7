@@ -1,38 +1,25 @@
-import React, { useState } from 'react';
-import { prop, path, toUpper, contains, map, keys } from 'ramda';
+import React, { useState } from 'react'
+import { prop, path, toUpper, contains, map, keys, values } from 'ramda'
 
-import { Grid, Typography, Avatar } from '@material-ui/core';
-import { Rating } from '@material-ui/lab';
-import { format, parseISO } from 'date-fns';
-import useStyles from './styles';
+import { Grid, Typography, Avatar } from '@material-ui/core'
+import { Rating } from '@material-ui/lab'
+import { format, parseISO } from 'date-fns'
+import useStyles from './styles'
 
-const RowItem = ({ type, label, code, classes, print, rating, setRating }) => (
+const RowItem = ({ key, label, value, code, rating, setRating, classes, type }) => (
   <Grid item>
-    <Grid
-      container
-      direction="row"
-    >
-      <Typography className={classes.label}>
-        {label}
-      </Typography>
+    <Grid container direction="row">
+      <Typography className={classes.label}>{label}</Typography>
       {type === 'rating' ? (
-        <Rating
-          name="rating"
-          value={rating}
-          onChange={( event, newValue ) => setRating( newValue )}
-        />
+        <Rating name="rating" value={rating} onChange={(event, newValue) => setRating(newValue)} />
       ) : type === 'time' ? (
-        <Typography>
-          {`${format( parseISO( print( code )), 'h:mm a' )}`}
-        </Typography>
+        <Typography>{`${format(parseISO(value), 'h:mm a')}`}</Typography>
       ) : (
-        <Typography>
-          {print( code )}
-        </Typography>
+        <Typography>{value}</Typography>
       )}
     </Grid>
   </Grid>
-);
+)
 
 // TODO: Backend should send us the correct detail view specs
 
@@ -47,7 +34,7 @@ const printIntern = [
   { label: 'Transport Options', code: 'transport_options' },
   { label: 'Region', code: 'region' },
   { label: 'Next Scheduled Interview', code: 'next_interview' },
-];
+]
 
 const printBeg = [
   { label: 'Host Company', code: 'assoc_hc' },
@@ -61,7 +48,7 @@ const printBeg = [
   { label: 'Days Per Week', code: 'days_per_week' },
   { label: 'Duration', code: 'assoc_internship_duration' },
   { label: 'Number of Interns', code: 'assoc_num_interns' },
-];
+]
 
 const printCpy = [
   { label: 'ABN', code: 'abn' },
@@ -69,95 +56,74 @@ const printCpy = [
   { label: 'Company Phone', code: 'landline' },
   { label: 'Decription', code: 'company_description' },
   { label: 'Website', code: 'company_website_url' },
-];
+]
 
 const printHcr = [
   { label: 'Job Title', code: 'job_title' },
   { label: 'Mobile', code: 'mobile' },
   { label: 'Linkedin', code: 'linkedin_url' },
-];
+]
 
 const Details = ({ attributes, targetCode }) => {
-  const detailView = prop( targetCode, attributes );
+  const detailView = prop(targetCode, attributes)
 
-  const print = prop => path( [`PRI_${toUpper( prop || '' )}`, 'value'], detailView ) || '';
+  const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
 
-  const detailType = contains( 'PRI_STATUS', keys( detailView ))
+  const detailType = contains('PRI_STATUS', keys(detailView))
     ? printIntern
-    : contains( 'PRI_START_DATE', keys( detailView ))
+    : contains('PRI_START_DATE', keys(detailView))
       ? printBeg
-      : contains( 'LNK_HOST_COMPANY_REP', keys( detailView ))
+      : contains('LNK_HOST_COMPANY_REP', keys(detailView))
         ? printHcr
-        : contains( 'PRI_ABN' )
+        : contains('PRI_ABN')
           ? printCpy
-          : [];
+          : []
 
-  const [rating, setRating] = useState( 0 );
-  const classes = useStyles();
+  const [rating, setRating] = useState(0)
+  const classes = useStyles()
 
   console.log(detailView)
 
+  const details = values(detailView)
+
   return (
-    <Grid
-      container
-      direction="column"
-      spacing={4}
-      className={classes.detailsContainer}
-    >
+    <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
       <Grid item>
-        <Typography variant="h5">
-          {print( 'name' )}
-        </Typography>
+        <Typography variant="h5">{print('name')}</Typography>
       </Grid>
       <Grid item>
-        <Grid
-          container
-          direction="row"
-          spacing={2}
-          alignItems="center"
-        >
+        <Grid container direction="row" spacing={2} alignItems="center">
           <Grid item>
-            <Avatar
-              alt={print( 'name' )}
-              src={print( 'user_profile_picture' )}
-            />
+            <Avatar alt={print('name')} src={print('user_profile_picture')} />
           </Grid>
           <Grid item>
-            <Grid
-              container
-              direction="column"
-            >
+            <Grid container direction="column">
               <Grid item>
-                <Typography>
-                  {print( 'address_full' )}
-                </Typography>
+                <Typography>{print('address_full')}</Typography>
               </Grid>
               <Grid item>
-                <Typography>
-                  {`${print( 'email' )}`}
-                </Typography>
+                <Typography>{`${print('email')}`}</Typography>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
       {map(
-        ({ label, code, type }) => (
+        ({ valueString, attributeName, attributeCode }) => (
           <RowItem
-            key={code}
-            label={label}
-            code={code}
-            print={print}
+            key={attributeCode}
+            label={attributeName}
+            value={valueString}
+            code={attributeCode}
             rating={rating}
             setRating={setRating}
             classes={classes}
-            type={type}
           />
         ),
-        detailType
+        details,
       )}
     </Grid>
-  );
-};
+  )
+}
 
-export default Details;
+export default Details
