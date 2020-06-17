@@ -3,7 +3,7 @@ import Table from 'material-table'
 import { Icon, Grid, Tooltip } from '@material-ui/core'
 import MoreIcon from '@material-ui/icons/MoreHoriz'
 
-import { map, prop } from 'ramda'
+import { map, length } from 'ramda'
 import {
   getColumns,
   getData,
@@ -43,33 +43,57 @@ const TableView = ({ currentSearch, setViewing }) => {
               const [show, setShow] = useState(false)
 
               const { targetCode } = data || {}
-              return (
-                <div onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
-                  <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
-                    {show ? (
-                      map(
-                        ({ icon, onClick, tooltip }) => (
-                          <Grid item key={'gridActions' + icon}>
-                            <Tooltip title={tooltip} key={'tooltipActions' + icon}>
-                              <Icon
-                                color="action"
-                                key={'iconActions' + icon}
-                                className={classes.button}
-                                onClick={onClick({ targetCode })}
-                              >
-                                {icon}
-                              </Icon>
-                            </Tooltip>
-                          </Grid>
-                        ),
-                        actions || [],
-                      )
-                    ) : (
-                      <MoreIcon color="action" className={classes.moreIcon} />
-                    )}
-                  </Grid>
-                </div>
-              )
+
+              if (length(actions)) {
+                return length(actions) === 1 ? (
+                  map(({ icon, onClick, tooltip }) => (
+                    <Tooltip title={tooltip} key={'tooltipActions' + icon}>
+                      <Icon
+                        color="action"
+                        key={'iconActions' + icon}
+                        className={classes.button}
+                        onClick={onClick({ targetCode })}
+                      >
+                        {icon}
+                      </Icon>
+                    </Tooltip>
+                  ))(actions)
+                ) : (
+                  <div onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+                    <Grid
+                      container
+                      direction="row"
+                      justify="center"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      {show ? (
+                        map(
+                          ({ icon, onClick, tooltip }) => (
+                            <Grid item key={'gridActions' + icon}>
+                              <Tooltip title={tooltip} key={'tooltipActions' + icon}>
+                                <Icon
+                                  color="action"
+                                  key={'iconActions' + icon}
+                                  className={classes.button}
+                                  onClick={onClick({ targetCode })}
+                                >
+                                  {icon}
+                                </Icon>
+                              </Tooltip>
+                            </Grid>
+                          ),
+                          actions || [],
+                        )
+                      ) : (
+                        <MoreIcon color="action" className={classes.moreIcon} />
+                      )}
+                    </Grid>
+                  </div>
+                )
+              } else {
+                return <div />
+              }
             },
           }}
         />

@@ -5,6 +5,7 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       color: theme.palette.primary.light,
     },
+    cursor: 'pointer',
   },
   moreIcon: {
     padding: theme.spacing(2),
