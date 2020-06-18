@@ -1,5 +1,5 @@
 // import React from 'react';
-import * as Pages from '../../views/pages'
+import * as Pages from '../../app/views/pages'
 
 const routes = [
   {
