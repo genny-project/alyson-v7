@@ -5,9 +5,9 @@ import { not, path } from 'ramda'
 import { Grid, LinearProgress, Typography } from '@material-ui/core'
 
 import { storeQuery, setTitle } from '../../../utils'
-import getAppIsLoaded from './sam/helpers/get-app-is-loaded'
+import getAppIsLoaded from './Main/helpers/get-app-is-loaded'
 
-import Sam from './sam'
+import Main from './Main'
 
 import useStyles from './styles'
 
@@ -44,7 +44,7 @@ const Frame = props => {
     )
   }
 
-  return <Sam {...props} projectName={projectName} />
+  return <Main {...props} projectName={projectName} />
 }
 
 export { Frame }
