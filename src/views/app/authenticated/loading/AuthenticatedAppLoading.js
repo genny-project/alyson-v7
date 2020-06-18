@@ -1,22 +1,6 @@
-import React from 'react';
-import { ActivityIndicator } from 'react-native';
-import { Box, Text } from '../../../components';
+import React from 'react'
+import { CircularProgress } from '@material-ui/core'
 
-const AuthenticatedAppLoading = () => ( // eslint-disable-line no-unused-vars
-  <Box
-    justifyContent="center"
-    alignItems="center"
-    flex={1}
-    flexDirection="column"
-  >
-    <ActivityIndicator size="large" />
+const AuthenticatedAppLoading = () => <CircularProgress />
 
-    <Box height={20} />
-
-    <Text align="center">
-        Loading authentication...
-    </Text>
-  </Box>
-);
-
-export default AuthenticatedAppLoading;
+export default AuthenticatedAppLoading

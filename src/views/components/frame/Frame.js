@@ -1,29 +1,29 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from 'react'
+import { connect } from 'react-redux'
 
-import { not, path } from 'ramda';
-import { Grid, LinearProgress, Typography } from '@material-ui/core';
+import { not, path } from 'ramda'
+import { Grid, LinearProgress, Typography } from '@material-ui/core'
 
-import { storeQuery, setTitle } from '../../../utils';
-import getAppIsLoaded from './sam/helpers/get-app-is-loaded';
+import { storeQuery, setTitle } from '../../../utils'
+import getAppIsLoaded from './sam/helpers/get-app-is-loaded'
 
-import Sam from './sam';
+import Sam from './sam'
 
-import useStyles from './styles';
+import useStyles from './styles'
 
 const Frame = props => {
-  const { rootCode, frames, asks, attributes } = props;
+  const { rootCode, frames, asks, attributes } = props
 
-  const rootFrame = frames[rootCode];
+  const rootFrame = frames[rootCode]
 
-  const projectAttributes = storeQuery.getProjectAttributes();
-  const projectName = path( ['PRI_NAME', 'value'], projectAttributes || {});
+  const projectAttributes = storeQuery.getProjectAttributes()
+  const projectName = path(['PRI_NAME', 'value'], projectAttributes || {})
 
-  setTitle( projectName );
+  setTitle(projectName)
 
-  const classes = useStyles();
+  const classes = useStyles()
 
-  if ( not( getAppIsLoaded({ attributes, asks, rootFrame }))) {
+  if (not(getAppIsLoaded({ attributes, asks, rootFrame }))) {
     return (
       <div className={classes.rootLoadingContainer}>
         <LinearProgress />
@@ -41,13 +41,13 @@ const Frame = props => {
           </Grid>
         </Grid>
       </div>
-    );
+    )
   }
 
-  return <Sam {...props} projectName={ projectName }/>;
-};
+  return <Sam {...props} projectName={projectName} />
+}
 
-export { Frame };
+export { Frame }
 
 const mapStateToProps = state => ({
   baseEntities: state.vertx.baseEntities.data,
@@ -56,6 +56,6 @@ const mapStateToProps = state => ({
   frames: state.vertx.layouts.frames,
   vertx: state.vertx.layouts,
   attributes: state.vertx.baseEntities.attributes,
-});
+})
 
-export default connect( mapStateToProps )( Frame );
+export default connect(mapStateToProps)(Frame)
