@@ -10,7 +10,7 @@ import useStyles from './styles'
 
 const isBucket = key => any(test => key.indexOf(test) >= 0)(['APPLICATIONS', 'AVAILABLE_INTERNS'])
 
-const Board = ({ data: { lanes, meta }, setViewing }) => {
+const Board = ({ data: { lanes, meta }, setViewing, current, setCurrent, refreshBuckets }) => {
   const classes = useStyles()
 
   return (
@@ -32,7 +32,16 @@ const Board = ({ data: { lanes, meta }, setViewing }) => {
           searchCode: id,
         }) =>
           isBucket(id) ? (
-            <Lane key={'lane' + id} setViewing={setViewing} title={title} items={items} id={id} />
+            <Lane
+              key={'lane' + id}
+              refreshBuckets={refreshBuckets}
+              current={current}
+              setCurrent={setCurrent}
+              setViewing={setViewing}
+              title={title}
+              items={items}
+              id={id}
+            />
           ) : (
             <div key={id} />
           ),
