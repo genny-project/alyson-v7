@@ -61,8 +61,7 @@ const reducer = (state = initialState, { type, payload }) => {
 
     const key = head(keys(fullData))
 
-    const isBucket = key =>
-      any(test => key.indexOf(test) >= 0)(['APPLICATIONS', 'AVAILABLE_INTERNS'])
+    const isBucket = key => any(test => key.indexOf(test) >= 0)(['APPLICATIONS'])
 
     if (!isBucket(key)) {
       return {

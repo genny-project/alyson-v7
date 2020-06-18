@@ -35,12 +35,12 @@ const Sam = ({
   const agencyCompany = getAgencyCompany(agency)(baseEntities)
 
   const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD' })
+  const [dialogContent, setDialogContent] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [staleTarget, setStaleTarget] = useState('')
 
   const dataForEvent = getDataForEvent(viewing, user)
-  console.log(viewing)
 
   const theme = makeTheme({ attributes, asks })
 
@@ -81,6 +81,7 @@ const Sam = ({
         }
       } else {
         setLoading(false)
+        setDialogContent(null)
       }
     },
     [asks, currentSearch],
@@ -126,6 +127,8 @@ const Sam = ({
           attributes={attributes}
           projectName={projectName}
           currentSearch={currentSearch}
+          dialogContent={dialogContent}
+          setDialogContent={setDialogContent}
         />
       </div>
     </ThemeProvider>

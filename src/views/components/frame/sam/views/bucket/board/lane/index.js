@@ -7,7 +7,7 @@ import Item from '../item'
 
 import useStyles from './styles'
 
-const Lane = ({ title, id, items, setViewing }) => {
+const Lane = ({ title, id, items, setViewing, refreshBuckets, current, setCurrent }) => {
   const [expand, setExpand] = useState(true)
   const classes = useStyles({ expand: expand && length(items) > 0 })
   return (
@@ -33,7 +33,11 @@ const Lane = ({ title, id, items, setViewing }) => {
                   expandedColumn={expand && length(items) > 0}
                   item={{ ...val, targetCode: key }}
                   setViewing={setViewing}
+                  column={title}
                   key={'gridItemItem' + key}
+                  refreshBuckets={refreshBuckets}
+                  current={current}
+                  setCurrent={setCurrent}
                 />
               </Grid>
             ))(item),

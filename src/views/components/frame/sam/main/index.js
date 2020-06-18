@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { prop, isEmpty } from 'ramda'
 import { Paper, Grid, Typography, DialogTitle, Dialog } from '@material-ui/core'
@@ -21,18 +21,44 @@ const Main = ({
   setLoading,
   projectName,
   currentSearch,
+  dialogContent,
+  setDialogContent,
 }) => {
   const classes = useStyles()
+
+  console.log(viewing)
 
   const view = getView({ viewing, asks, frames })
   const application = getApplication(attributes)
 
-  console.log(currentSearch, 'git')
+  const [current, setCurrent] = useState({})
+
+  useEffect(
+    () => {
+      if (
+        !dialogContent &&
+        !!application &&
+        dialogContent !== 'closed' &&
+        prop('QUE_ADD_APPLICATION_GRP', asks)
+      ) {
+        setDialogContent(application)
+      }
+    },
+    [application, dialogContent],
+  )
 
   return (
     <div className={classes.root}>
-      <Dialog open={false && !isEmpty(application || {})}>
-        <DialogForm form={application} />
+      <Dialog open={dialogContent !== 'closed' && !!dialogContent}>
+        <DialogForm
+          form={prop('QUE_ADD_APPLICATION_GRP', asks)}
+          asks={asks}
+          baseEntities={baseEntities}
+          attributes={attributes}
+          googleApiKey={googleApiKey}
+          setViewing={setViewing}
+          setLoading={setLoading}
+        />
       </Dialog>
       {loading || !view ? (
         <Grid
@@ -59,9 +85,11 @@ const Main = ({
               attributes={attributes}
               projectName={projectName}
             />
-          ) : view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
+          ) : view === 'AGREEMENT' || view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
-              formView={view}
+              formView={
+                view === 'AGREEMENT' ? prop('QUE_AGREEMENT_DOCUMENT_INTERN_FORM_GRP', asks) : view
+              }
               asks={asks}
               baseEntities={baseEntities}
               attributes={attributes}
@@ -91,7 +119,12 @@ const Main = ({
               viewing={viewing}
             />
           ) : view === 'BUCKET' ? (
-            <Bucket currentSearch={currentSearch} setViewing={setViewing} />
+            <Bucket
+              currentSearch={currentSearch}
+              setViewing={setViewing}
+              current={current}
+              setCurrent={setCurrent}
+            />
           ) : (
             <Table setViewing={setViewing} currentSearch={currentSearch} />
           )}

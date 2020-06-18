@@ -1,16 +1,17 @@
-import React from 'react';
-import { path, toLower, includes, has, not, prop } from 'ramda';
-import onUpdate from './actions/on-update';
+import React from 'react'
+import { path, toLower, includes, has, not, prop } from 'ramda'
+import onUpdate from './actions/on-update'
 
-import RadioGroup from './radio_group';
-import PhoneNumberInput from './phone_number';
-import DropdownSelect from './dropdown';
-import SubmitButton from './submit_button';
-import AddressSelect from './address_select';
-import TextInput from './text_input';
-import ImageUpload from './image_upload';
-import RichTextEditor from './rich_text';
-import DateTimePicker from './date_time_picker';
+import RadioGroup from './radio_group'
+import PhoneNumberInput from './phone_number'
+import DropdownSelect from './dropdown'
+import SubmitButton from './submit_button'
+import AddressSelect from './address_select'
+import TextInput from './text_input'
+import ImageUpload from './image_upload'
+import RichTextEditor from './rich_text'
+import DateTimePicker from './date_time_picker'
+import HtmlDisplay from './html_display'
 
 const Field = ({
   fieldData,
@@ -19,20 +20,20 @@ const Field = ({
   googleApiKey,
   defaultValues,
 }) => {
-  const label = path(['name'], fieldData);
-  const dataType = path(['question', 'attribute', 'dataType'], fieldData);
-  const fieldType = toLower(path(['typeName'], dataType));
-  const validationList = path(['validationList'], dataType);
+  const label = path(['name'], fieldData)
+  const dataType = path(['question', 'attribute', 'dataType'], fieldData)
+  const fieldType = toLower(path(['typeName'], dataType))
+  const validationList = path(['validationList'], dataType)
 
   const {
     attributeCode,
     question: { code: questionCode },
     mandatory,
-  } = fieldData;
+  } = fieldData
 
-  if (mandatory && not(has(questionCode, errors))) setErrors({ ...errors, [questionCode]: true });
+  if (mandatory && not(has(questionCode, errors))) setErrors({ ...errors, [questionCode]: true })
 
-  const initialValue = path([attributeCode, 'value'], defaultValues) || false;
+  const initialValue = path([attributeCode, 'value'], defaultValues) || false
 
   return fieldType === 'text' ||
     fieldType === 'email' ||
@@ -129,7 +130,9 @@ const Field = ({
       setErrors={setErrors}
       inputType="time"
     />
-  ) : null;
-};
+  ) : fieldType === 'htmleditor' ? (
+    <HtmlDisplay />
+  ) : null
+}
 
-export default Field;
+export default Field
