@@ -3,11 +3,13 @@ import {  Typography, Grid, TextareaAutosize, Tooltip, Fab } from '@material-ui/
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import EventIcon from '@material-ui/icons/Event';
+import NotesContext from '../../contexts/note.js'
 
 import useStyles from './styles'
 
 const SideBarItems = () => {
   const classes = useStyles();
+  const { setShowNotes } = React.useContext( NotesContext )
 
   return (
     <Grid
@@ -50,6 +52,7 @@ const SideBarItems = () => {
         >
           <Fab
             color="primary"
+            onClick={() => setShowNotes( true )}
           >
             <NoteAddIcon color="inherit" />
           </Fab>

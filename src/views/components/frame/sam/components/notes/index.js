@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button,TextField, Grid, List, ListItem, ListItemText } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
+import CreateIcon from '@material-ui/icons/Create';
 import useStyles from './styles';
 
 const generateId = () => {
@@ -49,7 +50,7 @@ const Notes = ({ setViewing }) => {
           color="primary"
           onClick={handleSubmit}
         >
-          Add
+          <CreateIcon />
         </Button>
       </Grid>
       <Grid

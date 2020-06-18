@@ -48,10 +48,10 @@ const Main = ({
         </Grid>
       ) : (
         <Paper className={classes.mainPaper}>
-          <Notes
+          {/* <Notes
             setViewing={setViewing}
-          />
-          {/* {view === 'DASHBOARD' ? (
+          />*/}
+          {view === 'DASHBOARD' ? (
             <Dashboard
               frames={frames}
               asks={asks}
@@ -110,7 +110,7 @@ const Main = ({
               asks={asks}
               setViewing={setViewing}
             />
-          )}*/}
+          )}
           {
             <Tooltip
               title="Show side panel"
