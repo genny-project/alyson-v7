@@ -5,7 +5,7 @@ import useStyles from './styles'
 import SidePanelContext from '../contexts/sidePanel'
 import SideBarItems from './items'
 
-const Notes = () => {
+const SidePanel = () => {
   const classes = useStyles()
   const { sidePanelOpen, toggleSidePanel } = React.useContext( SidePanelContext )
 
@@ -38,4 +38,4 @@ const Notes = () => {
   );
 };
 
-export default Notes;
+export default SidePanel;

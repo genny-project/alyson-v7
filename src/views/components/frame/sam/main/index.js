@@ -4,6 +4,7 @@ import { prop } from 'ramda';
 import { Paper, Grid, Typography, Fab, Tooltip } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded';
 import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
+import { Notes } from '../components'
 import getView from './helpers/get-view';
 import useStyles from './styles';
 import SidePanelContext from '../contexts/sidePanel'
@@ -26,7 +27,7 @@ const Main = ({
 
   const view = getView({ viewing, asks, frames });
 
-  const { toggleSidePanel } = React.useContext(SidePanelContext)
+  const { toggleSidePanel } = React.useContext( SidePanelContext )
 
   return (
     <div className={classes.root}>
@@ -47,7 +48,10 @@ const Main = ({
         </Grid>
       ) : (
         <Paper className={classes.mainPaper}>
-          {view === 'DASHBOARD' ? (
+          <Notes
+            setViewing={setViewing}
+          />
+          {/* {view === 'DASHBOARD' ? (
             <Dashboard
               frames={frames}
               asks={asks}
@@ -79,8 +83,8 @@ const Main = ({
             />
           ) : view === 'DETAIL' ? (
             <Details
-attributes={attributes}
-targetCode={prop('targetCode', viewing)}
+              attributes={attributes}
+              targetCode={prop( 'targetCode', viewing )}
             />
           ) : view === 'UNITY' ? (
             <Unity
@@ -106,7 +110,7 @@ targetCode={prop('targetCode', viewing)}
               asks={asks}
               setViewing={setViewing}
             />
-          )}
+          )}*/}
           {
             <Tooltip
               title="Show side panel"

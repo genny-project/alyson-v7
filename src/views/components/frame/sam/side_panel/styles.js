@@ -12,21 +12,11 @@ const useStyles = makeStyles( theme => ({
   drawerPaper: {
     width: DRAWER_WIDTH,
     overflowY: 'scroll',
-    backgroundColor: ({ projectName }) => projectName === 'Safe Traffic Town' ? theme.palette.primary.main : theme.palette.background.paper,
   },
   grow: {
     flexGrow: 1,
   },
-  title: {
-    paddingTop: theme.spacing( 1 ),
-  },
-  logo: {
-    height: APP_BAR_HEIGHT,
-  },
-  poweredBy: {
-    marginBottom: theme.spacing( 1 ),
-  },
-  poweredName: {
+  footer: {
     marginBottom: theme.spacing( 1 ),
   },
 }));

@@ -12,7 +12,7 @@ import getAgencyCompany from './helpers/get-agency-company';
 import getBackendViewing from './helpers/get-backend-viewing';
 
 import Sidebar from './side_bar';
-import Notes from './notes_bar';
+import SidePanel from './side_panel';
 import AppBar from './app_bar';
 import Main from './main';
 
@@ -32,34 +32,34 @@ const Sam = ({
   attributes = {},
   keycloak = {},
 }) => {
-  const googleApiKey = getGoogleApiKey(keycloak);
-  const agency = getAgency(user);
-  const agencyCompany = getAgencyCompany(agency)(baseEntities);
-  const backendViewing = getBackendViewing(frames);
+  const googleApiKey = getGoogleApiKey( keycloak );
+  const agency = getAgency( user );
+  const agencyCompany = getAgencyCompany( agency )( baseEntities );
+  const backendViewing = getBackendViewing( frames );
   const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' });
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [staleTarget, setStaleTarget] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState( false );
+  const [loading, setLoading] = useState( false );
+  const [staleTarget, setStaleTarget] = useState( '' );
   const [sidePanelOpen, setSidePanelOpen] = useState( false );
-  const toggleSidePanel = () => setSidePanelOpen((sidePanelOpen) => sidePanelOpen === false ? true : false)
+  const toggleSidePanel = () => setSidePanelOpen(( sidePanelOpen ) => sidePanelOpen === false ? true : false )
 
-  const dataForEvent = getDataForEvent(viewing, user);
+  const dataForEvent = getDataForEvent( viewing, user );
 
   const theme = makeTheme({ attributes, asks });
 
   const value = React.useMemo(() => ({
     sidePanelOpen,
     toggleSidePanel,
-  }), [sidePanelOpen])
+  }), [sidePanelOpen] )
 
   useEffect(
     () => {
-      if (viewing.code || viewing.parentCode || viewing.targetCode) {
+      if ( viewing.code || viewing.parentCode || viewing.targetCode ) {
         // if (viewing.parentCode) setLoading(true);
 
-        if (contains('MENU', prop('code', viewing) || '')) {
+        if ( contains( 'MENU', prop( 'code', viewing ) || '' )) {
           setStaleTarget(
-            prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {})
+            prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {})
           );
         }
 
@@ -76,15 +76,15 @@ const Sam = ({
 
   useEffect(
     () => {
-      if (contains('MENU', prop('code', viewing) || '')) {
+      if ( contains( 'MENU', prop( 'code', viewing ) || '' )) {
         if (
-          prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
+          prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}) !==
           staleTarget
         ) {
-          setLoading(false);
+          setLoading( false );
         }
       } else {
-        setLoading(false);
+        setLoading( false );
       }
     },
     [asks]
@@ -95,7 +95,7 @@ const Sam = ({
       <SidePanelContext.Provider value={value}>
         <div>
           <AppBar
-            items={getAppBarItems(frames, asks, themes)}
+            items={getAppBarItems( frames, asks, themes )}
             asks={asks}
             frames={frames}
             user={user}
@@ -106,7 +106,7 @@ const Sam = ({
             setLoading={setLoading}
           />
           <Sidebar
-            items={getDrawerItems(frames, asks, themes)}
+            items={getDrawerItems( frames, asks, themes )}
             asks={asks}
             frames={frames}
             user={user}
@@ -133,7 +133,7 @@ const Sam = ({
             projectName={projectName}
           />
         </div>
-        <Notes />
+        <SidePanel />
       </SidePanelContext.Provider>
     </ThemeProvider>
   );
@@ -151,4 +151,4 @@ const mapStateToProps = state => ({
   keycloak: state.keycloak,
 });
 
-export default connect(mapStateToProps)(Sam);
+export default connect( mapStateToProps )( Sam );
