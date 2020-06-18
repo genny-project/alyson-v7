@@ -105,7 +105,7 @@ const Field = ({
     />
   ) : fieldType === 'image' ? (
     <ImageUpload fieldData={fieldData} label={label} onUpdate={onUpdate} />
-  ) : fieldType === 'htmlarea' ? (
+  ) : fieldType === 'htmlarea' || fieldType === 'textarea' ? (
     <RichTextEditor
       fieldData={fieldData}
       label={label}
@@ -131,7 +131,7 @@ const Field = ({
       inputType="time"
     />
   ) : fieldType === 'htmleditor' ? (
-    <HtmlDisplay />
+    <HtmlDisplay fieldData={fieldData} label={label} />
   ) : null
 }
 

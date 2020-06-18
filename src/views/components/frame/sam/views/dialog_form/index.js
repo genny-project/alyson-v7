@@ -11,21 +11,22 @@ const DialogForm = ({
   baseEntities,
   googleApiKey,
 }) => {
-  console.log(form)
-  return form ? (
-    <Paper style={{ width: '40rem', height: '80rem' }}>
-      <Form
-        formView={form}
-        asks={asks}
-        baseEntities={baseEntities}
-        attributes={attributes}
-        googleApiKey={googleApiKey}
-        setViewing={setViewing}
-        setLoading={setLoading}
-      />
+  return (
+    <Paper style={{ width: '60rem', height: '80rem' }}>
+      {form ? (
+        <Form
+          formView={form}
+          asks={asks}
+          baseEntities={baseEntities}
+          attributes={attributes}
+          googleApiKey={googleApiKey}
+          setViewing={setViewing}
+          setLoading={setLoading}
+        />
+      ) : (
+        <CircularProgress />
+      )}
     </Paper>
-  ) : (
-    <CircularProgress />
   )
 }
 

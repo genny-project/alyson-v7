@@ -33,23 +33,9 @@ const Main = ({
 
   const [current, setCurrent] = useState({})
 
-  useEffect(
-    () => {
-      if (
-        !dialogContent &&
-        !!application &&
-        dialogContent !== 'closed' &&
-        prop('QUE_ADD_APPLICATION_GRP', asks)
-      ) {
-        setDialogContent(application)
-      }
-    },
-    [application, dialogContent],
-  )
-
   return (
     <div className={classes.root}>
-      <Dialog open={dialogContent !== 'closed' && !!dialogContent}>
+      <Dialog open={view === 'APPLICATION'}>
         <DialogForm
           form={prop('QUE_ADD_APPLICATION_GRP', asks)}
           asks={asks}
