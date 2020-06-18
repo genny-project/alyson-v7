@@ -1,11 +1,11 @@
 import React from 'react'
 import { Drawer, Container, Fab, Tooltip } from '@material-ui/core'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded'
+import ClearIcon from '@material-ui/icons/Clear';
 import useStyles from './styles'
-import SidePanelContext from '../contexts/sidePanel'
+import { SidePanelContext, NotesContext } from '../contexts'
 import SideBarItems from './items'
 import Notes from '../components/notes'
-import NotesContext from '../contexts/note'
 
 const SidePanel = () => {
   const classes = useStyles()
@@ -24,9 +24,22 @@ const SidePanel = () => {
         ModalProps={{ keepMounted: true }}
       >
         {showNotes
-          ?
-            <Notes />
-          : (
+          ? (
+            <React.Fragment>
+              <Tooltip
+                title="close notes"
+                placement="top-start"
+              >
+                <Fab
+                  color="primary"
+                  onClick={() => setShowNotes( false )}
+                >
+                  <ClearIcon color="inherit" />
+                </Fab>
+              </Tooltip>
+              <Notes />
+            </React.Fragment>
+          ) : (
             <React.Fragment>
               <SideBarItems />
               <div className={classes.grow} />

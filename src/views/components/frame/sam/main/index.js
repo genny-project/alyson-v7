@@ -4,10 +4,9 @@ import { prop } from 'ramda';
 import { Paper, Grid, Typography, Fab, Tooltip } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded';
 import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
-import { Notes } from '../components'
 import getView from './helpers/get-view';
 import useStyles from './styles';
-import SidePanelContext from '../contexts/sidePanel'
+import { SidePanelContext } from '../contexts'
 
 const Main = ({
   attributes,
@@ -48,9 +47,6 @@ const Main = ({
         </Grid>
       ) : (
         <Paper className={classes.mainPaper}>
-          {/* <Notes
-            setViewing={setViewing}
-          />*/}
           {view === 'DASHBOARD' ? (
             <Dashboard
               frames={frames}

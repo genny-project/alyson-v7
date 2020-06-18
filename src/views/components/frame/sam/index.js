@@ -19,7 +19,7 @@ import Main from './main';
 import getDataForEvent from './helpers/get-data-for-event';
 import getGoogleApiKey from './helpers/get-google-api-key';
 import makeTheme from './helpers/make-theme';
-import SidePanelContext from './contexts/sidePanel'
+import { SidePanelContext } from './contexts'
 
 const Sam = ({
   projectName = '',
