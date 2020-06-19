@@ -1,134 +1,62 @@
-import React from 'react';
-import { Typography, Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import React from 'react'
+import { map, compose, values, prop, replace, reject, includes, any } from 'ramda'
+import {
+  Typography,
+  GridList,
+  GridListTile,
+  GridListTileBar,
+  ListSubheader,
+  IconButton,
+} from '@material-ui/core'
+import InfoIcon from '@material-ui/icons/Info'
+import { makeStyles } from '@material-ui/core/styles'
+import ChartistGraph from 'react-chartist'
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  titleInterns: {
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
-  titleInternship: {
-    textAlign: 'center',
-    marginTop: 30,
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
-  paperContainer: {
-    marginLeft: '15%',
-    marginRight: '15%',
-  },
-});
-
-function createData( key, value ) {
-  return { key, value };
+const data = {
+  labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10'],
+  series: [[1, 2, 4, 8, 6]],
 }
 
-const interns = [
-  createData( 'Available (No Applications)', 1386 ),
-  createData( 'Applied, Shortlisted or Interviewed', 548 ),
-  createData( 'Offered', 116 ),
-  createData( 'Placed (Waiting To Start)', 31 ),
-  createData( 'In Progress', 249 ),
-  createData( 'Completed (Internships)', 32 ),
-];
+const options = {
+  high: 20,
+  low: 0,
+  axisX: {
+    labelInterpolationFnc: function(value, index) {
+      return index % 2 === 0 ? value : null
+    },
+  },
+}
 
-const internships = [
-  createData( 'Available (No Applications)', 153 ),
-  createData( 'Applied, Shortlisted or Interviewed', 202 ),
-  createData( 'Offered', 68 ),
-  createData( 'Placed (Waiting To Start)', 25 ),
-  createData( 'In Progress', 89 ),
-  createData( 'Completed (Internships)', 0 ),
-];
+const Dashboard = ({ projectName, drawerItems, attributes }) => {
+  const tiles = compose(
+    reject(title => any(test => includes(test, title))(['LOGO', 'VIEW', 'DASHBOARD'])),
+    map(replace('TREE_ITEM_', '')),
+    map(prop('name')),
+    values,
+  )(drawerItems)
 
-const Dashboard = ({ projectName }) => {
-  const classes = useStyles();
+  return projectName === 'Safe Traffic Town' ? (
+    <Typography>{`STT Dashboard`}</Typography>
+  ) : (
+    <GridList cellHeight={180}>
+      {map(
+        title => (
+          <GridListTile>
+            <ChartistGraph data={data} options={options} type={'Bar'} />
+            <GridListTileBar
+              title={title}
+              actionIcon={
+                <IconButton color="inherit" aria-label={`info about ${title}`}>
+                  <InfoIcon color="inherit" />
+                </IconButton>
+              }
+            />
+          </GridListTile>
+        ),
+        tiles,
+      )}
+    </GridList>
+  )
+}
 
-  return (
-  projectName === 'Safe Traffic Town' ? <Typography>{`STT Dashboard`}</Typography> :
-    <Paper className={classes.paperContainer}>
-      <Typography className={classes.titleInterns}>
-Interns
-      </Typography>
-      <Table
-        className={classes.table}
-        aria-label="simple table"
-      >
-        <TableHead>
-          <TableRow>
-            <TableCell>
-All Interns
-            </TableCell>
-            <TableCell align="right">
-2362
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {interns.map(( row ) => (
-            <TableRow key={row.key}>
-              <TableCell
-                component="th"
-                scope="row"
-              >
-                {row.key}
-              </TableCell>
-              <TableCell align="right">
-                {row.value}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Typography className={classes.titleInternship}>
-Internships
-      </Typography>
-
-      <Table
-        className={classes.table}
-        aria-label="simple table"
-      >
-        <TableHead>
-          <TableRow>
-            <TableCell>
-All Internships
-            </TableCell>
-            <TableCell align="right">
-537
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {internships.map(( row ) => (
-            <TableRow key={row.key}>
-              <TableCell
-                component="th"
-                scope="row"
-              >
-                {row.key}
-              </TableCell>
-              <TableCell align="right">
-                {row.value}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <TableContainer />
-    </Paper>
-
-  );
-};
-
-export default Dashboard;
+export default Dashboard

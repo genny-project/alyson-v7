@@ -24,13 +24,7 @@ const Board = ({ data: { lanes, meta }, setViewing, current, setCurrent, refresh
       wrap="nowrap"
     >
       {map(
-        ({
-          metaData: {
-            SCH_TITLE: { value: title },
-          },
-          data: items,
-          searchCode: id,
-        }) =>
+        ({ metaData, data: items, searchCode: id }) =>
           isBucket(id) ? (
             <Lane
               key={'lane' + id}
@@ -38,9 +32,9 @@ const Board = ({ data: { lanes, meta }, setViewing, current, setCurrent, refresh
               current={current}
               setCurrent={setCurrent}
               setViewing={setViewing}
-              title={title}
               items={items}
               id={id}
+              metaData={metaData}
             />
           ) : (
             <div key={id} />

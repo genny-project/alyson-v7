@@ -19,8 +19,6 @@ const BucketView = ({ currentSearch, setViewing, current, setCurrent }) => {
       targetCode: 'PER_USER1',
     })
 
-  console.log(current)
-
   if (buckets) {
     const classes = useStyles()
 

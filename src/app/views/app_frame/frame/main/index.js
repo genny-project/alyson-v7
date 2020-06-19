@@ -128,6 +128,7 @@ const Sam = ({
           currentSearch={currentSearch}
           dialogContent={dialogContent}
           setDialogContent={setDialogContent}
+          drawerItems={getDrawerItems(frames, asks)}
         />
       </div>
     </ThemeProvider>
