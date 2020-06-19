@@ -2,7 +2,7 @@
 import React from 'react'
 import { Button,TextField, Grid, Card, CardActionArea, CardContent, CardActions, Typography, IconButton, CardHeader } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
-import CreateIcon from '@material-ui/icons/Create';
+import AddIcon from '@material-ui/icons/Add';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -42,62 +42,33 @@ const Notes = ({ setViewing }) => {
     <Grid
       container
       className={classes.root}
-      spacing={2}
     >
       <Grid
-        items
-        className={classes.control}
+        xs={12}
+        className={classes.buttonControl}
       >
         <Button
+          className={classes.button}
           variant="contained"
           color="secondary"
           onClick={handleShowNotes}
-          startIcon={<CreateIcon />}
+          startIcon={<AddIcon />}
+          fullWidth
         >
-          Add a note
+          Take a note...
         </Button>
       </Grid>
 
-      {/* <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
-          <Grid
-            items
-            className={classes.control}
-          >
-            <TextField
-              value={noteContent}
-              multiline
-              label="Please Enter a note"
-              variant="outlined"
-              onChange={( e ) => setNoteContent( e.target.value )}
-            />
-          </Grid>
-          <Grid
-            items
-            className={classes.control}
-          />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleSubmit}
-          >
-            <CreateIcon />
-          </Button>
-        </Grid>*/}
-
       {showNotes && (
-        <Grid>
-          <Card className={classes.root}>
+        <Grid
+          xs={12}
+          className={classes.control}
+        >
+          <Card
+            className={classes.card}
+            variant="outlined"
+          >
             <CardHeader
-              action={(
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-          )}
               title={(
                 <TextField
                   value={noteHeader}
@@ -110,6 +81,7 @@ const Notes = ({ setViewing }) => {
 )}
             />
             <CardContent>
+
               <TextField
                 value={noteContent}
                 multiline
@@ -122,11 +94,11 @@ const Notes = ({ setViewing }) => {
             <CardActions disableSpacing>
               <Button
                 variant="contained"
-                color="secondary"
+                color="inherit"
                 className={clsx( classes.expand )}
                 onClick={handleSubmit}
               >
-                <CreateIcon />
+                Done
               </Button>
             </CardActions>
           </Card>
@@ -134,50 +106,46 @@ const Notes = ({ setViewing }) => {
 
       )
     }
-
       <Grid
-        items
         xs={12}
+        className={classes.control}
       >
-        <Grid className={classes.control}>
-          {notes.map(({ headerText, contentText, id }) => (
-            <Card
-              className={classes.card}
-              color="inherit"
-            >
-              <CardActionArea>
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="h2"
-                  >
-                    {headerText}
-                  </Typography>
-                </CardContent>
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="subtitle1"
-                    component="h2"
-                  >
-                    {contentText}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <CardActions>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => removeNotes( id )}
+        {notes.map(({ headerText, contentText, id }) => (
+          <Card
+            className={classes.card}
+            variant="outlined"
+          >
+            <CardActionArea>
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="h2"
                 >
-                  <DeleteIcon />
-                </Button>
-              </CardActions>
-            </Card>
-          ))}
-        </Grid>
-
+                  {headerText}
+                </Typography>
+              </CardContent>
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="subtitle1"
+                  component="h2"
+                >
+                  {contentText}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            <CardActions>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => removeNotes( id )}
+              >
+                <DeleteIcon />
+              </Button>
+            </CardActions>
+          </Card>
+        ))}
       </Grid>
     </Grid>
   );

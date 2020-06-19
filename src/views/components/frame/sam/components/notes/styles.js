@@ -6,13 +6,14 @@ const useStyles = makeStyles(( theme ) => ({
   },
   card: {
     maxWidth: 345,
-    margin: theme.spacing( 1 ),
+    marginBottom: theme.spacing( 2 ),
+  },
+  button: {
+    maxWidth: 345,
+    justifyContent: 'flex-start',
   },
   media: {
     height: 140,
-  },
-  button: {
-    margin: theme.spacing( 1 ),
   },
   paper: {
     height: 140,
@@ -20,7 +21,9 @@ const useStyles = makeStyles(( theme ) => ({
   },
   control: {
     padding: theme.spacing( 2 ),
-    margin: theme.spacing( 1 ),
+  },
+  buttonControl: {
+    margin: theme.spacing( 2 ),
   },
   expand: {
     marginLeft: 'auto',

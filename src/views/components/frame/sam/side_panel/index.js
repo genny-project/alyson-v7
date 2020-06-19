@@ -1,7 +1,8 @@
 import React from 'react'
-import { Drawer, Container, Fab, Tooltip } from '@material-ui/core'
+import { Drawer, Container, Fab, Tooltip, Grid, IconButton, Typography, Divider } from '@material-ui/core'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded'
 import ClearIcon from '@material-ui/icons/Clear';
+import SearchIcon from '@material-ui/icons/Search';
 import useStyles from './styles'
 import { SidePanelContext, NotesContext } from '../contexts'
 import SideBarItems from './items'
@@ -26,18 +27,50 @@ const SidePanel = () => {
         {showNotes
           ? (
             <React.Fragment>
-              <Tooltip
-                title="close notes"
-                placement="top-start"
+              <Grid
+                container
+                direction="row"
+                justify="space-between"
+                alignItems="center"
+                className={classes.topBar}
               >
-                <Fab
-                  color="primary"
-                  onClick={() => setShowNotes( false )}
-                >
-                  <ClearIcon color="inherit" />
-                </Fab>
-              </Tooltip>
-              <Notes />
+                <Grid>
+                  <Typography>
+                Add Note
+                  </Typography>
+                </Grid>
+                <div className={classes.grow} />
+                <Grid>
+                  <Tooltip
+                    title="search"
+                    placement="top-start"
+                  >
+                    <IconButton
+                      color="primary"
+                    >
+                      <SearchIcon color="inherit" />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid>
+                  <Tooltip
+                    title="close notes"
+                    placement="top-start"
+                  >
+                    <IconButton
+                      color="primary"
+                      onClick={() => setShowNotes( false )}
+                    >
+                      <ClearIcon color="inherit" />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </Grid>
+              <Divider />
+              <Grid>
+                <Notes />
+              </Grid>
+
             </React.Fragment>
           ) : (
             <React.Fragment>

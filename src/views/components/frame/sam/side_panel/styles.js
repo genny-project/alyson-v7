@@ -12,7 +12,6 @@ const useStyles = makeStyles( theme => ({
   },
   drawerPaper: {
     width: DRAWER_WIDTH,
-    backgroundColor: 'silver',
     marginTop: `${theme.spacing( 10 )}px auto`,
   },
   grow: {
@@ -20,6 +19,10 @@ const useStyles = makeStyles( theme => ({
   },
   footer: {
     margin: theme.spacing( 1 ),
+  },
+  topBar: {
+    margin: theme.spacing( 2 ),
+    maxWidth: 345,
   },
 }));
 
