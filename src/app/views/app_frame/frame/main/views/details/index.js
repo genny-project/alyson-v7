@@ -71,27 +71,64 @@ const printHcr = [
   { label: 'Linkedin', code: 'linkedin_url' },
 ]
 
+const printEp = [
+  { label: 'ABN', code: 'abn' },
+  { label: 'Legal Name', code: 'legal_name' },
+  { label: 'Provider ID', code: 'provider_id' },
+  { label: 'Phone', code: 'landline' },
+  { label: 'Address', code: 'address_full' },
+  { label: 'Description', code: 'company_description' },
+  { label: 'Website', code: 'company_website_url' },
+]
+
+const printEpr = [
+  { label: 'Education Provider', code: 'education_provider' },
+  { label: 'Job Title', code: 'job_title' },
+  { label: 'Department', code: 'department' },
+  { label: 'Email', code: 'email' },
+  { label: 'Mobile', code: 'mobile' },
+  { label: 'Linkedin', code: 'linkedin_url' },
+]
+
+const printApp = [
+  { label: 'Student Id', code: 'student_id' },
+  { label: 'Industry', code: 'assoc_industry' },
+  { label: 'Education Provider', code: 'education_provider' },
+  { label: 'Current Course', code: 'current_course' },
+  { label: 'Specialisation', code: 'assoc_occupation' },
+  { label: 'Mobile', code: 'mobile' },
+  { label: 'Email', code: 'email' },
+]
+
 const Details = ({ attributes, targetCode }) => {
   const detailView = prop(targetCode, attributes)
 
-  const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
+  const print = prop => path([`PRI_${toUpper(prop || '')}`, 'valueString'], detailView) || ''
 
-  const detailType = contains('PRI_STATUS', keys(detailView))
+  const detailType = contains('PRI_IS_INTERN', keys(detailView))
     ? printIntern
-    : contains('PRI_START_DATE', keys(detailView))
+    : contains('PRI_IS_INTERNSHIP', keys(detailView))
       ? printBeg
-      : contains('LNK_HOST_COMPANY_REP', keys(detailView))
+      : contains('PRI_IS_HOST_CPY_REP', keys(detailView)) ||
+        contains('PRI_IS_RP_REP', keys(detailView))
         ? printHcr
-        : contains('PRI_ABN')
+        : contains('PRI_IS_HOST_CPY', keys(detailView)) || contains('PRI_IS_RP', keys(detailView))
           ? printCpy
-          : []
+          : contains('PRI_IS_EDU_PROVIDER', keys(detailView))
+            ? printEp
+            : contains('PRI_IS_EDU_PRO_REP', keys(detailView))
+              ? printEpr
+              : contains('PRI_IS_APPLICATION', keys(detailView))
+                ? printApp
+                : printCpy
 
   const [rating, setRating] = useState(0)
   const classes = useStyles()
 
-  console.log(detailView)
-
-  const details = values(detailView)
+  const details = map(
+    ({ label, code }) => ({ valueString: print(code), attributeName: label }),
+    detailType,
+  )
 
   return (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
