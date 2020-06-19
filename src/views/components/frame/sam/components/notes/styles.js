@@ -2,8 +2,17 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(( theme ) => ({
   root: {
-    flexGrow: 1,
     alignItems: 'center',
+  },
+  card: {
+    maxWidth: 345,
+    margin: theme.spacing( 1 ),
+  },
+  media: {
+    height: 140,
+  },
+  button: {
+    margin: theme.spacing( 1 ),
   },
   paper: {
     height: 140,
@@ -11,6 +20,10 @@ const useStyles = makeStyles(( theme ) => ({
   },
   control: {
     padding: theme.spacing( 2 ),
+    margin: theme.spacing( 1 ),
+  },
+  expand: {
+    marginLeft: 'auto',
   },
 }))
 

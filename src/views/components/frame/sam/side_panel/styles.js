@@ -8,16 +8,18 @@ const useStyles = makeStyles( theme => ({
     width: DRAWER_WIDTH,
     flexShrink: 0,
     overflowY: 'scroll',
+    padding: theme.spacing( 1 ),
   },
   drawerPaper: {
     width: DRAWER_WIDTH,
-    overflowY: 'scroll',
+    backgroundColor: 'silver',
+    marginTop: `${theme.spacing( 10 )}px auto`,
   },
   grow: {
     flexGrow: 1,
   },
   footer: {
-    marginBottom: theme.spacing( 1 ),
+    margin: theme.spacing( 1 ),
   },
 }));
 

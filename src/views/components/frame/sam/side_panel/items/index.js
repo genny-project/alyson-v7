@@ -15,32 +15,10 @@ const SideBarItems = () => {
     <Grid
       container
       className={classes.header}
+      direction="row"
+      justify="center"
+      alignItems="center"
     >
-      <Grid
-        items
-        xs={12}
-        className={classes.items}
-      >
-        <Typography
-          variant="h6"
-          color="primary"
-        >
-          Note
-        </Typography>
-      </Grid>
-
-      <Grid
-        items
-        xs={12}
-        className={classes.items}
-      >
-        <TextareaAutosize
-          aria-label="minimum height"
-          rowsMin={3}
-          placeholder="This is a placeholder area"
-        />
-      </Grid>
-
       <Grid
         items
         xs={12}
