@@ -16,16 +16,20 @@ const generateId = () => {
 
 const Notes = ({ setViewing }) => {
   const [notes, setNotes] = React.useState( [] )
-  const [input, setInput] = React.useState( '' )
+  const [noteContent, setNoteContent] = React.useState( '' )
+  const [noteHeader, setNoteHeader] = React.useState( '' )
   const [showNotes, setShowNotes] = React.useState( false )
   const classes = useStyles();
 
   const handleSubmit = () => {
     setNotes(( notes ) => notes.concat({
-      text: input,
+      headerText: noteHeader,
+      contentText: noteContent,
       id: generateId(),
     }))
-    setInput( '' )
+    setNoteHeader( '' )
+    setNoteContent( '' )
+    setShowNotes( false )
   }
 
   const handleShowNotes = () => {
@@ -65,11 +69,11 @@ const Notes = ({ setViewing }) => {
             className={classes.control}
           >
             <TextField
-              value={input}
+              value={noteContent}
               multiline
               label="Please Enter a note"
               variant="outlined"
-              onChange={( e ) => setInput( e.target.value )}
+              onChange={( e ) => setNoteContent( e.target.value )}
             />
           </Grid>
           <Grid
@@ -94,15 +98,25 @@ const Notes = ({ setViewing }) => {
                   <MoreVertIcon />
                 </IconButton>
           )}
-              title="Shrimp and Chorizo Paella"
+              title={(
+                <TextField
+                  value={noteHeader}
+                  multiline
+                  style={{ margin: 4 }}
+                  placeholder="Title"
+                  fullWidth
+                  onChange={( e ) => setNoteHeader( e.target.value )}
+                />
+)}
             />
             <CardContent>
               <TextField
-                value={input}
+                value={noteContent}
                 multiline
-                label="Please Enter a note"
-                variant="outlined"
-                onChange={( e ) => setInput( e.target.value )}
+                style={{ margin: 4 }}
+                placeholder="Take a note"
+                fullWidth
+                onChange={( e ) => setNoteContent( e.target.value )}
               />
             </CardContent>
             <CardActions disableSpacing>
@@ -126,7 +140,7 @@ const Notes = ({ setViewing }) => {
         xs={12}
       >
         <Grid className={classes.control}>
-          {notes.map(({ text, id }) => (
+          {notes.map(({ headerText, contentText, id }) => (
             <Card
               className={classes.card}
               color="inherit"
@@ -138,7 +152,16 @@ const Notes = ({ setViewing }) => {
                     variant="h5"
                     component="h2"
                   >
-                    {text}
+                    {headerText}
+                  </Typography>
+                </CardContent>
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="subtitle1"
+                    component="h2"
+                  >
+                    {contentText}
                   </Typography>
                 </CardContent>
               </CardActionArea>
