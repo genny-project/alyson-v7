@@ -1,42 +1,31 @@
-import { applyMiddleware, compose } from 'redux';
-import { createEpicMiddleware } from 'redux-observable';
-import { routerMiddleware } from 'react-router-redux';
-import { batchedSubscribe } from 'redux-batched-subscribe';
-import logger from 'redux-logger';
-import epics from './epics';
-import vertxMiddleware from '../views/components/vertx/vertx.middleware';
-import history from './history';
+import { applyMiddleware, compose } from 'redux'
+import { createEpicMiddleware } from 'redux-observable'
+import { routerMiddleware } from 'react-router-redux'
+import { batchedSubscribe } from 'redux-batched-subscribe'
+import logger from 'redux-logger'
+import epics from './epics'
+import vertxMiddleware from '../app/vertx/vertx.middleware'
+import history from './history'
 
-const epicMiddleware = createEpicMiddleware( epics );
-const router = routerMiddleware( history );
+const epicMiddleware = createEpicMiddleware(epics)
+const router = routerMiddleware(history)
 
-const developmentMiddleware = [
-  epicMiddleware,
-  vertxMiddleware,
-  router,
-  logger,
-];
+const developmentMiddleware = [epicMiddleware, vertxMiddleware, router, logger]
 
-const productionMiddleware = [
-  epicMiddleware,
-  vertxMiddleware,
-  router,
+const productionMiddleware = [epicMiddleware, vertxMiddleware, router]
 
-];
-
-if ( window.localStorage && window.localStorage.getItem( 'DISPLAY_LOGS' ) != null ) { 
-  productionMiddleware.push( logger );
+if (window.localStorage && window.localStorage.getItem('DISPLAY_LOGS') != null) {
+  productionMiddleware.push(logger)
 }
 
 /* Batches redux actions by frames to increase performance */
 const debounceNotify = notify => {
-  window.requestAnimationFrame( notify );
-};
+  window.requestAnimationFrame(notify)
+}
 
-export default compose( applyMiddleware(
-  ...( process.env.NODE_ENV === 'production' )
-    ? productionMiddleware
-    : developmentMiddleware
-),
-batchedSubscribe( debounceNotify )
-);
+export default compose(
+  applyMiddleware(
+    ...(process.env.NODE_ENV === 'production' ? productionMiddleware : developmentMiddleware),
+  ),
+  batchedSubscribe(debounceNotify),
+)
