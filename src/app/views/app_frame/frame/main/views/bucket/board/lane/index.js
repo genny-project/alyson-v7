@@ -6,8 +6,20 @@ import ColumnHeader from '../column_header'
 import Item from '../item'
 
 import useStyles from './styles'
+import getLaneActions from './helpers/get-lane-actions'
 
-const Lane = ({ title, id, items, setViewing, refreshBuckets, current, setCurrent }) => {
+const Lane = ({
+  metaData: {
+    SCH_TITLE: { value: title },
+  },
+  metaData,
+  id,
+  items,
+  setViewing,
+  refreshBuckets,
+  current,
+  setCurrent,
+}) => {
   const [expand, setExpand] = useState(true)
   const classes = useStyles({ expand: expand && length(items) > 0 })
   return (
@@ -38,6 +50,7 @@ const Lane = ({ title, id, items, setViewing, refreshBuckets, current, setCurren
                   refreshBuckets={refreshBuckets}
                   current={current}
                   setCurrent={setCurrent}
+                  actions={getLaneActions(metaData)}
                 />
               </Grid>
             ))(item),

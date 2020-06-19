@@ -21,6 +21,7 @@ const Main = ({
   setLoading,
   projectName,
   currentSearch,
+  drawerItems,
   dialogContent,
   setDialogContent,
 }) => {
@@ -70,6 +71,7 @@ const Main = ({
               user={user}
               attributes={attributes}
               projectName={projectName}
+              drawerItems={drawerItems}
             />
           ) : view === 'AGREEMENT' || view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form

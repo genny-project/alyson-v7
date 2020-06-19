@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { contains, prop, has } from 'ramda'
+import { contains, prop, has, map } from 'ramda'
 
 import {
   Card,
@@ -28,6 +28,7 @@ const Item = ({
   refreshBuckets,
   current,
   setCurrent,
+  actions,
 }) => {
   const [menu, setMenu] = useState(null)
   const [expand, setExpand] = useState(false)
@@ -54,65 +55,12 @@ const Item = ({
   } = item
 
   const classes = useStyles({ statusColor })
-  const handleView = () =>
+
+  const handleAction = code => () =>
     setViewing({
-      code: 'QUE_VIEW_PROFILE',
-      parentCode: 'QUE_CARD_RIGHT_GRP',
-      rootCode: 'QUE_BUCKET_CONTENT_AVAILABLE_INTERNS_GRP',
+      code,
       targetCode,
     })
-
-  const handleShortlist = () => {
-    setViewing({
-      code: 'QUE_SHORTLIST_APP',
-      parentCode: 'QUE_CARD_RIGHT_GRP',
-      rootCode: 'QUE_BUCKET_CONTENT_APPLIED_APPLICATIONS_GRP',
-      targetCode,
-    })
-    setCurrent({ ...current, [targetCode]: true })
-  }
-
-  const handleInterview = () => {
-    setViewing({
-      code: 'QUE_INTERVIEW_APP',
-      parentCode: 'QUE_CARD_RIGHT_GRP',
-      rootCode: 'QUE_BUCKET_CONTENT_SHORTLISTED_APPLICATIONS_GRP',
-      targetCode,
-    })
-    setCurrent({ ...current, [targetCode]: true })
-  }
-
-  const handleOffer = () => {
-    setViewing({
-      code: 'QUE_OFFER_APP',
-      parentCode: 'QUE_CARD_RIGHT_GRP',
-      rootCode: 'QUE_BUCKET_CONTENT_INTERVIEWED_APPLICATIONS_GRP',
-      targetCode,
-    })
-    setCurrent({ ...current, [targetCode]: true })
-  }
-
-  const handlePlace = () => {
-    setViewing({
-      code: 'QUE_PLACE_APP',
-      parentCode: 'QUE_CARD_RIGHT_GRP',
-      rootCode: 'QUE_BUCKET_CONTENT_APPLIED_APPLICATIONS_GRP',
-      targetCode,
-    })
-    setCurrent({ ...current, [targetCode]: true })
-  }
-
-  const handleReject = () => setViewing({})
-  const handleWithdrawn = () => setViewing({})
-  const handleViewInternshipAgreement = () =>
-    setViewing({
-      code: 'QUE_VIEW_AGREEMENT',
-      parentCode: 'QUE_CARD_RIGHT_GRP',
-      rootCode: 'QUE_BUCKET_CONTENT_OFFERED_APPLICATIONS_GRP',
-      targetCode,
-    })
-
-  const handleOnHold = () => ({})
 
   return expandedColumn ? (
     <ClickAwayListener onClickAway={() => setExpand(false)}>
@@ -166,29 +114,16 @@ const Item = ({
             </Collapse>
           </Card>
         </Badge>
-        {contains('PER', targetCode || '') ? (
-          <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
-            <MenuItem onClick={handleView}>{`View Profile`}</MenuItem>
-          </Menu>
-        ) : (
-          <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
-            <MenuItem onClick={handleView}>{`View Application`}</MenuItem>
-            {column === 'Applied' ? (
-              <MenuItem onClick={handleShortlist}>{`Shortlist`}</MenuItem>
-            ) : null}
-            {column === 'Offered' ? (
-              <MenuItem
-                onClick={handleViewInternshipAgreement}
-              >{`View Internship Agreement`}</MenuItem>
-            ) : null}
-            {column === 'Shortlisted' ? (
-              <MenuItem onClick={handleInterview}>{`Schedule Interview`}</MenuItem>
-            ) : null}
-            {column === 'Interview' ? (
-              <MenuItem onClick={handleOffer}>{`Make Offer`}</MenuItem>
-            ) : null}
-          </Menu>
-        )}
+        <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
+          {map(
+            ({ code, attributeName }) => (
+              <MenuItem key={targetCode + code} onClick={handleAction(code)}>
+                {attributeName}
+              </MenuItem>
+            ),
+            actions,
+          )}
+        </Menu>
       </div>
     </ClickAwayListener>
   ) : (
