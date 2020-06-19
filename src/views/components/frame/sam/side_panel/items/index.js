@@ -1,5 +1,5 @@
 import React from 'react'
-import {  Typography, Grid, TextareaAutosize, Tooltip, Fab } from '@material-ui/core'
+import { Grid, Tooltip, Divider, IconButton } from '@material-ui/core'
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import EventIcon from '@material-ui/icons/Event';
@@ -15,62 +15,59 @@ const SideBarItems = () => {
     <Grid
       container
       className={classes.header}
-      direction="row"
+      direction="column"
       justify="center"
       alignItems="center"
     >
       <Grid
-        items
-        xs={12}
-        className={classes.items}
-      >
-        <Tooltip
-          title="Notes"
-          placement="top-start"
-        >
-          <Fab
-            color="primary"
-            onClick={() => setShowNotes( true )}
-          >
-            <NoteAddIcon color="inherit" />
-          </Fab>
-        </Tooltip>
-      </Grid>
-
-      <Grid
-        items
-        xs={12}
-        className={classes.items}
-      >
-        <Tooltip
-          title="Notification"
-          placement="top-start"
-        >
-          <Fab
-            color="primary"
-          >
-            <NotificationsIcon color="inherit" />
-          </Fab>
-        </Tooltip>
-      </Grid>
-
-      <Grid
-        items
-        xs={12}
         className={classes.items}
       >
         <Tooltip
           title="Events"
           placement="top-start"
         >
-          <Fab
+          <IconButton
             color="primary"
+            style={{ color: '#1B7CED' }}
           >
-            <EventIcon color="inherit" />
-          </Fab>
+            <EventIcon fontSize="large" />
+          </IconButton>
         </Tooltip>
       </Grid>
-
+      <Grid
+        className={classes.items}
+      >
+        <Tooltip
+          title="Notes"
+          placement="top-start"
+        >
+          <IconButton
+            color="primary"
+            size="large"
+            onClick={() => setShowNotes( true )}
+          >
+            <NoteAddIcon
+              fontSize="large"
+              style={{ color: '#FFC308' }}
+            />
+          </IconButton>
+        </Tooltip>
+      </Grid>
+      <Grid
+        className={classes.items}
+      >
+        <Tooltip
+          title="Notification"
+          placement="top-start"
+        >
+          <IconButton
+            color="primary"
+            style={{ color: '#1B7CED' }}
+          >
+            <NotificationsIcon fontSize="large" />
+          </IconButton>
+        </Tooltip>
+      </Grid>
     </Grid>
   )
 }

@@ -1,11 +1,8 @@
 /* eslint-disable react/jsx-key */
 import React from 'react'
-import { Button,TextField, Grid, Card, CardActionArea, CardContent, CardActions, Typography, IconButton, CardHeader } from '@material-ui/core'
+import { Button,TextField, Grid, Card, CardActionArea, CardContent, CardActions, Typography, CardHeader } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx';
 
 import useStyles from './styles';
@@ -14,7 +11,7 @@ const generateId = () => {
   return `_${Math.random().toString( 30 ).substr( 1, 7 )}`
 }
 
-const Notes = ({ setViewing }) => {
+const Notes = () => {
   const [notes, setNotes] = React.useState( [] )
   const [noteContent, setNoteContent] = React.useState( '' )
   const [noteHeader, setNoteHeader] = React.useState( '' )
