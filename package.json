@@ -32,7 +32,11 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "base-64": "^0.1.0",
+<<<<<<< HEAD
     "clsx": "^1.1.1",
+=======
+    "chartist": "^0.11.4",
+>>>>>>> v3.1.0
     "color": "^3.0.0",
     "country-emoji": "^1.4.1",
     "css-loader": "^0.28.11",
@@ -79,6 +83,7 @@
     "ramda": "^0.27.0",
     "raw-loader": "^3.0.0",
     "react": "^16.13.1",
+    "react-chartist": "^0.14.3",
     "react-dnd": "^9.5.1",
     "react-dnd-html5-backend": "^9.5.1",
     "react-dom": "^16.8.0",
@@ -135,6 +140,7 @@
     "zstd-codec": "^0.1.1"
   },
   "devDependencies": {
+    "source-map-loader": "^1.0.0",
     "babel-eslint": "^8.2.5",
     "babel-jest": "23.2.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",

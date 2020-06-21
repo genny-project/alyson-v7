@@ -1,10 +1,8 @@
-import platformSpecificConfig from './config';
+import platformSpecificConfig from './config'
 
-export { default as routes } from './routes';
+export { default as routes } from './routes'
 
-// The reason we're using `require` instead of `import`?
-// See: https://github.com/webpack/webpack/issues/6584
-const merge = require( 'deepmerge' );
+const merge = require('deepmerge')
 
 /*  /api/events/init?url=${protocol + hostname}
     this is how we pass the current website to the bridge  */
@@ -24,7 +22,6 @@ const globalConfig = {
       },
     },
   },
-};
+}
 
-/* Allow the platform specific config to overwrite any global config keys. */
-export default merge( globalConfig, platformSpecificConfig );
+export default merge(globalConfig, platformSpecificConfig)

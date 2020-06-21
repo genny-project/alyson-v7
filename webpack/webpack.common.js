@@ -1,7 +1,7 @@
-const path = require( 'path' );
-const webpack = require( 'webpack' );
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
-const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 // This is needed for webpack to compile JavaScript.
 // Many OSS React Native packages are not compiled to ES5 before being
@@ -12,9 +12,9 @@ const babelLoaderConfiguration = {
   test: /\.js$/,
   // Add every directory that needs to be compiled by Babel during the build.
   include: [
-    path.resolve( __dirname, '../web/index.js' ),
-    path.resolve( __dirname, '../src' ),
-    path.resolve( __dirname, '../node_modules/react-native-uncompiled' ),
+    path.resolve(__dirname, '../web/index.js'),
+    path.resolve(__dirname, '../src'),
+    path.resolve(__dirname, '../node_modules/react-native-uncompiled'),
   ],
   use: {
     loader: 'babel-loader',
@@ -27,20 +27,19 @@ const babelLoaderConfiguration = {
       plugins: [
         'react-native-web',
         'transform-async-to-generator',
-        ['transform-runtime', {
-          polyfill: false,
-          regenerator: true,
-        }],
+        [
+          'transform-runtime',
+          {
+            polyfill: false,
+            regenerator: true,
+          },
+        ],
       ],
       // The 'react-native' preset is recommended to match React Native's packager
-      presets: [
-        'react-native',
-        'react',
-        'react-native-dotenv',
-      ],
+      presets: ['react-native', 'react', 'react-native-dotenv'],
     },
   },
-};
+}
 
 // This is needed for webpack to import static images in JavaScript files.
 const imageLoaderConfiguration = {
@@ -51,26 +50,23 @@ const imageLoaderConfiguration = {
       name: '[name].[ext]',
     },
   },
-};
+}
 
 const styleLoaderConfiguration = {
   test: /\.css$/,
-  use: [
-    { loader: 'style-loader' },
-    { loader: 'css-loader' },
-  ],
-};
+  use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+}
 
 module.exports = {
-  context: path.resolve( __dirname, '../src' ),
+  context: path.resolve(__dirname, '../src'),
 
   // your web-specific entry file
-  entry: path.resolve( __dirname, '../web/index.js' ),
+  entry: path.resolve(__dirname, '../web/index.js'),
 
   // configures where the build ends up
   output: {
     filename: 'index_bundle.js',
-    path: path.resolve( __dirname, '../dist' ),
+    path: path.resolve(__dirname, '../dist'),
     publicPath: '/',
   },
 
@@ -80,9 +76,14 @@ module.exports = {
     rules: [
       babelLoaderConfiguration,
       imageLoaderConfiguration,
-      { test: /\.txt$/i, use: 'raw-loader'},
-      {test: /\.TextFile$/i,use: 'raw-loader'},
-      { test: /\.css$/, use: [ 'style-loader', 'css-loader' ]},
+      { test: /\.txt$/i, use: 'raw-loader' },
+      { test: /\.TextFile$/i, use: 'raw-loader' },
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
     ],
   },
 
@@ -91,22 +92,20 @@ module.exports = {
     // builds to eliminate development checks and reduce build size. You may
     // wish to include additional optimizations.
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify( process.env.NODE_ENV || 'development' ),
-      '__DEV__': process.env.NODE_ENV !== 'production' || true,
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      __DEV__: process.env.NODE_ENV !== 'production' || true,
     }),
     new HtmlWebpackPlugin({
       template: '../web/index.html',
     }),
     new webpack.NamedModulesPlugin(),
 
-    new CopyWebpackPlugin(
-      [
-        {
-          from: path.resolve( __dirname, '../public' ),
-          to: path.resolve( __dirname, '../dist' ),
-        },
-      ]
-    ),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../public'),
+        to: path.resolve(__dirname, '../dist'),
+      },
+    ]),
   ],
 
   resolve: {
@@ -121,7 +120,7 @@ module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   devServer: {
     port: process.env.PORT || 3000,
-    contentBase: path.resolve( __dirname, 'dist' ),
+    contentBase: path.resolve(__dirname, 'dist'),
     historyApiFallback: true,
   },
-};
+}
