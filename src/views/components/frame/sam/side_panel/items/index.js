@@ -1,20 +1,19 @@
 import React from 'react'
-import { Grid, Tooltip, Divider, IconButton } from '@material-ui/core'
+import { Grid, Tooltip, IconButton } from '@material-ui/core'
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import EventIcon from '@material-ui/icons/Event';
-import { NotesContext } from '../../contexts'
+import { NoteBarContext } from '../../contexts'
 
 import useStyles from './styles'
 
 const SideBarItems = () => {
   const classes = useStyles();
-  const { setShowNotes } = React.useContext( NotesContext )
+  const { setShowNoteBar } = React.useContext( NoteBarContext )
 
   return (
     <Grid
       container
-      className={classes.header}
       direction="column"
       justify="center"
       alignItems="center"
@@ -44,7 +43,7 @@ const SideBarItems = () => {
           <IconButton
             color="primary"
             size="large"
-            onClick={() => setShowNotes( true )}
+            onClick={() => setShowNoteBar( true )}
           >
             <NoteAddIcon
               fontSize="large"

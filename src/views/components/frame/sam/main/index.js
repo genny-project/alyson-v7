@@ -114,6 +114,7 @@ const Main = ({
             >
               <Fab
                 color="primary"
+                size="small"
                 onClick={toggleSidePanel}
                 className={classes.fab}
               >
