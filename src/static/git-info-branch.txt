@@ -1,1 +1,1 @@
-sideBarPanel
+side-bar

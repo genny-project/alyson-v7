@@ -32,10 +32,10 @@ const RowItem = ({ key, label, value, code, rating, setRating, classes, type }) 
 
 const printIntern = [
   { label: 'Mobile', code: 'mobile' },
-  { label: 'Industry', code: 'assoc_industry' },
   { label: 'Education Provider', code: 'assoc_ep' },
   { label: 'Current Course', code: 'current_course' },
   { label: 'Student Id', code: 'student_id' },
+  { label: 'Industry', code: 'assoc_industry' },
   { label: 'Specialisation', code: 'assoc_occupation' },
   { label: 'Rating', code: 'rating', type: 'rating' },
   { label: 'Transport Options', code: 'transport_options' },
@@ -48,13 +48,13 @@ const printBeg = [
   { label: 'Host Company Rep', code: 'assoc_hcr' },
   { label: 'Intern Supervisor', code: 'assoc_supervisor' },
   { label: 'Internship Address', code: 'address_full' },
-  { label: 'Industry', code: 'assoc_industry' },
+  { label: 'Industry', code: 'industry' },
   { label: 'Specialisation', code: 'assoc_occupation' },
   { label: 'Start Date', code: 'start_date' },
   { label: 'Start Time', code: 'time', type: 'time' },
   { label: 'Days Per Week', code: 'days_per_week' },
-  { label: 'Duration', code: 'assoc_internship_duration' },
-  { label: 'Number of Interns', code: 'assoc_num_interns' },
+  { label: 'Duration', code: 'internship_duration_stripped' },
+  { label: 'Number of Interns', code: 'current_interns' },
 ]
 
 const printCpy = [
@@ -103,6 +103,8 @@ const printApp = [
 const Details = ({ attributes, targetCode }) => {
   const detailView = prop(targetCode, attributes)
 
+  console.log(detailView)
+
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'valueString'], detailView) || ''
 
   const detailType = contains('PRI_IS_INTERN', keys(detailView))
@@ -118,7 +120,7 @@ const Details = ({ attributes, targetCode }) => {
             ? printEp
             : contains('PRI_IS_EDU_PRO_REP', keys(detailView))
               ? printEpr
-              : contains('PRI_IS_APPLICATION', keys(detailView))
+              : contains('PRI_COMPASS', keys(detailView))
                 ? printApp
                 : printCpy
 

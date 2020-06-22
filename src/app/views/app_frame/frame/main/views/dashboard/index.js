@@ -1,61 +1,134 @@
-import React from 'react'
-import { map, compose, values, prop, replace, reject, includes, any } from 'ramda'
-import {
-  Typography,
-  GridList,
-  GridListTile,
-  GridListTileBar,
-  ListSubheader,
-  IconButton,
-} from '@material-ui/core'
+import React, { useState } from 'react'
+import { isEmpty, not, path } from 'ramda'
+import { Typography, Grid, Divider, Badge, Container } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
-import { makeStyles } from '@material-ui/core/styles'
-import ChartistGraph from 'react-chartist'
+import Loader from 'react-spinners/ClimbingBoxLoader'
 
-const data = {
-  labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10'],
-  series: [[1, 2, 4, 8, 6]],
+import useStyles from './styles'
+
+const InfoBadge = ({ onClick, label, value }) => {
+  const [showBadge, setShowBadge] = useState(false)
+
+  const classes = useStyles()
+
+  return (
+    <Badge invisible={!showBadge} badgeContent={<InfoIcon />}>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justify="center"
+        onMouseEnter={() => setShowBadge(true)}
+        onMouseLeave={() => setShowBadge(false)}
+        className={classes.textButton}
+        onClick={onClick}
+      >
+        <Grid item>
+          <Typography variant="h4">{value}</Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="h6">{label}</Typography>
+        </Grid>
+      </Grid>
+    </Badge>
+  )
 }
 
-const options = {
-  high: 20,
-  low: 0,
-  axisX: {
-    labelInterpolationFnc: function(value, index) {
-      return index % 2 === 0 ? value : null
-    },
-  },
-}
+const Dashboard = ({ projectName, setViewing, dashboard }) => {
+  const viewInterns = () =>
+    setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
+  const viewInternships = () =>
+    setViewing({
+      parentCode: 'QUE_TREE_ITEM_INTENSHIPS_GRP',
+      code: 'QUE_TREE_ITEM_INTENSHIPS_ACTIVE',
+    })
 
-const Dashboard = ({ projectName, drawerItems, attributes }) => {
-  const tiles = compose(
-    reject(title => any(test => includes(test, title))(['LOGO', 'VIEW', 'DASHBOARD'])),
-    map(replace('TREE_ITEM_', '')),
-    map(prop('name')),
-    values,
-  )(drawerItems)
+  const classes = useStyles()
 
-  return projectName === 'Safe Traffic Town' ? (
-    <Typography>{`STT Dashboard`}</Typography>
-  ) : (
-    <GridList cellHeight={180}>
-      {map(
-        title => (
-          <GridListTile>
-            <ChartistGraph data={data} options={options} type={'Bar'} />
-            <GridListTileBar
-              title={title}
-              actionIcon={
-                <IconButton color="inherit" aria-label={`info about ${title}`}>
-                  <InfoIcon color="inherit" />
-                </IconButton>
-              }
-            />
-          </GridListTile>
-        ),
-        tiles,
-      )}
-    </GridList>
+  if (not(isEmpty(dashboard))) {
+    return projectName === 'Safe Traffic Town' ? (
+      <Typography>{`STT Dashboard`}</Typography>
+    ) : (
+      <Grid
+        container
+        direction="column"
+        justify="center"
+        alignItems="stretch"
+        spacing={10}
+        className={classes.dashboardContainer}
+      >
+        <Grid item className={classes.topBar}>
+          <Grid
+            container
+            justify="space-around"
+            alignItems="center"
+            direction="row"
+            className={classes.fullWidth}
+          >
+            <Grid item>
+              <InfoBadge
+                label={'All Interns'}
+                value={path(['PRI_COUNT_ALL_INTERNS', 'value'], dashboard)}
+                onClick={viewInterns}
+              />
+            </Grid>
+            <Grid item>
+              <Divider orientation="vertical" className={classes.divider} />
+            </Grid>
+            <Grid item>
+              <InfoBadge
+                onClick={viewInternships}
+                label={'All Internships'}
+                value={path(['PRI_COUNT_ALL_INTERNSHIPS', 'value'], dashboard)}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item className={classes.fullWidth}>
+          <Grid container direction="row" justify="space-between" alignItems="center" spacing={9}>
+            <Grid item className={classes.active}>
+              <InfoBadge
+                onClick={viewInterns}
+                value={path(['PRI_COUNT_APPLIED_INTERNS', 'value'], dashboard)}
+                label={'Applied Interns'}
+              />
+            </Grid>
+            <Grid item className={classes.placed}>
+              <InfoBadge
+                onClick={viewInterns}
+                value={path(['PRI_COUNT_PLACED_INTERNS', 'value'], dashboard)}
+                label={'Placed Interns'}
+              />
+            </Grid>
+            <Grid item className={classes.progress}>
+              <InfoBadge
+                onClick={viewInternships}
+                value={path(['PRI_COUNT_IN_PROGRESS_INTERNSHIPS', 'value'], dashboard)}
+                label={'In Progress Internships'}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    )
+  }
+
+  return (
+    <Grid
+      container
+      direction="column"
+      justify="center"
+      alignItems="center"
+      className={classes.loading}
+      spacing={4}
+    >
+      <Grid item>
+        <Loader size={20} />
+      </Grid>
+      <Grid item>
+        <Typography>{`Preparing Dashboard`}</Typography>
+      </Grid>
+    </Grid>
   )
 }
 

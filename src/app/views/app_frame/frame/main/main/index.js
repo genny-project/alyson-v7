@@ -25,6 +25,7 @@ const Main = ({
   drawerItems,
   dialogContent,
   setDialogContent,
+  dashboard,
 }) => {
   const classes = useStyles()
 
@@ -62,18 +63,16 @@ const Main = ({
             </Typography>
           </Grid>
         </Grid>
+      ) : view === 'DASHBOARD' ? (
+        <Dashboard
+          user={user}
+          projectName={projectName}
+          setViewing={setViewing}
+          dashboard={dashboard}
+        />
       ) : (
         <Paper className={classes.mainPaper}>
-          {view === 'DASHBOARD' ? (
-            <Dashboard
-              frames={frames}
-              asks={asks}
-              user={user}
-              attributes={attributes}
-              projectName={projectName}
-              drawerItems={drawerItems}
-            />
-          ) : view === 'AGREEMENT' || view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
+          {view === 'AGREEMENT' || view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={
                 view === 'AGREEMENT' ? prop( 'QUE_AGREEMENT_DOCUMENT_INTERN_FORM_GRP', asks ) : view
