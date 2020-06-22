@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Table from 'material-table'
 import { Icon, Grid, Tooltip } from '@material-ui/core'
-import MoreIcon from '@material-ui/icons/MoreHoriz'
+import InfoIcon from '@material-ui/icons/Info'
 
 import { map, length } from 'ramda'
 import {
@@ -88,7 +88,9 @@ const TableView = ({ currentSearch, setViewing }) => {
                           actions || [],
                         )
                       ) : (
-                        <MoreIcon color="action" className={classes.moreIcon} />
+                        <Grid item>
+                          <InfoIcon color="action" className={classes.moreIcon} />
+                        </Grid>
                       )}
                     </Grid>
                   </div>

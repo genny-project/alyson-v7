@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
   },
   moreIcon: {
-    padding: theme.spacing(2),
+    marginLeft: theme.spacing(1),
   },
 }))
 

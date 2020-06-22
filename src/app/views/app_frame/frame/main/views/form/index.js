@@ -31,8 +31,6 @@ const Form = ({ setViewing, setLoading, formView, attributes, baseEntities, goog
       onSubmit: onSubmit({ parentCode, rootCode, setLoading, setViewing }),
     }
 
-    console.log(formView)
-
     return (
       <Grid
         container
