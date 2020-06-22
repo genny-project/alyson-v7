@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Table from 'material-table'
-import { Icon, Grid, Tooltip } from '@material-ui/core'
+import { Icon, Grid, Tooltip, IconButton, Typography } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
+import NextIcon from '@material-ui/icons/NavigateNext'
+import PreviousIcon from '@material-ui/icons/NavigateBefore'
 
 import { map, length } from 'ramda'
 import {
@@ -17,6 +19,15 @@ import {
 import useStyles from './styles'
 
 const TableView = ({ currentSearch, setViewing }) => {
+  const [loadingPage, setLoadingPage] = useState(false)
+
+  useEffect(
+    () => {
+      setLoadingPage(false)
+    },
+    [currentSearch],
+  )
+
   const table = getTable(currentSearch)
 
   if (table) {
@@ -24,6 +35,14 @@ const TableView = ({ currentSearch, setViewing }) => {
     const columns = getColumns(table)
     const data = getData(table)
     const actions = getActions(table)
+
+    const {
+      metaData: {
+        PRI_TOTAL_RESULTS: { valueInteger: totalResults },
+        SCH_PAGE_SIZE: { valueInteger: pageSize },
+        SCH_PAGE_START: { valueInteger: pageStart },
+      },
+    } = table
 
     const classes = useStyles()
 
@@ -33,6 +52,11 @@ const TableView = ({ currentSearch, setViewing }) => {
           title={title || ''}
           columns={columns}
           data={data}
+          isLoading={loadingPage}
+          options={{
+            pageSize,
+          }}
+          onChangePage={props => console.log(props)}
           actions={map(({ attributeCode, attributeName, baseEntityCode }) => ({
             icon: getIcon(attributeName),
             tooltip: attributeName,
@@ -40,6 +64,52 @@ const TableView = ({ currentSearch, setViewing }) => {
               setViewing(makeActionData({ targetCode, attributeCode, baseEntityCode })),
           }))(actions)}
           components={{
+            Pagination: props => (
+              <Grid
+                className={classes.footer}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item>
+                  <IconButton
+                    disabled={pageStart === 0}
+                    onClick={() => {
+                      window.scroll({ top: 0 })
+                      setLoadingPage(true)
+                      setViewing({
+                        code: 'QUE_TABLE_PREVIOUS_BTN',
+                        parentCode: 'QUE_TABLE_RESULTS_GRP',
+                      })
+                    }}
+                  >
+                    <PreviousIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <Typography color="textSecondary">{`${pageStart} - ${pageStart + pageSize} of ${
+                    totalResults === -1 ? 1000 : totalResults
+                  }`}</Typography>
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    disabled={totalResults === -1 ? false : pageStart + pageSize >= totalResults}
+                    onClick={() => {
+                      window.scroll({ top: 0 })
+                      setLoadingPage(true)
+                      setViewing({
+                        code: 'QUE_TABLE_NEXT_BTN',
+                        parentCode: 'QUE_TABLE_RESULTS_GRP',
+                      })
+                    }}
+                  >
+                    <NextIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ),
             Container: props => <div>{props.children}</div>,
             Actions: ({ actions, data }) => {
               const [show, setShow] = useState(false)
