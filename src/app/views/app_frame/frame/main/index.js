@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { contains, prop, replace, has, pathOr } from 'ramda'
+import { includes, prop, replace, has, pathOr, length } from 'ramda'
 import { connect } from 'react-redux'
 import { Bridge } from '../../../../../utils/vertx/index'
 
@@ -53,10 +53,11 @@ const Sam = ({
         )
           setLoading(true)
 
-        if (contains('MENU', prop('code', viewing) || '')) {
+        if (includes('MENU', prop('code', viewing) || '')) {
           setStaleTarget(
             prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
           )
+          setLoading(true)
         }
 
         Bridge.sendEvent({
@@ -72,7 +73,7 @@ const Sam = ({
 
   useEffect(
     () => {
-      if (contains('MENU', prop('code', viewing) || '')) {
+      if (includes('MENU', prop('code', viewing) || '')) {
         if (
           prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
           staleTarget
@@ -84,7 +85,7 @@ const Sam = ({
         setDialogContent(null)
       }
     },
-    [asks, currentSearch],
+    [asks, currentSearch, baseEntities],
   )
 
   return (
