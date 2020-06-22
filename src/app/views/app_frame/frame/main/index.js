@@ -48,10 +48,14 @@ const Sam = ({
     () => {
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (
-          (viewing.parentCode && !has(viewing.targetCode, baseEntities)) ||
+          (!viewing.code === 'QUE_TABLE_NEXT_BTN' &&
+            !viewing.code === 'QUE_TABLE_PREVIOUS_BTN' &&
+            viewing.parentCode &&
+            !has(viewing.targetCode, baseEntities)) ||
           viewing.code === 'QUE_TAB_BUCKET_VIEW'
-        )
+        ) {
           setLoading(true)
+        }
 
         if (includes('MENU', prop('code', viewing) || '')) {
           setStaleTarget(

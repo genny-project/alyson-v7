@@ -10,6 +10,9 @@ const useStyles = makeStyles(theme => ({
   moreIcon: {
     marginLeft: theme.spacing(1),
   },
+  footer: {
+    margin: theme.spacing(1),
+  },
 }))
 
 export default useStyles
