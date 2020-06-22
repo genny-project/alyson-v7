@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from 'react'
 
-<<<<<<< HEAD:src/views/components/frame/sam/main/index.js
-import { prop } from 'ramda';
-import { Paper, Grid, Typography, Fab, Tooltip } from '@material-ui/core';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded';
-import { Form, Table, Details, Dashboard, Unity, Bucket } from '../views';
-import getView from './helpers/get-view';
-import useStyles from './styles';
-import { SidePanelContext } from '../contexts'
-=======
 import { prop, isEmpty } from 'ramda'
 import { Paper, Grid, Typography, DialogTitle, Dialog } from '@material-ui/core'
-
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded';
 import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm } from '../views'
 import getView from './helpers/get-view'
 import getApplication from './helpers/get-application'
 import useStyles from './styles'
->>>>>>> v3.1.0:src/app/views/app_frame/frame/main/main/index.js
+import { SidePanelContext } from '../contexts'
 
 const Main = ({
   attributes,
@@ -37,22 +28,17 @@ const Main = ({
 }) => {
   const classes = useStyles()
 
-  console.log(viewing)
-
-<<<<<<< HEAD:src/views/components/frame/sam/main/index.js
-  const { toggleSidePanel } = React.useContext( SidePanelContext )
-=======
   const view = getView({ viewing, asks, frames })
-  const application = getApplication(attributes)
+  const application = getApplication( attributes )
 
   const [current, setCurrent] = useState({})
->>>>>>> v3.1.0:src/app/views/app_frame/frame/main/main/index.js
+  const { toggleSidePanel } = React.useContext( SidePanelContext )
 
   return (
     <div className={classes.root}>
       <Dialog open={view === 'APPLICATION'}>
         <DialogForm
-          form={prop('QUE_ADD_APPLICATION_GRP', asks)}
+          form={prop( 'QUE_ADD_APPLICATION_GRP', asks )}
           asks={asks}
           baseEntities={baseEntities}
           attributes={attributes}
@@ -90,7 +76,7 @@ const Main = ({
           ) : view === 'AGREEMENT' || view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={
-                view === 'AGREEMENT' ? prop('QUE_AGREEMENT_DOCUMENT_INTERN_FORM_GRP', asks) : view
+                view === 'AGREEMENT' ? prop( 'QUE_AGREEMENT_DOCUMENT_INTERN_FORM_GRP', asks ) : view
               }
               asks={asks}
               baseEntities={baseEntities}
@@ -131,7 +117,10 @@ const Main = ({
               setCurrent={setCurrent}
             />
           ) : (
-            <Table setViewing={setViewing} currentSearch={currentSearch} />
+            <Table
+              setViewing={setViewing}
+              currentSearch={currentSearch}
+            />
           )}
           {
             <Tooltip
