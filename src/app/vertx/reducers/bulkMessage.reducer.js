@@ -27,6 +27,27 @@ const isMetaData = compose(
 )
 
 const reducer = (state = initialState, { type, payload }) => {
+  if (type === 'BASE_ENTITY_MESSAGE') {
+    const messages = prop('items', payload)
+    const firstMessage = head(messages)
+    if (prop('code', firstMessage) === 'GRP_DASHBOARD_COUNTS') {
+      const dashboard = {
+        ...mapAndMergeAll(({ attributeName, value, attributeCode, baseEntityCode }) => ({
+          [attributeCode]: { value, attributeName, baseEntityCode },
+        }))(prop('baseEntityAttributes', firstMessage)),
+      }
+
+      return {
+        ...state,
+        ...{
+          SAM: {
+            ...pathOr({}, ['SAM'], state),
+            dashboard: { ...dashboard },
+          },
+        },
+      }
+    }
+  }
   if (type === 'SAM_MSG') {
     const messages = prop('messages', payload) || []
     const dataMessages = filter(has('parentCode'), messages)
