@@ -51,7 +51,15 @@ const getTable = currentSearch =>
         searchCode: head(keys(currentSearch)),
         ...prop(head(keys(currentSearch)), currentSearch),
       }
-    : false
+    : {
+        data: 'initializing',
+        metaData: {
+          PRI_TOTAL_RESULTS: {},
+          SCH_PAGE_SIZE: {},
+          SCH_PAGE_START: {},
+          SCH_TITLE: { value: 'Loading...' },
+        },
+      }
 
 const icons = {
   View: 'list',
