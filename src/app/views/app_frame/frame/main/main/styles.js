@@ -23,6 +23,11 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(10),
     width: '100%',
   },
+  fab: {
+    position: 'fixed',
+    bottom: theme.spacing( 4 ),
+    right: theme.spacing( 1 ),
+  },
 }))
 
 export default useStyles
