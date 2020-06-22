@@ -27,13 +27,14 @@ const Sam = ({
   user = {},
   attributes = {},
   keycloak = {},
+  dashboard,
   currentSearch,
 }) => {
   const googleApiKey = getGoogleApiKey(keycloak)
   const agency = getAgency(user)
   const agencyCompany = getAgencyCompany(agency)(baseEntities)
 
-  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD' })
+  const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' })
   const [dialogContent, setDialogContent] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -129,6 +130,7 @@ const Sam = ({
           dialogContent={dialogContent}
           setDialogContent={setDialogContent}
           drawerItems={getDrawerItems(frames, asks)}
+          dashboard={dashboard}
         />
       </div>
     </ThemeProvider>
@@ -136,6 +138,7 @@ const Sam = ({
 }
 
 const mapStateToProps = state => ({
+  dashboard: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'dashboard'], state),
   currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
