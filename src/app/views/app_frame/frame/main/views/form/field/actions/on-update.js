@@ -1,9 +1,14 @@
 import Bridge from '../../../../../../../../../utils/vertx/Bridge'
 
-const onUpdate = ({ ask, value }) => {
+const getFormattedValue = value =>
+  typeof value === 'object' || typeof value === 'string' ? JSON.stringify(value) : value
+
+const makeOnUpdate = ({ setErrors, mandatory, setPristine }) => ({ ask, value }) => {
   const { askId, attributeCode, questionCode, sourceCode, targetCode, weight } = ask
 
-  let finalValue = value
+  setPristine(false)
+  setErrors(errors => ({ ...errors, [questionCode]: mandatory && !value }))
+
   let finalAttributeCode = attributeCode
 
   if (attributeCode.indexOf('ADDRESS_FULL') !== -1) {
@@ -11,22 +16,6 @@ const onUpdate = ({ ask, value }) => {
   } else if (attributeCode.indexOf('PRI_RATING') !== -1) {
     finalAttributeCode = 'PRI_RATING_RAW'
   }
-
-  /* If the form is an object or an array, stringify it. */
-  if (typeof finalValue === 'object' || typeof finalValue === 'array') {
-    finalValue = JSON.stringify(finalValue)
-  }
-
-  console.warn('form attempting to send answer:', {
-    askId,
-    attributeCode: finalAttributeCode,
-    sourceCode,
-    targetCode,
-    code: questionCode,
-    identifier: questionCode,
-    weight,
-    value: finalValue,
-  })
 
   Bridge.sendFormattedAnswer({
     askId,
@@ -36,8 +25,8 @@ const onUpdate = ({ ask, value }) => {
     code: questionCode,
     identifier: questionCode,
     weight,
-    value: finalValue,
+    value: getFormattedValue(value),
   })
 }
 
-export default onUpdate
+export default makeOnUpdate
