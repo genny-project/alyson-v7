@@ -1,16 +1,16 @@
 import React from 'react'
-
-import { SidePanelContext, NoteBarContext } from '../../contexts'
-
 import { Drawer, Tooltip, Grid, IconButton, Typography, Divider } from '@material-ui/core'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
+
+import { NoteBarContext } from '../../contexts'
+
 import Notes from '../../components/notes'
 
 import useStyles from './styles'
 
-const NoteBar = ({ sidePanelOpen, toggleSidePanel }) => {
-  const { setShowNoteBar } = React.useContext(NoteBarContext)
+const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
+  const { setShowNoteBar } = React.useContext( NoteBarContext )
 
   const classes = useStyles()
 
@@ -34,19 +34,30 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel }) => {
             className={classes.topBar}
           >
             <Grid>
-              <Typography>Add Note</Typography>
+              <Typography>
+Add Note
+              </Typography>
             </Grid>
             <div className={classes.grow} />
             <Grid>
-              <Tooltip title="search" placement="top-start">
+              <Tooltip
+                title="search"
+                placement="top-start"
+              >
                 <IconButton color="primary">
                   <SearchIcon color="inherit" />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid>
-              <Tooltip title="close notes" placement="top-start">
-                <IconButton color="primary" onClick={() => setShowNoteBar(false)}>
+              <Tooltip
+                title="close notes"
+                placement="top-start"
+              >
+                <IconButton
+                  color="primary"
+                  onClick={() => setShowNoteBar( false )}
+                >
                   <ClearIcon color="inherit" />
                 </IconButton>
               </Tooltip>
@@ -54,7 +65,7 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel }) => {
           </Grid>
           <Divider />
           <Grid>
-            <Notes />
+            <Notes baseEntities={baseEntities} />
           </Grid>
         </div>
       </Drawer>

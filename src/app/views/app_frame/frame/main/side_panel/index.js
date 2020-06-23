@@ -11,10 +11,9 @@ import NoteBar from './note_bar'
 
 import useStyles from './styles'
 
-const SidePanel = ({ sidePanelOpen, toggleSidePanel }) => {
-
-  const [showNotes, setShowNotes] = useState(false)
-  const [showNoteBar, setShowNoteBar] = useState(false)
+const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
+  const [showNotes, setShowNotes] = useState( false )
+  const [showNoteBar, setShowNoteBar] = useState( false )
 
   const classes = useStyles({ sidePanelOpen })
 
@@ -30,12 +29,25 @@ const SidePanel = ({ sidePanelOpen, toggleSidePanel }) => {
             onClose={toggleSidePanel}
             ModalProps={{ keepMounted: true }}
           >
-            {showNoteBar && <NoteBar sidePanelOpen={sidePanelOpen}  toggleSidePanel={toggleSidePanel}/>}
+            {showNoteBar && (
+            <NoteBar
+              sidePanelOpen={sidePanelOpen}
+              toggleSidePanel={toggleSidePanel}
+              baseEntities={baseEntities}
+            />
+            )}
             <div>
               <SideBarItems />
               <div className={classes.grow} />
-              <Grid container justify="center" alignItems="center">
-                <Tooltip title="Hide side panel" placement="top-start">
+              <Grid
+                container
+                justify="center"
+                alignItems="center"
+              >
+                <Tooltip
+                  title="Hide side panel"
+                  placement="top-start"
+                >
                   <IconButton onClick={toggleSidePanel}>
                     {sidePanelOpen ? <NextIcon color="inherit" /> : <CloseIcon color="inherit" />}
                   </IconButton>

@@ -18,7 +18,6 @@ import SidePanel from './side_panel'
 import getDataForEvent from './helpers/get-data-for-event'
 import getGoogleApiKey from './helpers/get-google-api-key'
 import makeTheme from './helpers/make-theme'
-import { SidePanelContext } from './contexts'
 
 const Sam = ({
   projectName = '',
@@ -32,48 +31,42 @@ const Sam = ({
   dashboard,
   currentSearch,
 }) => {
-  const googleApiKey = getGoogleApiKey(keycloak)
-  const agency = getAgency(user)
-  const agencyCompany = getAgencyCompany(agency)(baseEntities)
+  const googleApiKey = getGoogleApiKey( keycloak )
+  const agency = getAgency( user )
+  const agencyCompany = getAgencyCompany( agency )( baseEntities )
 
   const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' })
-  const [dialogContent, setDialogContent] = useState(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [staleTarget, setStaleTarget] = useState('')
-  const [sidePanelOpen, setSidePanelOpen] = useState(false)
-  const toggleSidePanel = () => setSidePanelOpen(sidePanelOpen => !sidePanelOpen)
+  const [dialogContent, setDialogContent] = useState( null )
+  const [sidebarOpen, setSidebarOpen] = useState( false )
+  const [loading, setLoading] = useState( false )
+  const [staleTarget, setStaleTarget] = useState( '' )
+  const [sidePanelOpen, setSidePanelOpen] = useState( false )
+  const toggleSidePanel = () => setSidePanelOpen( sidePanelOpen => !sidePanelOpen )
 
-  const dataForEvent = getDataForEvent(viewing, user)
+  const dataForEvent = getDataForEvent( viewing, user )
 
   const theme = makeTheme({ attributes, asks })
 
-  const sidePanelContextValue = React.useMemo(
-    () => ({
-      sidePanelOpen,
-      toggleSidePanel,
-    }),
-    [sidePanelOpen],
-  )
+  console.log( 'baseEntities', baseEntities )
 
   useEffect(
     () => {
-      if (viewing.code || viewing.parentCode || viewing.targetCode) {
+      if ( viewing.code || viewing.parentCode || viewing.targetCode ) {
         if (
-          (!viewing.code === 'QUE_TABLE_NEXT_BTN' &&
+          ( !viewing.code === 'QUE_TABLE_NEXT_BTN' &&
             !viewing.code === 'QUE_TABLE_PREVIOUS_BTN' &&
             viewing.parentCode &&
-            !has(viewing.targetCode, baseEntities)) ||
+            !has( viewing.targetCode, baseEntities )) ||
           viewing.code === 'QUE_TAB_BUCKET_VIEW'
         ) {
-          setLoading(true)
+          setLoading( true )
         }
 
-        if (includes('MENU', prop('code', viewing) || '')) {
+        if ( includes( 'MENU', prop( 'code', viewing ) || '' )) {
           setStaleTarget(
-            prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
+            prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}),
           )
-          setLoading(true)
+          setLoading( true )
         }
 
         Bridge.sendEvent({
@@ -89,16 +82,16 @@ const Sam = ({
 
   useEffect(
     () => {
-      if (includes('MENU', prop('code', viewing) || '')) {
+      if ( includes( 'MENU', prop( 'code', viewing ) || '' )) {
         if (
-          prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
+          prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}) !==
           staleTarget
         ) {
-          setLoading(false)
+          setLoading( false )
         }
       } else {
-        setLoading(false)
-        setDialogContent(null)
+        setLoading( false )
+        setDialogContent( null )
       }
     },
     [asks, currentSearch, baseEntities],
@@ -106,58 +99,62 @@ const Sam = ({
 
   return (
     <ThemeProvider theme={theme}>
-        <div>
-          <AppBar
-            items={getAppBarItems(frames, asks, themes)}
-            asks={asks}
-            frames={frames}
-            user={user}
-            setViewing={setViewing}
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-            loading={loading}
-            setLoading={setLoading}
-          />
-          <Sidebar
-            items={getDrawerItems(frames, asks, themes)}
-            asks={asks}
-            frames={frames}
-            user={user}
-            agencyCompany={agencyCompany}
-            setViewing={setViewing}
-            viewing={viewing}
-            attributes={attributes}
-            open={sidebarOpen}
-            setOpen={setSidebarOpen}
-            projectName={projectName}
-          />
-          <Main
-            loading={loading}
-            setLoading={setLoading}
-            viewing={viewing}
-            setViewing={setViewing}
-            asks={asks}
-            frames={frames}
-            user={user}
-            baseEntities={baseEntities}
-            googleApiKey={googleApiKey}
-            attributes={attributes}
-            projectName={projectName}
-            currentSearch={currentSearch}
-            dialogContent={dialogContent}
-            setDialogContent={setDialogContent}
-            drawerItems={getDrawerItems(frames, asks)}
-            dashboard={dashboard}
-          />
-        </div>
-        <SidePanel sidePanelOpen={sidePanelOpen} toggleSidePanel={toggleSidePanel}/>
+      <div>
+        <AppBar
+          items={getAppBarItems( frames, asks, themes )}
+          asks={asks}
+          frames={frames}
+          user={user}
+          setViewing={setViewing}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          loading={loading}
+          setLoading={setLoading}
+        />
+        <Sidebar
+          items={getDrawerItems( frames, asks, themes )}
+          asks={asks}
+          frames={frames}
+          user={user}
+          agencyCompany={agencyCompany}
+          setViewing={setViewing}
+          viewing={viewing}
+          attributes={attributes}
+          open={sidebarOpen}
+          setOpen={setSidebarOpen}
+          projectName={projectName}
+        />
+        <Main
+          loading={loading}
+          setLoading={setLoading}
+          viewing={viewing}
+          setViewing={setViewing}
+          asks={asks}
+          frames={frames}
+          user={user}
+          baseEntities={baseEntities}
+          googleApiKey={googleApiKey}
+          attributes={attributes}
+          projectName={projectName}
+          currentSearch={currentSearch}
+          dialogContent={dialogContent}
+          setDialogContent={setDialogContent}
+          drawerItems={getDrawerItems( frames, asks )}
+          dashboard={dashboard}
+        />
+      </div>
+      <SidePanel
+        sidePanelOpen={sidePanelOpen}
+        toggleSidePanel={toggleSidePanel}
+        baseEntities={baseEntities}
+      />
     </ThemeProvider>
   )
 }
 
 const mapStateToProps = state => ({
-  dashboard: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'dashboard'], state),
-  currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
+  dashboard: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'dashboard'], state ),
+  currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state ),
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
   asks: state.vertx.asks,
@@ -167,4 +164,4 @@ const mapStateToProps = state => ({
   keycloak: state.keycloak,
 })
 
-export default connect(mapStateToProps)(Sam)
+export default connect( mapStateToProps )( Sam )

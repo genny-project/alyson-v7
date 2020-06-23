@@ -1,9 +1,12 @@
 /* eslint-disable react/jsx-key */
 import React from 'react'
+
 import { Button,TextField, Grid, Card, CardActionArea, CardContent, CardActions, Typography, CardHeader } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import clsx from 'clsx';
+
+import { NotesApi } from '../../../../../../apis'
 
 import useStyles from './styles';
 
@@ -11,23 +14,7 @@ const generateId = () => {
   return `_${Math.random().toString( 30 ).substr( 1, 7 )}`
 }
 
-const useFetch = ( url ) => {
-  const [data, setData] = React.useState( null )
-  const [loading, setLoading] = React.useState( true )
-
-  React.useEffect( async () => {
-    const response = await fetch( url )
-    const items = await response.json()
-    const data = await items.data
-
-    setData( data )
-    setLoading( false )
-  }, [] )
-
-  return { data, loading }
-}
-
-const Notes = () => {
+const Notes = ({ baseEntities }) => {
   const [notes, setNotes] = React.useState( [] )
   const [noteContent, setNoteContent] = React.useState( '' )
   const [noteHeader, setNoteHeader] = React.useState( '' )
@@ -51,55 +38,69 @@ const Notes = () => {
 
   const removeNotes = ( id ) => setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
 
-  const { data, loading } = useFetch( 'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20' )
+  const { data, loading } = NotesApi( 'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20' )
 
-  const dataValue =  data && data.filter(({ sourceCode}) =>sourceCode === 'PER_USER1')
+  const dataValue =  data && data.filter(({ sourceCode }) => sourceCode === 'PER_USER1' )
 
   console.error( dataValue )
+  console.error( 'baseEntities',  baseEntities )
 
   return (
     data && (
-        <ul>
-      {dataValue.map(({content, created, id, sourceCode, targetCode})=>{
-        return(
-          <Card
-            className={classes.card}
-            variant="outlined"
-          >
-            <CardActionArea>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="h2"
+      <div>
+        {dataValue.map(({ content, created, id, sourceCode, targetCode }) => {
+          const name = baseEntities[sourceCode].name
+
+          console.error( 'name', name )
+
+          return (
+            <Card
+              className={classes.card}
+              variant="outlined"
+            >
+              <CardActionArea>
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h2"
+                  >
+                    {name}
+                  </Typography>
+                </CardContent>
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="subtitle1"
+                    component="h2"
+                  >
+                    {content}
+                  </Typography>
+                </CardContent>
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="subtitle1"
+                    component="h2"
+                  >
+                    {created}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => removeNotes( id )}
                 >
-                  {targetCode}
-                </Typography>
-              </CardContent>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="subtitle1"
-                  component="h2"
-                >
-                  {content}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => removeNotes( id )}
-              >
-                <DeleteIcon />
-              </Button>
-            </CardActions>
-          </Card>
-        )
-      })}
-    </ul>
-      )
+                  <DeleteIcon />
+                </Button>
+              </CardActions>
+            </Card>
+          )
+        })}
+      </div>
+    )
   )
 
   // return (
