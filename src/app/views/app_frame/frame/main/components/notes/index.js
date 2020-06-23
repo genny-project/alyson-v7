@@ -11,21 +11,21 @@ const generateId = () => {
   return `_${Math.random().toString( 30 ).substr( 1, 7 )}`
 }
 
-const useFetch = ( url ) => {
-  const [data, setData] = React.useState( null )
-  const [loading, setLoading] = React.useState( true )
+// const useFetch = ( url ) => {
+//   const [data, setData] = React.useState( null )
+//   const [loading, setLoading] = React.useState( true )
 
-  React.useEffect( async () => {
-    const response = await fetch( url )
-    const items = await response.json()
-    const data = await items.data
+//   React.useEffect( async () => {
+//     const response = await fetch( url )
+//     const items = await response.json()
+//     const data = await items.data
 
-    setData( data )
-    setLoading( false )
-  }, [] )
+//     setData( data )
+//     setLoading( false )
+//   }, [] )
 
-  return { data, loading }
-}
+//   return { data, loading }
+// }
 
 const Notes = () => {
   const [notes, setNotes] = React.useState( [] )
@@ -51,40 +51,16 @@ const Notes = () => {
 
   const removeNotes = ( id ) => setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
 
-  const { data, loading } = useFetch( 'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20' )
+  // const { data, loading } = useFetch( 'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20' )
 
-  const dataValue =  data && data.map(({ sourceCode, targetCode }) => {
-    return (
-      sourceCode,
-      targetCode
-    )
-  })
+  // const dataValue =  data && data.map(({ sourceCode, targetCode }) => {
+  //   return (
+  //     sourceCode,
+  //     targetCode
+  //   )
+  // })
 
-  console.error( dataValue )
-//   return (
-//     <div>
-//       {loading ? (
-//         <p>
-// Loading...
-//         </p>
-//       )
-//         : (
-//           <div>
-//             <ul>
-//               {data.map(({ content }) => (
-//                 <li>
-//                   {content}
-//                 </li>
-//               ))
-//               }
-//             </ul>
-//           </div>
-//         )
-//         }
-
-//     </div>
-
-//   )
+  // console.error( dataValue )
 
   return (
     <Grid
