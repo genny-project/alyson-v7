@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react'
 
 import { prop, isEmpty } from 'ramda'
 import { Paper, Grid, Typography, DialogTitle, Dialog, Tooltip, Fab } from '@material-ui/core'
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded'
 import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm } from '../views'
 import getView from './helpers/get-view'
 import getApplication from './helpers/get-application'
 import useStyles from './styles'
-import { SidePanelContext } from '../contexts'
 
 const Main = ({
   attributes,
@@ -30,16 +29,15 @@ const Main = ({
   const classes = useStyles()
 
   const view = getView({ viewing, asks, frames })
-  const application = getApplication( attributes )
+  const application = getApplication(attributes)
 
   const [current, setCurrent] = useState({})
-  const { toggleSidePanel } = React.useContext( SidePanelContext )
 
   return (
     <div className={classes.root}>
       <Dialog open={view === 'APPLICATION'}>
         <DialogForm
-          form={prop( 'QUE_ADD_APPLICATION_GRP', asks )}
+          form={prop('QUE_ADD_APPLICATION_GRP', asks)}
           asks={asks}
           baseEntities={baseEntities}
           attributes={attributes}
@@ -75,7 +73,7 @@ const Main = ({
           {view === 'AGREEMENT' || view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
             <Form
               formView={
-                view === 'AGREEMENT' ? prop( 'QUE_AGREEMENT_DOCUMENT_INTERN_FORM_GRP', asks ) : view
+                view === 'AGREEMENT' ? prop('QUE_AGREEMENT_DOCUMENT_INTERN_FORM_GRP', asks) : view
               }
               asks={asks}
               baseEntities={baseEntities}
@@ -95,10 +93,7 @@ const Main = ({
               setLoading={setLoading}
             />
           ) : view === 'DETAIL' ? (
-            <Details
-              attributes={attributes}
-              targetCode={prop( 'targetCode', viewing )}
-            />
+            <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
           ) : view === 'UNITY' ? (
             <Unity
               frames={frames}
@@ -116,26 +111,8 @@ const Main = ({
               setCurrent={setCurrent}
             />
           ) : (
-            <Table
-              setViewing={setViewing}
-              currentSearch={currentSearch}
-            />
+            <Table setViewing={setViewing} currentSearch={currentSearch} />
           )}
-          {
-            <Tooltip
-              title="Show side panel"
-              placement="top-start"
-            >
-              <Fab
-                color="primary"
-                size="small"
-                onClick={toggleSidePanel}
-                className={classes.fab}
-              >
-                <ArrowBackIosIcon color="inherit" />
-              </Fab>
-            </Tooltip>
-           }
         </Paper>
       )}
     </div>

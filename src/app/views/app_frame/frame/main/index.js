@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { includes, prop, replace, has, pathOr, length } from 'ramda'
+import { includes, prop, replace, has, pathOr } from 'ramda'
 import { connect } from 'react-redux'
 import { Bridge } from '../../../../../utils/vertx/index'
 
@@ -13,7 +13,7 @@ import getAgencyCompany from './helpers/get-agency-company'
 import Sidebar from './side_bar'
 import AppBar from './app_bar'
 import Main from './main'
-import SidePanel from './side_panel';
+import SidePanel from './side_panel'
 
 import getDataForEvent from './helpers/get-data-for-event'
 import getGoogleApiKey from './helpers/get-google-api-key'
@@ -32,30 +32,33 @@ const Sam = ({
   dashboard,
   currentSearch,
 }) => {
-  const googleApiKey = getGoogleApiKey( keycloak )
-  const agency = getAgency( user )
-  const agencyCompany = getAgencyCompany( agency )( baseEntities )
+  const googleApiKey = getGoogleApiKey(keycloak)
+  const agency = getAgency(user)
+  const agencyCompany = getAgencyCompany(agency)(baseEntities)
 
   const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' })
   const [dialogContent, setDialogContent] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [staleTarget, setStaleTarget] = useState('')
-  const [sidePanelOpen, setSidePanelOpen] = useState( false );
-  const toggleSidePanel = () => setSidePanelOpen(( sidePanelOpen ) => sidePanelOpen === false ? true : false )
+  const [sidePanelOpen, setSidePanelOpen] = useState(false)
+  const toggleSidePanel = () => setSidePanelOpen(sidePanelOpen => !sidePanelOpen)
 
-  const dataForEvent = getDataForEvent( viewing, user )
+  const dataForEvent = getDataForEvent(viewing, user)
 
   const theme = makeTheme({ attributes, asks })
 
-  const value = React.useMemo(() => ({
-    sidePanelOpen,
-    toggleSidePanel,
-  }), [sidePanelOpen] )
+  const sidePanelContextValue = React.useMemo(
+    () => ({
+      sidePanelOpen,
+      toggleSidePanel,
+    }),
+    [sidePanelOpen],
+  )
 
   useEffect(
     () => {
-      if ( viewing.code || viewing.parentCode || viewing.targetCode ) {
+      if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (
           (!viewing.code === 'QUE_TABLE_NEXT_BTN' &&
             !viewing.code === 'QUE_TABLE_PREVIOUS_BTN' &&
@@ -68,7 +71,7 @@ const Sam = ({
 
         if (includes('MENU', prop('code', viewing) || '')) {
           setStaleTarget(
-            prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}),
+            prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
           )
           setLoading(true)
         }
@@ -88,14 +91,14 @@ const Sam = ({
     () => {
       if (includes('MENU', prop('code', viewing) || '')) {
         if (
-          prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}) !==
+          prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
           staleTarget
         ) {
-          setLoading( false )
+          setLoading(false)
         }
       } else {
-        setLoading( false )
-        setDialogContent( null )
+        setLoading(false)
+        setDialogContent(null)
       }
     },
     [asks, currentSearch, baseEntities],
@@ -103,52 +106,52 @@ const Sam = ({
 
   return (
     <ThemeProvider theme={theme}>
-      <SidePanelContext.Provider value={value}>
-      <div>
-        <AppBar
-          items={getAppBarItems(frames, asks, themes)}
-          asks={asks}
-          frames={frames}
-          user={user}
-          setViewing={setViewing}
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          loading={loading}
-          setLoading={setLoading}
-        />
-        <Sidebar
-          items={getDrawerItems(frames, asks, themes)}
-          asks={asks}
-          frames={frames}
-          user={user}
-          agencyCompany={agencyCompany}
-          setViewing={setViewing}
-          viewing={viewing}
-          attributes={attributes}
-          open={sidebarOpen}
-          setOpen={setSidebarOpen}
-          projectName={projectName}
-        />
-        <Main
-          loading={loading}
-          setLoading={setLoading}
-          viewing={viewing}
-          setViewing={setViewing}
-          asks={asks}
-          frames={frames}
-          user={user}
-          baseEntities={baseEntities}
-          googleApiKey={googleApiKey}
-          attributes={attributes}
-          projectName={projectName}
-          currentSearch={currentSearch}
-          dialogContent={dialogContent}
-          setDialogContent={setDialogContent}
-          drawerItems={getDrawerItems(frames, asks)}
-          dashboard={dashboard}
-        />
-      </div>
-      <SidePanel />
+      <SidePanelContext.Provider value={sidePanelContextValue}>
+        <div>
+          <AppBar
+            items={getAppBarItems(frames, asks, themes)}
+            asks={asks}
+            frames={frames}
+            user={user}
+            setViewing={setViewing}
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            loading={loading}
+            setLoading={setLoading}
+          />
+          <Sidebar
+            items={getDrawerItems(frames, asks, themes)}
+            asks={asks}
+            frames={frames}
+            user={user}
+            agencyCompany={agencyCompany}
+            setViewing={setViewing}
+            viewing={viewing}
+            attributes={attributes}
+            open={sidebarOpen}
+            setOpen={setSidebarOpen}
+            projectName={projectName}
+          />
+          <Main
+            loading={loading}
+            setLoading={setLoading}
+            viewing={viewing}
+            setViewing={setViewing}
+            asks={asks}
+            frames={frames}
+            user={user}
+            baseEntities={baseEntities}
+            googleApiKey={googleApiKey}
+            attributes={attributes}
+            projectName={projectName}
+            currentSearch={currentSearch}
+            dialogContent={dialogContent}
+            setDialogContent={setDialogContent}
+            drawerItems={getDrawerItems(frames, asks)}
+            dashboard={dashboard}
+          />
+        </div>
+        <SidePanel />
       </SidePanelContext.Provider>
     </ThemeProvider>
   )
@@ -166,4 +169,4 @@ const mapStateToProps = state => ({
   keycloak: state.keycloak,
 })
 
-export default connect( mapStateToProps )( Sam )
+export default connect(mapStateToProps)(Sam)

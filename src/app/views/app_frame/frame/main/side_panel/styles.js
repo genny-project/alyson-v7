@@ -1,41 +1,34 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core'
 
-const DRAWER_WIDTH = 60;
-const APP_BAR_HEIGHT = 64;
+const SIDEPANEL_WIDTH = 100
+const MINI_SIDEPANEL_WIDTH = 20
+import { APP_BAR_HEIGHT } from '../app_bar/styles'
 
-const useStyles = makeStyles( theme => ({
+const useStyles = makeStyles(theme => ({
   drawer: {
-    width: DRAWER_WIDTH,
     overflowY: 'scroll',
-    padding: theme.spacing( 1 ),
-  },
-  drawerLeft: {
-    width: 360,
-    overflowY: 'scroll',
-    padding: theme.spacing( 1 ),
+    padding: theme.spacing(1),
   },
   drawerPaper: {
-    width: DRAWER_WIDTH,
-    marginTop: 64,
-  },
-  drawerPaperLeft: {
-    width: 360,
+    width: ({ sidePanelOpen }) => (sidePanelOpen ? SIDEPANEL_WIDTH : MINI_SIDEPANEL_WIDTH),
+    marginTop: APP_BAR_HEIGHT,
+    transition: theme.transitions.create('width'),
   },
   grow: {
     flexGrow: 1,
   },
   footer: {
-    margin: theme.spacing( 1 ),
+    margin: theme.spacing(1),
   },
   topBar: {
-    margin: theme.spacing( 2 ),
+    margin: theme.spacing(2),
     maxWidth: 345,
   },
   fab: {
     position: 'fixed',
-    bottom: theme.spacing( 4 ),
+    bottom: theme.spacing(4),
   },
-}));
+}))
 
-export default useStyles;
-export { DRAWER_WIDTH, APP_BAR_HEIGHT };
+export default useStyles
+export { SIDEPANEL_WIDTH, MINI_SIDEPANEL_WIDTH }
