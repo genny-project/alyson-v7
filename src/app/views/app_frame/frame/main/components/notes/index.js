@@ -6,8 +6,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import clsx from 'clsx';
 
-import { NotesApi } from '../../../../../../apis'
-
 import useStyles from './styles';
 
 const generateId = () => {
@@ -19,6 +17,7 @@ const Notes = ({ baseEntities }) => {
   const [noteContent, setNoteContent] = React.useState( '' )
   const [noteHeader, setNoteHeader] = React.useState( '' )
   const [showNotes, setShowNotes] = React.useState( false )
+  const [createdDate, setCreatedDate] = React.useState( '' )
   const classes = useStyles();  const [data, setData] = React.useState( null )
 
   const handleSubmit = () => {
@@ -38,12 +37,7 @@ const Notes = ({ baseEntities }) => {
 
   const removeNotes = ( id ) => setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
 
-  // const { data, loading } = NotesApi( 'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20' )
-
-  // const dataValue =  data && data.filter(({ sourceCode }) => sourceCode === 'PER_USER1' )
-
-  // console.error( 'notes', notes )
-  // console.error( 'dataValue', dataValue )
+  console.error( 'notes', notes )
 
   useEffect( async () => {
     const response = await fetch( 'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20' )
@@ -58,22 +52,11 @@ const Notes = ({ baseEntities }) => {
       setNotes(( notes ) => notes.concat({
         headerText: name,
         contentText: content,
+        createdDate: created,
         id: id,
       }))
     })
   }, [] )
-
-  // {dataValue &&
-  //   dataValue.map(({ content, created, id, sourceCode, targetCode }) => {
-  //     const name = baseEntities[sourceCode].name
-
-  //     setNotes(( notes ) => notes.concat({
-  //       headerText: name,
-  //       contentText: content,
-  //       id: id,
-  //     }))
-  //   })
-  // }
 
   return (
     <Grid
@@ -147,7 +130,7 @@ const Notes = ({ baseEntities }) => {
         xs={12}
         className={classes.control}
       >
-        {notes.map(({ headerText, contentText, id }) => (
+        {notes.map(({ headerText, contentText, id, createdDate }) => (
           <Card
             className={classes.card}
             variant="outlined"
@@ -171,6 +154,17 @@ const Notes = ({ baseEntities }) => {
                   {contentText}
                 </Typography>
               </CardContent>
+              {createdDate && (
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="subtitle1"
+                  component="h2"
+                >
+                  {createdDate}
+                </Typography>
+              </CardContent>
+              )}
             </CardActionArea>
             <CardActions>
               <Button
