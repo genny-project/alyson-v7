@@ -106,7 +106,6 @@ const Sam = ({
 
   return (
     <ThemeProvider theme={theme}>
-      <SidePanelContext.Provider value={sidePanelContextValue}>
         <div>
           <AppBar
             items={getAppBarItems(frames, asks, themes)}
@@ -151,8 +150,7 @@ const Sam = ({
             dashboard={dashboard}
           />
         </div>
-        <SidePanel />
-      </SidePanelContext.Provider>
+        <SidePanel sidePanelOpen={sidePanelOpen} toggleSidePanel={toggleSidePanel}/>
     </ThemeProvider>
   )
 }

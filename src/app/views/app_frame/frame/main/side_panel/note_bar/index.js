@@ -9,8 +9,7 @@ import Notes from '../../components/notes'
 
 import useStyles from './styles'
 
-const NoteBar = () => {
-  const { sidePanelOpen, toggleSidePanel } = React.useContext(SidePanelContext)
+const NoteBar = ({ sidePanelOpen, toggleSidePanel }) => {
   const { setShowNoteBar } = React.useContext(NoteBarContext)
 
   const classes = useStyles()

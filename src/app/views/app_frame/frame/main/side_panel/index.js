@@ -11,8 +11,7 @@ import NoteBar from './note_bar'
 
 import useStyles from './styles'
 
-const SidePanel = () => {
-  const { sidePanelOpen, toggleSidePanel } = useContext(SidePanelContext)
+const SidePanel = ({ sidePanelOpen, toggleSidePanel }) => {
 
   const [showNotes, setShowNotes] = useState(false)
   const [showNoteBar, setShowNoteBar] = useState(false)
@@ -31,7 +30,7 @@ const SidePanel = () => {
             onClose={toggleSidePanel}
             ModalProps={{ keepMounted: true }}
           >
-            {showNoteBar && <NoteBar />}
+            {showNoteBar && <NoteBar sidePanelOpen={sidePanelOpen}  toggleSidePanel={toggleSidePanel}/>}
             <div>
               <SideBarItems />
               <div className={classes.grow} />
