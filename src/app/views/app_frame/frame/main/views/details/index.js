@@ -105,7 +105,7 @@ const Details = ({ attributes, targetCode }) => {
 
   console.log(detailView)
 
-  const print = prop => path([`PRI_${toUpper(prop || '')}`, 'valueString'], detailView) || ''
+  const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
 
   const detailType = contains('PRI_IS_INTERN', keys(detailView))
     ? printIntern
