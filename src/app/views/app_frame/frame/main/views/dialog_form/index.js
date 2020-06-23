@@ -1,5 +1,5 @@
 import React from 'react'
-import { CircularProgress, Paper, Container } from '@material-ui/core'
+import { CircularProgress, Dialog, DialogContent, Container } from '@material-ui/core'
 import { Form } from '../index'
 
 import useStyles from './styles'
@@ -12,25 +12,33 @@ const DialogForm = ({
   attributes,
   baseEntities,
   googleApiKey,
+  view,
 }) => {
   const classes = useStyles()
 
+  const handleClose = () =>
+    setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
+
   return (
-    <Container className={classes.dialogRoot}>
-      {form ? (
-        <Form
-          formView={form}
-          asks={asks}
-          baseEntities={baseEntities}
-          attributes={attributes}
-          googleApiKey={googleApiKey}
-          setViewing={setViewing}
-          setLoading={setLoading}
-        />
-      ) : (
-        <CircularProgress />
-      )}
-    </Container>
+    <Dialog open={view === 'APPLICATION'} onClose={handleClose} fullWidth>
+      <DialogContent className={classes.dialogContent}>
+        {form ? (
+          <Form
+            formView={form}
+            asks={asks}
+            baseEntities={baseEntities}
+            attributes={attributes}
+            googleApiKey={googleApiKey}
+            setViewing={setViewing}
+            setLoading={setLoading}
+          />
+        ) : (
+          <Container className={classes.fullWidth}>
+            <CircularProgress />
+          </Container>
+        )}
+      </DialogContent>
+    </Dialog>
   )
 }
 
