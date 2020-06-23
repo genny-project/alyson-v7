@@ -1,7 +1,7 @@
 import Bridge from '../../../../../../../../../utils/vertx/Bridge'
 
 const getFormattedValue = value =>
-  typeof value === 'object' || typeof value === 'string' ? JSON.stringify(value) : value
+  typeof value === 'object' || typeof value === 'array' ? JSON.stringify(value) : value
 
 const makeOnUpdate = ({ setErrors, mandatory, setPristine }) => ({ ask, value }) => {
   const { askId, attributeCode, questionCode, sourceCode, targetCode, weight } = ask
