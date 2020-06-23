@@ -1,6 +1,6 @@
 import React from 'react'
 import { path, toLower, includes, has, not, prop } from 'ramda'
-import onUpdate from './actions/on-update'
+import makeOnUpdate from './actions/on-update'
 
 import RadioGroup from './radio_group'
 import PhoneNumberInput from './phone_number'
@@ -34,6 +34,8 @@ const Field = ({
   if (mandatory && not(has(questionCode, errors))) setErrors({ ...errors, [questionCode]: true })
 
   const initialValue = path([attributeCode, 'value'], defaultValues) || false
+
+  const onUpdate = makeOnUpdate({ setErrors, mandatory, setPristine })
 
   return fieldType === 'text' ||
     fieldType === 'email' ||

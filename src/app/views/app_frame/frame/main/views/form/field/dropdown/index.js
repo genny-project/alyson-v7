@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { map, path, pick, prop, sortBy, values, head, compose, equals } from 'ramda';
-import { TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import React, { useState, useEffect, useRef } from 'react'
+import { map, path, pick, prop, sortBy, values, head, compose, equals } from 'ramda'
+import { TextField } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 
-import makeHandleUpdate from '../../helpers/make-handle-update';
+import makeHandleUpdate from '../../helpers/make-handle-update'
 
-import useStyles from './styles';
+import useStyles from './styles'
 
 const DropdownSelect = ({
   fieldData,
@@ -15,48 +15,42 @@ const DropdownSelect = ({
   baseEntities,
   multiple,
   onUpdate,
-  setErrors,
   errors,
 }) => {
   const optionsGrpName = compose(
     head,
-    prop( 'selectionBaseEntityGroupList' ),
-    head
-  )( validationList );
+    prop('selectionBaseEntityGroupList'),
+    head,
+  )(validationList)
 
-  const optionsLinkList = path( [optionsGrpName, 'links'], baseEntities ) || [];
+  const optionsLinkList = path([optionsGrpName, 'links'], baseEntities) || []
   const targetCodes =
-    map( path( ['link', 'targetCode'] ), sortBy( prop( 'weight' ))( optionsLinkList )) || [];
+    map(path(['link', 'targetCode']), sortBy(prop('weight'))(optionsLinkList)) || []
 
-  const options =
-    map( pick( ['name', 'code'] ), values( pick( values( targetCodes ), baseEntities ))) || [];
+  const options = map(pick(['name', 'code']), values(pick(values(targetCodes), baseEntities))) || []
 
-  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
+  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData)
 
   const {
     mandatory,
     question: { code: questionCode },
-  } = fieldData;
-  const prepareData = map( prop( 'code' ));
-  const [value, setValue] = useState( initialValue || multiple ? [] : null );
-  const [pristine, setPristine] = useState( true );
-  const classes = useStyles();
+  } = fieldData
+  const prepareData = map(prop('code'))
+  const [value, setValue] = useState(initialValue || multiple ? [] : null)
+  const [pristine, setPristine] = useState(true)
+  const classes = useStyles()
 
-  const handleChange = ( event, newValue ) => {
-    setValue( newValue );
-    if ( pristine ) setPristine( false );
-    if ( mandatory && value ) {
-      setErrors( errors => ({ ...errors, [questionCode]: false }));
-    }
-    handleUpdate( prepareData( multiple ? newValue : [newValue] ));
-  };
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+    handleUpdate(prepareData(multiple ? newValue : [newValue]))
+  }
 
   useEffect(
     () => {
-      if ( initialValue === ' ' ) setValue( multiple ? [] : null );
+      if (initialValue === ' ') setValue(multiple ? [] : null)
     },
-    [initialValue]
-  );
+    [initialValue],
+  )
 
   return (
     <Autocomplete
@@ -68,17 +62,11 @@ const DropdownSelect = ({
       onChange={handleChange}
       required={mandatory}
       options={options}
-      getOptionLabel={prop( 'name' )}
-      getOptionSelected={( option, value ) => option.code === value.code}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label={label}
-          variant="outlined"
-        />
-      )}
+      getOptionLabel={prop('name')}
+      getOptionSelected={(option, value) => option.code === value.code}
+      renderInput={params => <TextField {...params} label={label} variant="outlined" />}
     />
-  );
-};
+  )
+}
 
-export default DropdownSelect;
+export default DropdownSelect
