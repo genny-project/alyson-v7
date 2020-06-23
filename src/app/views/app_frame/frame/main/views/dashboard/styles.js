@@ -2,6 +2,9 @@ import { makeStyles } from '@material-ui/core'
 import { indigo, deepPurple, cyan, deepOrange } from '@material-ui/core/colors'
 
 const useStyles = makeStyles(theme => ({
+  welcomeText: {
+    color: theme.palette.primary.dark,
+  },
   loading: {
     marginTop: theme.spacing(10),
     width: '100%',
@@ -12,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1.5),
   },
   topBar: {
-    backgroundColor: indigo[900],
+    backgroundColor: theme.palette.primary.dark,
     borderRadius: theme.spacing(1),
     color: theme.palette.background.default,
     marginBottom: theme.spacing(2),
@@ -23,20 +26,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: `-${theme.spacing(3)}px`,
     marginBottom: `-${theme.spacing(3)}px`,
   },
-  active: {
+  tile: {
     borderRadius: theme.spacing(1),
-    background: `linear-gradient(90deg, ${deepPurple[300]} 30%, ${deepPurple[600]} 90%)`,
-    color: theme.palette.background.default,
-  },
-  placed: {
-    borderRadius: theme.spacing(1),
-    background: `linear-gradient(90deg, ${cyan[300]} 30%, ${cyan[600]} 90%)`,
-    color: theme.palette.background.default,
-  },
-  progress: {
-    borderRadius: theme.spacing(1),
-    background: `linear-gradient(90deg, ${deepOrange[300]} 30%, ${deepOrange[600]} 90%)`,
-    color: theme.palette.background.default,
+    color: theme.palette.primary.light,
   },
   fullWidth: {
     width: '100%',

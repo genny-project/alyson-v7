@@ -34,7 +34,7 @@ const InfoBadge = ({ onClick, label, value }) => {
   )
 }
 
-const Dashboard = ({ projectName, setViewing, dashboard }) => {
+const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
   const viewInterns = () =>
     setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
   const viewInternships = () =>
@@ -57,6 +57,12 @@ const Dashboard = ({ projectName, setViewing, dashboard }) => {
         spacing={10}
         className={classes.dashboardContainer}
       >
+        <Grid item>
+          <Typography variant="h4" className={classes.welcomeText}>{`Hello, ${path(
+            ['data', 'name'],
+            user,
+          )}!`}</Typography>
+        </Grid>
         <Grid item className={classes.topBar}>
           <Grid
             container
@@ -86,21 +92,21 @@ const Dashboard = ({ projectName, setViewing, dashboard }) => {
         </Grid>
         <Grid item className={classes.fullWidth}>
           <Grid container direction="row" justify="space-between" alignItems="center" spacing={9}>
-            <Grid item className={classes.active}>
+            <Grid item className={classes.tile}>
               <InfoBadge
                 onClick={viewInterns}
                 value={path(['PRI_COUNT_APPLIED_INTERNS', 'value'], dashboard)}
                 label={'Applied Interns'}
               />
             </Grid>
-            <Grid item className={classes.placed}>
+            <Grid item className={classes.tile}>
               <InfoBadge
                 onClick={viewInterns}
                 value={path(['PRI_COUNT_PLACED_INTERNS', 'value'], dashboard)}
                 label={'Placed Interns'}
               />
             </Grid>
-            <Grid item className={classes.progress}>
+            <Grid item className={classes.tile}>
               <InfoBadge
                 onClick={viewInternships}
                 value={path(['PRI_COUNT_IN_PROGRESS_INTERNSHIPS', 'value'], dashboard)}
