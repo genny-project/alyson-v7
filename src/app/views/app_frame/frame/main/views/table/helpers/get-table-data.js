@@ -41,7 +41,7 @@ const getColumns = compose(
 )
 
 const getData = compose(
-  map(row => ({ targetCode: head(keys(row)), ...prop(head(keys(row)), row) })),
+  map(row => console.log(row) || { targetCode: head(keys(row)), ...prop(head(keys(row)), row) }),
   prop('data'),
 )
 

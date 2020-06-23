@@ -11,6 +11,7 @@ import {
   head,
   keys,
   any,
+  length,
 } from 'ramda'
 
 const initialState = { SAM: { active: {}, cached: {} } }
@@ -57,8 +58,8 @@ const reducer = (state = initialState, { type, payload }) => {
       [parentCode]: {
         data: map(({ code, baseEntityAttributes }) => ({
           [code]: {
-            ...mapAndMergeAll(({ attributeCode, valueString }) => ({
-              [attributeCode]: valueString,
+            ...mapAndMergeAll(({ attributeCode, ...rest }) => ({
+              [attributeCode]: rest,
             }))(baseEntityAttributes),
           },
         }))(items),
@@ -79,6 +80,8 @@ const reducer = (state = initialState, { type, payload }) => {
       ...val,
       metaData: { ...(prop(key, metaData) || {}) },
     }))(data)
+
+    console.warn(fullData)
 
     const key = head(keys(fullData))
 

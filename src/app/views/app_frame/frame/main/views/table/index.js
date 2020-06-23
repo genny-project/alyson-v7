@@ -27,6 +27,8 @@ const TableView = ({ currentSearch, setViewing }) => {
   const data = getData(table)
   const actions = getActions(table)
 
+  console.log(table)
+
   const {
     metaData: {
       PRI_TOTAL_RESULTS: { valueInteger: totalResults },
