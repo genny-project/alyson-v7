@@ -14,14 +14,8 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     marginLeft: theme.spacing(1.5),
   },
-  topBar: {
-    backgroundColor: theme.palette.primary.dark,
-    borderRadius: theme.spacing(1),
-    color: theme.palette.background.default,
-    marginBottom: theme.spacing(2),
-  },
   divider: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.primary.dark,
     height: theme.spacing(9),
     marginTop: `-${theme.spacing(3)}px`,
     marginBottom: `-${theme.spacing(3)}px`,
@@ -29,12 +23,10 @@ const useStyles = makeStyles(theme => ({
   tile: {
     borderRadius: theme.spacing(1),
     color: theme.palette.primary.light,
+    cursor: 'pointer',
   },
   fullWidth: {
     width: '100%',
-  },
-  textButton: {
-    cursor: 'pointer',
   },
 }))
 
