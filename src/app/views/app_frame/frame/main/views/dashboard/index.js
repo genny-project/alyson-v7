@@ -57,12 +57,17 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
         spacing={10}
         className={classes.dashboardContainer}
       >
-        <Grid item>
-          <Typography variant="h4" className={classes.welcomeText}>{`Hello, ${path(
-            ['data', 'name'],
-            user,
-          )}!`}</Typography>
-        </Grid>
+        {path(['data', 'name'], user) ? (
+          <Grid item>
+            <Typography variant="h4" className={classes.welcomeText}>{`Hello, ${path(
+              ['data', 'name'],
+              user,
+            )}!`}</Typography>
+          </Grid>
+        ) : (
+          <div />
+        )}
+
         <Grid item className={classes.topBar}>
           <Grid
             container
