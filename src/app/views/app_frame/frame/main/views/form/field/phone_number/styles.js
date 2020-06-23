@@ -1,9 +1,9 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core'
 
-const useStyles = makeStyles( theme => ({
-  inputField: {
-    width: '100%',
+const useStyles = makeStyles(theme => ({
+  inputAdornment: {
+    marginRight: theme.spacing(1),
   },
-}));
+}))
 
-export default useStyles;
+export default useStyles
