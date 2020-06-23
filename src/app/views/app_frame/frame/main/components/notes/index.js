@@ -17,8 +17,8 @@ const Notes = ({ baseEntities }) => {
   const [noteContent, setNoteContent] = React.useState( '' )
   const [noteHeader, setNoteHeader] = React.useState( '' )
   const [showNotes, setShowNotes] = React.useState( false )
-  const [createdDate, setCreatedDate] = React.useState( '' )
-  const classes = useStyles();  const [data, setData] = React.useState( null )
+
+  const classes = useStyles()
 
   const handleSubmit = () => {
     setNotes(( notes ) => notes.concat({
@@ -44,8 +44,6 @@ const Notes = ({ baseEntities }) => {
     const items = await response.json()
     const data = await items.data
 
-    setData( data )
-    console.error( 'data', data )
     data.map(({ content, created, id, sourceCode, targetCode }) => {
       const name = baseEntities[sourceCode].name
 
