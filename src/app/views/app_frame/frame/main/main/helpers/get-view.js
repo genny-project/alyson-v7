@@ -10,7 +10,7 @@ const getView = ({ viewing: { parentCode = '', code = '' }, asks, frames }) =>
         ? 'BUCKET'
         : contains('CARD_RIGHT', parentCode)
           ? 'BUCKET'
-          : contains('PROFILE', code) || contains('QUE_PRI_EVENT_VIEW', code)
+          : contains('QUE_PRI_EVENT_VIEW', code)
             ? 'DETAIL'
             : getBackendViewing(frames) === 'UNITY'
               ? 'UNITY'
