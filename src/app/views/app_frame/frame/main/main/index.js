@@ -37,17 +37,16 @@ const Main = ({
 
   return (
     <div className={classes.root}>
-      <Dialog open={view === 'APPLICATION'}>
-        <DialogForm
-          form={prop('QUE_ADD_APPLICATION_GRP', asks)}
-          asks={asks}
-          baseEntities={baseEntities}
-          attributes={attributes}
-          googleApiKey={googleApiKey}
-          setViewing={setViewing}
-          setLoading={setLoading}
-        />
-      </Dialog>
+      <DialogForm
+        form={prop('QUE_ADD_APPLICATION_GRP', asks)}
+        asks={asks}
+        baseEntities={baseEntities}
+        attributes={attributes}
+        googleApiKey={googleApiKey}
+        setViewing={setViewing}
+        setLoading={setLoading}
+        view={view}
+      />
       {loading || !view ? (
         <Grid
           spacing={2}
