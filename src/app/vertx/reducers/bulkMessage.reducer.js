@@ -57,11 +57,7 @@ const reducer = (state = initialState, { type, payload }) => {
     const data = mapAndMergeAll(({ parentCode, items }) => ({
       [parentCode]: {
         data: map(({ code, baseEntityAttributes }) => ({
-          [code]: {
-            ...mapAndMergeAll(({ attributeCode, ...rest }) => ({
-              [attributeCode]: rest,
-            }))(baseEntityAttributes),
-          },
+          [code]: baseEntityAttributes,
         }))(items),
       },
     }))(dataMessages)

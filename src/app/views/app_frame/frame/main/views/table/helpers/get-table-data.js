@@ -12,6 +12,7 @@ import {
   replace,
   not,
   isEmpty,
+  mergeAll,
 } from 'ramda'
 
 const removeCOL_ = replace('COL_', '')
@@ -33,6 +34,12 @@ const getColumns = compose(
     ...col,
     title: prop('attributeName', col),
     field: removeCOL_(prop('attributeCode', col)),
+    cellStyle: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      maxWidth: '20rem',
+    },
   })),
   sortBy(prop('weight')),
   values,
@@ -41,7 +48,18 @@ const getColumns = compose(
 )
 
 const getData = compose(
-  map(row => console.log(row) || { targetCode: head(keys(row)), ...prop(head(keys(row)), row) }),
+  map(
+    compose(
+      mergeAll,
+      map(({ attributeCode, value, baseEntityCode }) => ({
+        [attributeCode]: value,
+        targetCode: baseEntityCode,
+      })),
+      head,
+      values,
+      pickBy((val, key) => key !== 'tableData'),
+    ),
+  ),
   prop('data'),
 )
 
@@ -62,7 +80,7 @@ const getTable = currentSearch =>
       }
 
 const icons = {
-  View: 'list',
+  View: 'info',
   Apply: 'edit',
   Journal: 'book',
 }
