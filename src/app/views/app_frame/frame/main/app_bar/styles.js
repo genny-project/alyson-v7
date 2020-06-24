@@ -1,10 +1,12 @@
-import { makeStyles } from '@material-ui/core';
-import { DRAWER_WIDTH } from '../side_bar/styles';
+import { makeStyles } from '@material-ui/core'
+import { DRAWER_WIDTH } from '../side_bar/styles'
 
-const useStyles = makeStyles( theme => ({
+const APP_BAR_HEIGHT = 64
+
+const useStyles = makeStyles(theme => ({
   appBar: {
     marginLeft: DRAWER_WIDTH,
-    [theme.breakpoints.down( 'xs' )]: {
+    [theme.breakpoints.down('xs')]: {
       marginLeft: 0,
     },
   },
@@ -12,8 +14,10 @@ const useStyles = makeStyles( theme => ({
     flexGrow: 1,
   },
   loadingBar: {
-    height: theme.spacing( 0.2 ),
+    height: theme.spacing(0.2),
   },
-}));
+}))
 
-export default useStyles;
+export default useStyles
+
+export { APP_BAR_HEIGHT }

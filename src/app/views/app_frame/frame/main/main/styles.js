@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core'
 
-import { DRAWER_WIDTH, APP_BAR_HEIGHT } from '../side_bar/styles'
+import { DRAWER_WIDTH } from '../side_bar/styles'
+import { APP_BAR_HEIGHT } from '../app_bar/styles'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,6 +23,11 @@ const useStyles = makeStyles(theme => ({
   loadingContainer: {
     marginTop: theme.spacing(10),
     width: '100%',
+  },
+  fab: {
+    position: 'fixed',
+    bottom: theme.spacing(4),
+    right: theme.spacing(1),
   },
 }))
 

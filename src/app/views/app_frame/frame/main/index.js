@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { includes, prop, replace, has, pathOr, length } from 'ramda'
+import { includes, prop, replace, has, pathOr } from 'ramda'
 import { connect } from 'react-redux'
 import { Bridge } from '../../../../../utils/vertx/index'
 
@@ -13,6 +13,7 @@ import getAgencyCompany from './helpers/get-agency-company'
 import Sidebar from './side_bar'
 import AppBar from './app_bar'
 import Main from './main'
+import SidePanel from './side_panel'
 
 import getDataForEvent from './helpers/get-data-for-event'
 import getGoogleApiKey from './helpers/get-google-api-key'
@@ -40,10 +41,14 @@ const Sam = ({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [staleTarget, setStaleTarget] = useState('')
+  const [sidePanelOpen, setSidePanelOpen] = useState(false)
+  const toggleSidePanel = () => setSidePanelOpen(sidePanelOpen => !sidePanelOpen)
 
   const dataForEvent = getDataForEvent(viewing, user)
 
   const theme = makeTheme({ attributes, asks })
+
+  console.log('baseEntities', baseEntities)
 
   useEffect(
     () => {
@@ -140,6 +145,11 @@ const Sam = ({
           dashboard={dashboard}
         />
       </div>
+      <SidePanel
+        sidePanelOpen={sidePanelOpen}
+        toggleSidePanel={toggleSidePanel}
+        baseEntities={baseEntities}
+      />
     </ThemeProvider>
   )
 }
