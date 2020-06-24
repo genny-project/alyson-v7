@@ -35,7 +35,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
     const result = await geocodeByPlaceId(value.place_id || '')
 
     if (result) {
-      handleUpdate(result)
+      handleUpdate(makeAddressData(result))
     }
   }
 
