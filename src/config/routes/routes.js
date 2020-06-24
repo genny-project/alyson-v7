@@ -5,7 +5,7 @@ const routes = [
   {
     path: '/loading',
     exact: true,
-    component: <div>{`Loading`}</div>,
+    component: () => <div>{`Loading`}</div>,
   },
   {
     path: '/login',
