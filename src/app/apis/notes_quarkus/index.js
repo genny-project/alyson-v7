@@ -1,5 +1,5 @@
-const NotesQuarkusApi = async ({}) => {
+const NotesApi = async () => {
   return {}
 }
 
-export default NotesQuarkusApi
+export default NotesApi

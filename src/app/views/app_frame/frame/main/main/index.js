@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
 import { prop, isEmpty } from 'ramda'
-import { Paper, Grid, Typography, DialogTitle, Dialog } from '@material-ui/core'
-
+import { Paper, Grid, Typography, DialogTitle, Dialog, Tooltip, Fab } from '@material-ui/core'
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded'
 import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm } from '../views'
 import getView from './helpers/get-view'
 import getApplication from './helpers/get-application'
