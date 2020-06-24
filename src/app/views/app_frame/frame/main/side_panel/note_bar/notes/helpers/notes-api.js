@@ -23,11 +23,15 @@ const getAll = async ({ setNotes }) => {
 const postNote = async ({ noteContent, noteHeader, setNotes }) => {
   console.log(noteContent, noteHeader)
 
-  const response = await axios.put(
-    'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20',
+  const response = await axios.post(
+    'https://internmatch-cyrus.gada.io/v7/notes',
     {
+      sourceCode: 'PER_USER1',
       content: noteContent,
-      id: '0aaa9b21-4f2a-49e8-805d-db63c50efce6',
+      tags: [],
+      id: 0,
+      created: new Date(),
+      targetCode: 'PER_USER1',
     },
   )
 
