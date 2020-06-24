@@ -12,7 +12,10 @@ const Form = ({ setViewing, setLoading, formView, attributes, baseEntities, goog
   if (formView) {
     const title = path(['question', 'name'], formView)
     const formFields = path(['childAsks'], formView)
-    const profileFormFields = [...path(['childAsks', 0, 'childAsks'], formView), ...path(['childAsks', 1, 'childAsks'], formView)]
+    const profileFormFields = [
+      ...path(['childAsks', 0, 'childAsks'], formView),
+      ...path(['childAsks', 1, 'childAsks'], formView),
+    ]
     const defaultValues = path([prop('targetCode', formView)], attributes)
 
     const parentCode = prop('questionCode', formView)

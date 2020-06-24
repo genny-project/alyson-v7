@@ -11,7 +11,7 @@ import {
   head,
   keys,
   any,
-  length,
+  path,
 } from 'ramda'
 
 const initialState = { SAM: { active: {}, cached: {} } }
@@ -28,6 +28,19 @@ const isMetaData = compose(
 )
 
 const reducer = (state = initialState, { type, payload }) => {
+  if (type === 'DOWNLOAD_LINK') {
+    const downloadLink = path(['code'], payload)
+
+    return {
+      ...state,
+      ...{
+        SAM: {
+          ...pathOr({}, ['SAM'], state),
+          downloadLink,
+        },
+      },
+    }
+  }
   if (type === 'BASE_ENTITY_MESSAGE') {
     const messages = prop('items', payload)
     const firstMessage = head(messages)
