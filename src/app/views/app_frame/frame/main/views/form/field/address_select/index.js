@@ -32,7 +32,10 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
   const [restrictCountry, setRestrictCountry] = useState(true)
 
   const handleSend = async () => {
+    console.log(value)
     const result = await geocodeByPlaceId(value.place_id || '')
+
+    console.log(result)
 
     if (result) {
       handleUpdate(makeAddressData(result))
