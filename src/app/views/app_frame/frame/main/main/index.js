@@ -25,10 +25,9 @@ const Main = ({
   dialogContent,
   setDialogContent,
   dashboard,
+  downloadLink,
 }) => {
   const classes = useStyles()
-
-  console.log(viewing)
 
   const view = getView({ viewing, asks, frames })
   const application = getApplication(attributes)
@@ -112,7 +111,12 @@ const Main = ({
               setCurrent={setCurrent}
             />
           ) : (
-            <Table setViewing={setViewing} currentSearch={currentSearch} viewing={viewing} />
+            <Table
+              setViewing={setViewing}
+              currentSearch={currentSearch}
+              viewing={viewing}
+              downloadLink={downloadLink}
+            />
           )}
         </Paper>
       )}

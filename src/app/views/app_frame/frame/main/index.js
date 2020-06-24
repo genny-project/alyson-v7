@@ -29,6 +29,7 @@ const Sam = ({
   keycloak = {},
   dashboard,
   currentSearch,
+  downloadLink,
 }) => {
   const googleApiKey = getGoogleApiKey(keycloak)
   const agency = getAgency(user)
@@ -120,6 +121,7 @@ const Sam = ({
           projectName={projectName}
         />
         <Main
+          downloadLink={downloadLink}
           loading={loading}
           setLoading={setLoading}
           viewing={viewing}
@@ -145,6 +147,7 @@ const Sam = ({
 const mapStateToProps = state => ({
   dashboard: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'dashboard'], state),
   currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
+  downloadLink: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'downloadLink'], state),
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
   asks: state.vertx.asks,
