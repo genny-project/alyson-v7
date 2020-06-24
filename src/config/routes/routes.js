@@ -1,11 +1,11 @@
-// import React from 'react';
+import React from 'react'
 import * as Pages from '../../app/views/pages'
 
 const routes = [
   {
     path: '/loading',
     exact: true,
-    component: () => <div>{`loading`}</div>,
+    component: <div>{`Loading`}</div>,
   },
   {
     path: '/login',
@@ -15,7 +15,7 @@ const routes = [
   {
     path: '/version',
     exact: true,
-    component: () => <div>{`version`}</div>,
+    component: Pages.Version,
   },
   {
     path: '*',

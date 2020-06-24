@@ -1,13 +1,8 @@
-/* eslint-disable import/first */
-import 'nprogress/nprogress.css'
-import './polyfills'
 import React from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
-import { PersistGate } from 'redux-persist/integration/react'
 import App from './app'
 import { VertxProvider, GoogleProvider } from './app/views/app_frame'
-import { store, persistor } from './redux'
-import './utils/layouts-dev'
+import { store } from './redux'
 
 if (typeof window !== 'undefined') {
   window.store = store
@@ -15,13 +10,11 @@ if (typeof window !== 'undefined') {
 
 const Root = () => (
   <ReduxProvider store={store}>
-    <PersistGate persistor={persistor}>
-      <VertxProvider>
-        <GoogleProvider>
-          <App />
-        </GoogleProvider>
-      </VertxProvider>
-    </PersistGate>
+    <VertxProvider>
+      <GoogleProvider>
+        <App />
+      </GoogleProvider>
+    </VertxProvider>
   </ReduxProvider>
 )
 
