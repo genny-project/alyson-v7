@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { map, head } from 'ramda'
+import { map, head, includes } from 'ramda'
 
-import Table from 'material-table'
+import Table, { MTableToolbar } from 'material-table'
 import Actions from './actions'
 import Pagination from './pagination'
+import DetailPanel from './detail_panel'
+import DownloadBar from './download_bar'
 
 import {
   getColumns,
@@ -17,7 +19,7 @@ import {
 
 import useStyles from './styles'
 
-const TableView = ({ currentSearch, setViewing }) => {
+const TableView = ({ currentSearch, setViewing, viewing, downloadLink }) => {
   const [loadingPage, setLoadingPage] = useState(true)
 
   const table = getTable(currentSearch)
@@ -37,10 +39,16 @@ const TableView = ({ currentSearch, setViewing }) => {
 
   useEffect(
     () => {
-      console.log(title)
-      if (title !== 'Loading...') setLoadingPage(false)
+      if (title && title !== 'Loading...') setLoadingPage(false)
     },
-    [currentSearch, data],
+    [title],
+  )
+
+  useEffect(
+    () => {
+      setLoadingPage(true)
+    },
+    [viewing],
   )
 
   const classes = useStyles()
@@ -53,16 +61,21 @@ const TableView = ({ currentSearch, setViewing }) => {
         columns={columns}
         data={[...data]}
         isLoading={loadingPage}
+        detailPanel={
+          includes('Journal', title || '') ? rowData => <DetailPanel {...rowData} /> : null
+        }
         options={{
           pageSize,
           maxBodyHeight: 550,
         }}
-        actions={map(({ attributeCode, attributeName, baseEntityCode }) => ({
-          icon: getIcon(attributeName),
-          tooltip: attributeName,
-          onClick: ({ targetCode }) =>
-            setViewing(makeActionData({ targetCode, attributeCode, baseEntityCode })),
-        }))(actions)}
+        actions={[
+          ...map(({ attributeCode, attributeName, baseEntityCode }) => ({
+            icon: getIcon(attributeName),
+            tooltip: attributeName,
+            onClick: ({ targetCode }) =>
+              setViewing(makeActionData({ targetCode, attributeCode, baseEntityCode })),
+          }))(actions),
+        ]}
         components={{
           Pagination: props => (
             <Pagination
@@ -76,7 +89,16 @@ const TableView = ({ currentSearch, setViewing }) => {
           ),
           Container: props => <div>{props.children}</div>,
           Actions: ({ actions, data }) => <Actions actions={actions} data={data} />,
+          Toolbar: props => (
+            <div>
+              <MTableToolbar {...props} />
+              <DownloadBar downloadLink={downloadLink} title={title} />
+            </div>
+          ),
         }}
+        onRowClick={
+          includes('Journal', title || '') ? (event, rowData, togglePanel) => togglePanel() : null
+        }
       />
     </div>
   )

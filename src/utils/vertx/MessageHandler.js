@@ -1,4 +1,4 @@
-import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver'
 import {
   prefixedLog,
   isArray,
@@ -7,62 +7,62 @@ import {
   Api,
   removeSubstring,
   isDevMode,
-} from '../../utils';
-import { store } from '../../redux';
-import * as events from './events';
+} from '../../utils'
+import { store } from '../../redux'
+import * as events from './events'
 
 class MessageHandler {
   constructor() {
-    this.log = prefixedLog('MessageHandler');
-    this.lastBe = new Date().getTime();
-    this.beBatch = [];
-    this.dispatchHistory = [];
+    this.log = prefixedLog('MessageHandler')
+    this.lastBe = new Date().getTime()
+    this.beBatch = []
+    this.dispatchHistory = []
 
-    setInterval(this.checkMessageBatch, 200);
+    setInterval(this.checkMessageBatch, 200)
     // setInterval( this.checkDispatchHistory, 500 );
   }
 
-  validMessageTypes = ['DATA_MSG', 'CMD_MSG', 'EVT_MSG'];
+  validMessageTypes = ['DATA_MSG', 'CMD_MSG', 'EVT_MSG']
 
   eventTypes = {
     DATA_MSG: 'data_type',
     CMD_MSG: 'cmd_type',
     EVT_MSG: 'event_type',
-  };
+  }
 
   checkMessageBatch = () => {
     if (this.beBatch.length > 0 && new Date().getTime() - this.lastBe > 200) {
-      this.drainMessageBatch();
+      this.drainMessageBatch()
     }
-  };
+  }
 
   removeMessageFromDispatcHistory = message => {
-    this.dispatchHistory = this.dispatchHistory.filter(item => item.msg_id !== message.msg_id);
-  };
+    this.dispatchHistory = this.dispatchHistory.filter(item => item.msg_id !== message.msg_id)
+  }
 
   addMessageToDispatchHistory = message => {
-    this.dispatchHistory.push(message);
+    this.dispatchHistory.push(message)
 
     setTimeout(() => {
-      this.removeMessageFromDispatcHistory(message);
-    }, 5000);
-  };
+      this.removeMessageFromDispatcHistory(message)
+    }, 5000)
+  }
 
   drainMessageBatch = () => {
     // console.log( 'this.beBatch ', this.beBatch.length, JSON.stringify({ batch: this.beBatch }));
 
-    const message = this.beBatch.reduce(this.handleReduceMessageBatch, this.beBatch[0]);
+    const message = this.beBatch.reduce(this.handleReduceMessageBatch, this.beBatch[0])
 
     // console.log( 'drain message', message ); // eslint-disable-line
 
-    store.dispatch(message);
+    store.dispatch(message)
 
     if (message.is_cached_message) {
-      this.addMessageToDispatchHistory(message);
+      this.addMessageToDispatchHistory(message)
     }
 
-    this.beBatch = [];
-  };
+    this.beBatch = []
+  }
 
   handleReduceMessageBatch = (output, current) => {
     /**
@@ -75,20 +75,20 @@ class MessageHandler {
       const message = {
         ...current,
         links: current.questions ? current.links.concat(current.questions) : current.links,
-      };
-
-      store.dispatch(message);
-
-      if (message.is_cached_message) {
-        this.addMessageToDispatchHistory(message);
       }
 
-      return output;
+      store.dispatch(message)
+
+      if (message.is_cached_message) {
+        this.addMessageToDispatchHistory(message)
+      }
+
+      return output
     }
 
     output.payload.items = [
       ...output.payload.items.filter(
-        item => !current.payload.items.some(newItem => newItem.code === item.code)
+        item => !current.payload.items.some(newItem => newItem.code === item.code),
       ),
       ...current.payload.items.map(item => ({
         delete: current.payload.delete,
@@ -100,31 +100,31 @@ class MessageHandler {
         ...item,
         links: item.questions ? item.links.concat(item.questions) : item.links,
       })),
-    ];
+    ]
 
-    return output;
-  };
+    return output
+  }
 
   handleBulkPullMessage = async message => {
-    console.log('Processing QBulkPullMessage...', { message }); // eslint-disable-line
-    const { data = {}, accessToken } = store.getState().keycloak;
-    const { api_url } = data;
+    console.log('Processing QBulkPullMessage...', { message }) // eslint-disable-line
+    const { data = {}, accessToken } = store.getState().keycloak
+    const { api_url } = data
 
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `bearer ${accessToken}`,
-    };
+    }
 
     if (isString(api_url) && isString(message.pullUrl)) {
-      let apiUrl = api_url;
+      let apiUrl = api_url
 
       if (apiUrl.endsWith(':')) {
-        apiUrl = `${api_url.substring(0, api_url.length - 1)}/`;
+        apiUrl = `${api_url.substring(0, api_url.length - 1)}/`
 
-        console.warn('Changing api_url from:', api_url, 'to:', apiUrl); // eslint-disable-line
+        console.warn('Changing api_url from:', api_url, 'to:', apiUrl) // eslint-disable-line
       }
-      const url = `${apiUrl}${message.pullUrl}`;
-      console.warn('Making GET request to:', url); // eslint-disable-line
+      const url = `${apiUrl}${message.pullUrl}`
+      console.warn('Making GET request to:', url) // eslint-disable-line
 
       try {
         const result = await Api.promiseCall({
@@ -132,105 +132,101 @@ class MessageHandler {
           url,
           headers: headers,
           timeout: 5000,
-        });
+        })
 
         if (isObject(result)) {
-          const { data } = result;
+          const { data } = result
 
           if (isObject(data)) {
-            data['is_pull_message'] = true;
-            data['pull_id'] = removeSubstring(message.pullUrl, 'api/pull/');
+            data['is_pull_message'] = true
+            data['pull_id'] = removeSubstring(message.pullUrl, 'api/pull/')
 
-            this.onMessage(data);
+            this.onMessage(data)
           } else {
-            console.error('QBulkPullMessage Error:', '"invalid data"', result);
+            console.error('QBulkPullMessage Error:', '"invalid data"', result)
           }
         } else {
-          console.error('QBulkPullMessage Error:', '"invalid result"', result);
+          console.error('QBulkPullMessage Error:', '"invalid result"', result)
         }
       } catch (error) {
-        console.error('QBulkPullMessage Error:', error);
+        console.error('QBulkPullMessage Error:', error)
       }
     }
-  };
+  }
 
   onMessage = message => {
     if (isDevMode) {
-      console.warn('INCOMING MESSAGE:', { message }); // eslint-disable-line
+      console.warn('INCOMING MESSAGE:', { message }) // eslint-disable-line
     }
 
-    if (!message) return;
+    if (!message) return
 
-    const { msg_type, data_type, cmd_type, messages, asks } = message;
-    const isValidMessage = this.validMessageTypes.includes(msg_type);
+    const { msg_type, data_type, cmd_type, messages, asks } = message
+    const isValidMessage = this.validMessageTypes.includes(msg_type)
 
     if (cmd_type === 'DOWNLOAD_FILE') {
-      console.log('Processing Download File cmd...', { message }); // eslint-disable-line
+      console.log('DOWNLOAD MESSAGE', message)
+      store.dispatch({ type: 'DOWNLOAD_LINK', payload: message })
 
-      if (isString(message.code, { ofMinLength: 1 })) {
-        console.log('Saving file...'); // eslint-disable-line
-        saveAs(message.code);
-      }
-
-      return;
+      return
     }
 
     if (data_type === 'QBulkPullMessage') {
-      this.handleBulkPullMessage(message);
+      this.handleBulkPullMessage(message)
 
-      return;
+      return
     }
 
     if (!isValidMessage && data_type !== 'QBulkMessage') {
       this.log(
         `Ignoring message of type ${msg_type}. Must be one of the following: ${this.validMessageTypes.join(
-          '|'
+          '|',
         )}`,
-        'warn'
-      );
+        'warn',
+      )
 
-      return;
+      return
     }
 
     if (data_type === 'QBulkMessage') {
-      console.log('Processing QBulkMessage...', { message }); // eslint-disable-line
-      store.dispatch({ type: 'SAM_MSG', payload: message });
+      console.log('Processing QBulkMessage...', { message }) // eslint-disable-line
+      store.dispatch({ type: 'SAM_MSG', payload: message })
       if (isArray(messages, { ofMinLength: 1 }) || isArray(asks, { ofMinLength: 1 })) {
         if (isArray(messages, { ofMinLength: 1 })) {
-          this.log('Processing QBulkMessage "messages"...', 'warn');
-          messages.forEach(this.onMessage);
+          this.log('Processing QBulkMessage "messages"...', 'warn')
+          messages.forEach(this.onMessage)
         }
         if (isArray(asks, { ofMinLength: 1 })) {
-          this.log('Processing QBulkMessage "asks"...', 'warn');
-          asks.forEach(this.onMessage);
+          this.log('Processing QBulkMessage "asks"...', 'warn')
+          asks.forEach(this.onMessage)
         }
       } else {
-        this.log('No "messages" or "asks" supplied with QBulkMessage', 'warn');
+        this.log('No "messages" or "asks" supplied with QBulkMessage', 'warn')
       }
 
-      return;
+      return
     }
 
-    const eventType = this.eventTypes[msg_type];
-    const event = message[eventType];
-    const action = events[event];
+    const eventType = this.eventTypes[msg_type]
+    const event = message[eventType]
+    const action = events[event]
 
     if (!action) {
       this.log(
         `Could not find action for type of '${eventType}'! (derived from message type '${msg_type}')`,
-        'warn'
-      );
+        'warn',
+      )
 
-      return;
+      return
     }
 
     if (message.data_type === 'BaseEntity' && !message.delete && !message.replace) {
       /* Add to a batch */
-      this.beBatch.push(action(message));
+      this.beBatch.push(action(message))
 
-      this.lastBe = new Date().getTime();
+      this.lastBe = new Date().getTime()
     } else {
-      const payload = message;
+      const payload = message
 
       if (isArray(payload.items)) {
         payload.items = payload.items.map(item => ({
@@ -241,20 +237,20 @@ class MessageHandler {
           replace: payload.replace,
           ...item,
           links: item.questions ? item.links.concat(item.questions) : item.links,
-        }));
+        }))
       }
 
       if (payload.is_pull_message) {
-        console.warn('Dispatching Pull message:', event, payload.pull_id, payload); // eslint-disable-line
+        console.warn('Dispatching Pull message:', event, payload.pull_id, payload) // eslint-disable-line
       }
 
-      store.dispatch(action(payload));
+      store.dispatch(action(payload))
 
       if (payload.is_cached_message) {
-        this.addMessageToDispatchHistory(payload);
+        this.addMessageToDispatchHistory(payload)
       }
     }
-  };
+  }
 }
 
-export default MessageHandler;
+export default MessageHandler
