@@ -1,19 +1,20 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Drawer, IconButton, Tooltip, Grid } from '@material-ui/core'
 
+import { Row, Col } from '../components/layouts'
 import NextIcon from '@material-ui/icons/NavigateNext'
 import CloseIcon from '@material-ui/icons/NavigateBefore'
 
-import { SidePanelContext, NotesContext, NoteBarContext } from '../contexts'
-import SideBarItems from './items'
+import { NotesContext, NoteBarContext } from '../contexts'
+import SideBarItems from './side_bar_items'
 import NoteBar from './note_bar'
 
 import useStyles from './styles'
 
 const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
-  const [showNotes, setShowNotes] = useState( false )
-  const [showNoteBar, setShowNoteBar] = useState( false )
+  const [showNotes, setShowNotes] = useState(false)
+  const [showNoteBar, setShowNoteBar] = useState(false)
 
   const classes = useStyles({ sidePanelOpen })
 
@@ -30,30 +31,18 @@ const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
             ModalProps={{ keepMounted: true }}
           >
             {showNoteBar && (
-            <NoteBar
-              sidePanelOpen={sidePanelOpen}
-              toggleSidePanel={toggleSidePanel}
-              baseEntities={baseEntities}
-            />
+              <NoteBar
+                sidePanelOpen={sidePanelOpen}
+                toggleSidePanel={toggleSidePanel}
+                baseEntities={baseEntities}
+              />
             )}
-            <div>
+            <Col justify="space-between" alignItems="flex-start">
               <SideBarItems />
-              <div className={classes.grow} />
-              <Grid
-                container
-                justify="center"
-                alignItems="center"
-              >
-                <Tooltip
-                  title="Hide side panel"
-                  placement="top-start"
-                >
-                  <IconButton onClick={toggleSidePanel}>
-                    {sidePanelOpen ? <NextIcon color="inherit" /> : <CloseIcon color="inherit" />}
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-            </div>
+              <div onClick={toggleSidePanel} className={classes.iconButton}>
+                {sidePanelOpen ? <NextIcon color="inherit" /> : <CloseIcon color="inherit" />}
+              </div>
+            </Col>
           </Drawer>
         </NoteBarContext.Provider>
       </NotesContext.Provider>

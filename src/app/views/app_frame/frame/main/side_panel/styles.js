@@ -28,6 +28,12 @@ const useStyles = makeStyles(theme => ({
     position: 'fixed',
     bottom: theme.spacing(4),
   },
+  iconButton: {
+    cursor: 'pointer',
+    '&:hover': {
+      color: theme.palette.primary.main,
+    },
+  },
 }))
 
 export default useStyles
