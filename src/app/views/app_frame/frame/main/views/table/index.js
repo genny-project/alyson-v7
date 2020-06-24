@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { map, head } from 'ramda'
+import { map, head, includes } from 'ramda'
 
 import Table from 'material-table'
 import Actions from './actions'
 import Pagination from './pagination'
+import DetailPanel from './detail_panel'
 
 import {
   getColumns,
@@ -17,7 +18,7 @@ import {
 
 import useStyles from './styles'
 
-const TableView = ({ currentSearch, setViewing }) => {
+const TableView = ({ currentSearch, setViewing, viewing }) => {
   const [loadingPage, setLoadingPage] = useState(true)
 
   const table = getTable(currentSearch)
@@ -37,10 +38,16 @@ const TableView = ({ currentSearch, setViewing }) => {
 
   useEffect(
     () => {
-      console.log(title)
-      if (title !== 'Loading...') setLoadingPage(false)
+      if (title && title !== 'Loading...') setLoadingPage(false)
     },
-    [currentSearch, data],
+    [title],
+  )
+
+  useEffect(
+    () => {
+      setLoadingPage(true)
+    },
+    [viewing],
   )
 
   const classes = useStyles()
@@ -53,6 +60,9 @@ const TableView = ({ currentSearch, setViewing }) => {
         columns={columns}
         data={[...data]}
         isLoading={loadingPage}
+        detailPanel={
+          includes('Journal', title || '') ? rowData => <DetailPanel {...rowData} /> : null
+        }
         options={{
           pageSize,
           maxBodyHeight: 550,
@@ -77,6 +87,9 @@ const TableView = ({ currentSearch, setViewing }) => {
           Container: props => <div>{props.children}</div>,
           Actions: ({ actions, data }) => <Actions actions={actions} data={data} />,
         }}
+        onRowClick={
+          includes('Journal', title || '') ? (event, rowData, togglePanel) => togglePanel() : null
+        }
       />
     </div>
   )

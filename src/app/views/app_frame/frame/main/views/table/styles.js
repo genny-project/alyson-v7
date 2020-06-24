@@ -13,6 +13,10 @@ const useStyles = makeStyles(theme => ({
   footer: {
     margin: theme.spacing(1),
   },
+  multiAction: {
+    width: theme.spacing(8),
+    overflow: 'show',
+  },
 }))
 
 export default useStyles
