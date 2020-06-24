@@ -20,7 +20,7 @@ import { Row, Col } from '../../../components/layouts'
 
 import useStyles from './styles'
 
-import { getAll, postNote } from './helpers/notes-api'
+import { getAll, postNote, deleteNote } from './helpers/notes-api'
 
 const Notes = ({ baseEntities }) => {
   const [notes, setNotes] = React.useState({})
@@ -40,7 +40,13 @@ const Notes = ({ baseEntities }) => {
 
   const handleShowAddNote = () => setShowAddNote(true)
 
-  const removeNotes = id => console.log(id)
+  const removeNotes = ( id ) => {
+    return (
+      deleteNote({ id })
+      // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
+
+    )
+  }
 
   useEffect(() => {
     getAll({ setNotes })
@@ -95,8 +101,16 @@ const Notes = ({ baseEntities }) => {
       )}
       <Col>
         {map(
-          ({ id, ...rest }) => <Note key={'note' + id} {...rest} removeNotes={removeNotes} />,
-          prop('data', notes) || [],
+          ({ id, ...rest }) => (
+            <Note
+              baseEntities={baseEntities}
+              id={id}
+              key={`note${id}`}
+              {...rest}
+              removeNotes={removeNotes}
+            />
+          ),
+          [...notes] || [],
         )}
       </Col>
     </Grid>

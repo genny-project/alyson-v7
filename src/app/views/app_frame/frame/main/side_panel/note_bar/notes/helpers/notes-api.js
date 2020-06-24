@@ -14,7 +14,7 @@ const getAll = async ({ setNotes }) => {
       'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20',
     )
     console.log(response)
-    setNotes(path(['data'], response) || [])
+    setNotes(path(['data', 'data'], response) || [])
   } catch (error) {
     console.error(error)
   }
@@ -32,10 +32,22 @@ const postNote = async ({ noteContent, noteHeader, setNotes }) => {
       id: 0,
       created: new Date(),
       targetCode: 'PER_USER1',
-    },
+    }
   )
 
   console.log(response)
 }
 
-export { getAll, postNote }
+const deleteNote = async ({ id }) => {
+   console.error( id );
+
+  const response = await axios.delete(
+    'https://internmatch-cyrus.gada.io/v7/notes',
+    {
+      id: id,
+    },
+  )
+
+}
+
+export { getAll, postNote, deleteNote }
