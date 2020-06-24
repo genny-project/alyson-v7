@@ -25,6 +25,7 @@ const Main = ({
   dialogContent,
   setDialogContent,
   dashboard,
+  downloadLink,
 }) => {
   const classes = useStyles()
 
@@ -110,7 +111,12 @@ const Main = ({
               setCurrent={setCurrent}
             />
           ) : (
-            <Table setViewing={setViewing} currentSearch={currentSearch} />
+            <Table
+              setViewing={setViewing}
+              currentSearch={currentSearch}
+              viewing={viewing}
+              downloadLink={downloadLink}
+            />
           )}
         </Paper>
       )}

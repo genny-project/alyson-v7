@@ -11,6 +11,7 @@ import {
   head,
   keys,
   any,
+  path,
 } from 'ramda'
 
 const initialState = { SAM: { active: {}, cached: {} } }
@@ -27,6 +28,19 @@ const isMetaData = compose(
 )
 
 const reducer = (state = initialState, { type, payload }) => {
+  if (type === 'DOWNLOAD_LINK') {
+    const downloadLink = path(['code'], payload)
+
+    return {
+      ...state,
+      ...{
+        SAM: {
+          ...pathOr({}, ['SAM'], state),
+          downloadLink,
+        },
+      },
+    }
+  }
   if (type === 'BASE_ENTITY_MESSAGE') {
     const messages = prop('items', payload)
     const firstMessage = head(messages)
@@ -56,11 +70,7 @@ const reducer = (state = initialState, { type, payload }) => {
     const data = mapAndMergeAll(({ parentCode, items }) => ({
       [parentCode]: {
         data: map(({ code, baseEntityAttributes }) => ({
-          [code]: {
-            ...mapAndMergeAll(({ attributeCode, valueString }) => ({
-              [attributeCode]: valueString,
-            }))(baseEntityAttributes),
-          },
+          [code]: baseEntityAttributes,
         }))(items),
       },
     }))(dataMessages)
@@ -79,6 +89,8 @@ const reducer = (state = initialState, { type, payload }) => {
       ...val,
       metaData: { ...(prop(key, metaData) || {}) },
     }))(data)
+
+    console.warn(fullData)
 
     const key = head(keys(fullData))
 

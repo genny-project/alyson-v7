@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { map, length } from 'ramda'
-import { Tooltip, Icon, Grid } from '@material-ui/core'
+import { Row } from '../../../components/layouts'
+import { Tooltip, Icon } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
 
 import useStyles from '../styles'
@@ -13,7 +14,7 @@ const Actions = ({ actions, data }) => {
   const handleShow = () => setShow(true)
   const handleHide = () => setShow(false)
 
-  const classes = useStyles()
+  const classes = useStyles({ show })
 
   return length(actions) ? (
     length(actions) === 1 ? (
@@ -31,31 +32,27 @@ const Actions = ({ actions, data }) => {
       ))(actions)
     ) : (
       <div onMouseEnter={handleShow} onMouseLeave={handleHide}>
-        <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
+        <Row className={classes.multiAction} justify="flex-start" wrap="nowrap">
           {show ? (
             map(
               ({ icon, onClick, tooltip }) => (
-                <Grid item key={'gridActions' + icon}>
-                  <Tooltip title={tooltip} key={'tooltipActions' + icon}>
-                    <Icon
-                      color="action"
-                      key={'iconActions' + icon}
-                      className={classes.button}
-                      onClick={() => onClick({ targetCode })}
-                    >
-                      {icon}
-                    </Icon>
-                  </Tooltip>
-                </Grid>
+                <Tooltip title={tooltip} key={'tooltipActions' + icon}>
+                  <Icon
+                    color="action"
+                    key={'iconActions' + icon}
+                    className={classes.button}
+                    onClick={() => onClick({ targetCode })}
+                  >
+                    {icon}
+                  </Icon>
+                </Tooltip>
               ),
               actions || [],
             )
           ) : (
-            <Grid item>
-              <InfoIcon color="action" className={classes.moreIcon} />
-            </Grid>
+            <InfoIcon color="action" className={classes.moreIcon} />
           )}
-        </Grid>
+        </Row>
       </div>
     )
   ) : (

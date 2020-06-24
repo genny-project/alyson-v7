@@ -1,5 +1,5 @@
 import React from 'react'
-import { map, addIndex } from 'ramda'
+import { map, addIndex, flatten } from 'ramda'
 import { Grid } from '@material-ui/core'
 
 const Row = ({ children, spacing, alignItems, justify, ...rest }) => (
@@ -17,7 +17,7 @@ const Row = ({ children, spacing, alignItems, justify, ...rest }) => (
           {child}
         </Grid>
       ),
-      children,
+      flatten([children]),
     )}
   </Grid>
 )
@@ -37,7 +37,7 @@ const Col = ({ children, spacing, alignItems, justify, ...rest }) => (
           {child}
         </Grid>
       ),
-      children,
+      flatten([children]),
     )}
   </Grid>
 )

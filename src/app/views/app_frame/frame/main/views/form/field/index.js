@@ -31,7 +31,8 @@ const Field = ({
     mandatory,
   } = fieldData
 
-  if (mandatory && not(has(questionCode, errors))) setErrors({ ...errors, [questionCode]: true })
+  if (questionCode !== 'QUE_SUBMIT' && mandatory && not(has(questionCode, errors)))
+    setErrors({ ...errors, [questionCode]: true })
 
   const initialValue = path([attributeCode, 'value'], defaultValues) || false
 

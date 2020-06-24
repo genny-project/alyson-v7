@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
 import {
   TextField,
@@ -7,99 +7,77 @@ import {
   IconButton,
   CircularProgress,
   Typography,
-} from '@material-ui/core';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import GoogleAutocompleteSuggestions from './google_autocomplete_suggestions';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+} from '@material-ui/core'
+import LockIcon from '@material-ui/icons/LockOutlined'
+import LockOpenIcon from '@material-ui/icons/LockOpenOutlined'
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
+import GoogleAutocompleteSuggestions from './google_autocomplete_suggestions'
+import { geocodeByPlaceId } from 'react-google-places-autocomplete'
 
-import makeAddressData from './helpers/make-address-data';
-import makeHandleUpdate from '../../helpers/make-handle-update';
-import { getIsMobile } from '../../../../utils';
-import useStyles from './styles';
+import makeAddressData from './helpers/make-address-data'
+import makeHandleUpdate from '../../helpers/make-handle-update'
+import { getIsMobile } from '../../../../utils'
+import useStyles from './styles'
 
 const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
-  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData );
+  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData)
 
   const {
     mandatory,
     question: { code: questionCode },
-  } = fieldData;
+  } = fieldData
 
-  const classes = useStyles();
-  const [value, setValue] = useState( null );
-  const [restrictCountry, setRestrictCountry] = useState( true );
+  const classes = useStyles()
+  const [value, setValue] = useState(null)
+  const [restrictCountry, setRestrictCountry] = useState(true)
 
   const handleSend = async () => {
-    const result = await geocodeByPlaceId( value.place_id || '' );
+    const result = await geocodeByPlaceId(value.place_id || '')
 
-    if ( result ) {
-      const addressData = makeAddressData( result );
-
-      handleUpdate( addressData );
+    if (result) {
+      handleUpdate(result)
     }
-  };
+  }
 
   useEffect(
     () => {
-      if ( value ) {
-        setErrors( errors => ({ ...errors, [questionCode]: false }));
-        handleSend();
+      if (value) {
+        setErrors(errors => ({ ...errors, [questionCode]: false }))
+        handleSend()
       }
     },
-    [value]
-  );
+    [value],
+  )
 
   return (
-    <Grid
-      container
-      direction={getIsMobile() ? 'column' : 'row'}
-      spacing={2}
-    >
-      <Grid
-        item
-        className={classes.icon}
-        {...( getIsMobile() ? '' : { xs: 1 })}
-      >
-        <Grid
-          container
-          direction="row"
-          alignItems="center"
-          className={classes.iconGrid}
-        >
+    <Grid container direction={getIsMobile() ? 'column' : 'row'} spacing={2}>
+      <Grid item className={classes.icon} {...(getIsMobile() ? '' : { xs: 1 })}>
+        <Grid container direction="row" alignItems="center" className={classes.iconGrid}>
           <Grid item>
             <Tooltip title={restrictCountry ? 'Unlock region' : 'Lock to Australia'}>
               <div>
-                <IconButton onClick={() => setRestrictCountry( !restrictCountry )}>
+                <IconButton onClick={() => setRestrictCountry(!restrictCountry)}>
                   {restrictCountry ? <LockIcon /> : <LockOpenIcon />}
                 </IconButton>
               </div>
             </Tooltip>
           </Grid>
           <Grid item>
-            {getIsMobile() ? (
-              <Typography>
-                {'Toggle restricted to Australia'}
-              </Typography>
-            ) : null}
+            {getIsMobile() ? <Typography>{'Toggle restricted to Australia'}</Typography> : null}
           </Grid>
         </Grid>
       </Grid>
-      <Grid
-        item
-        {...( getIsMobile() ? '' : { xs: 11 })}
-      >
+      <Grid item {...(getIsMobile() ? '' : { xs: 11 })}>
         <GooglePlacesAutocomplete
           apiKey={googleApiKey}
-          onSelect={selection => setValue( selection )}
+          onSelect={selection => setValue(selection)}
           autocompletionRequest={
             restrictCountry
               ? {
-                componentRestrictions: {
-                  country: 'au',
-                },
-              }
+                  componentRestrictions: {
+                    country: 'au',
+                  },
+                }
               : {}
           }
           renderInput={params => (
@@ -113,7 +91,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
             />
           )}
           loader={<CircularProgress />}
-          renderSuggestions={( active, suggestions, onSelectSuggestion ) => (
+          renderSuggestions={(active, suggestions, onSelectSuggestion) => (
             <GoogleAutocompleteSuggestions
               active={active}
               suggestions={suggestions}
@@ -123,7 +101,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
         />
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
-export default AddressSelect;
+export default AddressSelect

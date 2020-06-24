@@ -30,43 +30,44 @@ const Sam = ({
   keycloak = {},
   dashboard,
   currentSearch,
+  downloadLink,
 }) => {
-  const googleApiKey = getGoogleApiKey( keycloak )
-  const agency = getAgency( user )
-  const agencyCompany = getAgencyCompany( agency )( baseEntities )
+  const googleApiKey = getGoogleApiKey(keycloak)
+  const agency = getAgency(user)
+  const agencyCompany = getAgencyCompany(agency)(baseEntities)
 
   const [viewing, setViewing] = useState({ code: 'QUE_DASHBOARD_VIEW' })
-  const [dialogContent, setDialogContent] = useState( null )
-  const [sidebarOpen, setSidebarOpen] = useState( false )
-  const [loading, setLoading] = useState( false )
-  const [staleTarget, setStaleTarget] = useState( '' )
-  const [sidePanelOpen, setSidePanelOpen] = useState( false )
-  const toggleSidePanel = () => setSidePanelOpen( sidePanelOpen => !sidePanelOpen )
+  const [dialogContent, setDialogContent] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [staleTarget, setStaleTarget] = useState('')
+  const [sidePanelOpen, setSidePanelOpen] = useState(false)
+  const toggleSidePanel = () => setSidePanelOpen(sidePanelOpen => !sidePanelOpen)
 
-  const dataForEvent = getDataForEvent( viewing, user )
+  const dataForEvent = getDataForEvent(viewing, user)
 
   const theme = makeTheme({ attributes, asks })
 
-  console.log( 'baseEntities', baseEntities )
+  console.log('baseEntities', baseEntities)
 
   useEffect(
     () => {
-      if ( viewing.code || viewing.parentCode || viewing.targetCode ) {
+      if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (
-          ( !viewing.code === 'QUE_TABLE_NEXT_BTN' &&
+          (!viewing.code === 'QUE_TABLE_NEXT_BTN' &&
             !viewing.code === 'QUE_TABLE_PREVIOUS_BTN' &&
             viewing.parentCode &&
-            !has( viewing.targetCode, baseEntities )) ||
+            !has(viewing.targetCode, baseEntities)) ||
           viewing.code === 'QUE_TAB_BUCKET_VIEW'
         ) {
-          setLoading( true )
+          setLoading(true)
         }
 
-        if ( includes( 'MENU', prop( 'code', viewing ) || '' )) {
+        if (includes('MENU', prop('code', viewing) || '')) {
           setStaleTarget(
-            prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}),
+            prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
           )
-          setLoading( true )
+          setLoading(true)
         }
 
         Bridge.sendEvent({
@@ -82,16 +83,16 @@ const Sam = ({
 
   useEffect(
     () => {
-      if ( includes( 'MENU', prop( 'code', viewing ) || '' )) {
+      if (includes('MENU', prop('code', viewing) || '')) {
         if (
-          prop( 'targetCode', asks[replace( 'MENU', 'GRP', prop( 'code', viewing ))] || {}) !==
+          prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
           staleTarget
         ) {
-          setLoading( false )
+          setLoading(false)
         }
       } else {
-        setLoading( false )
-        setDialogContent( null )
+        setLoading(false)
+        setDialogContent(null)
       }
     },
     [asks, currentSearch, baseEntities],
@@ -101,7 +102,7 @@ const Sam = ({
     <ThemeProvider theme={theme}>
       <div>
         <AppBar
-          items={getAppBarItems( frames, asks, themes )}
+          items={getAppBarItems(frames, asks, themes)}
           asks={asks}
           frames={frames}
           user={user}
@@ -112,7 +113,7 @@ const Sam = ({
           setLoading={setLoading}
         />
         <Sidebar
-          items={getDrawerItems( frames, asks, themes )}
+          items={getDrawerItems(frames, asks, themes)}
           asks={asks}
           frames={frames}
           user={user}
@@ -125,6 +126,7 @@ const Sam = ({
           projectName={projectName}
         />
         <Main
+          downloadLink={downloadLink}
           loading={loading}
           setLoading={setLoading}
           viewing={viewing}
@@ -139,7 +141,7 @@ const Sam = ({
           currentSearch={currentSearch}
           dialogContent={dialogContent}
           setDialogContent={setDialogContent}
-          drawerItems={getDrawerItems( frames, asks )}
+          drawerItems={getDrawerItems(frames, asks)}
           dashboard={dashboard}
         />
       </div>
@@ -153,8 +155,9 @@ const Sam = ({
 }
 
 const mapStateToProps = state => ({
-  dashboard: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'dashboard'], state ),
-  currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state ),
+  dashboard: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'dashboard'], state),
+  currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
+  downloadLink: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'downloadLink'], state),
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
   asks: state.vertx.asks,
@@ -164,4 +167,4 @@ const mapStateToProps = state => ({
   keycloak: state.keycloak,
 })
 
-export default connect( mapStateToProps )( Sam )
+export default connect(mapStateToProps)(Sam)
