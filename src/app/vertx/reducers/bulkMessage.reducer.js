@@ -12,6 +12,7 @@ import {
   keys,
   any,
   path,
+  includes,
 } from 'ramda'
 
 const initialState = { SAM: { active: {}, cached: {} } }
@@ -29,7 +30,7 @@ const isMetaData = compose(
 
 const reducer = (state = initialState, { type, payload }) => {
   if (type === 'DOWNLOAD_LINK') {
-    const downloadLink = path(['code'], payload)
+    const downloadLink = path(['code'], payload || {})
 
     return {
       ...state,
@@ -42,13 +43,13 @@ const reducer = (state = initialState, { type, payload }) => {
     }
   }
   if (type === 'BASE_ENTITY_MESSAGE') {
-    const messages = prop('items', payload)
+    const messages = prop('items', payload) || []
     const firstMessage = head(messages)
-    if (prop('code', firstMessage) === 'GRP_DASHBOARD_COUNTS') {
+    if (prop('code', firstMessage || {}) === 'GRP_DASHBOARD_COUNTS') {
       const dashboard = {
         ...mapAndMergeAll(({ attributeName, value, attributeCode, baseEntityCode }) => ({
           [attributeCode]: { value, attributeName, baseEntityCode },
-        }))(prop('baseEntityAttributes', firstMessage)),
+        }))(prop('baseEntityAttributes', firstMessage || {})),
       }
 
       return {
@@ -64,8 +65,8 @@ const reducer = (state = initialState, { type, payload }) => {
   }
   if (type === 'SAM_MSG') {
     const messages = prop('messages', payload) || []
-    const dataMessages = filter(has('parentCode'), messages)
-    const metaDataMessages = filter(isMetaData, messages)
+    const dataMessages = filter(has('parentCode'), messages || {})
+    const metaDataMessages = filter(isMetaData, messages || {})
 
     const data = mapAndMergeAll(({ parentCode, items }) => ({
       [parentCode]: {
@@ -90,13 +91,11 @@ const reducer = (state = initialState, { type, payload }) => {
       metaData: { ...(prop(key, metaData) || {}) },
     }))(data)
 
-    console.warn(fullData)
+    const key = head(keys(fullData || {}) || [])
 
-    const key = head(keys(fullData))
+    const isBucket = key => any(test => includes(test, key || ''))(['APPLICATIONS'])
 
-    const isBucket = key => any(test => key.indexOf(test) >= 0)(['APPLICATIONS'])
-
-    if (!isBucket(key)) {
+    if (!isBucket(key || '')) {
       return {
         ...state,
         ...{
