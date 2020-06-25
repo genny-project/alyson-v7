@@ -29,6 +29,8 @@ const Main = ({
 }) => {
   const classes = useStyles()
 
+  console.log(viewing)
+
   const view = getView({ viewing, asks, frames })
   const application = getApplication(attributes)
 
