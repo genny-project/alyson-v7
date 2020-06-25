@@ -66,4 +66,12 @@ const deleteNote = async ({ id }) => {
   const response = await axios.delete(`https://internmatch-cyrus.gada.io/v7/notes/${id}`)
 }
 
-export { getAll, postNote, deleteNote }
+const editNote = async ({ id, newContent }) => {
+  const response = await axios.put(`https://internmatch-cyrus.gada.io/v7/notes/${id}`, {
+    content: newContent,
+  })
+
+  console.log(response)
+}
+
+export { getAll, postNote, deleteNote, editNote }
