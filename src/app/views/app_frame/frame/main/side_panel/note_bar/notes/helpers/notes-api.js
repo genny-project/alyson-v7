@@ -42,10 +42,7 @@ const deleteNote = async ({ id }) => {
    console.error( id );
 
   const response = await axios.delete(
-    'https://internmatch-cyrus.gada.io/v7/notes',
-    {
-      id: id,
-    },
+    `https://internmatch-cyrus.gada.io/v7/notes/${id}`
   )
 
 }
