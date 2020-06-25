@@ -15,8 +15,10 @@ import {
   Popper,
   ButtonGroup,
 } from '@material-ui/core'
+
 import useStyles from './styles'
 
+import MoreIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import VisibilityIcon from '@material-ui/icons/Visibility'
@@ -59,9 +61,12 @@ const Note = ({
         <Popper open={!!hover} anchorEl={hover} placement="top-end" className={classes.popper}>
           <Card className={classes.buttonGroup}>
             <ButtonGroup color="primary" size="small">
-              <Button>{`1`}</Button>
-              <Button>{`2`}</Button>
-              <Button>{`3`}</Button>
+              <Button>
+                <EditIcon fontSize="small" />
+              </Button>
+              <Button>
+                <MoreIcon fontSize="small" />
+              </Button>
             </ButtonGroup>
           </Card>
         </Popper>
