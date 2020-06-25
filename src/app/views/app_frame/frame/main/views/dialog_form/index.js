@@ -7,6 +7,7 @@ import useStyles from './styles'
 const DialogForm = ({
   form,
   asks,
+  loading,
   setViewing,
   setLoading,
   attributes,
@@ -22,7 +23,7 @@ const DialogForm = ({
   return (
     <Dialog open={view === 'APPLICATION'} onClose={handleClose} fullWidth>
       <DialogContent className={classes.dialogContent}>
-        {form ? (
+        {form && !loading ? (
           <Form
             formView={form}
             asks={asks}
@@ -31,6 +32,12 @@ const DialogForm = ({
             googleApiKey={googleApiKey}
             setViewing={setViewing}
             setLoading={setLoading}
+            redirect={() =>
+              setViewing({
+                code: 'QUE_TAB_BUCKET_VIEW',
+                targetCode: 'PER_USER1',
+              })
+            }
           />
         ) : (
           <Container className={classes.fullWidth}>

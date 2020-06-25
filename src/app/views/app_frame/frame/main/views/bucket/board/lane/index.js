@@ -43,7 +43,8 @@ const Lane = ({
               <Grid item key={'gridItem' + key}>
                 <Item
                   expandedColumn={expand && length(items) > 0}
-                  item={{ ...val, targetCode: key }}
+                  item={val}
+                  targetCode={key}
                   setViewing={setViewing}
                   column={title}
                   key={'gridItemItem' + key}
