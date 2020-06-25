@@ -5,8 +5,8 @@ const useStyles = makeStyles(( theme ) => ({
     alignItems: 'center',
   },
   card: {
-    maxWidth: 345,
-    marginBottom: theme.spacing( 2 ),
+    width: 345,
+    margin: theme.spacing( 1 ),
   },
   button: {
     maxWidth: 345,

@@ -23,7 +23,6 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import ClearIcon from '@material-ui/icons/Clear'
-import VisibilityIcon from '@material-ui/icons/Visibility'
 
 const Note = ({
   content,
@@ -84,6 +83,9 @@ const Note = ({
                 ) : (
                   <EditIcon fontSize="small" onClick={() => setEditing(true)} />
                 )}
+              </Button>
+              <Button>
+                <DeleteIcon fontSize="small" onClick={()=>removeNotes(id)}/>
               </Button>
               <Button>
                 <MoreIcon fontSize="small" />

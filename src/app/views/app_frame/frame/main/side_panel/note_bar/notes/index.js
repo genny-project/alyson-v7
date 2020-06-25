@@ -64,7 +64,7 @@ const Notes = ({ baseEntities, attributes }) => {
       </Grid>
 
       {showAddNote && (
-        <Col alignItems="flex-start" justify="flex-start">
+        <Col alignItems="flex-start" justify="center">
           <Card className={classes.card} variant="outlined">
             <CardHeader
               title={
@@ -72,7 +72,7 @@ const Notes = ({ baseEntities, attributes }) => {
                   value={noteHeader}
                   multiline
                   style={{ margin: 4 }}
-                  placeholder="Title"
+                  placeholder="Person who the note is on"
                   fullWidth
                   onChange={e => setNoteHeader(e.target.value)}
                 />
