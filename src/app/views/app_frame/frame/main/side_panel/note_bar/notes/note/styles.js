@@ -16,6 +16,9 @@ const useStyles = makeStyles(theme => ({
     marginRight: `-${theme.spacing(10)}px`,
     boxShadow: 'none',
   },
+  input: {
+    fontSize: '0.88rem',
+  },
 }))
 
 export default useStyles

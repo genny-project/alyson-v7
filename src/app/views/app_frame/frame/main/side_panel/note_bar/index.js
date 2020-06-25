@@ -27,7 +27,7 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) =
     >
       <Col alignItems="flex-start">
         <Row justify="space-between" className={classes.topBar}>
-          <Typography>{`Add Note`}</Typography>
+          <Typography variant="h6" color="primary">{`Add Note`}</Typography>
           <IconButton color="primary">
             <SearchIcon color="inherit" />
           </IconButton>

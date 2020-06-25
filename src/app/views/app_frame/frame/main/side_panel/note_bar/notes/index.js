@@ -20,7 +20,7 @@ import { Col } from '../../../components/layouts'
 
 import useStyles from './styles'
 
-import { getAll, postNote, deleteNote } from './helpers/notes-api'
+import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 
 const Notes = ({ baseEntities, attributes }) => {
   const [notes, setNotes] = useState({})
@@ -106,6 +106,7 @@ const Notes = ({ baseEntities, attributes }) => {
               {...rest}
               removeNotes={removeNotes}
               attributes={attributes}
+              editNote={editNote}
             />
           ),
           [...notes] || [],
