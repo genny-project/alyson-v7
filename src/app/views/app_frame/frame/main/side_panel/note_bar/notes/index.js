@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { map, prop } from 'ramda'
 import {
   Button,
-  TextField,
+  InputBase,
   Grid,
   Card,
   CardActionArea,
@@ -16,7 +16,7 @@ import AddIcon from '@material-ui/icons/Add'
 
 import Note from './note'
 
-import { Col } from '../../../components/layouts'
+import { Col, Row } from '../../../components/layouts'
 
 import useStyles from './styles'
 
@@ -68,7 +68,7 @@ const Notes = ({ baseEntities, attributes }) => {
           <Card className={classes.card} variant="outlined">
             <CardHeader
               title={
-                <TextField
+                <InputBase
                   value={noteHeader}
                   multiline
                   style={{ margin: 4 }}
@@ -79,7 +79,8 @@ const Notes = ({ baseEntities, attributes }) => {
               }
             />
             <CardContent>
-              <TextField
+              <InputBase
+                autoFocus
                 value={noteContent}
                 multiline
                 style={{ margin: 4 }}
@@ -88,10 +89,12 @@ const Notes = ({ baseEntities, attributes }) => {
                 onChange={e => setNoteContent(e.target.value)}
               />
             </CardContent>
-            <CardActions disableSpacing>
-              <Button variant="contained" color="inherit" onClick={handleSubmit}>
+            <CardActions >
+              <Row justify='flex-end'>
+              <Button onClick={handleSubmit}>
                 Done
               </Button>
+              </Row>
             </CardActions>
           </Card>
         </Col>

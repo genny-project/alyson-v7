@@ -2,37 +2,38 @@ import { map, path } from 'ramda'
 
 import axios from 'axios'
 
-const generateId = () => {
-  return `_${Math.random()
-    .toString(30)
-    .substr(1, 7)}`
-}
-const fakeNotes = [
-  {
-    sourceCode: 'PER_USER1',
-    content: 'Note 1',
-    tags: [],
-    id: 0,
-    created: new Date(),
-    targetCode: 'PER_USER1',
-  },
-  {
-    sourceCode: 'PER_USER1',
-    content: 'Note 2',
-    tags: [],
-    id: 1,
-    created: new Date(),
-    targetCode: 'PER_USER1',
-  },
-  {
-    sourceCode: 'PER_USER1',
-    content: 'Note 3',
-    tags: [],
-    id: 2,
-    created: new Date(),
-    targetCode: 'PER_USER1',
-  },
-]
+
+// const fakeNotes = [
+//   {
+//     sourceCode: 'PER_USER1',
+//     content: 'Note 1',
+//     tags: [],
+//     id: 0,
+//     created: new Date(),
+//     targetCode: 'PER_USER1',
+//   },
+//   {
+//     sourceCode: 'PER_USER1',
+//     content: 'Note 2',
+//     tags: [],
+//     id: 1,
+//     created: new Date(),
+//     targetCode: 'PER_USER1',
+//   },
+//   {
+//     sourceCode: 'PER_USER1',
+//     content: 'Note 3',
+//     tags: [],
+//     id: 2,
+//     created: new Date(),
+//     targetCode: 'PER_USER1',
+//   },
+// ]
+
+const config = {
+    headers: { Authorization: `Bearer ${token}` }
+};
+
 const getAll = async ({ setNotes }) => {
   try {
     const response = await axios.get(
