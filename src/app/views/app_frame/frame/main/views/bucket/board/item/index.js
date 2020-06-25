@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { contains, prop, has, map } from 'ramda'
+import { contains, prop, has, map, mergeAll } from 'ramda'
 
 import {
   Card,
@@ -14,6 +14,7 @@ import {
   Typography,
   ClickAwayListener,
   Badge,
+  LinearProgress,
 } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
@@ -23,6 +24,7 @@ import useStyles from './styles'
 const Item = ({
   setViewing,
   item,
+  targetCode,
   expandedColumn,
   column,
   refreshBuckets,
@@ -51,16 +53,20 @@ const Item = ({
     PRI_OCCUPATION: occupation,
     PRI_STAR_RATING: starRating,
     PRI_TRANSPORT: transport,
-    targetCode,
-  } = item
+    PRI_ASSOC_HC: hostCompany,
+  } = { ...mergeAll(map(({ attributeCode, value }) => ({ [attributeCode]: value }), item)) }
 
   const classes = useStyles({ statusColor })
 
-  const handleAction = code => () =>
+  const handleAction = code => () => {
+    setLoading(true)
+    setCurrent(current => ({ ...current, targetCode: true }))
     setViewing({
       code,
       targetCode,
+      view: 'BUCKET',
     })
+  }
 
   return expandedColumn ? (
     <ClickAwayListener onClickAway={() => setExpand(false)}>
@@ -71,10 +77,11 @@ const Item = ({
       >
         <Badge color="secondary" variant="dot" invisible={!has(targetCode, current)}>
           <Card className={classes.itemRoot}>
+            {loading ? <LinearProgress /> : <div style={{ height: '5px' }} />}
             <CardHeader
               avatar={<Avatar alt={name} src={profilePicture} className={classes.profilePicture} />}
               title={name || internName}
-              subheader={email || internEmail}
+              subheader={email || internEmail || hostCompany}
               action={
                 <IconButton
                   aria-label="settings"

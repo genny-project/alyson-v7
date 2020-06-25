@@ -31,6 +31,8 @@ const Field = ({
     mandatory,
   } = fieldData
 
+  console.log(fieldData)
+
   if (questionCode !== 'QUE_SUBMIT' && mandatory && not(has(questionCode, errors)))
     setErrors({ ...errors, [questionCode]: true })
 
