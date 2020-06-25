@@ -12,7 +12,7 @@ import NoteBar from './note_bar'
 
 import useStyles from './styles'
 
-const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
+const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) => {
   const [showNotes, setShowNotes] = useState(false)
   const [showNoteBar, setShowNoteBar] = useState(false)
 
@@ -35,6 +35,7 @@ const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
                 sidePanelOpen={sidePanelOpen}
                 toggleSidePanel={toggleSidePanel}
                 baseEntities={baseEntities}
+                attributes={attributes}
               />
             )}
             <Col justify="space-between" alignItems="flex-start">

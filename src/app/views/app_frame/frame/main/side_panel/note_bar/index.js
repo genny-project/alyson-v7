@@ -10,7 +10,7 @@ import Notes from './notes'
 
 import useStyles from './styles'
 
-const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
+const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) => {
   const { setShowNoteBar } = useContext(NoteBarContext)
 
   const classes = useStyles()
@@ -25,7 +25,7 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
       onClose={toggleSidePanel}
       ModalProps={{ keepMounted: true }}
     >
-      <Col>
+      <Col alignItems="flex-start">
         <Row justify="space-between" className={classes.topBar}>
           <Typography>{`Add Note`}</Typography>
           <IconButton color="primary">
@@ -36,7 +36,7 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities }) => {
           </IconButton>
         </Row>
         <Divider orientation="horizontal" />
-        <Notes baseEntities={baseEntities} />
+        <Notes baseEntities={baseEntities} attributes={attributes} />
       </Col>
     </Drawer>
   )

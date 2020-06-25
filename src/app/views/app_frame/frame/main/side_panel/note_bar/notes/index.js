@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { map, prop } from 'ramda'
 import {
   Button,
@@ -16,17 +16,17 @@ import AddIcon from '@material-ui/icons/Add'
 
 import Note from './note'
 
-import { Row, Col } from '../../../components/layouts'
+import { Col } from '../../../components/layouts'
 
 import useStyles from './styles'
 
 import { getAll, postNote, deleteNote } from './helpers/notes-api'
 
-const Notes = ({ baseEntities }) => {
-  const [notes, setNotes] = React.useState({})
-  const [noteContent, setNoteContent] = React.useState('')
-  const [noteHeader, setNoteHeader] = React.useState('')
-  const [showAddNote, setShowAddNote] = React.useState(false)
+const Notes = ({ baseEntities, attributes }) => {
+  const [notes, setNotes] = useState({})
+  const [noteContent, setNoteContent] = useState('')
+  const [noteHeader, setNoteHeader] = useState('')
+  const [showAddNote, setShowAddNote] = useState(false)
 
   const classes = useStyles()
 
@@ -40,20 +40,20 @@ const Notes = ({ baseEntities }) => {
 
   const handleShowAddNote = () => setShowAddNote(true)
 
-  const removeNotes = ( id ) => {
-    return (
-      deleteNote({ id })
-      // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
-
-    )
+  const removeNotes = id => {
+    return deleteNote({ id })
+    // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
-  useEffect(() => {
-    getAll({ setNotes })
-  }, [])
+  useEffect(
+    () => {
+      getAll({ setNotes })
+    },
+    [notes],
+  )
 
   return (
-    <Grid container className={classes.root}>
+    <Col alignItems="flex-start" justify="flex-start">
       <Grid xs={12} className={classes.buttonControl}>
         <Button
           className={classes.button}
@@ -67,7 +67,7 @@ const Notes = ({ baseEntities }) => {
       </Grid>
 
       {showAddNote && (
-        <Col>
+        <Col alignItems="flex-start" justify="flex-start">
           <Card className={classes.card} variant="outlined">
             <CardHeader
               title={
@@ -99,7 +99,7 @@ const Notes = ({ baseEntities }) => {
           </Card>
         </Col>
       )}
-      <Col>
+      <Col alignItems="flex-start" justify="flex-start">
         {map(
           ({ id, ...rest }) => (
             <Note
@@ -108,12 +108,13 @@ const Notes = ({ baseEntities }) => {
               key={`note${id}`}
               {...rest}
               removeNotes={removeNotes}
+              attributes={attributes}
             />
           ),
           [...notes] || [],
         )}
       </Col>
-    </Grid>
+    </Col>
   )
 }
 
