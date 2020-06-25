@@ -45,6 +45,7 @@ const Main = ({
         setViewing={setViewing}
         setLoading={setLoading}
         view={view}
+        loading={loading}
       />
       {loading || !view ? (
         <Grid

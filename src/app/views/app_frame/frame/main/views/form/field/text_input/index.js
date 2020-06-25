@@ -40,7 +40,7 @@ const TextInput = ({
       onBlur={() => handleUpdate(value)}
       label={label}
       required={mandatory}
-      type={inputType || 'text'}
+      type={'text'}
     />
   )
 }
