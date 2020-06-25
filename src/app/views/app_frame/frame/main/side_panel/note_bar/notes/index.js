@@ -45,12 +45,9 @@ const Notes = ({ baseEntities, attributes }) => {
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
-  useEffect(
-    () => {
-      getAll({ setNotes })
-    },
-    [notes],
-  )
+  useEffect(() => {
+    getAll({ setNotes })
+  }, [])
 
   return (
     <Col alignItems="flex-start" justify="flex-start">

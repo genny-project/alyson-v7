@@ -34,6 +34,7 @@ const Note = ({
 }) => {
   const [hover, setHover] = useState(false)
   const dateFns = new DateFnsAdapter()
+  const parsedDate = new Date(created)
   const name = baseEntities[sourceCode].name
   const profileImage = pathOr('', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes)
 
@@ -45,8 +46,13 @@ const Note = ({
         <Avatar variant="rounded" src={profileImage} />
         <Col alignItems="flex-start" spacing={0}>
           <Row justify="flex-start">
-            <Typography variant="subtitle2">{name}</Typography>
-            <Typography variant="caption">{`${dateFns.format(created, 'p')}`}</Typography>
+            <Typography variant="subtitle2" color={hover ? 'primary' : 'textPrimary'}>
+              {name}
+            </Typography>
+            <Typography
+              variant="caption"
+              color={hover ? 'primary' : 'textPrimary'}
+            >{`${dateFns.format(parsedDate, 'p')}`}</Typography>
           </Row>
           <Typography variant="body2">{content}</Typography>
         </Col>

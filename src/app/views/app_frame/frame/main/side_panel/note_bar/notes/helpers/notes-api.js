@@ -34,16 +34,15 @@ const fakeNotes = [
   },
 ]
 const getAll = async ({ setNotes }) => {
-  setNotes(fakeNotes)
-  // try {
-  //   const response = await axios.get(
-  //     'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20',
-  //   )
-  //   console.log(response)
-  //   setNotes(path(['data', 'data'], response) || [])
-  // } catch (error) {
-  //   console.error(error)
-  // }
+  try {
+    const response = await axios.get(
+      'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20',
+    )
+    console.log(response)
+    setNotes(path(['data', 'data'], response) || [])
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 const postNote = async ({ noteContent, noteHeader, setNotes }) => {
