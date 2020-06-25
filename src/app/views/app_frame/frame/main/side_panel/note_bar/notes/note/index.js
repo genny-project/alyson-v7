@@ -50,9 +50,9 @@ const Note = ({
   const classes = useStyles({ hover })
 
   return (
-    <div onMouseEnter={event => setHover(event.currentTarget)} onMouseLeave={() => setHover(false)}>
+    <div onMouseEnter={event => setHover(event.currentTarget)} onMouseLeave={() => setHover(false)} className={classes.card}>
       <Row justify="flex-start" className={classes.cardContainer}>
-        <Avatar variant="rounded" src={profileImage} />
+      <Avatar variant="rounded" src={profileImage} />
         <Col alignItems="flex-start" spacing={0}>
           <Row justify="flex-start">
             <Typography variant="subtitle2" color={hover ? 'primary' : 'textPrimary'}>

@@ -35,7 +35,7 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) =
             <ClearIcon color="inherit" />
           </IconButton>
         </Row>
-        <Divider orientation="horizontal" />
+        <Divider/>
         <Notes baseEntities={baseEntities} attributes={attributes} />
       </Col>
     </Drawer>

@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
   topBar: {
     margin: theme.spacing(2),
-    maxWidth: 345,
+    width: 345,
   },
 }))
 

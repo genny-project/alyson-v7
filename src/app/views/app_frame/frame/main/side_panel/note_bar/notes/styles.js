@@ -9,8 +9,10 @@ const useStyles = makeStyles(( theme ) => ({
     margin: theme.spacing( 1 ),
   },
   button: {
-    maxWidth: 345,
+    width: 300,
     justifyContent: 'flex-start',
+    borderRadius: 30,
+    padding: theme.spacing( 2 ),
   },
   media: {
     height: 140,
@@ -23,10 +25,8 @@ const useStyles = makeStyles(( theme ) => ({
     padding: theme.spacing( 2 ),
   },
   buttonControl: {
-    margin: theme.spacing( 2 ),
-  },
-  expand: {
-    marginLeft: 'auto',
+    marginLeft: theme.spacing( 1 ),
+    marginBottom: theme.spacing( 2 )
   },
 }))
 

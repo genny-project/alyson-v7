@@ -19,6 +19,17 @@ const useStyles = makeStyles(theme => ({
   input: {
     fontSize: '0.88rem',
   },
+  card: {
+  boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+  background:' #fff',
+  borderRadius: 2,
+  display: 'inline-block',
+  marginLeft: theme.spacing(3),
+  marginBottom: theme.spacing(1),
+  paddingBottom: theme.spacing(1),
+  minWidth:200,
+  maxWidth: 345
+  }
 }))
 
 export default useStyles
