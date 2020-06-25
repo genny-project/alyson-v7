@@ -30,9 +30,11 @@ import axios from 'axios'
 //   },
 // ]
 
-const config = {
-    headers: { Authorization: `Bearer ${token}` }
-};
+// const token = ''
+
+// const config = {
+//     headers: { Authorization: `Bearer ${token}` }
+// };
 
 const getAll = async ({ setNotes }) => {
   try {
