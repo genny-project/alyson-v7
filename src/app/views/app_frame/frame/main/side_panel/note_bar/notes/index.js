@@ -63,8 +63,6 @@ const Notes = ({ baseEntities, attributes }) => {
         </Button>
       </Grid>
 
-
-      <Grid>
       <Col alignItems="flex-start" justify="flex-start">
         {map(
           ({ id, ...rest }) => (
@@ -108,8 +106,6 @@ const Notes = ({ baseEntities, attributes }) => {
           </Card>
         </Col>
       )}
-      </Grid>
-
     </Col>
   )
 }
