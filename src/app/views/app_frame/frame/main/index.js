@@ -50,7 +50,7 @@ const Sam = ({
 
   useEffect(
     () => {
-      if (!!viewing.view && includes('_PRI_EVENT_', viewing.code || ''))
+      if (!!viewing.view && includes('_EVENT_VIEW', viewing.code || ''))
         setViewing({ ...viewing, view: false })
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (

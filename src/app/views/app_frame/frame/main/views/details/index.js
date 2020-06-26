@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { prop, path, toUpper, contains, map, keys } from 'ramda'
+import { prop, path, toUpper, contains, map, keys, identity } from 'ramda'
 
 import { Row } from '../../components/layouts'
 import SignatureCanvas from 'react-signature-canvas'
@@ -8,6 +8,7 @@ import { Rating } from '@material-ui/lab'
 import { format, parseISO } from 'date-fns'
 
 import onUpdateSignature from './helpers/on-update-signature'
+import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
 
 const RowItem = ({
@@ -131,7 +132,7 @@ const printAgreement = [
   { label: 'Agreement', code: 'agreement_html', type: 'html' },
   { label: 'Intern Signature', code: 'intern_agreement_signature', type: 'signature' },
 ]
-const Details = ({ attributes, targetCode }) => {
+const Details = ({ attributes, targetCode, setViewing, setLoading }) => {
   const detailView = prop(targetCode, attributes)
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
@@ -160,9 +161,16 @@ const Details = ({ attributes, targetCode }) => {
   const signatureRef = useRef()
   const classes = useStyles()
 
-  console.log(detailView)
+  const handleSubmit = () =>
+    onSubmit({
+      setLoading,
+      redirect: () => setViewing({ view: 'BUCKET' }),
+      parentCode: targetCode,
+      rootCode: 'QQQ_QUESTION_GROUP',
+    })({
+      ask: { questionCode: 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT', targetCode },
+    })
 
-  const handleSubmit = () => console.log(signature)
   const details = map(
     ({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }),
     detailType,
@@ -173,10 +181,10 @@ const Details = ({ attributes, targetCode }) => {
       if (!!signature)
         onUpdateSignature({
           targetCode,
-          sourceCode: 'QUE_PRI_EVENT_VIEW_AGREEMENT',
-          questionCode: 'PRI_INTERN_AGREEMENT_SIGNATURE',
+          sourceCode: 'PER_USER1',
+          questionCode: 'QUE_AGREEMENT_DOCUMENT_INTERN_SIGNATURE',
           attributeCode: 'PRI_INTERN_AGREEMENT_SIGNATURE',
-          askId: '',
+          askId: 171,
           signature,
         })
     },
