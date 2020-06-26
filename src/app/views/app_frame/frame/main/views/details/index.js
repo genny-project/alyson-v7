@@ -137,7 +137,7 @@ const Details = ({ attributes, targetCode, setViewing, setLoading }) => {
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
 
-  const detailType = contains('PRI_INTERN_AGREEMENT_SIGNATURE')
+  const detailType = contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView))
     ? printAgreement
     : contains('PRI_IS_INTERN', keys(detailView))
       ? printIntern
