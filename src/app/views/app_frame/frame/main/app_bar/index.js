@@ -61,9 +61,9 @@ const MainAppBar = ({
             parentCode="QUE_ADD_ITEMS_GRP"
           />
           <ProfileMenu
-            group={asks['QUE_OPTIONS_GRP']}
+            group={asks['QUE_AVATAR_GRP']}
             setViewing={setViewing}
-            parentCode="QUE_OPTIONS_GRP"
+            parentCode="QUE_AVATAR_GRP"
             profilePictureURL={profilePictureURL}
             userFullName={userFullName}
             fakePictureForDemo={fakePictureForDemo}

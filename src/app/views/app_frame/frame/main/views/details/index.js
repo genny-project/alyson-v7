@@ -40,6 +40,7 @@ const RowItem = ({
             <SignatureCanvas
               ref={ref => (signatureRef = ref)}
               onEnd={() => setSignature(signatureRef.toDataURL())}
+              canvasProps={{ width: '40rem', height: '20rem' }}
             />
           </div>
           <Button
