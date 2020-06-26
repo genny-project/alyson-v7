@@ -31,6 +31,7 @@ const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing }) =>
     redirect()
   } else {
     setViewing({
+      view: 'BUCKET',
       code: `QUE_PRI_EVENT_VIEW_${targetCode}`,
       parentCode: `QUE_${targetCode}_GRP`,
       rootCode: 'QUE_TABLE_RESULTS_GRP',

@@ -15,8 +15,8 @@ const useStyles = makeStyles(theme => ({
     maxWidth: theme.spacing(15),
   },
   profilePicture: {
-    width: theme.spacing(2),
-    height: theme.spacing(2),
+    width: theme.spacing(4),
+    height: theme.spacing(4),
   },
 }))
 

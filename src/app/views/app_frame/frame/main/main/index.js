@@ -86,6 +86,7 @@ const Main = ({
               googleApiKey={googleApiKey}
               setViewing={setViewing}
               setLoading={setLoading}
+              viewing={viewing}
             />
           ) : view.attributeCode === 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT' ? (
             <Form
@@ -96,6 +97,7 @@ const Main = ({
               googleApiKey={googleApiKey}
               setViewing={setViewing}
               setLoading={setLoading}
+              viewing={viewing}
             />
           ) : view === 'DETAIL' ? (
             <Details
