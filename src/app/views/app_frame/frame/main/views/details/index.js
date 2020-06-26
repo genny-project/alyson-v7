@@ -36,7 +36,7 @@ const RowItem = ({
         <div dangerouslySetInnerHTML={{ __html: value }} />
       ) : type === 'signature' ? (
         <Row>
-          <div style={{ border: '1px solid grey', borderRadius: '1rem' }}>
+          <div style={{ border: '1px solid grey', borderRadius: '1rem', minWidth: '40rem' }}>
             <SignatureCanvas
               ref={ref => (signatureRef = ref)}
               onEnd={() => setSignature(signatureRef.toDataURL())}
