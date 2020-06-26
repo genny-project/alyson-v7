@@ -63,42 +63,8 @@ const Notes = ({ baseEntities, attributes }) => {
         </Button>
       </Grid>
 
-      {showAddNote && (
-        <Col alignItems="flex-start" justify="center">
-          <Card className={classes.card} variant="outlined">
-            <CardHeader
-              title={
-                <InputBase
-                  value={noteHeader}
-                  multiline
-                  style={{ margin: 4 }}
-                  placeholder="Person who the note is on"
-                  fullWidth
-                  onChange={e => setNoteHeader(e.target.value)}
-                />
-              }
-            />
-            <CardContent>
-              <InputBase
-                autoFocus
-                value={noteContent}
-                multiline
-                style={{ margin: 4 }}
-                placeholder="Take a note"
-                fullWidth
-                onChange={e => setNoteContent(e.target.value)}
-              />
-            </CardContent>
-            <CardActions >
-              <Row justify='flex-end'>
-              <Button onClick={handleSubmit}>
-                Done
-              </Button>
-              </Row>
-            </CardActions>
-          </Card>
-        </Col>
-      )}
+
+      <Grid>
       <Col alignItems="flex-start" justify="flex-start">
         {map(
           ({ id, ...rest }) => (
@@ -115,6 +81,35 @@ const Notes = ({ baseEntities, attributes }) => {
           [...notes] || [],
         )}
       </Col>
+       {(
+        <Col alignItems="flex-start" justify="center">
+          <Card className={classes.card} variant="outlined">
+            <CardHeader
+              title={
+                <InputBase
+                  autoFocus
+                  value={noteContent}
+                  multiline
+                  style={{ margin: 4 }}
+                  placeholder="Post a Note"
+                  fullWidth
+                  onChange={e => setNoteContent( e.target.value )}
+                />
+              }
+            />
+
+            <CardActions >
+              <Row justify='flex-end'>
+              <Button onClick={handleSubmit}>
+                Done
+              </Button>
+              </Row>
+            </CardActions>
+          </Card>
+        </Col>
+      )}
+      </Grid>
+
     </Col>
   )
 }
