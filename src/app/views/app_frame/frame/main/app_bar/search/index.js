@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
-import { isEmpty, not } from 'ramda'
-import { InputBase } from '@material-ui/core'
+import { isEmpty, not, includes, tail } from 'ramda'
+import { InputBase, Typography } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 
 import makeSearch from './helpers/make-search'
@@ -28,22 +28,38 @@ const Search = ({ setLoading, question, setViewing }) => {
   useEffect(
     () => {
       if (not(isEmpty(value))) {
-        search(value)
-        setLoading(`Searching for ${value} everywhere...`)
+        if (!includes('$')) {
+          search(value)
+          setLoading(`Searching for ${value} everywhere...`)
+        }
       }
     },
     [value],
   )
 
+  const handleDev = () => {
+    if (includes('$')) {
+      setViewing(JSON.parse(tail(value)))
+    }
+  }
+
   return (
     <div
       className={classes.search}
       onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
+      onBlur={() => {
+        setFocused(false)
+        handleDev()
+      }}
     >
-      <div className={classes.searchIcon}>
-        <SearchIcon color="inherit" />
-      </div>
+      {includes('$', value) ? (
+        <Typography variant="overline" color="error">{`DEV MODE`}</Typography>
+      ) : (
+        <div className={classes.searchIcon}>
+          <SearchIcon color="inherit" />
+        </div>
+      )}
+
       <InputBase
         placeholder="Search..."
         onChange={event => setValue(event.target.value)}
