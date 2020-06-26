@@ -104,7 +104,6 @@ const Sam = ({
         <AppBar
           items={getAppBarItems(frames, asks, themes)}
           asks={asks}
-          frames={frames}
           user={user}
           setViewing={setViewing}
           sidebarOpen={sidebarOpen}
@@ -132,7 +131,6 @@ const Sam = ({
           viewing={viewing}
           setViewing={setViewing}
           asks={asks}
-          frames={frames}
           user={user}
           baseEntities={baseEntities}
           googleApiKey={googleApiKey}

@@ -14,7 +14,6 @@ const Main = ({
   setViewing,
   baseEntities,
   asks,
-  frames,
   user,
   googleApiKey,
   loading,
@@ -31,7 +30,7 @@ const Main = ({
 
   console.log(viewing)
 
-  const view = getView({ viewing, asks, frames })
+  const view = getView({ viewing, asks })
   const application = getApplication(attributes)
 
   const [current, setCurrent] = useState({})

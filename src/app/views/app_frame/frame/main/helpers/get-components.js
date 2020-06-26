@@ -1,16 +1,13 @@
-import { map, pick, compose, path, prop, mapObjIndexed } from 'ramda';
+import { map, pick, compose, path, prop, mapObjIndexed } from 'ramda'
 
-const getLinksFrom = ( key, frames ) =>
+const getLinksFrom = (key, frames) =>
   compose(
-    map( prop( 'code' )),
-    path( [key, 'links'] )
-  )( frames );
+    map(prop('code')),
+    path([key, 'links']),
+  )(frames)
 
-const getComponents = ({ frames, asks, themes }) =>
-  mapObjIndexed(( frame, key, obj ) => prop( 'links' ), frames );
+const getDrawerItems = frames => pick(getLinksFrom('FRM_SIDEBAR', frames), frames)
 
-const getDrawerItems = ( frames, asks, themes ) => pick( getLinksFrom( 'FRM_SIDEBAR', frames ), frames );
+const getAppBarItems = frames => pick(getLinksFrom('FRM_HEADER', frames), frames)
 
-const getAppBarItems = ( frames, asks, themes ) => pick( getLinksFrom( 'FRM_HEADER', frames ), frames );
-
-export { getComponents, getDrawerItems, getLinksFrom, getAppBarItems };
+export { getDrawerItems, getLinksFrom, getAppBarItems }
