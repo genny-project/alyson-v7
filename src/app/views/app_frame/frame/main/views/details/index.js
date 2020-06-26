@@ -36,7 +36,7 @@ const RowItem = ({
         <div dangerouslySetInnerHTML={{ __html: value }} />
       ) : type === 'signature' ? (
         <Row>
-          <div style={{ border: '1px solid grey', borderRadius: '1rem' }}>
+          <div style={{ border: '1px solid grey', borderRadius: '1rem', minWidth: '40rem' }}>
             <SignatureCanvas
               ref={ref => (signatureRef = ref)}
               onEnd={() => setSignature(signatureRef.toDataURL())}
@@ -137,7 +137,7 @@ const Details = ({ attributes, targetCode, setViewing, setLoading }) => {
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
 
-  const detailType = contains('PRI_INTERN_AGREEMENT_SIGNATURE')
+  const detailType = contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView))
     ? printAgreement
     : contains('PRI_IS_INTERN', keys(detailView))
       ? printIntern
