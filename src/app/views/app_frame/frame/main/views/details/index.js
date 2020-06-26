@@ -3,7 +3,7 @@ import { prop, path, toUpper, contains, map, keys, identity } from 'ramda'
 
 import { Row } from '../../components/layouts'
 import SignatureCanvas from 'react-signature-canvas'
-import { Grid, Typography, Avatar, Button } from '@material-ui/core'
+import { Grid, Typography, Avatar, Button, LinearProgress, Link } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
 import { format, parseISO } from 'date-fns'
 
@@ -50,6 +50,8 @@ const RowItem = ({
             onClick={handleSubmit}
           >{`SUBMIT`}</Button>
         </Row>
+      ) : type === 'url' ? (
+        <Link href={value}>{value}</Link>
       ) : (
         <Typography>{value}</Typography>
       )}
@@ -84,6 +86,7 @@ const printBeg = [
   { label: 'Days Per Week', code: 'days_per_week' },
   { label: 'Duration', code: 'internship_duration_stripped' },
   { label: 'Number of Interns', code: 'current_interns' },
+  { label: 'Video Presentation of Internship Opportunity', code: 'loom_url', type: 'url' },
 ]
 
 const printCpy = [
@@ -91,13 +94,13 @@ const printCpy = [
   { label: 'Legal Name', code: 'legal_name' },
   { label: 'Company Phone', code: 'landline' },
   { label: 'Decription', code: 'company_description' },
-  { label: 'Website', code: 'company_website_url' },
+  { label: 'Website', code: 'company_website_url', type: 'url' },
 ]
 
 const printHcr = [
   { label: 'Job Title', code: 'job_title' },
   { label: 'Mobile', code: 'mobile' },
-  { label: 'Linkedin', code: 'linkedin_url' },
+  { label: 'Linkedin', code: 'linkedin_url', type: 'url' },
 ]
 
 const printEp = [
@@ -107,7 +110,7 @@ const printEp = [
   { label: 'Phone', code: 'landline' },
   { label: 'Address', code: 'address_full' },
   { label: 'Description', code: 'company_description' },
-  { label: 'Website', code: 'company_website_url' },
+  { label: 'Website', code: 'company_website_url', type: 'url' },
 ]
 
 const printEpr = [
@@ -133,7 +136,7 @@ const printAgreement = [
   { label: 'Agreement', code: 'agreement_html', type: 'html' },
   { label: 'Intern Signature', code: 'intern_agreement_signature', type: 'signature' },
 ]
-const Details = ({ attributes, targetCode, setViewing, setLoading }) => {
+const Details = ({ viewing, attributes, targetCode, setViewing, setLoading }) => {
   const detailView = prop(targetCode, attributes)
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
@@ -192,12 +195,17 @@ const Details = ({ attributes, targetCode, setViewing, setLoading }) => {
     [signature],
   )
 
-  return (
+  return viewing.code === 'QUE_PRI_EVENT_VIEW_AGREEMENT' &&
+    !contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
+    <LinearProgress />
+  ) : (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
       {detailType !== printAgreement ? (
         <div>
           <Grid item>
-            <Typography variant="h5">{print('name')}</Typography>
+            <Typography variant="h5" style={{ marginBottom: '2rem' }}>
+              {print('name')}
+            </Typography>
           </Grid>
           <Grid item>
             <Grid container direction="row" spacing={2} alignItems="center">
