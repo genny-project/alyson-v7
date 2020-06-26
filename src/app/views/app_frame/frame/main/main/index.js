@@ -105,6 +105,7 @@ const Main = ({
               targetCode={prop('targetCode', viewing)}
               setViewing={setViewing}
               setLoading={setLoading}
+              viewing={viewing}
             />
           ) : view === 'UNITY' ? (
             <Unity

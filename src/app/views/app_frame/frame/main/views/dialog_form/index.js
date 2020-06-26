@@ -38,6 +38,7 @@ const DialogForm = ({
                 targetCode: 'PER_USER1',
               })
             }
+            viewing={{ view }}
           />
         ) : (
           <Container className={classes.fullWidth}>

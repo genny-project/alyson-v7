@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { includes, prop, replace, has, pathOr } from 'ramda'
+import { includes, prop, replace, has, pathOr, length, keys } from 'ramda'
 import { connect } from 'react-redux'
 import { Bridge } from '../../../../../utils/vertx/index'
 
@@ -100,6 +100,15 @@ const Sam = ({
       }
     },
     [asks, currentSearch, baseEntities],
+  )
+
+  useEffect(
+    () => {
+      if (length(keys(viewing)) === 1 && viewing.view === 'BUCKET') {
+        setLoading(false)
+      }
+    },
+    [viewing],
   )
 
   return (

@@ -62,6 +62,7 @@ const Item = ({
   const classes = useStyles({ statusColor })
 
   const handleAction = code => () => {
+    setMenu(null)
     setLoading(true)
     setCurrent(current => ({ ...current, targetCode: true }))
     setViewing({
