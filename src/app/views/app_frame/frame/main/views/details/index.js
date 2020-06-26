@@ -1,11 +1,14 @@
-import React, { useState, useRef } from 'react'
-import { prop, path, toUpper, contains, map, keys, values } from 'ramda'
+import React, { useState, useRef, useEffect } from 'react'
+import { prop, path, toUpper, contains, map, keys, identity } from 'ramda'
 
 import { Row } from '../../components/layouts'
 import SignatureCanvas from 'react-signature-canvas'
 import { Grid, Typography, Avatar, Button } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
 import { format, parseISO } from 'date-fns'
+
+import onUpdateSignature from './helpers/on-update-signature'
+import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
 
 const RowItem = ({
@@ -20,6 +23,7 @@ const RowItem = ({
   setRating,
   classes,
   type,
+  handleSubmit,
 }) => (
   <Grid item>
     <Grid container direction="row">
@@ -38,11 +42,11 @@ const RowItem = ({
               onEnd={() => setSignature(signatureRef.toDataURL())}
             />
           </div>
-
           <Button
+            disabled={!signature}
             variant="contained"
             color="primary"
-            onClick={() => console.log('submit')}
+            onClick={handleSubmit}
           >{`SUBMIT`}</Button>
         </Row>
       ) : (
@@ -128,10 +132,8 @@ const printAgreement = [
   { label: 'Agreement', code: 'agreement_html', type: 'html' },
   { label: 'Intern Signature', code: 'intern_agreement_signature', type: 'signature' },
 ]
-const Details = ({ attributes, targetCode }) => {
+const Details = ({ attributes, targetCode, setViewing, setLoading }) => {
   const detailView = prop(targetCode, attributes)
-
-  console.log(detailView)
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
 
@@ -159,11 +161,34 @@ const Details = ({ attributes, targetCode }) => {
   const signatureRef = useRef()
   const classes = useStyles()
 
-  console.log(signature)
+  const handleSubmit = () =>
+    onSubmit({
+      setLoading,
+      redirect: () => setViewing({ view: 'BUCKET' }),
+      parentCode: targetCode,
+      rootCode: 'QQQ_QUESTION_GROUP',
+    })({
+      ask: { questionCode: 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT', targetCode },
+    })
 
   const details = map(
     ({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }),
     detailType,
+  )
+
+  useEffect(
+    () => {
+      if (!!signature)
+        onUpdateSignature({
+          targetCode,
+          sourceCode: 'PER_USER1',
+          questionCode: 'QUE_AGREEMENT_DOCUMENT_INTERN_SIGNATURE',
+          attributeCode: 'PRI_INTERN_AGREEMENT_SIGNATURE',
+          askId: 171,
+          signature,
+        })
+    },
+    [signature],
   )
 
   return (
@@ -209,6 +234,7 @@ const Details = ({ attributes, targetCode }) => {
             signatureRef={signatureRef}
             signature={signature}
             setSignature={setSignature}
+            handleSubmit={handleSubmit}
           />
         ),
         details,

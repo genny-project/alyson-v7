@@ -36,6 +36,8 @@ const Main = ({
 
   const [current, setCurrent] = useState({})
 
+  console.log(view)
+
   return (
     <div className={classes.root}>
       <DialogForm
@@ -96,7 +98,12 @@ const Main = ({
               setLoading={setLoading}
             />
           ) : view === 'DETAIL' ? (
-            <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
+            <Details
+              attributes={attributes}
+              targetCode={prop('targetCode', viewing)}
+              setViewing={setViewing}
+              setLoading={setLoading}
+            />
           ) : view === 'UNITY' ? (
             <Unity
               frames={frames}

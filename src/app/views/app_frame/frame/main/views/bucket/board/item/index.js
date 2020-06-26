@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { contains, prop, has, map, mergeAll } from 'ramda'
-
+import { Row, Col } from '../../../../components/layouts'
 import {
   Card,
   IconButton,
@@ -18,6 +18,8 @@ import {
 } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+
+import { School, Smartphone, PermIdentity, Domain, Commute, Work } from '@material-ui/icons'
 
 import useStyles from './styles'
 
@@ -100,22 +102,40 @@ const Item = ({
             <Collapse in={expand && !menu}>
               <CardContent>
                 {contains('PER', targetCode || '') ? (
-                  <div>
-                    <Typography variant="body2">{`Student ID: ${studentId || ''}`}</Typography>
-                    <Typography variant="body2">{`Mobile: ${mobile || ''}`}</Typography>
-                  </div>
+                  <Col left>
+                    <Row left>
+                      <PermIdentity color="action" />
+                      <Typography variant="body2">{`${studentId || ''}`}</Typography>
+                    </Row>
+                    <Row left>
+                      <Smartphone color="action" />
+                      <Typography variant="body2">{`${mobile || ''}`}</Typography>
+                    </Row>
+                  </Col>
                 ) : (
-                  <div>
-                    <Typography variant="body2">{`Education Provider: ${eduProvider ||
-                      ''}`}</Typography>
-                    <Typography variant="body2">{`Industry: ${industry || ''}`}</Typography>
-                    <Typography variant="body2">{`Specialisation: ${occupation || ''}`}</Typography>
-                    <Typography variant="body2">{`Student Id: ${internStudentId ||
-                      ''}`}</Typography>
-                    <Typography variant="body2">{`Transport Options: ${transport ||
-                      ''}`}</Typography>
+                  <Col left>
+                    <Row left>
+                      <School color="action" />
+                      <Typography variant="body2">{`${eduProvider || ''}`}</Typography>
+                    </Row>
+                    <Row left>
+                      <Domain color="action" />
+                      <Typography variant="body2">{`${industry || ''}`}</Typography>
+                    </Row>
+                    <Row left>
+                      <Work color="action" />
+                      <Typography variant="body2">{`${occupation || ''}`}</Typography>
+                    </Row>
+                    <Row left>
+                      <PermIdentity color="action" />
+                      <Typography variant="body2">{`${internStudentId || ''}`}</Typography>
+                    </Row>
+                    <Row left>
+                      <Commute color="action" />
+                      <Typography variant="body2">{`${transport || ''}`}</Typography>
+                    </Row>
                     <Rating readOnly value={Number(starRating)} />
-                  </div>
+                  </Col>
                 )}
               </CardContent>
             </Collapse>
