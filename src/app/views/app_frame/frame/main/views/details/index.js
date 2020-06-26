@@ -1,32 +1,60 @@
-import React, { useState } from 'react'
-import { prop, path, toUpper, contains, map, keys, values } from 'ramda'
+import React, { useState, useRef, useEffect } from 'react'
+import { prop, path, toUpper, contains, map, keys, identity } from 'ramda'
 
-import { Grid, Typography, Avatar } from '@material-ui/core'
+import { Row } from '../../components/layouts'
+import SignatureCanvas from 'react-signature-canvas'
+import { Grid, Typography, Avatar, Button } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
 import { format, parseISO } from 'date-fns'
+
+import onUpdateSignature from './helpers/on-update-signature'
+import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
 
-const RowItem = ({ key, label, value, code, rating, setRating, classes, type }) =>
-  value && !contains('[', value) && !contains('{', value) ? (
-    <Grid item>
-      <Grid container direction="row">
-        <Typography className={classes.label}>{label}</Typography>
-        {type === 'rating' ? (
-          <Rating
-            name="rating"
-            value={rating}
-            onChange={(event, newValue) => setRating(newValue)}
-          />
-        ) : type === 'time' ? (
-          <Typography>{`${format(parseISO(value), 'h:mm a')}`}</Typography>
-        ) : (
-          <Typography>{value}</Typography>
-        )}
-      </Grid>
+const RowItem = ({
+  signatureRef,
+  signature,
+  setSignature,
+  key,
+  label,
+  value,
+  code,
+  rating,
+  setRating,
+  classes,
+  type,
+  handleSubmit,
+}) => (
+  <Grid item>
+    <Grid container direction="row">
+      <Typography className={classes.label}>{label}</Typography>
+      {type === 'rating' ? (
+        <Rating name="rating" value={rating} onChange={(event, newValue) => setRating(newValue)} />
+      ) : type === 'time' ? (
+        <Typography>{`${format(parseISO(value), 'h:mm a')}`}</Typography>
+      ) : type === 'html' ? (
+        <div dangerouslySetInnerHTML={{ __html: value }} />
+      ) : type === 'signature' ? (
+        <Row>
+          <div style={{ border: '1px solid grey', borderRadius: '1rem', minWidth: '40rem' }}>
+            <SignatureCanvas
+              ref={ref => (signatureRef = ref)}
+              onEnd={() => setSignature(signatureRef.toDataURL())}
+            />
+          </div>
+          <Button
+            disabled={!signature}
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+          >{`SUBMIT`}</Button>
+        </Row>
+      ) : (
+        <Typography>{value}</Typography>
+      )}
     </Grid>
-  ) : (
-    <div />
-  )
+  </Grid>
+)
 
 // TODO: Backend should send us the correct detail view specs
 
@@ -100,62 +128,100 @@ const printApp = [
   { label: 'Email', code: 'email' },
 ]
 
-const Details = ({ attributes, targetCode }) => {
+const printAgreement = [
+  { label: 'Agreement', code: 'agreement_html', type: 'html' },
+  { label: 'Intern Signature', code: 'intern_agreement_signature', type: 'signature' },
+]
+const Details = ({ attributes, targetCode, setViewing, setLoading }) => {
   const detailView = prop(targetCode, attributes)
-
-  console.log(detailView)
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
 
-  const detailType = contains('PRI_IS_INTERN', keys(detailView))
-    ? printIntern
-    : contains('PRI_IS_INTERNSHIP', keys(detailView))
-      ? printBeg
-      : contains('PRI_IS_HOST_CPY_REP', keys(detailView)) ||
-        contains('PRI_IS_RP_REP', keys(detailView))
-        ? printHcr
-        : contains('PRI_IS_HOST_CPY', keys(detailView)) || contains('PRI_IS_RP', keys(detailView))
-          ? printCpy
-          : contains('PRI_IS_EDU_PROVIDER', keys(detailView))
-            ? printEp
-            : contains('PRI_IS_EDU_PRO_REP', keys(detailView))
-              ? printEpr
-              : contains('PRI_COMPASS', keys(detailView))
-                ? printApp
-                : printCpy
+  const detailType = contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView))
+    ? printAgreement
+    : contains('PRI_IS_INTERN', keys(detailView))
+      ? printIntern
+      : contains('PRI_IS_INTERNSHIP', keys(detailView))
+        ? printBeg
+        : contains('PRI_IS_HOST_CPY_REP', keys(detailView)) ||
+          contains('PRI_IS_RP_REP', keys(detailView))
+          ? printHcr
+          : contains('PRI_IS_HOST_CPY', keys(detailView)) || contains('PRI_IS_RP', keys(detailView))
+            ? printCpy
+            : contains('PRI_IS_EDU_PROVIDER', keys(detailView))
+              ? printEp
+              : contains('PRI_IS_EDU_PRO_REP', keys(detailView))
+                ? printEpr
+                : contains('PRI_COMPASS', keys(detailView))
+                  ? printApp
+                  : printCpy
 
   const [rating, setRating] = useState(0)
+  const [signature, setSignature] = useState(null)
+  const signatureRef = useRef()
   const classes = useStyles()
 
+  const handleSubmit = () =>
+    onSubmit({
+      setLoading,
+      redirect: () => setViewing({ view: 'BUCKET' }),
+      parentCode: targetCode,
+      rootCode: 'QQQ_QUESTION_GROUP',
+    })({
+      ask: { questionCode: 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT', targetCode },
+    })
+
   const details = map(
-    ({ label, code }) => ({ valueString: print(code), attributeName: label }),
+    ({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }),
     detailType,
+  )
+
+  useEffect(
+    () => {
+      if (!!signature)
+        onUpdateSignature({
+          targetCode,
+          sourceCode: 'PER_USER1',
+          questionCode: 'QUE_AGREEMENT_DOCUMENT_INTERN_SIGNATURE',
+          attributeCode: 'PRI_INTERN_AGREEMENT_SIGNATURE',
+          askId: 171,
+          signature,
+        })
+    },
+    [signature],
   )
 
   return (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
-      <Grid item>
-        <Typography variant="h5">{print('name')}</Typography>
-      </Grid>
-      <Grid item>
-        <Grid container direction="row" spacing={2} alignItems="center">
+      {detailType !== printAgreement ? (
+        <div>
           <Grid item>
-            <Avatar alt={print('name')} src={print('user_profile_picture')} />
+            <Typography variant="h5">{print('name')}</Typography>
           </Grid>
           <Grid item>
-            <Grid container direction="column">
+            <Grid container direction="row" spacing={2} alignItems="center">
               <Grid item>
-                <Typography>{print('address_full')}</Typography>
+                <Avatar alt={print('name')} src={print('user_profile_picture')} />
               </Grid>
               <Grid item>
-                <Typography>{`${print('email')}`}</Typography>
+                <Grid container direction="column">
+                  <Grid item>
+                    <Typography>{print('address_full')}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>{`${print('email')}`}</Typography>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Grid>
+        </div>
+      ) : (
+        <div />
+      )}
+
       {map(
-        ({ valueString, attributeName, attributeCode }) => (
+        ({ valueString, attributeName, attributeCode, type }) => (
           <RowItem
             key={attributeCode}
             label={attributeName}
@@ -164,6 +230,11 @@ const Details = ({ attributes, targetCode }) => {
             rating={rating}
             setRating={setRating}
             classes={classes}
+            type={type}
+            signatureRef={signatureRef}
+            signature={signature}
+            setSignature={setSignature}
+            handleSubmit={handleSubmit}
           />
         ),
         details,

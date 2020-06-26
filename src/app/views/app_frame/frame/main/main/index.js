@@ -29,10 +29,14 @@ const Main = ({
 }) => {
   const classes = useStyles()
 
+  console.log(viewing)
+
   const view = getView({ viewing, asks, frames })
   const application = getApplication(attributes)
 
   const [current, setCurrent] = useState({})
+
+  console.log(view)
 
   return (
     <div className={classes.root}>
@@ -94,7 +98,12 @@ const Main = ({
               setLoading={setLoading}
             />
           ) : view === 'DETAIL' ? (
-            <Details attributes={attributes} targetCode={prop('targetCode', viewing)} />
+            <Details
+              attributes={attributes}
+              targetCode={prop('targetCode', viewing)}
+              setViewing={setViewing}
+              setLoading={setLoading}
+            />
           ) : view === 'UNITY' ? (
             <Unity
               frames={frames}

@@ -2,13 +2,35 @@ import React from 'react'
 import { map, addIndex, flatten } from 'ramda'
 import { Grid } from '@material-ui/core'
 
-const Row = ({ children, spacing, alignItems, justify, ...rest }) => (
+const Row = ({
+  stretch,
+  left,
+  top,
+  right,
+  bottom,
+  spaceBetween,
+  children,
+  spacing,
+  alignItems,
+  justify,
+  ...rest
+}) => (
   <Grid
     container
     direction="row"
     spacing={spacing || 1}
-    alignItems={alignItems || 'center'}
-    justify={justify || 'center'}
+    alignItems={
+      stretch ? 'stretch' : top ? 'flex-start' : bottom ? 'flex-end' : alignItems || 'center'
+    }
+    justify={
+      spaceBetween
+        ? 'space-between'
+        : left
+          ? 'flex-start'
+          : right
+            ? 'flex-end'
+            : justify || 'center'
+    }
     {...rest}
   >
     {addIndex(map)(
@@ -22,13 +44,35 @@ const Row = ({ children, spacing, alignItems, justify, ...rest }) => (
   </Grid>
 )
 
-const Col = ({ children, spacing, alignItems, justify, ...rest }) => (
+const Col = ({
+  stretch,
+  left,
+  top,
+  right,
+  bottom,
+  spaceBetween,
+  children,
+  spacing,
+  alignItems,
+  justify,
+  ...rest
+}) => (
   <Grid
     container
     direction="column"
     spacing={spacing || 1}
-    alignItems={alignItems || 'center'}
-    justify={justify || 'center'}
+    alignItems={
+      stretch ? 'stretch' : left ? 'flex-start' : right ? 'flex-end' : alignItems || 'center'
+    }
+    justify={
+      spaceBetween
+        ? 'space-between'
+        : top
+          ? 'flex-start'
+          : bottom
+            ? 'flex-end'
+            : justify || 'center'
+    }
     {...rest}
   >
     {addIndex(map)(

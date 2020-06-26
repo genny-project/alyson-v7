@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
-import { isEmpty, not } from 'ramda';
-import { InputBase } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { isEmpty, not } from 'ramda'
+import { InputBase } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 
-import makeSearch from './helpers/make-search';
-import useStyles from './styles';
+import makeSearch from './helpers/make-search'
+import useStyles from './styles'
 
-const Search = ({ setLoading, question }) => {
-  const { askId, attributeCode, code, sourceCode, targetCode, weight } = question;
+const Search = ({ setLoading, question, setViewing }) => {
+  const { askId, attributeCode, code, sourceCode, targetCode, weight } = question
 
-  const [value, setValue] = useState( '' );
-  const [focused, setFocused] = useState( false );
+  const [value, setValue] = useState('')
+  const [focused, setFocused] = useState(false)
 
-  const classes = useStyles({ focused });
+  const classes = useStyles({ focused })
 
   const search = makeSearch({
     askId,
@@ -23,30 +23,30 @@ const Search = ({ setLoading, question }) => {
     code,
     identifier: code,
     weight,
-  });
+  })
 
   useEffect(
     () => {
-      if ( not( isEmpty( value ))) {
-        search( value );
-        setLoading( `Searching for ${value} everywhere...` );
+      if (not(isEmpty(value))) {
+        search(value)
+        setLoading(`Searching for ${value} everywhere...`)
       }
     },
-    [value]
-  );
+    [value],
+  )
 
   return (
     <div
       className={classes.search}
-      onFocus={() => setFocused( true )}
-      onBlur={() => setFocused( false )}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
     >
       <div className={classes.searchIcon}>
         <SearchIcon color="inherit" />
       </div>
       <InputBase
         placeholder="Search..."
-        onChange={event => setValue( event.target.value )}
+        onChange={event => setValue(event.target.value)}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
@@ -54,7 +54,7 @@ const Search = ({ setLoading, question }) => {
         inputProps={{ 'aria-label': 'search' }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search

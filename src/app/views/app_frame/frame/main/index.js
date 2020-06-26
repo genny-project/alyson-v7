@@ -48,10 +48,10 @@ const Sam = ({
 
   const theme = makeTheme({ attributes, asks })
 
-  console.log('baseEntities', baseEntities)
-
   useEffect(
     () => {
+      if (!!viewing.view && includes('_EVENT_VIEW', viewing.code || ''))
+        setViewing({ ...viewing, view: false })
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (
           (!viewing.code === 'QUE_TABLE_NEXT_BTN' &&
