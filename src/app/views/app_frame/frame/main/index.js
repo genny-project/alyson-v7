@@ -50,7 +50,11 @@ const Sam = ({
 
   useEffect(
     () => {
-      if (!!viewing.view && includes('_EVENT_VIEW', viewing.code || ''))
+      if (
+        !!viewing.view &&
+        includes('_EVENT_VIEW', viewing.code || '') &&
+        viewing.rootCode !== 'QUE_TABLE_RESULTS_GRP'
+      )
         setViewing({ ...viewing, view: false })
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (

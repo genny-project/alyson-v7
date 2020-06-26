@@ -52,6 +52,7 @@ const Item = ({
     PRI_INTERN_NAME: internName,
     PRI_INTERN_EMAIL: internEmail,
     PRI_INTERN_STUDENT_ID: internStudentId,
+    PRI_USER_PROFILE_PICTURE: internProfilePicture,
     PRI_OCCUPATION: occupation,
     PRI_STAR_RATING: starRating,
     PRI_TRANSPORT: transport,
@@ -64,9 +65,11 @@ const Item = ({
     setLoading(true)
     setCurrent(current => ({ ...current, targetCode: true }))
     setViewing({
-      code,
+      code: code === 'QUE_PRI_EVENT_OFFER' ? 'QUE_PRI_EVENT_OFFERED_APPLICATION' : code,
       targetCode,
-      view: 'BUCKET',
+      view: code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? 'QUE_PRE_AGREEMENT_DOC_GRP' : 'BUCKET',
+      redirect:
+        code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? () => setViewing({ view: 'BUCKET' }) : null,
     })
   }
 
@@ -81,7 +84,14 @@ const Item = ({
           <Card className={classes.itemRoot}>
             {loading ? <LinearProgress /> : <div style={{ height: '5px' }} />}
             <CardHeader
-              avatar={<Avatar alt={name} src={profilePicture} className={classes.profilePicture} />}
+              avatar={
+                <Avatar
+                  variant="rounded"
+                  alt={name}
+                  src={profilePicture || internProfilePicture}
+                  className={classes.profilePicture}
+                />
+              }
               title={name || internName}
               subheader={email || internEmail || hostCompany}
               action={
@@ -114,6 +124,10 @@ const Item = ({
                   </Col>
                 ) : (
                   <Col left>
+                    <Row left>
+                      <Smartphone color="action" />
+                      <Typography variant="body2">{`${mobile || ''}`}</Typography>
+                    </Row>
                     <Row left>
                       <School color="action" />
                       <Typography variant="body2">{`${eduProvider || ''}`}</Typography>

@@ -16,6 +16,7 @@ const Form = ({
   attributes,
   baseEntities,
   googleApiKey,
+  viewing: { viewingRedirect },
 }) => {
   if (formView) {
     const title = path(['question', 'name'], formView)
@@ -39,7 +40,13 @@ const Form = ({
       setErrors,
       pristine,
       setPristine,
-      onSubmit: onSubmit({ redirect, parentCode, rootCode, setLoading, setViewing }),
+      onSubmit: onSubmit({
+        redirect: viewingRedirect || redirect,
+        parentCode,
+        rootCode,
+        setLoading,
+        setViewing,
+      }),
     }
 
     return (

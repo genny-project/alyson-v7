@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { map, any } from 'ramda'
+import { map, any, length } from 'ramda'
 
-import { Grid } from '@material-ui/core'
+import { Col } from '../../../components/layouts'
+import { Grid, CircularProgress } from '@material-ui/core'
 
 import Lane from './lane'
 
@@ -40,6 +41,15 @@ const Board = ({ data: { lanes, meta }, setViewing, current, setCurrent, refresh
             <div key={id} />
           ),
         lanes || [],
+      )}
+      {length(lanes) < 7 ? (
+        <Grid item>
+          <Col style={{ height: '100%' }}>
+            <CircularProgress />
+          </Col>
+        </Grid>
+      ) : (
+        <div />
       )}
     </Grid>
   )
