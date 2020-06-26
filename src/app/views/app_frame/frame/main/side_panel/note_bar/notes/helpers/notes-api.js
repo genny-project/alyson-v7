@@ -3,52 +3,32 @@ import { map, path } from 'ramda'
 import axios from 'axios'
 
 
-// const fakeNotes = [
-//   {
-//     sourceCode: 'PER_USER1',
-//     content: 'Note 1',
-//     tags: [],
-//     id: 0,
-//     created: new Date(),
-//     targetCode: 'PER_USER1',
-//   },
-//   {
-//     sourceCode: 'PER_USER1',
-//     content: 'Note 2',
-//     tags: [],
-//     id: 1,
-//     created: new Date(),
-//     targetCode: 'PER_USER1',
-//   },
-//   {
-//     sourceCode: 'PER_USER1',
-//     content: 'Note 3',
-//     tags: [],
-//     id: 2,
-//     created: new Date(),
-//     targetCode: 'PER_USER1',
-//   },
-// ]
 
-// const token = ''
+      // { headers: {"Authorization" : `Bearer ${accessToken}`} }
 
-// const config = {
-//     headers: { Authorization: `Bearer ${token}` }
+
+const getAll = async ({ setNotes, accessToken}) => {
+//   const config = {
+//     headers: { Authorization: `Bearer ${accessToken}` }
 // };
-
-const getAll = async ({ setNotes }) => {
+  console.error('1', accessToken)
   try {
     const response = await axios.get(
-      'https://internmatch-cyrus.gada.io/v7/notes/datatable?length=20',
+      'https://internmatch-cyrus.gada.io/v7/notes/PER_USER1?pageIndex=0&pageSize=50&tags=',
+      {
+  headers: {
+    authorization: 'Bearer'
+  }
+}
     )
-    console.log(response)
-    setNotes(path(['data', 'data'], response) || [])
+    console.error('response', response)
+    setNotes(path(['data', 'items'], response) || [])
   } catch (error) {
     console.error(error)
   }
 }
 
-const postNote = async ({ noteContent, noteHeader, setNotes }) => {
+const postNote = async ({ noteContent, noteHeader, setNotes, accessToken }) => {
   console.log(noteContent, noteHeader)
 
   const response = await axios.post('https://internmatch-cyrus.gada.io/v7/notes', {
@@ -63,13 +43,13 @@ const postNote = async ({ noteContent, noteHeader, setNotes }) => {
   console.log(response)
 }
 
-const deleteNote = async ({ id }) => {
+const deleteNote = async ({ id, accessToken }) => {
   console.error(id)
 
   const response = await axios.delete(`https://internmatch-cyrus.gada.io/v7/notes/${id}`)
 }
 
-const editNote = async ({ id, newContent }) => {
+const editNote = async ({ id, newContent, accessToken }) => {
   const response = await axios.put(`https://internmatch-cyrus.gada.io/v7/notes/${id}`, {
     content: newContent,
   })

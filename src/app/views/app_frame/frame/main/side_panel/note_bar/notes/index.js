@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { map, prop } from 'ramda'
+import { map, pathOr } from 'ramda'
+import { connect } from 'react-redux'
+
 import {
   Button,
   InputBase,
@@ -22,11 +24,11 @@ import useStyles from './styles'
 
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 
-const Notes = ({ baseEntities, attributes }) => {
+const Notes = ({ baseEntities, attributes, accessToken }) => {
   const [notes, setNotes] = useState({})
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
-  const [showAddNote, setShowAddNote] = useState(false)
+  const [showAddNote, setShowAddNote] = useState(true)
 
   const classes = useStyles()
 
@@ -35,18 +37,18 @@ const Notes = ({ baseEntities, attributes }) => {
     setNoteContent('')
     setShowAddNote(false)
 
-    postNote({ noteContent, noteHeader, setNotes })
+    postNote({ noteContent, noteHeader, setNotes, accessToken })
   }
 
-  const handleShowAddNote = () => setShowAddNote(true)
+  const handleShowAddNote = () => setShowAddNote(showAddNote => !showAddNote)
 
   const removeNotes = id => {
-    return deleteNote({ id })
+    return deleteNote({ id, accessToken })
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
   useEffect(() => {
-    getAll({ setNotes })
+    getAll({ setNotes, accessToken })
   }, [])
 
   return (
@@ -56,10 +58,9 @@ const Notes = ({ baseEntities, attributes }) => {
           className={classes.button}
           color="secondary"
           onClick={handleShowAddNote}
-          startIcon={<AddIcon />}
-          fullWidth
+          fullWidths
         >
-          Take a note...
+          {showAddNote ? `Close notes` : `Add a note...`}
         </Button>
       </Grid>
 
@@ -79,29 +80,37 @@ const Notes = ({ baseEntities, attributes }) => {
           [...notes] || [],
         )}
       </Col>
-       {(
-        <Col alignItems="flex-start" justify="center">
+      {showAddNote && (
+        <Col alignItems="flex-start" justify="flex-start">
           <Card className={classes.card} variant="outlined">
             <CardHeader
               title={
                 <InputBase
-                  autoFocus
-                  value={noteContent}
-                  multiline
+                  value={noteHeader}
                   style={{ margin: 4 }}
-                  placeholder="Post a Note"
+                  placeholder="Tags"
                   fullWidth
-                  onChange={e => setNoteContent( e.target.value )}
+                  onChange={e => setNoteHeader(e.target.value)}
                 />
               }
             />
-
-            <CardActions >
-              <Row justify='flex-end'>
-              <Button onClick={handleSubmit}>
+            <CardContent>
+              <InputBase
+                autoFocus
+                value={noteContent}
+                multiline
+                style={{ margin: 4 }}
+                placeholder="Post a note"
+                fullWidth
+                onChange={e => setNoteContent(e.target.value)}
+              />
+            </CardContent>
+            <CardActions disableSpacing>
+            <Row justify='flex-end'>
+            <Button variant="contained" color="inherit" onClick={handleSubmit}>
                 Done
               </Button>
-              </Row>
+            </Row>
             </CardActions>
           </Card>
         </Col>
@@ -110,4 +119,9 @@ const Notes = ({ baseEntities, attributes }) => {
   )
 }
 
-export default Notes
+const mapStateToProps = state => ({
+  accessToken: pathOr('', ['keycloak', 'accessToken'], state)
+})
+
+
+export default connect(mapStateToProps)(Notes)
