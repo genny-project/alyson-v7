@@ -38,6 +38,19 @@ const Main = ({
 
   console.log(view)
 
+  if (view === 'UNITY') {
+    return (
+      <Unity
+        frames={frames}
+        attributes={attributes}
+        baseEntities={baseEntities}
+        asks={asks}
+        setViewing={setViewing}
+        viewing={viewing}
+      />
+    )
+  }
+
   return (
     <div className={classes.root}>
       <DialogForm
@@ -105,15 +118,6 @@ const Main = ({
               targetCode={prop('targetCode', viewing)}
               setViewing={setViewing}
               setLoading={setLoading}
-              viewing={viewing}
-            />
-          ) : view === 'UNITY' ? (
-            <Unity
-              frames={frames}
-              attributes={attributes}
-              baseEntities={baseEntities}
-              asks={asks}
-              setViewing={setViewing}
               viewing={viewing}
             />
           ) : view === 'BUCKET' ? (
