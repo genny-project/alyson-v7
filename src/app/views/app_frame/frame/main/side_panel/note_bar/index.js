@@ -11,7 +11,7 @@ import Notes from './notes'
 import useStyles from './styles'
 
 const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) => {
-  const { setShowNoteBar } = useContext(NoteBarContext)
+  const { setShowNoteBar } = useContext( NoteBarContext )
 
   const classes = useStyles()
 
@@ -26,17 +26,31 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) =
       ModalProps={{ keepMounted: true }}
     >
       <Col alignItems="flex-start">
-        <Row justify="space-between" className={classes.topBar}>
-          <Typography variant="h6" color="primary">{`Note`}</Typography>
+        <Row
+          justify="space-between"
+          className={classes.topBar}
+        >
+          <Typography
+            variant="h6"
+            color="primary"
+          >
+Note
+          </Typography>
           <IconButton color="primary">
             <SearchIcon color="inherit" />
           </IconButton>
-          <IconButton color="primary" onClick={() => setShowNoteBar(false)}>
+          <IconButton
+            color="primary"
+            onClick={() => setShowNoteBar( false )}
+          >
             <ClearIcon color="inherit" />
           </IconButton>
         </Row>
-        <Divider/>
-        <Notes baseEntities={baseEntities} attributes={attributes} />
+        <Divider />
+        <Notes
+          baseEntities={baseEntities}
+          attributes={attributes}
+        />
       </Col>
     </Drawer>
   )

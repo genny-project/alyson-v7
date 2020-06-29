@@ -48,7 +48,6 @@ const Note = ({
   const profileImage = pathOr( '', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes )
 
   const handleSubmit = () => {
-    console.warn( 'setNotes', setNotes )
     editNote({ newContent, id, setNotes })
     setEditing( false )
     setHover( false )

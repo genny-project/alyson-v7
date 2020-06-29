@@ -19,7 +19,7 @@ const getAll = async ({ setNotes, accessToken }) => {
       }
     )
 
-    console.error( 'response from get', response )
+    console.error( 'response from GET', response )
     setNotes( path( ['data', 'items'], response ) || [] )
   } catch ( error ) {
     console.error( error )
@@ -40,16 +40,17 @@ const postNote = async ({ noteContent, noteHeader, setNotes, accessToken, setApi
     targetCode: 'PER_USER1',
   })
 
-  setApiLoading( false )
   getAll({ setNotes })
 
-  console.error( 'response from post', response )
+  response.status === 201 ? setApiLoading( false ) : null
+
+  console.error( 'response from POST', response )
 }
 
-const deleteNote = async ({ id, accessToken, setNotes }) => {
+const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
   const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}` )
 
-  console.error( 'response from delete', response )
+  console.error( 'response from DELETE', response )
 
   getAll({ setNotes })
 }
@@ -61,7 +62,7 @@ const editNote = async ({ id, newContent, accessToken, setNotes }) => {
 
   getAll({ setNotes })
 
-  console.error( 'response from post', response )
+  console.error( 'response from PUT', response )
 }
 
 export { getAll, postNote, deleteNote, editNote }

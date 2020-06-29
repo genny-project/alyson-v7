@@ -12,6 +12,7 @@ import {
   CardActions,
   Typography,
   CardHeader,
+  LinearProgress,
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import AddIcon from '@material-ui/icons/Add'
@@ -61,6 +62,8 @@ const Notes = ({ baseEntities, attributes, accessToken }) => {
         xs={12}
         className={classes.buttonControl}
       >
+        {apiLoading ? <LinearProgress className={classes.loadingBar} /> : null}
+
         <Button
           className={classes.button}
           color="secondary"
