@@ -36,25 +36,21 @@ const Notes = ({ baseEntities, attributes, accessToken }) => {
   const handleSubmit = () => {
     setNoteHeader( '' )
     setNoteContent( '' )
-    setShowAddNote( false )
-
     postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading })
   }
 
   const handleShowAddNote = () => setShowAddNote( showAddNote => !showAddNote )
 
   const removeNotes = id => {
-    return deleteNote({ id, accessToken })
+    return deleteNote({ id, accessToken, setNotes })
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
   console.error( 'notes', notes )
 
   useEffect(() => {
-    setTimeout(() => {
-      getAll({ setNotes, accessToken, setApiLoading })
-    }, 3000 )
-  }, [accessToken, notes] )
+    getAll({ setNotes, accessToken })
+  }, [accessToken] )
 
   return (
     <Col
@@ -89,6 +85,7 @@ const Notes = ({ baseEntities, attributes, accessToken }) => {
               removeNotes={removeNotes}
               attributes={attributes}
               editNote={editNote}
+              setNotes={setNotes}
             />
           ),
           [...notes] || [],

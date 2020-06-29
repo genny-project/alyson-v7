@@ -19,7 +19,7 @@ const getAll = async ({ setNotes, accessToken }) => {
       }
     )
 
-    console.error( 'response', response )
+    console.error( 'response from get', response )
     setNotes( path( ['data', 'items'], response ) || [] )
   } catch ( error ) {
     console.error( error )
@@ -30,6 +30,7 @@ const postNote = async ({ noteContent, noteHeader, setNotes, accessToken, setApi
   console.log( noteContent, noteHeader )
 
   setApiLoading( true )
+
   const response = await axios.post( 'https://internmatch-cyrus.gada.io/v7/notes', {
     sourceCode: 'PER_USER1',
     content: noteContent,
@@ -40,22 +41,27 @@ const postNote = async ({ noteContent, noteHeader, setNotes, accessToken, setApi
   })
 
   setApiLoading( false )
+  getAll({ setNotes })
 
-  console.error( 'response', response )
+  console.error( 'response from post', response )
 }
 
-const deleteNote = async ({ id, accessToken }) => {
-  console.error( id )
-
+const deleteNote = async ({ id, accessToken, setNotes }) => {
   const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}` )
+
+  console.error( 'response from delete', response )
+
+  getAll({ setNotes })
 }
 
-const editNote = async ({ id, newContent, accessToken }) => {
+const editNote = async ({ id, newContent, accessToken, setNotes }) => {
   const response = await axios.put( `https://internmatch-cyrus.gada.io/v7/notes/${id}`, {
     content: newContent,
   })
 
-  console.log( response )
+  getAll({ setNotes })
+
+  console.error( 'response from post', response )
 }
 
 export { getAll, postNote, deleteNote, editNote }
