@@ -43,14 +43,14 @@ const Notes = ({ baseEntities, attributes, accessToken }) => {
   const handleShowAddNote = () => setShowAddNote( showAddNote => !showAddNote )
 
   const removeNotes = id => {
-    return deleteNote({ id, accessToken, setNotes })
+    return deleteNote({ id, accessToken, setNotes, setApiLoading })
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
   console.error( 'notes', notes )
 
   useEffect(() => {
-    getAll({ setNotes, accessToken })
+    getAll({ setNotes, accessToken, setApiLoading })
   }, [accessToken] )
 
   return (

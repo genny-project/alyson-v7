@@ -4,7 +4,7 @@ import axios from 'axios'
 
       // { headers: {"Authorization" : `Bearer ${accessToken}`} }
 
-const getAll = async ({ setNotes, accessToken }) => {
+const getAll = async ({ setNotes, accessToken, setApiLoading }) => {
 //   const config = {
 //     headers: { Authorization: `Bearer ${accessToken}` }
 // };
@@ -48,11 +48,15 @@ const postNote = async ({ noteContent, noteHeader, setNotes, accessToken, setApi
 }
 
 const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
+  setApiLoading( true )
+
   const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}` )
 
   console.error( 'response from DELETE', response )
 
   getAll({ setNotes })
+
+  response.status === 200 ? setApiLoading( false ) : null
 }
 
 const editNote = async ({ id, newContent, accessToken, setNotes }) => {

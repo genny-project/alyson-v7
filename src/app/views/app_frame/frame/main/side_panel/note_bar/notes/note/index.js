@@ -106,7 +106,7 @@ const Note = ({
           placement="top-end"
           className={classes.popper}
         >
-          <Card className={classes.buttonGroup}>
+          <Card >
             <ButtonGroup
               color="primary"
               size="small"
