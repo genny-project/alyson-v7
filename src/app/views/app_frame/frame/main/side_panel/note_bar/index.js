@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { Drawer, IconButton, Typography, Divider } from '@material-ui/core'
+import React, { useContext, useState } from 'react'
+import { Drawer, IconButton, Typography, Divider, LinearProgress } from '@material-ui/core'
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
@@ -12,6 +12,7 @@ import useStyles from './styles'
 
 const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) => {
   const { setShowNoteBar } = useContext( NoteBarContext )
+  const [apiLoading, setApiLoading] = useState( false )
 
   const classes = useStyles()
 
@@ -25,7 +26,10 @@ const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) =
       onClose={toggleSidePanel}
       ModalProps={{ keepMounted: true }}
     >
+      {apiLoading ? <LinearProgress /> : null}
+
       <Col alignItems="flex-start">
+
         <Row
           justify="space-between"
           className={classes.topBar}
@@ -50,6 +54,7 @@ Note
         <Notes
           baseEntities={baseEntities}
           attributes={attributes}
+          setApiLoading={setApiLoading}
         />
       </Col>
     </Drawer>

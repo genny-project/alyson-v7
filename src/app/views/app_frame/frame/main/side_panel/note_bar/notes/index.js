@@ -25,12 +25,11 @@ import useStyles from './styles'
 
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 
-const Notes = ({ baseEntities, attributes, accessToken }) => {
+const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
   const [notes, setNotes] = useState({})
   const [noteContent, setNoteContent] = useState( '' )
   const [noteHeader, setNoteHeader] = useState( '' )
   const [showAddNote, setShowAddNote] = useState( true )
-  const [apiLoading, setApiLoading] = useState( false )
 
   const classes = useStyles()
 
@@ -62,8 +61,6 @@ const Notes = ({ baseEntities, attributes, accessToken }) => {
         xs={12}
         className={classes.buttonControl}
       >
-        {apiLoading ? <LinearProgress className={classes.loadingBar} /> : null}
-
         <Button
           className={classes.button}
           color="secondary"
