@@ -22,7 +22,7 @@ class UnityRender extends React.Component {
   constructor(props) {
     super(props)
 
-    this.unityContent = new UnityContent('Build/safeTrafficTown.json', 'Build/UnityLoader.js')
+    this.unityContent = new UnityContent('/Build/safeTrafficTown.json', '/Build/UnityLoader.js')
 
     this.unityContent.on('unityEvent', eventname => {
       this.setState({
