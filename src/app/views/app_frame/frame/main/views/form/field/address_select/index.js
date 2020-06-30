@@ -91,6 +91,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
               variant="outlined"
               fullWidth
               className={classes.inputField}
+              test-id={questionCode}
             />
           )}
           loader={<CircularProgress />}

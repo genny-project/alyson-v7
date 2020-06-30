@@ -39,6 +39,7 @@ const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate, errors, setEr
       className={classes.inputField}
       helperText={'No spaces or hyphens'}
       fullWidth
+      test-id={questionCode}
       InputProps={{
         startAdornment:
           fieldType === 'mobile' ? (
