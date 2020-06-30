@@ -50,7 +50,7 @@ const RichTextEditor = ({
   const classes = useStyles();
 
   return (
-    <div className={classes.richTextContainer}>
+    <div className={classes.richTextContainer} test-id={questionCode}>
       <HtmlEditor
         options={options}
         value={value}
