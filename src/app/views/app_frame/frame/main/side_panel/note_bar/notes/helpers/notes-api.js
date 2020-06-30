@@ -34,7 +34,14 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) =
     id: 0,
     created: new Date(),
     targetCode: 'PER_USER1',
-  })
+  },
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  }
+  )
 
   getAll({ setNotes, accessToken, setApiLoading })
 
