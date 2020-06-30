@@ -39,7 +39,7 @@ const Item = ({
   const [loading, setLoading] = useState(null)
 
   const {
-    PRI_ASSOC_EP,
+    PRI_ASSOC_EP: eduProviderAssoc,
     PRI_EMAIL: email,
     PRI_INDUSTRY: industry,
     PRI_MOBILE: mobile,
@@ -63,15 +63,28 @@ const Item = ({
 
   const handleAction = code => () => {
     setMenu(null)
-    setLoading(true)
-    setCurrent(current => ({ ...current, targetCode: true }))
-    setViewing({
-      code: code === 'QUE_PRI_EVENT_OFFER' ? 'QUE_PRI_EVENT_OFFERED_APPLICATION' : code,
-      targetCode,
-      view: code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? 'QUE_PRE_AGREEMENT_DOC_GRP' : 'BUCKET',
-      redirect:
-        code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? () => setViewing({ view: 'BUCKET' }) : null,
-    })
+    setCurrent(current => ({ ...current, [targetCode]: true }))
+
+    if (code === 'QUE_PRI_EVENT_APPLY') {
+      setViewing({
+        code: `${code}_${targetCode}`,
+        targetCode,
+        parentCode: `QUE_${targetCode}_GRP`,
+        rootCode: 'QUE_TABLE_RESULTS_GRP',
+        view: 'BUCKET',
+        dialog: 'APPLICATION',
+        redirect: () => setViewing({ view: 'BUCKET' }),
+      })
+    } else {
+      setLoading(true)
+      setViewing({
+        code: code === 'QUE_PRI_EVENT_OFFER' ? 'QUE_PRI_EVENT_OFFERED_APPLICATION' : code,
+        targetCode,
+        view: code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? 'QUE_PRE_AGREEMENT_DOC_GRP' : 'BUCKET',
+        redirect:
+          code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? () => setViewing({ view: 'BUCKET' }) : null,
+      })
+    }
   }
 
   return expandedColumn ? (
@@ -131,7 +144,9 @@ const Item = ({
                     </Row>
                     <Row left>
                       <School color="action" />
-                      <Typography variant="body2">{`${eduProvider || ''}`}</Typography>
+                      <Typography variant="body2">{`${eduProviderAssoc ||
+                        eduProvider ||
+                        ''}`}</Typography>
                     </Row>
                     <Row left>
                       <Domain color="action" />
