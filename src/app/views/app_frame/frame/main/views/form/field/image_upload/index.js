@@ -7,7 +7,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import Alert from '@material-ui/lab/Alert'
 import makeHandleUpdate from '../../helpers/make-handle-update'
 
-const UploadImage = ({ fieldData, label, onUpdate }) => {
+const UploadImage = ({ fieldData, label, onUpdate, questionCode }) => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [snackbar, setSnackbar] = useState({ open: false, alert: '' })
@@ -61,7 +61,7 @@ const UploadImage = ({ fieldData, label, onUpdate }) => {
         <Avatar src={imageUrl} />
       ) : (
         <div>
-          <Button variant="outlined" startIcon={<CloudUploadIcon />} onClick={() => setOpen(true)}>
+          <Button variant="outlined" startIcon={<CloudUploadIcon />} onClick={() => setOpen(true)} test-id={questionCode}>
             {label}
           </Button>
           <DropzoneDialog

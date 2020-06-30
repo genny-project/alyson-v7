@@ -112,7 +112,7 @@ const Field = ({
       questionCode={questionCode}
     />
   ) : fieldType === 'image' ? (
-    <ImageUpload fieldData={fieldData} label={label} onUpdate={onUpdate} />
+    <ImageUpload fieldData={fieldData} label={label} onUpdate={onUpdate} questionCode={questionCode}/>
   ) : fieldType === 'htmlarea' || fieldType === 'textarea' ? (
     <RichTextEditor
       fieldData={fieldData}
