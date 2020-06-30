@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { map, head, includes } from 'ramda'
 
+import { Button } from '@material-ui/core'
 import Table, { MTableToolbar } from 'material-table'
 import Actions from './actions'
 import Pagination from './pagination'
@@ -93,6 +94,9 @@ const TableView = ({ currentSearch, setViewing, viewing, downloadLink }) => {
             <div>
               <MTableToolbar {...props} />
               <DownloadBar downloadLink={downloadLink} title={title} />
+              <Button onClick={() => setViewing(viewing => ({ ...viewing, view: 'MAP_LIST' }))}>
+                {'MAP VIEW'}
+              </Button>
             </div>
           ),
         }}

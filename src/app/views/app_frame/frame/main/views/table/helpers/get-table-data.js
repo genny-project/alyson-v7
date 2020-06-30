@@ -13,7 +13,12 @@ import {
   not,
   isEmpty,
   mergeAll,
+  filter,
+  has,
+  addIndex,
 } from 'ramda'
+
+import { geocodeByAddress } from 'react-google-places-autocomplete'
 
 const removeCOL_ = replace('COL_', '')
 
@@ -92,4 +97,25 @@ const makeActionData = ({ attributeCode, targetCode }) => ({
   parentCode: `QUE_${targetCode}_GRP`,
   targetCode,
 })
-export { getTitle, getColumns, getData, getTable, getActions, getIcon, makeActionData }
+
+const getWithAddressLatLon = async ({ data, setDataPoints, setLoadingPage }) => {
+  const result = await compose(
+    Promise.all.bind(Promise),
+    map(({ PRI_ADDRESS_FULL: address }) => geocodeByAddress(address)),
+    filter(has('PRI_ADDRESS_FULL')),
+  )(data || [])
+
+  setDataPoints(addIndex(map)((geo, idx) => ({ ...head(geo), ...data[idx] }), result))
+  setLoadingPage(false)
+}
+
+export {
+  getTitle,
+  getColumns,
+  getData,
+  getTable,
+  getActions,
+  getIcon,
+  makeActionData,
+  getWithAddressLatLon,
+}

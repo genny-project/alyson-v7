@@ -66,7 +66,7 @@ class Vertx {
 
   openEventBus(url) {
     // paste this instead of URL : https://internmatch-dev1.gada.io/frontend/
-    const eventBus = new EventBus(url)
+    const eventBus = new EventBus('https://internmatch-interns.gada.io/frontend/')
 
     this.log('Connecting to event bus...')
 

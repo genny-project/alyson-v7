@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { prop, isEmpty } from 'ramda'
 import { Paper, Grid, Typography, DialogTitle, Dialog, Tooltip, Fab } from '@material-ui/core'
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded'
-import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm } from '../views'
+import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm, MapList } from '../views'
 import getView from './helpers/get-view'
 import getApplication from './helpers/get-application'
 import useStyles from './styles'
@@ -85,6 +85,14 @@ const Main = ({
           projectName={projectName}
           setViewing={setViewing}
           dashboard={dashboard}
+        />
+      ) : view === 'MAP_LIST' ? (
+        <MapList
+          setViewing={setViewing}
+          currentSearch={currentSearch}
+          viewing={viewing}
+          downloadLink={downloadLink}
+          apiKey={googleApiKey}
         />
       ) : (
         <Paper className={classes.mainPaper}>
