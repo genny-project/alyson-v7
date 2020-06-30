@@ -6,26 +6,22 @@ const getView = ({ viewing: { view, parentCode = '', code = '' }, asks, frames }
     ? prop(view, asks)
     : view
       ? view
-      : contains('QUE_PRI_EVENT_APPLY_PER', code)
-        ? 'APPLICATION'
-        : contains('QUE_VIEW_AGREEMENT', code)
-          ? 'AGREEMENT'
-          : contains('BUCKET', code)
+      : contains('QUE_VIEW_AGREEMENT', code)
+        ? 'AGREEMENT'
+        : contains('BUCKET', code)
+          ? 'BUCKET'
+          : contains('CARD_RIGHT', parentCode)
             ? 'BUCKET'
-            : contains('CARD_RIGHT', parentCode)
-              ? 'BUCKET'
-              : contains('QUE_PRI_EVENT_VIEW', code)
-                ? 'DETAIL'
-                : getBackendViewing(frames) === 'UNITY'
-                  ? 'UNITY'
-                  : contains('DASHBOARD', code)
-                    ? 'DASHBOARD'
-                    : contains('MENU', code)
-                      ? prop(replace('MENU', 'GRP', code), asks)
-                      : contains('APPLY', code)
-                        ? 'APPLICATION'
-                        : contains('GRP', parentCode)
-                          ? 'TABLE'
-                          : 'DASHBOARD'
+            : contains('QUE_PRI_EVENT_VIEW', code)
+              ? 'DETAIL'
+              : getBackendViewing(frames) === 'UNITY'
+                ? 'UNITY'
+                : contains('DASHBOARD', code)
+                  ? 'DASHBOARD'
+                  : contains('MENU', code)
+                    ? prop(replace('MENU', 'GRP', code), asks)
+                    : contains('GRP', parentCode)
+                      ? 'TABLE'
+                      : 'DASHBOARD'
 
 export default getView

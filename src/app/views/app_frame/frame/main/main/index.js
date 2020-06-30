@@ -29,14 +29,10 @@ const Main = ({
 }) => {
   const classes = useStyles()
 
-  console.log(viewing)
-
   const view = getView({ viewing, asks, frames })
   const application = getApplication(attributes)
 
   const [current, setCurrent] = useState({})
-
-  console.log(view)
 
   if (view === 'UNITY') {
     return (
@@ -61,7 +57,7 @@ const Main = ({
         googleApiKey={googleApiKey}
         setViewing={setViewing}
         setLoading={setLoading}
-        view={view}
+        viewing={viewing}
         loading={loading}
       />
       {loading || !view ? (

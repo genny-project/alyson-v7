@@ -1,4 +1,5 @@
 import React from 'react'
+import { prop, includes } from 'ramda'
 import { CircularProgress, Dialog, DialogContent, Container } from '@material-ui/core'
 import { Form } from '../index'
 
@@ -13,7 +14,7 @@ const DialogForm = ({
   attributes,
   baseEntities,
   googleApiKey,
-  view,
+  viewing,
 }) => {
   const classes = useStyles()
 
@@ -21,7 +22,11 @@ const DialogForm = ({
     setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
 
   return (
-    <Dialog open={view === 'APPLICATION'} onClose={handleClose} fullWidth>
+    <Dialog
+      open={prop('dialog', viewing) === 'APPLICATION' || includes('APPLY', prop('code', viewing))}
+      onClose={handleClose}
+      fullWidth
+    >
       <DialogContent className={classes.dialogContent}>
         {form && !loading ? (
           <Form
@@ -38,7 +43,7 @@ const DialogForm = ({
                 targetCode: 'PER_USER1',
               })
             }
-            viewing={{ view }}
+            viewing={viewing}
           />
         ) : (
           <Container className={classes.fullWidth}>
