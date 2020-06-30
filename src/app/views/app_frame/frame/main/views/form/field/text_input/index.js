@@ -41,6 +41,7 @@ const TextInput = ({
       label={label}
       required={mandatory}
       type={'text'}
+      test-id={questionCode}
     />
   )
 }

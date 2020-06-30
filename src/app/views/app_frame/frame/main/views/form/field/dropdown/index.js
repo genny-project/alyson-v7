@@ -64,7 +64,8 @@ const DropdownSelect = ({
       options={options}
       getOptionLabel={prop('name')}
       getOptionSelected={(option, value) => option.code === value.code}
-      renderInput={params => <TextField {...params} label={label} variant="outlined" />}
+      renderInput={params => <TextField {...params} label={label} variant="outlined"/>}
+      test-id={questionCode}
     />
   )
 }

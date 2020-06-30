@@ -12,6 +12,7 @@ const BuiltRadioGroup = ({
   validationList,
   baseEntities,
   dataType,
+  questionCode
 }) => {
   const optionsGrpName = validationList[0].selectionBaseEntityGroupList[0];
   const optionsLinkList = path([optionsGrpName, 'links'], baseEntities);
@@ -30,9 +31,9 @@ const BuiltRadioGroup = ({
   return (
     <FormControl component="fieldset">
       <FormLabel component="legend">{label}</FormLabel>
-      <RadioGroup row aria-label={label} name={label} value={value} onChange={handleChange}>
+      <RadioGroup row aria-label={label} name={label} value={value} onChange={handleChange} test-id={questionCode}>
         {map(({ code, name }) => (
-          <FormControlLabel key={`radio${code}`} value={code} control={<Radio />} label={name} />
+          <FormControlLabel key={`radio${code}`} test-id={code} value={code} control={<Radio />} label={name} />
         ))(options)}
       </RadioGroup>
     </FormControl>

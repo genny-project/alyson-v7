@@ -18,6 +18,7 @@ const DateTimePicker = ({
   setPristine,
   fieldType,
   inputType = 'date',
+  questionCode,
   ...rest
 }) => {
   const [selectedDate, setSelectedDate] = useState( null );
@@ -46,6 +47,7 @@ const DateTimePicker = ({
           label={label}
           value={selectedDate}
           onChange={handleDateChange}
+          test-id={questionCode}
         />
       ) : (
         <TimePicker
@@ -56,6 +58,7 @@ const DateTimePicker = ({
           label={label}
           value={selectedDate}
           onChange={handleDateChange}
+          test-id={questionCode}
         />
       )}
     </MuiPickersUtilsProvider>

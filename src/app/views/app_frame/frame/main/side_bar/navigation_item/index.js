@@ -18,7 +18,7 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
         <ListItem
           button
           onClick={hasChildren ? () => setOpen(!open) : () => setViewing({ code: questionCode })}
-          id={`${questionCode}`}
+          test-id={`${questionCode}`}
           className={classes.listItem}
           color="inherit"
         >
@@ -40,7 +40,7 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
                     className={classes.listItem}
                     button
                     onClick={() => setViewing({ parentCode: questionCode, code: childCode })}
-                    id={`${childCode}`}
+                    test-id={`${childCode}`}
                   >
                     <ListItemText
                       key={`nestedListItem${name}`}
