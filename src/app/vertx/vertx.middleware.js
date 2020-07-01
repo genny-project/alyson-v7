@@ -22,8 +22,13 @@ const middleware = store => next => action => {
     store.dispatch(actions.initVertx())
   } else if (action.type === 'VERTX_INIT_ATTEMPT') {
     const { data, accessToken } = store.getState().keycloak
-
-    Bridge.initVertx(data.vertx_url, accessToken)
+    // Hack to remove the hardcoded argument in initVertx method by extracting the media url
+    var mediaProxyUrl = data.ENV_MEDIA_PROXY_URL;
+    // Remove the /public path from the url
+    var onlyHostname = mediaProxyUrl.substring(0, (mediaProxyUrl.length - 7));
+    // Add the /frontend subpath
+    var initSocketUrl = onlyHostname.concat(data.ENV_GENNY_BRIDGE_VERTEX);
+    Bridge.initVertx(initSocketUrl, accessToken)
   } else if (action.type === 'VERTX_INIT_SUCCESS') {
     const { accessToken } = store.getState().keycloak
 
