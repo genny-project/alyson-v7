@@ -21,7 +21,7 @@ const MyInterviewWidget = ({ fieldData, label, onUpdate, user, setErrors }) => {
         button: {
           color: 'red',
           size: 'small',
-          text: 'Record Intruoduction',
+          text: 'Record Introduction',
         },
         parts: [
           {
