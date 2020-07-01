@@ -5,6 +5,7 @@ import { Paper, Grid, Typography, DialogTitle, Dialog, Tooltip, Fab } from '@mat
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded'
 import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm, MapList } from '../views'
 import getView from './helpers/get-view'
+import getUserDetails from './helpers/get-user-details.js'
 import getApplication from './helpers/get-application'
 import useStyles from './styles'
 
@@ -104,6 +105,7 @@ const Main = ({
               setViewing={setViewing}
               setLoading={setLoading}
               viewing={viewing}
+              user={getUserDetails(user)}
             />
           ) : view.attributeCode === 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT' ? (
             <Form

@@ -98,6 +98,7 @@ const printCpy = [
 ]
 
 const printHcr = [
+  { label: 'Company', code: 'assoc_hc' },
   { label: 'Job Title', code: 'job_title' },
   { label: 'Mobile', code: 'mobile' },
   { label: 'Linkedin', code: 'linkedin_url', type: 'url' },

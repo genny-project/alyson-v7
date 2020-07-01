@@ -1,5 +1,6 @@
 import React from 'react'
 import { map, addIndex } from 'ramda'
+import { connect } from 'react-redux'
 
 import Unity, { UnityContent } from 'react-unity-webgl'
 import { Button, Typography, TextField, Menu, MenuItem } from '@material-ui/core'
@@ -76,6 +77,13 @@ class UnityRender extends React.Component {
     this.unityContent.send('reactObject', 'changeScene', scene)
   }
 
+  componentDidUpdate() {
+    if (this.props.unityEvent) {
+      const action = JSON.parse(this.props.unityEvent)
+      this.unityContent.send(...action)
+    }
+  }
+
   render() {
     return (
       <div style={{ marginTop: '5rem', marginLeft: '12rem', marginRight: '2rem' }}>
@@ -107,4 +115,10 @@ class UnityRender extends React.Component {
   }
 }
 
-export default UnityRender
+const mapStateToProps = state => ({
+  unityEvent: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'unityEvent'], state),
+})
+export default connect(
+  mapStateToProps,
+  UnityRender,
+)

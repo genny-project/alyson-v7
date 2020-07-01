@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   map,
   filter,
@@ -11,17 +11,17 @@ import {
   head,
   length,
   sortBy,
-} from 'ramda';
-import { Drawer, List, Typography, Container } from '@material-ui/core';
-import Image from 'material-ui-image';
+} from 'ramda'
+import { Drawer, List, Typography, Container } from '@material-ui/core'
+import Image from 'material-ui-image'
 
-import NavigationItem from './navigation_item';
+import NavigationItem from './navigation_item'
 
-import { getLinksFrom } from '../helpers/get-components';
+import { getLinksFrom } from '../helpers/get-components'
 
-import { getIsMobile } from '../utils';
+import { getIsMobile } from '../utils'
 
-import useStyles from './styles';
+import useStyles from './styles'
 
 const MainSideBar = ({
   projectName,
@@ -37,30 +37,30 @@ const MainSideBar = ({
   const components = compose(
     map(map(code => prop(code, asks))),
     map(filter(includes('QUE'))),
-    map(({ code }) => getLinksFrom(code, frames))
-  )(items);
+    map(({ code }) => getLinksFrom(code, frames)),
+  )(items)
 
-  const targetCode = path(['FRM_LOGO', 0, 'targetCode'], components);
+  const targetCode = path(['FRM_LOGO', 0, 'targetCode'], components)
 
   if (!targetCode) {
-    return <div />;
+    return <div />
   }
 
-  const logoUrl = path([targetCode, 'PRI_LOGO', 'value', 0, 'uploadURL'], attributes);
-  const title = path([targetCode, 'PRI_NAME', 'value'], attributes);
-  const poweredBy = path([targetCode, 'PRI_POWERED_BY', 'value'], attributes);
+  const logoUrl = path([targetCode, 'PRI_LOGO', 'value', 0, 'uploadURL'], attributes)
+  const title = path([targetCode, 'PRI_NAME', 'value'], attributes)
+  const poweredBy = path([targetCode, 'PRI_POWERED_BY', 'value'], attributes)
 
-  const classes = useStyles({ projectName });
+  const classes = useStyles({ projectName })
 
   const dropDowns = compose(
     sortBy(prop('childAsks')),
     map(head),
     values,
-    pickBy((val, key) => includes('TREE', key))
-  )(components);
+    pickBy((val, key) => includes('TREE', key)),
+  )(components)
 
   const dropDownComponents = map(dropDown => {
-    const { name, questionCode, childAsks } = dropDown || {};
+    const { name, questionCode, childAsks } = dropDown || {}
 
     return (
       <NavigationItem
@@ -71,8 +71,8 @@ const MainSideBar = ({
         currentViewing={prop('code', viewing)}
         setViewing={setViewing}
       />
-    );
-  })(dropDowns);
+    )
+  })(dropDowns)
 
   return (
     <Drawer
@@ -89,12 +89,6 @@ const MainSideBar = ({
           <Image src={logoUrl} className={classes.logo} disableSpinner />
         </Container>
       ) : null}
-
-      <Container className={classes.title}>
-        <Typography variant="h6" color="primary">
-          {title}
-        </Typography>
-      </Container>
       <List>{dropDownComponents}</List>
       <div className={classes.grow} />
       <Container className={classes.poweredBy}>
@@ -108,7 +102,7 @@ const MainSideBar = ({
         </Typography>
       </Container>
     </Drawer>
-  );
-};
+  )
+}
 
-export default MainSideBar;
+export default MainSideBar

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { map, length } from 'ramda'
 
@@ -6,6 +6,13 @@ import { Button, Menu, MenuItem } from '@material-ui/core'
 
 const Drafts = ({ drafts, setViewing }) => {
   const [menu, setMenu] = useState(null)
+
+  useEffect(
+    () => {
+      setMenu(null)
+    },
+    [drafts],
+  )
 
   return length(drafts || []) > 1 ? (
     <div>
