@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { map, prop } from 'ramda';
-import { Button, Menu, MenuItem } from '@material-ui/core';
+import React, { useState } from 'react'
+import { map, prop } from 'ramda'
+import { Button, Menu, MenuItem } from '@material-ui/core'
 
 const HeaderMenu = ({ group, setViewing, parentCode }) => {
-  const [menu, setMenu] = useState(null);
+  const [menu, setMenu] = useState(null)
 
   return (
     <div>
@@ -22,12 +22,13 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
             test-id={prop('questionCode', item)}
             key={`menuItem${prop('questionCode', item)}`}
             onClick={() => {
-              setMenu(null);
+              setMenu(null)
               setViewing({
+                view: 'FORM',
                 code: prop('questionCode', item),
                 parentCode,
                 targetCode: prop('targetCode', item),
-              });
+              })
             }}
           >
             {prop('name', item || {})}
@@ -35,7 +36,7 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
         ))(prop('childAsks', group) || [])}
       </Menu>
     </div>
-  );
-};
+  )
+}
 
-export default HeaderMenu;
+export default HeaderMenu

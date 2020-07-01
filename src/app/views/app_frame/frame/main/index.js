@@ -31,6 +31,7 @@ const Sam = ({
   dashboard,
   currentSearch,
   downloadLink,
+  currentAsk,
 }) => {
   const googleApiKey = getGoogleApiKey(keycloak)
   const agency = getAgency(user)
@@ -156,6 +157,7 @@ const Sam = ({
           setDialogContent={setDialogContent}
           drawerItems={getDrawerItems(frames, asks)}
           dashboard={dashboard}
+          currentAsk={currentAsk}
         />
       </div>
       <SidePanel
@@ -173,6 +175,7 @@ const mapStateToProps = state => ({
   dashboard: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'dashboard'], state),
   currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
   downloadLink: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'downloadLink'], state),
+  currentAsk: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'currentAsk'], state),
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
   asks: state.vertx.asks,

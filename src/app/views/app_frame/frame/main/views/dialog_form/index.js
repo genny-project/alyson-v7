@@ -1,12 +1,13 @@
 import React from 'react'
 import { prop, includes } from 'ramda'
-import { CircularProgress, Dialog, DialogContent, Container } from '@material-ui/core'
+import { Row } from '../../components/layouts'
+import { CircularProgress, Dialog, DialogContent } from '@material-ui/core'
 import { Form } from '../index'
 
 import useStyles from './styles'
 
 const DialogForm = ({
-  form,
+  currentAsk,
   asks,
   loading,
   setViewing,
@@ -32,9 +33,9 @@ const DialogForm = ({
       fullWidth
     >
       <DialogContent className={classes.dialogContent}>
-        {form && !loading ? (
+        {!loading ? (
           <Form
-            formView={form}
+            currentAsk={currentAsk}
             asks={asks}
             baseEntities={baseEntities}
             attributes={attributes}
@@ -43,6 +44,7 @@ const DialogForm = ({
             setLoading={setLoading}
             redirect={() =>
               setViewing({
+                view: 'BUCKET',
                 code: 'QUE_TAB_BUCKET_VIEW',
                 targetCode: 'PER_USER1',
               })
@@ -50,9 +52,9 @@ const DialogForm = ({
             viewing={viewing}
           />
         ) : (
-          <Container className={classes.fullWidth}>
+          <Row className={classes.fullWidth}>
             <CircularProgress />
-          </Container>
+          </Row>
         )}
       </DialogContent>
     </Dialog>

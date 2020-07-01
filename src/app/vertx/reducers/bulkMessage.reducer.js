@@ -29,6 +29,22 @@ const isMetaData = compose(
 )
 
 const reducer = (state = initialState, { type, payload }) => {
+  if (type === 'ASK_DATA') {
+    const currentAsk = path(['items', 0], payload)
+
+    if (currentAsk.name !== 'Drafts') {
+      return {
+        ...state,
+        ...{
+          SAM: {
+            ...pathOr({}, ['SAM'], state),
+            currentAsk,
+          },
+        },
+      }
+    }
+  }
+
   if (type === 'UNITY_EVENT') {
     const unityEvent = path(['code'], payload || {})
     return {
