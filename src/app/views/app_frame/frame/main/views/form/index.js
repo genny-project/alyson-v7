@@ -17,6 +17,7 @@ const Form = ({
   baseEntities,
   googleApiKey,
   viewing: { viewingRedirect },
+  user,
 }) => {
   if (formView) {
     const title = path(['question', 'name'], formView)
@@ -73,6 +74,7 @@ const Form = ({
                   meta={meta}
                   googleApiKey={googleApiKey}
                   defaultValues={defaultValues}
+                  user={user}
                 />
               </Grid>
             ))(profileFormFields)
@@ -85,6 +87,7 @@ const Form = ({
                   meta={meta}
                   googleApiKey={googleApiKey}
                   defaultValues={defaultValues}
+                  user={user}
                 />
               </Grid>
             ))(formFields)}

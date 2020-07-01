@@ -165,8 +165,13 @@ class MessageHandler {
     const isValidMessage = this.validMessageTypes.includes(msg_type)
 
     if (cmd_type === 'DOWNLOAD_FILE') {
-      console.log('DOWNLOAD MESSAGE', message)
       store.dispatch({ type: 'DOWNLOAD_LINK', payload: message })
+
+      return
+    }
+
+    if (cmd_type === 'UNITY_EVENT') {
+      store.dispatch({ type: 'UNITY_EVENT', payload: message })
 
       return
     }

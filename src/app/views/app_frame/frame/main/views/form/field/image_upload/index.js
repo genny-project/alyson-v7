@@ -61,7 +61,12 @@ const UploadImage = ({ fieldData, label, onUpdate, questionCode }) => {
         <Avatar src={imageUrl} />
       ) : (
         <div>
-          <Button variant="outlined" startIcon={<CloudUploadIcon />} onClick={() => setOpen(true)} test-id={questionCode}>
+          <Button
+            variant="outlined"
+            startIcon={<CloudUploadIcon />}
+            onClick={() => setOpen(true)}
+            test-id={questionCode}
+          >
             {label}
           </Button>
           <DropzoneDialog
@@ -70,7 +75,7 @@ const UploadImage = ({ fieldData, label, onUpdate, questionCode }) => {
             onSave={handleSave}
             acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
             showPreviews
-            maxFileSize={5000000}
+            maxFileSize={50000000}
           />
         </div>
       )}

@@ -19,7 +19,11 @@ const DialogForm = ({
   const classes = useStyles()
 
   const handleClose = () =>
-    setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
+    setViewing(
+      prop('dialog', viewing) === 'APPLICATION'
+        ? { ...viewing, dialog: false }
+        : { code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' },
+    )
 
   return (
     <Dialog

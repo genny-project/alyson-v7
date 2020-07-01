@@ -12,6 +12,7 @@ import ImageUpload from './image_upload'
 import RichTextEditor from './rich_text'
 import DateTimePicker from './date_time_picker'
 import HtmlDisplay from './html_display'
+import MyInterviewWidget from './my_interview_widget'
 
 const Field = ({
   fieldData,
@@ -19,6 +20,7 @@ const Field = ({
   meta: { onSubmit, errors, setErrors, pristine, setPristine },
   googleApiKey,
   defaultValues,
+  user,
 }) => {
   const label = path(['name'], fieldData)
   const dataType = path(['question', 'attribute', 'dataType'], fieldData)
@@ -112,7 +114,12 @@ const Field = ({
       questionCode={questionCode}
     />
   ) : fieldType === 'image' ? (
-    <ImageUpload fieldData={fieldData} label={label} onUpdate={onUpdate} questionCode={questionCode}/>
+    <ImageUpload
+      fieldData={fieldData}
+      label={label}
+      onUpdate={onUpdate}
+      questionCode={questionCode}
+    />
   ) : fieldType === 'htmlarea' || fieldType === 'textarea' ? (
     <RichTextEditor
       fieldData={fieldData}
@@ -143,7 +150,18 @@ const Field = ({
     />
   ) : fieldType === 'htmleditor' ? (
     <HtmlDisplay fieldData={fieldData} label={label} />
-  ) : null
+  ) : fieldType === 'myinterviewwidget' ? (
+    <MyInterviewWidget
+      fieldData={fieldData}
+      label={label}
+      onUpdate={onUpdate}
+      questionCode={questionCode}
+      user={user}
+      setErrors={setErrors}
+    />
+  ) : (
+    <div />
+  )
 }
 
 export default Field
