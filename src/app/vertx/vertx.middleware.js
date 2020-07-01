@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { push } from 'react-router-redux'
 import * as actions from './vertx.actions'
+import setInitSocketURL from './helpers/setInitSocketURL'
 import { showDialog } from '../../redux/actions'
 import { Bridge, removeStartingAndEndingSlashes, Storage } from '../../utils'
 
@@ -23,7 +24,7 @@ const middleware = store => next => action => {
   } else if (action.type === 'VERTX_INIT_ATTEMPT') {
     const { data, accessToken } = store.getState().keycloak
 
-    Bridge.initVertx(data.vertx_url, accessToken)
+    Bridge.initVertx(setInitSocketURL(data), accessToken)
   } else if (action.type === 'VERTX_INIT_SUCCESS') {
     const { accessToken } = store.getState().keycloak
 
