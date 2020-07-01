@@ -18,6 +18,7 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
       <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
         {map(item => (
           <MenuItem
+            test-id={prop('questionCode', item)}
             key={`menuItem${prop('questionCode', item)}`}
             onClick={() => {
               setMenu(null);
