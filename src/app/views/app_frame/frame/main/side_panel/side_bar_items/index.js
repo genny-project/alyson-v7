@@ -8,16 +8,15 @@ import { NoteBarContext } from '../../contexts'
 
 import useStyles from './styles'
 
-const SideBarItems = () => {
+const SideBarItems = ({ setShowNotes }) => {
   const classes = useStyles()
-  const { setShowNoteBar } = React.useContext(NoteBarContext)
 
   return (
     <Col className={classes.itemsContainer}>
       <IconButton>
         <EventIcon className={classes.blueIcon} fontSize="large" />
       </IconButton>
-      <IconButton onClick={() => setShowNoteBar(true)}>
+      <IconButton onClick={() => setShowNotes(true)}>
         <NoteAddIcon fontSize="large" className={classes.yellowIcon} />
       </IconButton>
       <IconButton>

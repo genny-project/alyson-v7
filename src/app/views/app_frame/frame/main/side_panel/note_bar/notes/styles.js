@@ -1,16 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles(( theme ) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     alignItems: 'center',
-  },
-  card: {
-    maxWidth: 345,
-    marginBottom: theme.spacing( 2 ),
-  },
-  button: {
-    maxWidth: 345,
-    justifyContent: 'flex-start',
   },
   media: {
     height: 140,
@@ -20,13 +12,10 @@ const useStyles = makeStyles(( theme ) => ({
     width: 100,
   },
   control: {
-    padding: theme.spacing( 2 ),
+    padding: theme.spacing(2),
   },
-  buttonControl: {
-    margin: theme.spacing( 2 ),
-  },
-  expand: {
-    marginLeft: 'auto',
+  notesContainer: {
+    padding: theme.spacing(1),
   },
 }))
 

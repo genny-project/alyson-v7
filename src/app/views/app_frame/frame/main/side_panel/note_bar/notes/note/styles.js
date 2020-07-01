@@ -2,7 +2,6 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: 345,
     marginBottom: theme.spacing(1),
   },
   cardContainer: {
@@ -18,6 +17,9 @@ const useStyles = makeStyles(theme => ({
   },
   input: {
     fontSize: '0.88rem',
+  },
+  card: {
+    borderRadius: theme.spacing(1),
   },
 }))
 
