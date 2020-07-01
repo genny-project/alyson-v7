@@ -51,7 +51,6 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) =
 }
 
 const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
-  console.error( 'id', id )
 
   const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
     {

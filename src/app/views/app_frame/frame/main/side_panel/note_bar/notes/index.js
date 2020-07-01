@@ -43,7 +43,6 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
-  console.error('notes', notes)
 
   useEffect(
     () => {
