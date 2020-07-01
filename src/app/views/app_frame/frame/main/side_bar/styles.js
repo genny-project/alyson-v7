@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(1),
   },
   logo: {
-    height: APP_BAR_HEIGHT,
+    padding: theme.spacing(3),
   },
   poweredBy: {
     marginBottom: theme.spacing(1),

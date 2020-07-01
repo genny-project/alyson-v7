@@ -29,6 +29,18 @@ const isMetaData = compose(
 )
 
 const reducer = (state = initialState, { type, payload }) => {
+  if (type === 'UNITY_EVENT') {
+    const unityEvent = path(['code'], payload || {})
+    return {
+      ...state,
+      ...{
+        SAM: {
+          ...pathOr({}, ['SAM'], state),
+          unityEvent,
+        },
+      },
+    }
+  }
   if (type === 'DOWNLOAD_LINK') {
     const downloadLink = path(['code'], payload || {})
 
