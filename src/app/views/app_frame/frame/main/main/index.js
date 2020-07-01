@@ -27,6 +27,7 @@ const Main = ({
   setDialogContent,
   dashboard,
   downloadLink,
+  currentAsk,
 }) => {
   const classes = useStyles()
 
@@ -51,7 +52,7 @@ const Main = ({
   return (
     <div className={classes.root}>
       <DialogForm
-        form={prop('QUE_ADD_APPLICATION_GRP', asks)}
+        currentAsk={currentAsk}
         asks={asks}
         baseEntities={baseEntities}
         attributes={attributes}
@@ -93,11 +94,9 @@ const Main = ({
         />
       ) : (
         <Paper className={classes.mainPaper}>
-          {view === 'AGREEMENT' || view.attributeCode === 'QQQ_QUESTION_GROUP' ? (
+          {view === 'AGREEMENT' || view === 'FORM' ? (
             <Form
-              formView={
-                view === 'AGREEMENT' ? prop('QUE_AGREEMENT_DOCUMENT_INTERN_FORM_GRP', asks) : view
-              }
+              currentAsk={currentAsk}
               asks={asks}
               baseEntities={baseEntities}
               attributes={attributes}
@@ -106,17 +105,6 @@ const Main = ({
               setLoading={setLoading}
               viewing={viewing}
               user={getUserDetails(user)}
-            />
-          ) : view.attributeCode === 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT' ? (
-            <Form
-              formView={view}
-              asks={asks}
-              baseEntities={baseEntities}
-              attributes={attributes}
-              googleApiKey={googleApiKey}
-              setViewing={setViewing}
-              setLoading={setLoading}
-              viewing={viewing}
             />
           ) : view === 'DETAIL' ? (
             <Details

@@ -18,10 +18,8 @@ const getView = ({ viewing: { view, parentCode = '', code = '' }, asks, frames }
                 ? 'UNITY'
                 : contains('DASHBOARD', code)
                   ? 'DASHBOARD'
-                  : contains('MENU', code)
-                    ? prop(replace('MENU', 'GRP', code), asks)
-                    : contains('GRP', parentCode)
-                      ? 'TABLE'
-                      : 'DASHBOARD'
+                  : contains('GRP', parentCode)
+                    ? 'TABLE'
+                    : 'DASHBOARD'
 
 export default getView

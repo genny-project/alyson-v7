@@ -29,7 +29,9 @@ const Drafts = ({ drafts, setViewing }) => {
           ({ targetCode, question: { code, name } }) => (
             <MenuItem
               key={'draft' + code}
-              onClick={() => setViewing({ code, targetCode, parentCode: 'QUE_DRAFTS_GRP' })}
+              onClick={() =>
+                setViewing({ view: 'FORM', code, targetCode, parentCode: 'QUE_DRAFTS_GRP' })
+              }
             >
               {name}
             </MenuItem>

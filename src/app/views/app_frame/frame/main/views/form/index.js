@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { path, map, prop } from 'ramda'
+import { path, map, prop, not, isEmpty } from 'ramda'
 import { Grid, Typography, CircularProgress } from '@material-ui/core'
 
 import onSubmit from './field/actions/on-submit'
@@ -12,24 +12,25 @@ const Form = ({
   redirect,
   setViewing,
   setLoading,
-  formView,
+  currentAsk,
   attributes,
   baseEntities,
   googleApiKey,
   viewing: { viewingRedirect },
   user,
 }) => {
-  if (formView) {
-    const title = path(['question', 'name'], formView)
-    const formFields = path(['childAsks'], formView)
+  if (not(isEmpty(currentAsk))) {
+    const title = path(['question', 'name'], currentAsk)
+    const formFields = path(['childAsks'], currentAsk)
     const profileFormFields = [
-      ...path(['childAsks', 0, 'childAsks'], formView),
-      ...path(['childAsks', 1, 'childAsks'], formView),
+      ...(path(['childAsks', 0, 'childAsks'], currentAsk) || []),
+      ...(path(['childAsks', 1, 'childAsks'], currentAsk) || []),
     ]
-    const defaultValues = path([prop('targetCode', formView)], attributes)
 
-    const parentCode = prop('questionCode', formView)
-    const rootCode = prop('questionCode', formView)
+    const defaultValues = path([prop('targetCode', currentAsk)], attributes)
+
+    const parentCode = prop('questionCode', currentAsk)
+    const rootCode = prop('questionCode', currentAsk)
 
     const classes = useStyles()
 
