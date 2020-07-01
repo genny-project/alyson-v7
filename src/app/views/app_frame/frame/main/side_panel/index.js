@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
+
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-
-
 import { Drawer } from '@material-ui/core'
 
 import { Col } from '../components/layouts'
@@ -16,10 +15,7 @@ const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes, s
 
   const classes = useStyles({ sidePanelOpen, showNotes })
 
-
-  const handleClickAway = () => {
-    setSidePanelOpen(false)
-  }
+  const handleClickAway = () => setSidePanelOpen(false)
 
   useEffect(
     () => {
@@ -54,7 +50,6 @@ const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes, s
         <PanelControl toggleSidePanel={toggleSidePanel} sidePanelOpen={sidePanelOpen} />
       </div>
     </ClickAwayListener>
-
   )
 }
 
