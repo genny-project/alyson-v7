@@ -163,6 +163,7 @@ const Sam = ({
         toggleSidePanel={toggleSidePanel}
         baseEntities={baseEntities}
         attributes={attributes}
+        setSidePanelOpen={setSidePanelOpen}
       />
     </ThemeProvider>
   )
