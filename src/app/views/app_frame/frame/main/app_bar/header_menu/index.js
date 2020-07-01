@@ -8,6 +8,7 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
   return (
     <div>
       <Button
+        test-id={group.questionCode}
         color="inherit"
         variant="outlined"
         style={{ marginRight: '1rem' }}
