@@ -1,23 +1,17 @@
 import { makeStyles } from '@material-ui/core'
 
-const useStyles = makeStyles( theme => ({
-  drawerLeft: {
-    width: 360,
-    overflowY: 'scroll',
-    padding: theme.spacing( 1 ),
-  },
-  drawerPaperLeft: {
-    width: 360,
-  },
-  grow: {
-    flexGrow: 1,
-  },
+const useStyles = makeStyles(theme => ({
   topBar: {
-    margin: theme.spacing( 2 ),
-    width: 345,
+    margin: theme.spacing(1),
   },
-  loadingBar: {
-    color: theme.palette.primary.dark,
+  loadingBarSpot: {
+    height: theme.spacing(1),
+  },
+  title: {
+    paddingLeft: theme.spacing(1),
+  },
+  icon: {
+    marginRight: theme.spacing(4),
   },
 }))
 

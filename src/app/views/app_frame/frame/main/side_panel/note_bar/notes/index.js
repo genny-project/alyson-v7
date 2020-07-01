@@ -27,121 +27,85 @@ import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 
 const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
   const [notes, setNotes] = useState({})
-  const [noteContent, setNoteContent] = useState( '' )
-  const [noteHeader, setNoteHeader] = useState( '' )
-  const [showAddNote, setShowAddNote] = useState( true )
+  const [noteContent, setNoteContent] = useState('')
+  const [noteHeader, setNoteHeader] = useState('')
 
   const classes = useStyles()
 
   const handleSubmit = () => {
-    setNoteHeader( '' )
-    setNoteContent( '' )
+    setNoteHeader('')
+    setNoteContent('')
     postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading })
   }
-
-  const handleShowAddNote = () => setShowAddNote( showAddNote => !showAddNote )
 
   const removeNotes = id => {
     return deleteNote({ id, accessToken, setNotes, setApiLoading })
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
-  console.error( 'notes', notes )
+  console.error('notes', notes)
 
-  useEffect(() => {
-    getAll({ setNotes, accessToken, setApiLoading })
-  }, [accessToken] )
+  useEffect(
+    () => {
+      getAll({ setNotes, accessToken, setApiLoading })
+    },
+    [accessToken],
+  )
 
   return (
-    <Col
-      alignItems="flex-start"
-      justify="flex-start"
-    >
-      <Grid
-        xs={12}
-        className={classes.buttonControl}
-      >
-        <Button
-          className={classes.button}
-          color="secondary"
-          onClick={handleShowAddNote}
-          fullWidths
-        >
-          {showAddNote ? 'Close notes' : 'Add a note...'}
-        </Button>
-      </Grid>
-
-      <Col
-        alignItems="flex-start"
-        justify="flex-start"
-      >
-        {map(
-          ({ id, ...rest }) => (
-            <Note
-              baseEntities={baseEntities}
-              id={id}
-              key={`note${id}`}
-              {...rest}
-              removeNotes={removeNotes}
-              attributes={attributes}
-              editNote={editNote}
-              setNotes={setNotes}
-            />
-          ),
-          [...notes] || [],
-        )}
-      </Col>
-      {showAddNote && (
-        <Col
-          alignItems="flex-start"
-          justify="flex-start"
-        >
-          <Card
-            className={classes.card}
-            variant="outlined"
-          >
-            <CardHeader
-              title={(
-                <InputBase
-                  value={noteHeader}
-                  style={{ margin: 4 }}
-                  placeholder="Tags"
-                  fullWidth
-                  onChange={e => setNoteHeader( e.target.value )}
-                />
-)}
-            />
-            <CardContent>
-              <InputBase
-                autoFocus
-                value={noteContent}
-                multiline
-                style={{ margin: 4 }}
-                placeholder="Post a note"
-                fullWidth
-                onChange={e => setNoteContent( e.target.value )}
-              />
-            </CardContent>
-            <CardActions disableSpacing>
-              <Row justify="flex-end">
-                <Button
-                  variant="contained"
-                  color="inherit"
-                  onClick={handleSubmit}
-                >
-                Done
-                </Button>
-              </Row>
-            </CardActions>
-          </Card>
-        </Col>
+    <Col top stretch className={classes.notesContainer}>
+      {map(
+        ({ id, ...rest }) => (
+          <Note
+            baseEntities={baseEntities}
+            id={id}
+            key={`note${id}`}
+            {...rest}
+            removeNotes={removeNotes}
+            attributes={attributes}
+            editNote={editNote}
+            setNotes={setNotes}
+          />
+        ),
+        [...notes] || [],
       )}
+      <Card variant="outlined">
+        <CardHeader
+          title={
+            <InputBase
+              value={noteHeader}
+              style={{ margin: 4 }}
+              placeholder="Tags"
+              fullWidth
+              onChange={e => setNoteHeader(e.target.value)}
+            />
+          }
+        />
+        <CardContent>
+          <InputBase
+            autoFocus
+            value={noteContent}
+            multiline
+            style={{ margin: 4 }}
+            placeholder="Post a note"
+            fullWidth
+            onChange={e => setNoteContent(e.target.value)}
+          />
+        </CardContent>
+        <CardActions disableSpacing>
+          <Row justify="flex-end">
+            <Button variant="contained" color="inherit" onClick={handleSubmit}>
+              Done
+            </Button>
+          </Row>
+        </CardActions>
+      </Card>
     </Col>
   )
 }
 
 const mapStateToProps = state => ({
-  accessToken: pathOr( '', ['keycloak', 'accessToken'], state ),
+  accessToken: pathOr('', ['keycloak', 'accessToken'], state),
 })
 
-export default connect( mapStateToProps )( Notes )
+export default connect(mapStateToProps)(Notes)

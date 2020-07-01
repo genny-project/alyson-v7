@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core'
 
 const SIDEPANEL_WIDTH = 100
 const MINI_SIDEPANEL_WIDTH = 20
+const SIDEPANEL_NOTES_WIDTH = 500
 import { APP_BAR_HEIGHT } from '../app_bar/styles'
 
 const useStyles = makeStyles(theme => ({
@@ -10,7 +11,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
   },
   drawerPaper: {
-    width: ({ sidePanelOpen }) => (sidePanelOpen ? SIDEPANEL_WIDTH : MINI_SIDEPANEL_WIDTH),
+    width: ({ sidePanelOpen, showNotes }) =>
+      sidePanelOpen ? (showNotes ? SIDEPANEL_NOTES_WIDTH : SIDEPANEL_WIDTH) : MINI_SIDEPANEL_WIDTH,
     marginTop: APP_BAR_HEIGHT,
     transition: theme.transitions.create('width'),
   },

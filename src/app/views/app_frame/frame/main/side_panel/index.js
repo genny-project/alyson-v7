@@ -1,52 +1,49 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-import { Drawer, IconButton, Tooltip, Grid } from '@material-ui/core'
+import { Drawer } from '@material-ui/core'
 
-import { Row, Col } from '../components/layouts'
-import NextIcon from '@material-ui/icons/NavigateNext'
-import CloseIcon from '@material-ui/icons/NavigateBefore'
+import { Col } from '../components/layouts'
 
-import { NotesContext, NoteBarContext } from '../contexts'
 import SideBarItems from './side_bar_items'
 import NoteBar from './note_bar'
-
+import PanelControl from './panel_control'
 import useStyles from './styles'
 
 const SidePanel = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) => {
   const [showNotes, setShowNotes] = useState(false)
-  const [showNoteBar, setShowNoteBar] = useState(false)
 
-  const classes = useStyles({ sidePanelOpen })
+  const classes = useStyles({ sidePanelOpen, showNotes })
+
+  useEffect(
+    () => {
+      if (!sidePanelOpen && showNotes) setShowNotes(false)
+    },
+    [sidePanelOpen],
+  )
 
   return (
     <div className={classes.root}>
-      <NotesContext.Provider value={{ showNotes, setShowNotes }}>
-        <NoteBarContext.Provider value={{ showNoteBar, setShowNoteBar }}>
-          <Drawer
-            variant="permanent"
-            anchor="right"
-            className={classes.drawer}
-            classes={{ paper: classes.drawerPaper }}
-            onClose={toggleSidePanel}
-            ModalProps={{ keepMounted: true }}
-          >
-            {showNoteBar && (
-              <NoteBar
-                sidePanelOpen={sidePanelOpen}
-                toggleSidePanel={toggleSidePanel}
-                baseEntities={baseEntities}
-                attributes={attributes}
-              />
-            )}
-            <Col justify="space-between" alignItems="flex-start">
-              <SideBarItems />
-              <div onClick={toggleSidePanel} className={classes.iconButton}>
-                {sidePanelOpen ? <NextIcon color="inherit" /> : <CloseIcon color="inherit" />}
-              </div>
-            </Col>
-          </Drawer>
-        </NoteBarContext.Provider>
-      </NotesContext.Provider>
+      <Drawer
+        variant="permanent"
+        anchor="right"
+        className={classes.drawer}
+        classes={{ paper: classes.drawerPaper }}
+      >
+        {showNotes ? (
+          <NoteBar
+            sidePanelOpen={sidePanelOpen}
+            toggleSidePanel={toggleSidePanel}
+            setShowNotes={setShowNotes}
+            baseEntities={baseEntities}
+            attributes={attributes}
+          />
+        ) : (
+          <Col justify="space-between" alignItems="flex-start">
+            <SideBarItems setShowNotes={setShowNotes} />
+          </Col>
+        )}
+      </Drawer>
+      <PanelControl toggleSidePanel={toggleSidePanel} sidePanelOpen={sidePanelOpen} />
     </div>
   )
 }

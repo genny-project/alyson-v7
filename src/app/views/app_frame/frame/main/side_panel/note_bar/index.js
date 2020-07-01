@@ -10,54 +10,30 @@ import Notes from './notes'
 
 import useStyles from './styles'
 
-const NoteBar = ({ sidePanelOpen, toggleSidePanel, baseEntities, attributes }) => {
-  const { setShowNoteBar } = useContext( NoteBarContext )
-  const [apiLoading, setApiLoading] = useState( false )
+const NoteBar = ({ setShowNotes, baseEntities, attributes }) => {
+  const [apiLoading, setApiLoading] = useState(false)
 
   const classes = useStyles()
 
   return (
-    <Drawer
-      variant="temporary"
-      anchor="right"
-      className={classes.drawerLeft}
-      classes={{ paper: classes.drawerPaperLeft }}
-      open={sidePanelOpen}
-      onClose={toggleSidePanel}
-      ModalProps={{ keepMounted: true }}
-    >
-      {apiLoading ? <LinearProgress /> : null}
-
-      <Col alignItems="flex-start">
-
-        <Row
-          justify="space-between"
-          className={classes.topBar}
-        >
-          <Typography
-            variant="h6"
-            color="primary"
-          >
-Note
-          </Typography>
+    <Col top stretch>
+      {apiLoading ? <LinearProgress /> : <div className={classes.loadingBarSpot} />}
+      <Row justify="space-between" className={classes.topBar}>
+        <Typography variant="h6" color="primary" className={classes.title}>
+          Note
+        </Typography>
+        <Row>
           <IconButton color="primary">
             <SearchIcon color="inherit" />
           </IconButton>
-          <IconButton
-            color="primary"
-            onClick={() => setShowNoteBar( false )}
-          >
+          <IconButton className={classes.icon} color="primary" onClick={() => setShowNotes(false)}>
             <ClearIcon color="inherit" />
           </IconButton>
         </Row>
-        <Divider />
-        <Notes
-          baseEntities={baseEntities}
-          attributes={attributes}
-          setApiLoading={setApiLoading}
-        />
-      </Col>
-    </Drawer>
+      </Row>
+      <Divider />
+      <Notes baseEntities={baseEntities} attributes={attributes} setApiLoading={setApiLoading} />
+    </Col>
   )
 }
 
