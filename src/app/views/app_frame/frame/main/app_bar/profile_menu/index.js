@@ -7,7 +7,7 @@ const ProfileMenu = ({ setViewing, profilePictureURL, userFullName, fakePictureF
 
   return (
     <div>
-      <IconButton onClick={event => setMenu(event.currentTarget)} color="inherit" test-id={group.questionCode}>
+      <IconButton onClick={event => setMenu(event.currentTarget)} color="inherit">
         {fakePictureForDemo || (profilePictureURL && profilePictureURL.length) ? (
           <Avatar alt={userFullName} src={fakePictureForDemo || profilePictureURL} />
         ) : (
