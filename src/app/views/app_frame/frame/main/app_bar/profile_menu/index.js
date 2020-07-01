@@ -15,7 +15,7 @@ const ProfileMenu = ({
 
   return (
     <div>
-      <IconButton onClick={event => setMenu(event.currentTarget)} color="inherit">
+      <IconButton onClick={event => setMenu(event.currentTarget)} color="inherit" test-id={group.questionCode}>
         {fakePictureForDemo || (profilePictureURL && profilePictureURL.length) ? (
           <Avatar alt={userFullName} src={fakePictureForDemo || profilePictureURL} />
         ) : (
