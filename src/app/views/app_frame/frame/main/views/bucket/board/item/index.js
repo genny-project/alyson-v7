@@ -90,7 +90,7 @@ const Item = ({
       setViewing({
         code: code === 'QUE_PRI_EVENT_OFFER' ? 'QUE_PRI_EVENT_OFFERED_APPLICATION' : code,
         targetCode,
-        view: code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? 'QUE_PRE_AGREEMENT_DOC_GRP' : 'BUCKET',
+        view: code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? 'FORM' : 'BUCKET',
         redirect:
           code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? () => setViewing({ view: 'BUCKET' }) : null,
       })

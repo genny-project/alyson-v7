@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { pathOr, map, prop, not, isEmpty } from 'ramda'
 import { Grid, Typography, CircularProgress } from '@material-ui/core'
-
+import { Col } from '../../components/layouts'
 import onSubmit from './field/actions/on-submit'
 
 import Field from './field'
@@ -77,7 +77,12 @@ const Form = ({
       </Grid>
     )
   } else {
-    return <CircularProgress />
+    return (
+      <Col>
+        <CircularProgress />
+        <Typography>{`Preparing your form...`}</Typography>
+      </Col>
+    )
   }
 }
 
