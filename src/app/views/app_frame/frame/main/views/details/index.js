@@ -34,7 +34,7 @@ const printBeg = [
   { label: 'Days Per Week', code: 'days_per_week' },
   { label: 'Duration', code: 'internship_duration_stripped' },
   { label: 'Number of Interns', code: 'assoc_num_interns' },
-  { label: 'Video Presentation of Internship Opportunity', code: 'loom_url', type: 'url' },
+  { label: 'Video Presentation of Internship Opportunity', code: 'loom_url', type: 'video' },
   { label: 'Map View', code: 'address_full', type: 'street_view' },
 ]
 

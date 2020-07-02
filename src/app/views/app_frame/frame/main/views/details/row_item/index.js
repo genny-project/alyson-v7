@@ -1,12 +1,11 @@
 import React from 'react'
-import { includes } from 'ramda'
 
 import { Row } from '../../../components/layouts'
 import { Grid, Typography, Button, Link } from '@material-ui/core'
 import StreetView from '../street_view'
 import SignatureCanvas from 'react-signature-canvas'
 import { Rating } from '@material-ui/lab'
-import { format, parseISO } from 'date-fns'
+import Video from '../video_player'
 
 const RowItem = ({
   signatureRef,
@@ -63,6 +62,8 @@ const RowItem = ({
           <Link href={value}>{value}</Link>
         ) : type === 'street_view' ? (
           <StreetView address={value} apiKey={googleApiKey} />
+        ) : type === 'video' ? (
+          <Video url={value} />
         ) : (
           <Typography>{value}</Typography>
         )}
