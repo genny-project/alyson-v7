@@ -59,7 +59,7 @@ const RowItem = ({
             >{`SUBMIT`}</Button>
           </Row>
         ) : type === 'url' ? (
-          <Link onClick={() => handleVideo(value)}>{value ? value : 'click me'}</Link>
+          <Link href={value}>{value}</Link>
         ) : type === 'street_view' ? (
           <StreetView address={value} apiKey={googleApiKey} />
         ) : type === 'video' ? (
