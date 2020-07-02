@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import { Menu, MenuItem, IconButton, Avatar } from '@material-ui/core'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
-const ProfileMenu = ({ setViewing, profilePictureURL, userFullName, fakePictureForDemo }) => {
+const ProfileMenu = ({ setViewing, profilePictureURL, userFullName, fakePictureForDemo, group }) => {
   const [menu, setMenu] = useState(null)
-
   return (
     <div>
-      <IconButton onClick={event => setMenu(event.currentTarget)} color="inherit">
+      <IconButton onClick={event => setMenu(event.currentTarget)} color="inherit" test-id={group.questionCode}>
         {fakePictureForDemo || (profilePictureURL && profilePictureURL.length) ? (
           <Avatar alt={userFullName} src={fakePictureForDemo || profilePictureURL} />
         ) : (
@@ -16,6 +15,7 @@ const ProfileMenu = ({ setViewing, profilePictureURL, userFullName, fakePictureF
       </IconButton>
       <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
         <MenuItem
+          test-id='QUE_AVATAR_PROFILE_GRP'
           onClick={() =>
             setViewing({
               view: 'FORM',

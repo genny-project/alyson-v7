@@ -10,7 +10,6 @@ import { getIsMobile } from '../utils'
 import useStyles from './styles'
 import Search from './search'
 import Drafts from './drafts'
-import MoreViews from './more_views'
 
 const MainAppBar = ({
   setLoading,
@@ -54,7 +53,6 @@ const MainAppBar = ({
             asks={asks}
             setViewing={setViewing}
           />
-          <MoreViews asks={asks} setViewing={setViewing} />
           <HeaderMenu
             group={asks['QUE_ADD_ITEMS_GRP']}
             setViewing={setViewing}

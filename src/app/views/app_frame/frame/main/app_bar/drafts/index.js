@@ -17,6 +17,7 @@ const Drafts = ({ drafts, setViewing }) => {
   return length(drafts || []) > 1 ? (
     <div>
       <Button
+        test-id='QUE_DRAFTS_GRP'
         color="inherit"
         style={{ marginRight: '1rem' }}
         variant="outlined"
