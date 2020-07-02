@@ -7,7 +7,6 @@ import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
 import { Row, Col } from '../../components/layouts'
 import RowItem from './row_item'
-import VideoPlayer from './video_player'
 // TODO: Backend should send us the correct detail view specs
 
 const printIntern = [
@@ -35,7 +34,7 @@ const printBeg = [
   { label: 'Days Per Week', code: 'days_per_week' },
   { label: 'Duration', code: 'internship_duration_stripped' },
   { label: 'Number of Interns', code: 'assoc_num_interns' },
-  { label: 'Video Presentation of Internship Opportunity', code: 'loom_url', type: 'url' },
+  { label: 'Video Presentation of Internship Opportunity', code: 'loom_url', type: 'video' },
   { label: 'Map View', code: 'address_full', type: 'street_view' },
 ]
 
@@ -122,8 +121,6 @@ const Details = ({
 
   const [rating, setRating] = useState(0)
   const [signature, setSignature] = useState(null)
-  const [showVideo, setShowVideo] = useState(false)
-  const [url, setUrl] = useState(null)
   const signatureRef = useRef()
   const classes = useStyles()
 
@@ -141,11 +138,6 @@ const Details = ({
     ({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }),
     detailType,
   )
-
-  const handleVideo = (value) => {
-    setShowVideo(true)
-    setUrl(value)
-    }
 
   useEffect(
     () => {
@@ -245,14 +237,10 @@ const Details = ({
             setSignature={setSignature}
             handleSubmit={handleSubmit}
             googleApiKey={googleApiKey}
-            handleVideo={handleVideo}
           />
         ),
         details,
       )}
-      {
-        showVideo ? <VideoPlayer url={url}/> : null
-      }
     </Grid>
   )
 }
