@@ -46,7 +46,7 @@ const MainSideBar = ({
     return <div />
   }
 
-  const logoUrl = path([targetCode, 'PRI_LOGO', 'value', 0, 'uploadURL'], attributes)
+  const logoUrl = path([targetCode, 'PRI_LOGO', 'value'], attributes)
   const title = path([targetCode, 'PRI_NAME', 'value'], attributes)
   const poweredBy = path([targetCode, 'PRI_POWERED_BY', 'value'], attributes)
 

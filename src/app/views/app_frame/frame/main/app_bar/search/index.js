@@ -28,7 +28,7 @@ const Search = ({ setLoading, question, setViewing }) => {
   useEffect(
     () => {
       if (not(isEmpty(value))) {
-        if (!includes('$')) {
+        if (!includes('$', value)) {
           search(value)
           setLoading(`Searching for ${value} everywhere...`)
         }
@@ -38,7 +38,7 @@ const Search = ({ setLoading, question, setViewing }) => {
   )
 
   const handleDev = () => {
-    if (includes('$')) {
+    if (includes('$', value)) {
       setViewing(JSON.parse(tail(value)))
     }
   }

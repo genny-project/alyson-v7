@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
-import { prop, isEmpty } from 'ramda'
-import { Paper, Grid, Typography, DialogTitle, Dialog, Tooltip, Fab } from '@material-ui/core'
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosRounded'
+import { prop } from 'ramda'
+import { Paper, Grid, Typography } from '@material-ui/core'
 import { Form, Table, Details, Dashboard, Unity, Bucket, DialogForm, MapList } from '../views'
 import getView from './helpers/get-view'
 import getUserDetails from './helpers/get-user-details.js'
@@ -36,6 +35,25 @@ const Main = ({
 
   const [current, setCurrent] = useState({})
 
+  if (loading || !view || view === 'LOADING') {
+    return (
+      <Grid
+        spacing={2}
+        container
+        direction="column"
+        alignItems="center"
+        justify="flex-start"
+        className={classes.loadingContainer}
+      >
+        <Grid item>
+          <Typography variant="overline">
+            {typeof loading === 'string' ? loading : 'Preparing...'}
+          </Typography>
+        </Grid>
+      </Grid>
+    )
+  }
+
   if (view === 'UNITY') {
     return (
       <Unity
@@ -62,22 +80,7 @@ const Main = ({
         viewing={viewing}
         loading={loading}
       />
-      {loading || !view ? (
-        <Grid
-          spacing={2}
-          container
-          direction="column"
-          alignItems="center"
-          justify="flex-start"
-          className={classes.loadingContainer}
-        >
-          <Grid item>
-            <Typography variant="overline">
-              {typeof loading === 'string' ? loading : 'Preparing...'}
-            </Typography>
-          </Grid>
-        </Grid>
-      ) : view === 'DASHBOARD' ? (
+      {view === 'DASHBOARD' ? (
         <Dashboard
           user={user}
           projectName={projectName}
