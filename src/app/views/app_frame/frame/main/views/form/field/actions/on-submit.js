@@ -20,6 +20,7 @@ const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing }) =>
     value,
   })
 
+  setViewing({ view: 'LOADING' })
   setLoading('Saving...')
 
   await sleep()

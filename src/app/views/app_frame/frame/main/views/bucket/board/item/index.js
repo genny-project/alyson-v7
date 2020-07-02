@@ -41,8 +41,10 @@ const Item = ({
   const {
     PRI_ASSOC_EP: eduProviderAssoc,
     PRI_EMAIL: email,
+    PRI_ASSOC_INDUSTRY: internIndustry,
     PRI_INDUSTRY: industry,
     PRI_MOBILE: mobile,
+    PRI_INTERN_MOBILE: internMobile,
     PRI_NAME: name,
     PRI_STATUS_COLOR: statusColor,
     PRI_STUDENT_ID: studentId,
@@ -54,10 +56,18 @@ const Item = ({
     PRI_INTERN_STUDENT_ID: internStudentId,
     PRI_USER_PROFILE_PICTURE: internProfilePicture,
     PRI_OCCUPATION: occupation,
+    PRI_ASSOC_OCCUPATION: internOccupation,
     PRI_STAR_RATING: starRating,
     PRI_TRANSPORT: transport,
     PRI_ASSOC_HC: hostCompany,
-  } = { ...mergeAll(map(({ attributeCode, value }) => ({ [attributeCode]: value }), item)) }
+  } = {
+    ...mergeAll(
+      map(
+        ({ attributeCode, value, valueString }) => ({ [attributeCode]: valueString || value }),
+        item,
+      ),
+    ),
+  }
 
   const classes = useStyles({ statusColor })
 
@@ -133,14 +143,20 @@ const Item = ({
                     </Row>
                     <Row left>
                       <Smartphone color="action" />
-                      <Typography variant="body2">{`${mobile || ''}`}</Typography>
+                      <Typography variant="body2">{`${internMobile || mobile || ''}`}</Typography>
+                    </Row>
+                    <Row left>
+                      <School color="action" />
+                      <Typography variant="body2">{`${eduProviderAssoc ||
+                        eduProvider ||
+                        ''}`}</Typography>
                     </Row>
                   </Col>
                 ) : (
                   <Col left>
                     <Row left>
                       <Smartphone color="action" />
-                      <Typography variant="body2">{`${mobile || ''}`}</Typography>
+                      <Typography variant="body2">{`${internMobile || mobile || ''}`}</Typography>
                     </Row>
                     <Row left>
                       <School color="action" />
@@ -150,11 +166,15 @@ const Item = ({
                     </Row>
                     <Row left>
                       <Domain color="action" />
-                      <Typography variant="body2">{`${industry || ''}`}</Typography>
+                      <Typography variant="body2">{`${internIndustry ||
+                        industry ||
+                        ''}`}</Typography>
                     </Row>
                     <Row left>
                       <Work color="action" />
-                      <Typography variant="body2">{`${occupation || ''}`}</Typography>
+                      <Typography variant="body2">{`${internOccupation ||
+                        occupation ||
+                        ''}`}</Typography>
                     </Row>
                     <Row left>
                       <PermIdentity color="action" />
