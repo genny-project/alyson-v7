@@ -20,6 +20,7 @@ const printIntern = [
   { label: 'Transport Options', code: 'transport_options' },
   { label: 'Region', code: 'region' },
   { label: 'Next Scheduled Interview', code: 'next_interview' },
+  { label: 'Map View', code: 'address_full', type: 'street_view' },
 ]
 
 const printBeg = [
@@ -27,13 +28,14 @@ const printBeg = [
   { label: 'Host Company Rep', code: 'assoc_hcr' },
   { label: 'Intern Supervisor', code: 'assoc_supervisor' },
   { label: 'Internship Address', code: 'address_full' },
-  { label: 'Industry', code: 'industry' },
+  { label: 'Industry', code: 'assoc_industry' },
   { label: 'Specialisation', code: 'assoc_occupation' },
   { label: 'Start Date', code: 'start_date' },
   { label: 'Days Per Week', code: 'days_per_week' },
   { label: 'Duration', code: 'internship_duration_stripped' },
-  { label: 'Number of Interns', code: 'current_interns' },
+  { label: 'Number of Interns', code: 'assoc_num_interns' },
   { label: 'Video Presentation of Internship Opportunity', code: 'loom_url', type: 'url' },
+  { label: 'Map View', code: 'address_full', type: 'street_view' },
 ]
 
 const printCpy = [
@@ -115,7 +117,7 @@ const Details = ({
                 ? printEpr
                 : contains('PRI_COMPASS', keys(detailView))
                   ? printApp
-                  : printCpy
+                  : false
 
   const [rating, setRating] = useState(0)
   const [signature, setSignature] = useState(null)
@@ -152,6 +154,10 @@ const Details = ({
     [signature],
   )
 
+  if (!detailType) {
+    ;<CircularProgress />
+  }
+
   return viewing.code === 'QUE_PRI_EVENT_VIEW_AGREEMENT' &&
     !contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
     <LinearProgress />
@@ -181,7 +187,12 @@ const Details = ({
     </Row>
   ) : (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
-      {detailType !== printAgreement ? (
+      {detailType === printBeg ? (
+        <Typography variant="h5" style={{ marginBottom: '2rem' }}>
+          {print('name')}
+        </Typography>
+      ) : null}
+      {detailType !== printAgreement && detailType !== printBeg ? (
         <div>
           <Grid item>
             <Typography variant="h5" style={{ marginBottom: '2rem' }}>
