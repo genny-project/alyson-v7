@@ -91,6 +91,7 @@ const Main = ({
           viewing={viewing}
           downloadLink={downloadLink}
           apiKey={googleApiKey}
+          attributes={attributes}
         />
       ) : (
         <Paper className={classes.mainPaper}>
@@ -113,6 +114,7 @@ const Main = ({
               setViewing={setViewing}
               setLoading={setLoading}
               viewing={viewing}
+              googleApiKey={googleApiKey}
             />
           ) : view === 'BUCKET' ? (
             <Bucket
