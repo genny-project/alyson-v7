@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { prop, path, toUpper, contains, map, keys } from 'ramda'
 
-import { Grid, Typography, Avatar, LinearProgress } from '@material-ui/core'
+import { Grid, Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
 import onUpdateSignature from './helpers/on-update-signature'
 import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
@@ -126,6 +126,7 @@ const Details = ({
 
   const handleSubmit = () =>
     onSubmit({
+      setViewing,
       setLoading,
       redirect: () => setViewing({ view: 'BUCKET' }),
       parentCode: targetCode,
@@ -155,7 +156,7 @@ const Details = ({
   )
 
   if (!detailType) {
-    ;<CircularProgress />
+    return <CircularProgress />
   }
 
   return viewing.code === 'QUE_PRI_EVENT_VIEW_AGREEMENT' &&

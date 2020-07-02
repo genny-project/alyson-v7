@@ -28,7 +28,9 @@ const DialogForm = ({
 
   return (
     <Dialog
-      open={prop('dialog', viewing) === 'APPLICATION' || includes('APPLY', prop('code', viewing))}
+      open={
+        prop('dialog', viewing) === 'APPLICATION' || includes('APPLY', prop('code', viewing) || '')
+      }
       onClose={handleClose}
       fullWidth
     >
