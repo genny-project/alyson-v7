@@ -9,11 +9,7 @@ const PanelControl = ({ sidePanelOpen, toggleSidePanel }) => {
   const classes = useStyles({ sidePanelOpen })
   return (
     <div onClick={toggleSidePanel} className={classes.toggleContainer}>
-      {sidePanelOpen ? (
-        <NextIcon color="inherit" className={classes.icon} />
-      ) : (
-        <CloseIcon color="inherit" className={classes.icon} />
-      )}
+      <CloseIcon color="inherit" className={classes.icon} />
     </div>
   )
 }

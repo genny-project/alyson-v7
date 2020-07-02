@@ -9,7 +9,6 @@ const makeOnUpdate = ({ setErrors, mandatory, setPristine }) => ({ ask, value })
   setPristine(false)
   setErrors(errors => ({ ...errors, [questionCode]: mandatory && !value }))
 
-  let finalValue = value
   let finalAttributeCode = attributeCode
 
   if (attributeCode.indexOf('ADDRESS_FULL') !== -1) {
@@ -17,22 +16,6 @@ const makeOnUpdate = ({ setErrors, mandatory, setPristine }) => ({ ask, value })
   } else if (attributeCode.indexOf('PRI_RATING') !== -1) {
     finalAttributeCode = 'PRI_RATING_RAW'
   }
-
-  /* If the form is an object or an array, stringify it. */
-  if (typeof finalValue === 'object' || typeof finalValue === 'array') {
-    finalValue = JSON.stringify(finalValue)
-  }
-
-  console.warn('form attempting to send answer:', {
-    askId,
-    attributeCode: finalAttributeCode,
-    sourceCode,
-    targetCode,
-    code: questionCode,
-    identifier: questionCode,
-    weight,
-    value: finalValue,
-  })
 
   Bridge.sendFormattedAnswer({
     askId,
@@ -42,7 +25,7 @@ const makeOnUpdate = ({ setErrors, mandatory, setPristine }) => ({ ask, value })
     code: questionCode,
     identifier: questionCode,
     weight,
-    value: finalValue,
+    value: getFormattedValue(value),
   })
 }
 

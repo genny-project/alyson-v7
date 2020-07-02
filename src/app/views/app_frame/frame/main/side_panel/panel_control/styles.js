@@ -13,14 +13,20 @@ const useStyles = makeStyles(theme => ({
       sidePanelOpen ? 'transparent' : theme.palette.background.paper,
     cursor: 'pointer',
     zIndex: theme.zIndex.modal,
-    transition: theme.transitions.create(['borderStyle', 'backgroundColor']),
+    transition: theme.transitions.create(['borderStyle', 'backgroundColor', 'padding']),
     '&:hover': {
       color: theme.palette.primary.main,
+      paddingRight: ({ sidePanelOpen }) => (sidePanelOpen ? '' : theme.spacing(1)),
+      paddingLeft: ({ sidePanelOpen }) => (sidePanelOpen ? theme.spacing(1) : ''),
     },
   },
   icon: {
-    margin: theme.spacing(2),
+    margin: theme.spacing(1),
     cursor: 'pointer',
+    transform: ({ sidePanelOpen }) => (sidePanelOpen ? 'rotate(180deg)' : 'rotate(0deg)'),
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
   },
 }))
 
