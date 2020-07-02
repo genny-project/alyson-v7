@@ -11,7 +11,16 @@ import {
 import { Row, Col } from '../../components/layouts'
 import ListItem from './list_item'
 
-const MapList = ({ currentSearch, setViewing, viewing, downloadLink, google }) => {
+const MapList = ({
+  currentSearch,
+  setViewing,
+  viewing,
+  downloadLink,
+  google,
+  attributes,
+  setLoading,
+  apiKey: googleApiKey,
+}) => {
   const [loadingPage, setLoadingPage] = useState(true)
   const [dataPoints, setDataPoints] = useState([])
 
@@ -19,7 +28,7 @@ const MapList = ({ currentSearch, setViewing, viewing, downloadLink, google }) =
   const data = getData(table)
   const actions = getActions(table)
 
-  var bounds = new google.maps.LatLngBounds()
+  const bounds = new google.maps.LatLngBounds()
 
   forEach(point => {
     const { lat, lng } = pathOr({}, ['geometry', 'location'], point)
@@ -41,11 +50,11 @@ const MapList = ({ currentSearch, setViewing, viewing, downloadLink, google }) =
   ))(dataPoints)
 
   return (
-    <Col left top>
+    <Col top left>
       <Button onClick={() => setViewing(viewing => ({ ...viewing, view: 'TABLE' }))}>
         {`Table View`}
       </Button>
-      <Row left top>
+      <Row top left>
         <Col stretch>
           {map(item => (
             <ListItem
@@ -53,6 +62,11 @@ const MapList = ({ currentSearch, setViewing, viewing, downloadLink, google }) =
               {...item}
               setViewing={setViewing}
               actions={actions}
+              viewing={viewing}
+              attributes={attributes}
+              setViewing={setViewing}
+              setLoading={setLoading}
+              googleApiKey={googleApiKey}
             />
           ))(dataPoints)}
         </Col>
@@ -64,8 +78,8 @@ const MapList = ({ currentSearch, setViewing, viewing, downloadLink, google }) =
             lng: 144.9631,
           }}
           containerStyle={{
-            width: '70%',
-            height: '75%',
+            width: '45%',
+            height: '60%',
           }}
           bounds={bounds}
         >

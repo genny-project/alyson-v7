@@ -1,64 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { prop, path, toUpper, contains, map, keys, identity } from 'ramda'
+import { prop, path, toUpper, contains, map, keys } from 'ramda'
 
-import { Row } from '../../components/layouts'
-import SignatureCanvas from 'react-signature-canvas'
-import { Grid, Typography, Avatar, Button, LinearProgress, Link } from '@material-ui/core'
-import { Rating } from '@material-ui/lab'
-import { format, parseISO } from 'date-fns'
-
+import { Grid, Typography, Avatar, LinearProgress } from '@material-ui/core'
 import onUpdateSignature from './helpers/on-update-signature'
 import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
-
-const RowItem = ({
-  signatureRef,
-  signature,
-  setSignature,
-  key,
-  label,
-  value,
-  code,
-  rating,
-  setRating,
-  classes,
-  type,
-  handleSubmit,
-}) => (
-  <Grid item>
-    <Grid container direction="row">
-      <Typography className={classes.label}>{label}</Typography>
-      {type === 'rating' ? (
-        <Rating name="rating" value={rating} onChange={(event, newValue) => setRating(newValue)} />
-      ) : type === 'time' ? (
-        <Typography>{`${format(parseISO(value), 'h:mm a')}`}</Typography>
-      ) : type === 'html' ? (
-        <div dangerouslySetInnerHTML={{ __html: value }} />
-      ) : type === 'signature' ? (
-        <Row>
-          <div style={{ border: '1px solid grey', borderRadius: '1rem', minWidth: '40rem' }}>
-            <SignatureCanvas
-              ref={ref => (signatureRef = ref)}
-              onEnd={() => setSignature(signatureRef.toDataURL())}
-              canvasProps={{ width: '700', height: '300' }}
-            />
-          </div>
-          <Button
-            disabled={!signature}
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-          >{`SUBMIT`}</Button>
-        </Row>
-      ) : type === 'url' ? (
-        <Link href={value}>{value}</Link>
-      ) : (
-        <Typography>{value}</Typography>
-      )}
-    </Grid>
-  </Grid>
-)
-
+import { Row, Col } from '../../components/layouts'
+import RowItem from './row_item'
 // TODO: Backend should send us the correct detail view specs
 
 const printIntern = [
@@ -92,9 +40,10 @@ const printBeg = [
 const printCpy = [
   { label: 'ABN', code: 'abn' },
   { label: 'Legal Name', code: 'legal_name' },
-  { label: 'Company Phone', code: 'landline' },
+  { label: 'Company Phone', code: 'mobile' },
   { label: 'Decription', code: 'company_description' },
   { label: 'Website', code: 'company_website_url', type: 'url' },
+  { label: 'Map View', code: 'address_full', type: 'street_view' },
 ]
 
 const printHcr = [
@@ -108,7 +57,7 @@ const printEp = [
   { label: 'ABN', code: 'abn' },
   { label: 'Legal Name', code: 'legal_name' },
   { label: 'Provider ID', code: 'provider_id' },
-  { label: 'Phone', code: 'landline' },
+  { label: 'Phone', code: 'mobile' },
   { label: 'Address', code: 'address_full' },
   { label: 'Description', code: 'company_description' },
   { label: 'Website', code: 'company_website_url', type: 'url' },
@@ -137,7 +86,15 @@ const printAgreement = [
   { label: 'Agreement', code: 'agreement_html', type: 'html' },
   { label: 'Intern Signature', code: 'intern_agreement_signature', type: 'signature' },
 ]
-const Details = ({ viewing, attributes, targetCode, setViewing, setLoading }) => {
+const Details = ({
+  viewing,
+  attributes,
+  targetCode,
+  setViewing,
+  setLoading,
+  googleApiKey,
+  mini,
+}) => {
   const detailView = prop(targetCode, attributes)
 
   const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
@@ -165,6 +122,8 @@ const Details = ({ viewing, attributes, targetCode, setViewing, setLoading }) =>
   const [signature, setSignature] = useState(null)
   const signatureRef = useRef()
   const classes = useStyles()
+
+  console.log(detailView)
 
   const handleSubmit = () =>
     onSubmit({
@@ -199,6 +158,30 @@ const Details = ({ viewing, attributes, targetCode, setViewing, setLoading }) =>
   return viewing.code === 'QUE_PRI_EVENT_VIEW_AGREEMENT' &&
     !contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
     <LinearProgress />
+  ) : mini ? (
+    <Row left top spacing={3} className={classes.miniContainer}>
+      {map(
+        ({ valueString, attributeName, attributeCode, type }) => (
+          <RowItem
+            key={attributeCode}
+            label={attributeName}
+            value={valueString}
+            code={attributeCode}
+            rating={rating}
+            setRating={setRating}
+            classes={classes}
+            type={type}
+            signatureRef={signatureRef}
+            signature={signature}
+            setSignature={setSignature}
+            handleSubmit={handleSubmit}
+            googleApiKey={googleApiKey}
+            mini
+          />
+        ),
+        details,
+      )}
+    </Row>
   ) : (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
       {detailType !== printAgreement ? (
@@ -245,6 +228,7 @@ const Details = ({ viewing, attributes, targetCode, setViewing, setLoading }) =>
             signature={signature}
             setSignature={setSignature}
             handleSubmit={handleSubmit}
+            googleApiKey={googleApiKey}
           />
         ),
         details,
