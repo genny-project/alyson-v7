@@ -1,9 +1,7 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 
-const VideoPlayer = () => {
-  const url = 'https://www.youtube.com/watch?v=tpiyEe_CqB4'
-
+const VideoPlayer = ({url}) => {
   const opts = {
     height: '390',
     width: '640',

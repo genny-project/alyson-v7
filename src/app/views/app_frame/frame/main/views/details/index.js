@@ -121,6 +121,7 @@ const Details = ({
   const [rating, setRating] = useState(0)
   const [signature, setSignature] = useState(null)
   const [showVideo, setShowVideo] = useState(false)
+  const [url, setUrl] = useState(null)
   const signatureRef = useRef()
   const classes = useStyles()
 
@@ -139,7 +140,10 @@ const Details = ({
     detailType,
   )
 
-  const handleVideo = () => setShowVideo(true)
+  const handleVideo = (value) => {
+    setShowVideo(true)
+    setUrl(value)
+    }
 
   useEffect(
     () => {
@@ -236,7 +240,7 @@ const Details = ({
         details,
       )}
       {
-        showVideo ? <VideoPlayer /> : null
+        showVideo ? <VideoPlayer url={url}/> : null
       }
     </Grid>
   )
