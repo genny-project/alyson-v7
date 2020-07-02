@@ -7,6 +7,7 @@ import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
 import { Row, Col } from '../../components/layouts'
 import RowItem from './row_item'
+import VideoPlayer from './video_player'
 // TODO: Backend should send us the correct detail view specs
 
 const printIntern = [
@@ -119,6 +120,7 @@ const Details = ({
 
   const [rating, setRating] = useState(0)
   const [signature, setSignature] = useState(null)
+  const [showVideo, setShowVideo] = useState(false)
   const signatureRef = useRef()
   const classes = useStyles()
 
@@ -136,6 +138,8 @@ const Details = ({
     ({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }),
     detailType,
   )
+
+  const handleVideo = () => setShowVideo(true)
 
   useEffect(
     () => {
@@ -226,10 +230,14 @@ const Details = ({
             setSignature={setSignature}
             handleSubmit={handleSubmit}
             googleApiKey={googleApiKey}
+            handleVideo={handleVideo}
           />
         ),
         details,
       )}
+      {
+        showVideo ? <VideoPlayer /> : null
+      }
     </Grid>
   )
 }

@@ -23,6 +23,7 @@ const RowItem = ({
   handleSubmit,
   googleApiKey,
   mini,
+  handleVideo,
 }) =>
   mini ? (
     type ? null : (
@@ -60,7 +61,7 @@ const RowItem = ({
             >{`SUBMIT`}</Button>
           </Row>
         ) : type === 'url' ? (
-          <Link href={value}>{value}</Link>
+          <button onClick={handleVideo}>{ value ? value : 'click me'}</button>
         ) : type === 'street_view' ? (
           <StreetView address={value} apiKey={googleApiKey} />
         ) : (
