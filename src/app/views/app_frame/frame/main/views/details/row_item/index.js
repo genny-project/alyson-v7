@@ -41,10 +41,6 @@ const RowItem = ({
             value={rating}
             onChange={(event, newValue) => setRating(newValue)}
           />
-        ) : type === 'time' ? (
-          <Typography>{`${
-            !includes('Invalid', new Date(value || '')) ? format(parseISO(value), 'h:mm a') : ''
-          }`}</Typography>
         ) : type === 'html' ? (
           <div dangerouslySetInnerHTML={{ __html: value }} />
         ) : type === 'signature' ? (

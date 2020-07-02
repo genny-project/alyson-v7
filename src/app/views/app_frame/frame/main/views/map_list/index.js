@@ -54,6 +54,7 @@ const MapList = ({
       <Button onClick={() => setViewing(viewing => ({ ...viewing, view: 'TABLE' }))}>
         {`Table View`}
       </Button>
+
       <Row top left>
         <Col stretch>
           {map(item => (

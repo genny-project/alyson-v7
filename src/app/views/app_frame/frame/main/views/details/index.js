@@ -30,7 +30,6 @@ const printBeg = [
   { label: 'Industry', code: 'industry' },
   { label: 'Specialisation', code: 'assoc_occupation' },
   { label: 'Start Date', code: 'start_date' },
-  { label: 'Start Time', code: 'time', type: 'time' },
   { label: 'Days Per Week', code: 'days_per_week' },
   { label: 'Duration', code: 'internship_duration_stripped' },
   { label: 'Number of Interns', code: 'current_interns' },
