@@ -14,7 +14,6 @@ const TextInput = ({
   setPristine,
   fieldType,
   inputType,
-  ...rest
 }) => {
   const [value, setValue] = useState(initialValue || '')
   const [touched, setTouched] = useState(false)
@@ -33,7 +32,8 @@ const TextInput = ({
 
   return (
     <TextField
-      {...rest}
+      fullWidth
+      variant="outlined"
       error={touched && errors[questionCode]}
       value={value}
       onChange={handleChange}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { path, map, prop, not, isEmpty } from 'ramda'
+import { pathOr, map, prop, not, isEmpty } from 'ramda'
 import { Grid, Typography, CircularProgress } from '@material-ui/core'
 
 import onSubmit from './field/actions/on-submit'
@@ -20,14 +20,10 @@ const Form = ({
   user,
 }) => {
   if (not(isEmpty(currentAsk))) {
-    const title = path(['question', 'name'], currentAsk)
-    const formFields = path(['childAsks'], currentAsk)
-    const profileFormFields = [
-      ...(path(['childAsks', 0, 'childAsks'], currentAsk) || []),
-      ...(path(['childAsks', 1, 'childAsks'], currentAsk) || []),
-    ]
+    const title = pathOr('', ['question', 'name'], currentAsk)
+    const formFields = pathOr([], ['childAsks'], currentAsk)
 
-    const defaultValues = path([prop('targetCode', currentAsk)], attributes)
+    const defaultValues = pathOr({}, [prop('targetCode', currentAsk)], attributes)
 
     const parentCode = prop('questionCode', currentAsk)
     const rootCode = prop('questionCode', currentAsk)
@@ -65,33 +61,19 @@ const Form = ({
             {title}
           </Typography>
         </Grid>
-        {parentCode === 'QUE_USER_PROFILE_GRP'
-          ? map(field => (
-              <Grid className={classes.formItem} item key={`gridItem${field.questionCode}`}>
-                <Field
-                  key={field.questionCode}
-                  fieldData={field}
-                  baseEntities={baseEntities}
-                  meta={meta}
-                  googleApiKey={googleApiKey}
-                  defaultValues={defaultValues}
-                  user={user}
-                />
-              </Grid>
-            ))(profileFormFields)
-          : map(field => (
-              <Grid className={classes.formItem} item key={`gridItem${field.questionCode}`}>
-                <Field
-                  key={field.questionCode}
-                  fieldData={field}
-                  baseEntities={baseEntities}
-                  meta={meta}
-                  googleApiKey={googleApiKey}
-                  defaultValues={defaultValues}
-                  user={user}
-                />
-              </Grid>
-            ))(formFields)}
+        {map(field => (
+          <Grid className={classes.formItem} item key={`gridItem${field.questionCode}`}>
+            <Field
+              key={field.questionCode}
+              fieldData={field}
+              baseEntities={baseEntities}
+              meta={meta}
+              googleApiKey={googleApiKey}
+              defaultValues={defaultValues}
+              user={user}
+            />
+          </Grid>
+        ))(formFields)}
       </Grid>
     )
   } else {

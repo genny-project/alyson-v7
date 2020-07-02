@@ -10,6 +10,7 @@ import {
 } from '../table/helpers/get-table-data'
 import { Row, Col } from '../../components/layouts'
 import ListItem from './list_item'
+import Filters from '../../components/filters'
 
 const MapList = ({
   currentSearch,
@@ -23,6 +24,7 @@ const MapList = ({
 }) => {
   const [loadingPage, setLoadingPage] = useState(true)
   const [dataPoints, setDataPoints] = useState([])
+  const [basicFilter, setBasicFilter] = useState('')
 
   const table = getTable(currentSearch)
   const data = getData(table)
@@ -54,6 +56,15 @@ const MapList = ({
       <Button onClick={() => setViewing(viewing => ({ ...viewing, view: 'TABLE' }))}>
         {`Table View`}
       </Button>
+      <Filters
+        basicFilterOptions={[
+          { value: 'distance', label: 'Distance', icon: 'straighten' },
+          { value: 'industry', label: 'Industry', icon: 'domain' },
+        ]}
+        basicFilterText="Sort by"
+        filtersApplied={{ basicFilter }}
+        onUpdate={setBasicFilter}
+      />
       <Row top left>
         <Col stretch spacing={4}>
           {map(item => (

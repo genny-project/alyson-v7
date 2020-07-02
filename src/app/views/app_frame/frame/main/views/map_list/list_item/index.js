@@ -31,7 +31,7 @@ const ListItem = ({
             <Row spaceBetween>
               <Row>
                 <Typography>{PRI_ASSOC_HC}</Typography>
-                <Typography>{`- ${PRI_NAME}`}</Typography>
+                <Typography>{PRI_NAME}</Typography>
               </Row>
               <Row>
                 {map(({ attributeCode, attributeName }) => (
