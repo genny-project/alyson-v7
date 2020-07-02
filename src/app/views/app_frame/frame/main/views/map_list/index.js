@@ -54,9 +54,8 @@ const MapList = ({
       <Button onClick={() => setViewing(viewing => ({ ...viewing, view: 'TABLE' }))}>
         {`Table View`}
       </Button>
-
       <Row top left>
-        <Col stretch>
+        <Col stretch spacing={4}>
           {map(item => (
             <ListItem
               key={'item' + item.PRI_NAME}

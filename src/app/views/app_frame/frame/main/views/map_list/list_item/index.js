@@ -24,33 +24,43 @@ const ListItem = ({
   const classes = useStyles({ expand })
 
   return (
-    <ClickAwayListener onClickAway={() => setExpand(false)}>
-      <Col top left className={classes.card}>
-        <Row>
-          <Typography>{PRI_ASSOC_HC}</Typography>
-          <Typography>{`- ${PRI_NAME}`}</Typography>
-          {map(({ attributeCode, attributeName }) => (
-            <IconButton onClick={() => setViewing(makeActionData({ attributeCode, targetCode }))}>
-              <Icon>{getIcon(attributeName)}</Icon>
-            </IconButton>
-          ))(actions || [])}
-          <IconButton onClick={() => setExpand(!expand)}>
-            <ExpandMoreIcon className={classes.expand} />
-          </IconButton>
-        </Row>
-        <Collapse in={expand}>
-          <Details
-            attributes={attributes}
-            targetCode={targetCode}
-            setViewing={setViewing}
-            setLoading={setLoading}
-            viewing={viewing}
-            googleApiKey={googleApiKey}
-            mini
-          />
-        </Collapse>
-      </Col>
-    </ClickAwayListener>
+    <div>
+      <ClickAwayListener onClickAway={() => setExpand(false)}>
+        <div>
+          <Col top stretch className={classes.card}>
+            <Row spaceBetween>
+              <Row>
+                <Typography>{PRI_ASSOC_HC}</Typography>
+                <Typography>{`- ${PRI_NAME}`}</Typography>
+              </Row>
+              <Row>
+                {map(({ attributeCode, attributeName }) => (
+                  <IconButton
+                    onClick={() => setViewing(makeActionData({ attributeCode, targetCode }))}
+                  >
+                    <Icon>{getIcon(attributeName)}</Icon>
+                  </IconButton>
+                ))(actions || [])}
+                <IconButton onClick={() => setExpand(!expand)}>
+                  <ExpandMoreIcon className={classes.expand} />
+                </IconButton>
+              </Row>
+            </Row>
+            <Collapse in={expand}>
+              <Details
+                attributes={attributes}
+                targetCode={targetCode}
+                setViewing={setViewing}
+                setLoading={setLoading}
+                viewing={viewing}
+                googleApiKey={googleApiKey}
+                mini
+              />
+            </Collapse>
+          </Col>
+        </div>
+      </ClickAwayListener>
+    </div>
   )
 }
 

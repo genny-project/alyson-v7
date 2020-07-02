@@ -122,8 +122,6 @@ const Details = ({
   const signatureRef = useRef()
   const classes = useStyles()
 
-  console.log(detailView)
-
   const handleSubmit = () =>
     onSubmit({
       setLoading,
