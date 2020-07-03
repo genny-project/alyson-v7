@@ -13,12 +13,14 @@ const Row = ({
   spacing,
   alignItems,
   justify,
+  fullWidth,
+  style,
   ...rest
 }) => (
   <Grid
     container
     direction="row"
-    spacing={spacing || 1}
+    spacing={spacing || spacing === 0 ? spacing : 1}
     alignItems={
       stretch ? 'stretch' : top ? 'flex-start' : bottom ? 'flex-end' : alignItems || 'center'
     }
@@ -31,6 +33,7 @@ const Row = ({
             ? 'flex-end'
             : justify || 'center'
     }
+    style={{ ...style, ...(fullWidth ? { width: '100%' } : {}) }}
     {...rest}
   >
     {addIndex(map)(
@@ -55,15 +58,18 @@ const Col = ({
   spacing,
   alignItems,
   justify,
+  fullWidth,
+  style,
   ...rest
 }) => (
   <Grid
     container
     direction="column"
-    spacing={spacing || 1}
+    spacing={spacing || spacing === 0 ? spacing : 1}
     alignItems={
       stretch ? 'stretch' : left ? 'flex-start' : right ? 'flex-end' : alignItems || 'center'
     }
+    style={{ ...style, ...(fullWidth ? { width: '100%' } : {}) }}
     justify={
       spaceBetween
         ? 'space-between'

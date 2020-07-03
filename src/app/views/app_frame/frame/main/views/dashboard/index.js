@@ -36,8 +36,8 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
     setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
   const viewInternships = () =>
     setViewing({
-      parentCode: 'QUE_TREE_ITEM_INTENSHIPS_GRP',
-      code: 'QUE_TREE_ITEM_INTENSHIPS_ACTIVE',
+      parentCode: 'QUE_TREE_ITEM_INTERNSHIPS_GRP',
+      code: 'QUE_TREE_ITEM_INTERNSHIPS_ACTIVE',
     })
 
   const classes = useStyles()

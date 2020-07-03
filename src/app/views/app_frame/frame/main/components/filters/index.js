@@ -1,9 +1,10 @@
 import React from 'react'
 import { map } from 'ramda'
-import { Typography, Tooltip, Icon } from '@material-ui/core'
+import { Typography, Tooltip, Icon, Divider, Button } from '@material-ui/core'
 import { Col, Row } from '../layouts'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
+import { Dropdown } from '../inputs'
 
 const Filters = ({
   filtersApplied,
@@ -12,6 +13,9 @@ const Filters = ({
   basicFilterText = 'Basic Filter',
   advancedFilterText = 'Advanced Filter',
   onUpdate,
+  dropdowns,
+  submit: { icon: submitIcon, label: submitLabel },
+  submit,
 }) => {
   const { basicFilter, advancedFilters } = filtersApplied
 
@@ -32,6 +36,17 @@ const Filters = ({
           </Tooltip>
         ))(basicFilterOptions || [])}
       </ToggleButtonGroup>
+      <Divider orientation="vertical" />
+      {map(({ label, options }) => (
+        <Dropdown label={label} options={options} onChange={onUpdate} />
+      ))(dropdowns)}
+      {submit ? (
+        <Button startIcon={submitIcon} color="primary" variant="contained">
+          {submitLabel}
+        </Button>
+      ) : (
+        <div />
+      )}
     </Row>
   )
 }

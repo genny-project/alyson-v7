@@ -127,7 +127,7 @@ const Sam = ({
           setLoading={setLoading}
         />
         <Sidebar
-          items={getDrawerItems(frames, asks, themes)}
+          items={getDrawerItems(frames, asks, user)}
           asks={asks}
           frames={frames}
           user={user}
@@ -155,7 +155,7 @@ const Sam = ({
           currentSearch={currentSearch}
           dialogContent={dialogContent}
           setDialogContent={setDialogContent}
-          drawerItems={getDrawerItems(frames, asks)}
+          drawerItems={getDrawerItems(frames, asks, user)}
           dashboard={dashboard}
           currentAsk={currentAsk}
         />

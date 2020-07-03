@@ -22,12 +22,19 @@ const RowItem = ({
   handleSubmit,
   googleApiKey,
   mini,
+  noMap,
 }) =>
   mini ? (
-    type ? null : (
-      <Row left>
-        <Typography variant="subtitle2">{label}</Typography>
-        <Typography variant="subtitle1">{value}</Typography>
+    type === 'street_view' || type === 'video' ? null : type === 'html' ? (
+      <div dangerouslySetInnerHTML={{ __html: value }} />
+    ) : (
+      <Row spaceBetween fullWidth>
+        <Typography color="secondary" variant="subtitle2">
+          {label}
+        </Typography>
+        <Typography variant="subtitle1" className={classes.miniValue} noWrap>
+          {value}
+        </Typography>
       </Row>
     )
   ) : (

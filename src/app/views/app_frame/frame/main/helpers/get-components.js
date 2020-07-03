@@ -1,16 +1,41 @@
-import { map, pick, compose, path, prop, mapObjIndexed } from 'ramda';
+import {
+  map,
+  pick,
+  compose,
+  path,
+  prop,
+  mapObjIndexed,
+  keys,
+  pathOr,
+  length,
+  find,
+  head,
+  pickBy,
+  includes,
+  replace,
+  equals,
+} from 'ramda'
 
-const getLinksFrom = ( key, frames ) =>
+const getLinksFrom = (key, frames) =>
   compose(
-    map( prop( 'code' )),
-    path( [key, 'links'] )
-  )( frames );
+    map(prop('code')),
+    path([key, 'links']),
+  )(frames)
 
 const getComponents = ({ frames, asks, themes }) =>
-  mapObjIndexed(( frame, key, obj ) => prop( 'links' ), frames );
+  mapObjIndexed((frame, key, obj) => prop('links'), frames)
 
-const getDrawerItems = ( frames, asks, themes ) => pick( getLinksFrom( 'FRM_SIDEBAR', frames ), frames );
+const getUserType = compose(
+  type => (type === '_ADMIN' ? '' : type),
+  replace('PRI_IS', ''),
+  keys => (length(keys) > 1 ? find(equals('PRI_IS_ADMIN'))(keys) || head(keys) : head(keys)) || '',
+  keys,
+  pickBy((val, key) => includes('_IS_', key) && prop('value', val)),
+  pathOr({}, ['attributes']),
+)
+const getDrawerItems = (frames, asks, user) =>
+  pick(getLinksFrom(`FRM_SIDEBAR${getUserType(user)}`, frames), frames)
 
-const getAppBarItems = ( frames, asks, themes ) => pick( getLinksFrom( 'FRM_HEADER', frames ), frames );
+const getAppBarItems = (frames, asks, themes) => pick(getLinksFrom('FRM_HEADER', frames), frames)
 
-export { getComponents, getDrawerItems, getLinksFrom, getAppBarItems };
+export { getComponents, getDrawerItems, getLinksFrom, getAppBarItems }
