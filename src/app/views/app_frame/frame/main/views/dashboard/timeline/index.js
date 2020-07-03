@@ -1,5 +1,6 @@
 import React from 'react'
 
+import {Row, Component} from '../../../components/layouts'
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
@@ -14,13 +15,14 @@ import WorkOutlineOutlinedIcon from '@material-ui/icons/WorkOutlineOutlined';
 import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 import HowToRegOutlinedIcon from '@material-ui/icons/HowToRegOutlined';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
+import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
+import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 
 import useStyles from './styles'
 
 const Timelines = () => {
 
   const classes = useStyles()
-
 
   return (
     <Timeline align="alternate">
@@ -36,9 +38,18 @@ const Timelines = () => {
             <Typography variant="h6" component="h1">
               Register
             </Typography>
-            <Typography>Register in Internmatch</Typography>
-            <Typography>Complete Profile</Typography>
-            <Typography>Record Introduction Video</Typography>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography>Register in Internmatch</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography>Complete Profile</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography>Record Introduction Video</Typography>
+            </Row>
           </Paper>
         </TimelineContent>
       </TimelineItem>
@@ -54,9 +65,18 @@ const Timelines = () => {
             <Typography variant="h6" component="h1">
               Search
             </Typography>
-            <Typography>Search from recommended Internship Opportunities</Typography>
-            <Typography>Save Opportunities</Typography>
-            <Typography>Complete Accreditation</Typography>
+            <Row justify="flex-end">
+              <Typography>Search from recommended Internship Opportunities</Typography>
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+            </Row>
+            <Row justify="flex-end">
+              <Typography>Save Opportunities</Typography>
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+            </Row>
+            <Row justify="flex-end">
+              <Typography>Complete Accreditation</Typography>
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+            </Row>
           </Paper>
         </TimelineContent>
       </TimelineItem>
@@ -72,11 +92,26 @@ const Timelines = () => {
             <Typography variant="h6" component="h1">
               Apply
             </Typography>
-            <Typography>Applying for internships</Typography>
-            <Typography>Recommended skill development</Typography>
-            <Typography>Application sent to Host Company</Typography>
-            <Typography>Attend Interviews</Typography>
-            <Typography> Accept offer</Typography>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography>Applying for internships</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography>Recommstarted skill development</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography>Application sent to Host Company</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography>Attstart Interviews</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlinedIcon className={classes.greenCheck} />
+              <Typography> Accept offer</Typography>
+            </Row>
           </Paper>
         </TimelineContent>
       </TimelineItem>
@@ -92,9 +127,18 @@ const Timelines = () => {
             <Typography variant="h6" component="h1">
               Internships
             </Typography>
-            <Typography>Induction</Typography>
-            <Typography>Progress reporting</Typography>
-            <Typography>Daily Logbook Completion</Typography>
+            <Row justify="flex-end">
+              <Typography>Induction</Typography>
+              <CheckBoxOutlinedIcon className={classes.greenCheck}/>
+            </Row>
+            <Row justify="flex-end">
+              <Typography>Progress reporting</Typography>
+              <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
+            </Row>
+            <Row justify="flex-end">
+              <Typography>Daily Logbook Completion</Typography>
+              <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
+            </Row>
           </Paper>
         </TimelineContent>
       </TimelineItem>
@@ -109,9 +153,18 @@ const Timelines = () => {
             <Typography variant="h6" component="h1">
               Work Ready
             </Typography>
-            <Typography>Receive Certificate</Typography>
-            <Typography>Update your LinkedIn Profile & Resume</Typography>
-            <Typography>Ask for a recommendation</Typography>
+            <Row justify="flex-start">
+              <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
+              <Typography>Receive Certificate</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
+              <Typography>Update your LinkedIn Profile & Resume</Typography>
+            </Row>
+            <Row justify="flex-start">
+              <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
+              <Typography>Ask for a recommendation</Typography>
+            </Row>
           </Paper>
         </TimelineContent>
       </TimelineItem>

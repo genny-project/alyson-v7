@@ -15,6 +15,12 @@ const useStyles = makeStyles((theme) => ({
   },
   grey: {
     backgroundColor: theme.palette.grey[500]
+  },
+  greenCheck: {
+    color: theme.palette.success.main
+  },
+  greyCheck: {
+    color: theme.palette.grey[500]
   }
 }))
 
