@@ -26,10 +26,10 @@ const Timelines = () => {
     <Timeline align="alternate">
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot>
+          <TimelineDot className={classes.green}>
             <HowToRegOutlinedIcon />
           </TimelineDot>
-          <TimelineConnector />
+          <TimelineConnector className={classes.green}/>
         </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
@@ -44,10 +44,10 @@ const Timelines = () => {
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot color="primary">
+          <TimelineDot className={classes.green}>
             <SearchOutlinedIcon />
           </TimelineDot>
-          <TimelineConnector />
+          <TimelineConnector className={classes.green}/>
         </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
@@ -62,10 +62,10 @@ const Timelines = () => {
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot color="primary" variant="outlined">
+          <TimelineDot className={classes.green}>
             <TouchAppOutlinedIcon />
           </TimelineDot>
-          <TimelineConnector className={classes.secondaryTail} />
+          <TimelineConnector className={classes.green}/>
         </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
@@ -82,10 +82,10 @@ const Timelines = () => {
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot color="secondary">
+          <TimelineDot className={classes.orange}>
             <WorkOutlineOutlinedIcon />
           </TimelineDot>
-          <TimelineConnector className={classes.secondaryTail} />
+          <TimelineConnector className={classes.orange} />
         </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
@@ -100,7 +100,7 @@ const Timelines = () => {
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot color="primary">
+          <TimelineDot className={classes.grey}>
             <AssignmentTurnedInOutlinedIcon />
           </TimelineDot>
         </TimelineSeparator>

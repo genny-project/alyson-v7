@@ -7,6 +7,15 @@ const useStyles = makeStyles((theme) => ({
   secondaryTail: {
     backgroundColor: theme.palette.secondary.main,
   },
+  green: {
+    backgroundColor: theme.palette.success.main
+  },
+  orange: {
+    backgroundColor: theme.palette.warning.dark
+  },
+  grey: {
+    backgroundColor: theme.palette.grey[500]
+  }
 }))
 
 export default useStyles
