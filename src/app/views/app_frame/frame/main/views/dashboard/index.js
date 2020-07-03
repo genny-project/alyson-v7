@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { isEmpty, not, path } from 'ramda'
 import { Typography, Badge, Button } from '@material-ui/core'
 import { Row, Col } from '../../components/layouts'
-import Timelines from './timeline'
+import { Timelines, TimelineHC } from './timeline'
 import InfoIcon from '@material-ui/icons/Info'
 import Loader from 'react-spinners/ClimbingBoxLoader'
 import getUserRole from './helpers/get-user-role'
@@ -48,6 +48,8 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
   if (not(isEmpty(dashboard))) {
     return isAdmin ? (
       <Timelines viewInternships={viewInternships} />
+    ) : isSupervisor ? (
+      <TimelineHC />
     ) : projectName === 'Safe Traffic Town' ? (
       <Typography>{`STT Dashboard`}</Typography>
     ) : (
