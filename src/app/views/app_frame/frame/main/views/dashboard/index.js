@@ -5,6 +5,7 @@ import { Row, Col } from '../../components/layouts'
 import Timelines from './timeline'
 import InfoIcon from '@material-ui/icons/Info'
 import Loader from 'react-spinners/ClimbingBoxLoader'
+import { getIsAdmin, getIsAgent, getIsSupervisor, getIsIntern } from './helpers/get-user-role'
 
 import useStyles from './styles'
 
@@ -41,15 +42,19 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
 
   const classes = useStyles()
 
-  const isAdmin = path(['attributes', 'PRI_IS_ADMIN', 'value'],user)
+  const isAdmin = getIsAdmin(user)
+  const isAgent = getIsAgent(user)
+  const isSupervisor = getIsSupervisor(user)
+  const isIntern = getIsIntern(user)
+
 
 
   console.error('user', user)
-  console.error('userRole', isAdmin)
+  console.error('userRole', {isAdmin: isAdmin, isAgent: isAgent, isSupervisor: isSupervisor, isIntern:isIntern})
 
   if (not(isEmpty(dashboard))) {
     return (
-      isAdmin
+      isIntern
         ? <Timelines />
             : projectName === 'Safe Traffic Town' ? (
           <Typography>{`STT Dashboard`}</Typography>
@@ -95,9 +100,6 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
           </Col>
         )
     )
-
-
-
   }
 
   return (
