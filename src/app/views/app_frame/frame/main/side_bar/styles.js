@@ -29,6 +29,9 @@ const useStyles = makeStyles(theme => ({
   poweredName: {
     marginBottom: theme.spacing(1),
   },
+  logo: {
+    padding: theme.spacing(1),
+  },
 }))
 
 export default useStyles
