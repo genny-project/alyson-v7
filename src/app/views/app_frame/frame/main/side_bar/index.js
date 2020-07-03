@@ -84,11 +84,7 @@ const MainSideBar = ({
       onClose={() => setOpen(false)}
       ModalProps={{ keepMounted: true }}
     >
-      {logoUrl ? (
-        <Container className={classes.title}>
-          <Image src={logoUrl} className={classes.logo} disableSpinner />
-        </Container>
-      ) : null}
+      {logoUrl ? <Image aspectRatio={1702 / 534} src={logoUrl} disableSpinner /> : null}
       <List>{dropDownComponents}</List>
       <div className={classes.grow} />
       <Container className={classes.poweredBy}>

@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
   },
   miniValue: {
-    maxWidth: theme.spacing(18),
+    maxWidth: theme.spacing(25),
     textOverflow: 'ellipsis',
   },
 }))
