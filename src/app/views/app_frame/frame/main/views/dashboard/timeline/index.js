@@ -5,7 +5,8 @@ import {
   Timeline,
   TimelineItem,
   TimelineSeparator,
-  TimelineConnector, TimelineContent,
+  TimelineConnector,
+  TimelineContent,
   TimelineOppositeContent,
   TimelineDot
 } from '@material-ui/lab'
