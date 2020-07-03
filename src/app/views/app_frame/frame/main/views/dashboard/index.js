@@ -41,53 +41,63 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
 
   const classes = useStyles()
 
+  const isAdmin = path(['attributes', 'PRI_IS_ADMIN', 'value'],user)
+
+
+  console.error('user', user)
+  console.error('userRole', isAdmin)
+
   if (not(isEmpty(dashboard))) {
-    // return projectName === 'Safe Traffic Town' ? (
-    //   <Typography>{`STT Dashboard`}</Typography>
-    // ) : (
-    //   <Col spacing={10} className={classes.dashboardContainer}>
-    //     {path(['data', 'name'], user) ? (
-    //       <Typography variant="h4" className={classes.welcomeText}>{`Hello, ${path(
-    //         ['data', 'name'],
-    //         user,
-    //       )}!`}</Typography>
-    //     ) : (
-    //       <div />
-    //     )}
-    //     <Row justify="space-between" spacing={9}>
-    //       <InfoBadge
-    //         label={'All Interns'}
-    //         value={path(['PRI_COUNT_ALL_INTERNS', 'value'], dashboard)}
-    //         onClick={viewInterns}
-    //       />
-    //       <InfoBadge
-    //         onClick={viewInternships}
-    //         label={'All Internships'}
-    //         value={path(['PRI_COUNT_ALL_INTERNSHIPS', 'value'], dashboard)}
-    //       />
-    //     </Row>
-    //     <Row justify="space-between" spacing={9}>
-    //       <InfoBadge
-    //         onClick={viewInterns}
-    //         value={path(['PRI_COUNT_APPLIED_INTERNS', 'value'], dashboard)}
-    //         label={'Applied Interns'}
-    //       />
-    //       <InfoBadge
-    //         onClick={viewInterns}
-    //         value={path(['PRI_COUNT_PLACED_INTERNS', 'value'], dashboard)}
-    //         label={'Placed Interns'}
-    //       />
-    //       <InfoBadge
-    //         onClick={viewInternships}
-    //         value={path(['PRI_COUNT_IN_PROGRESS_INTERNSHIPS', 'value'], dashboard)}
-    //         label={'In Progress Internships'}
-    //       />
-    //     </Row>
-    //   </Col>
-    // )
     return (
-      <Timelines />
+      isAdmin
+        ? <Timelines />
+            : projectName === 'Safe Traffic Town' ? (
+          <Typography>{`STT Dashboard`}</Typography>
+        ) : (
+          <Col spacing={10} className={classes.dashboardContainer}>
+            {path(['data', 'name'], user) ? (
+              <Typography variant="h4" className={classes.welcomeText}>{`Hello, ${path(
+                ['data', 'name'],
+                user,
+              )}!`}</Typography>
+            ) : (
+              <div />
+            )}
+            <Row justify="space-between" spacing={9}>
+              <InfoBadge
+                label={'All Interns'}
+                value={path(['PRI_COUNT_ALL_INTERNS', 'value'], dashboard)}
+                onClick={viewInterns}
+              />
+              <InfoBadge
+                onClick={viewInternships}
+                label={'All Internships'}
+                value={path(['PRI_COUNT_ALL_INTERNSHIPS', 'value'], dashboard)}
+              />
+            </Row>
+            <Row justify="space-between" spacing={9}>
+              <InfoBadge
+                onClick={viewInterns}
+                value={path(['PRI_COUNT_APPLIED_INTERNS', 'value'], dashboard)}
+                label={'Applied Interns'}
+              />
+              <InfoBadge
+                onClick={viewInterns}
+                value={path(['PRI_COUNT_PLACED_INTERNS', 'value'], dashboard)}
+                label={'Placed Interns'}
+              />
+              <InfoBadge
+                onClick={viewInternships}
+                value={path(['PRI_COUNT_IN_PROGRESS_INTERNSHIPS', 'value'], dashboard)}
+                label={'In Progress Internships'}
+              />
+            </Row>
+          </Col>
+        )
     )
+
+
+
   }
 
   return (

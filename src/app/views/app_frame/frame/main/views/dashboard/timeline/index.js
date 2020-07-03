@@ -33,7 +33,7 @@ const Timelines = () => {
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
             <Typography variant="h6" component="h1">
-              Eat
+              Register & Complete Profile
             </Typography>
           </Paper>
         </TimelineContent>
@@ -48,9 +48,8 @@ const Timelines = () => {
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
             <Typography variant="h6" component="h1">
-              Code
+              Search Internships
             </Typography>
-            <Typography>Because it's awesome!</Typography>
           </Paper>
         </TimelineContent>
       </TimelineItem>
@@ -64,9 +63,23 @@ const Timelines = () => {
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
             <Typography variant="h6" component="h1">
-              Sleep
+              Apply for Internships
             </Typography>
-            <Typography>Because you need rest</Typography>
+          </Paper>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineDot color="secondary">
+            <RepeatIcon />
+          </TimelineDot>
+          <TimelineConnector className={classes.secondaryTail} />
+        </TimelineSeparator>
+        <TimelineContent>
+          <Paper elevation={3} className={classes.paper}>
+            <Typography variant="h6" component="h1">
+              Undertake Internships
+            </Typography>
           </Paper>
         </TimelineContent>
       </TimelineItem>
@@ -79,12 +92,13 @@ const Timelines = () => {
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
             <Typography variant="h6" component="h1">
-              Repeat
+              Work Ready
             </Typography>
-            <Typography>Because this is the life you love!</Typography>
           </Paper>
         </TimelineContent>
       </TimelineItem>
+
+
     </Timeline>
   )
 
