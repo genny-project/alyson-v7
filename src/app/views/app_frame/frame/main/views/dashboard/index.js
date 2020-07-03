@@ -47,9 +47,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
 
   if (not(isEmpty(dashboard))) {
     return isAdmin ? (
-      <Col>
-        <Timelines viewInternships={viewInternships} />
-      </Col>
+      <Timelines viewInternships={viewInternships} />
     ) : projectName === 'Safe Traffic Town' ? (
       <Typography>{`STT Dashboard`}</Typography>
     ) : (
