@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {Row, Col} from '../../../components/layouts'
+import { Row, Col } from '../../../components/layouts'
 import {
   Timeline,
   TimelineItem,
@@ -8,9 +8,9 @@ import {
   TimelineConnector,
   TimelineContent,
   TimelineOppositeContent,
-  TimelineDot
+  TimelineDot,
 } from '@material-ui/lab'
-import { Paper, Typography } from '@material-ui/core'
+import { Paper, Typography, Button } from '@material-ui/core'
 import TouchAppOutlinedIcon from '@material-ui/icons/TouchAppOutlined'
 import WorkOutlineOutlinedIcon from '@material-ui/icons/WorkOutlineOutlined'
 import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined'
@@ -18,23 +18,32 @@ import HowToRegOutlinedIcon from '@material-ui/icons/HowToRegOutlined'
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined'
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
+import SearchIcon from '@material-ui/icons/Search'
 
 import useStyles from './styles'
 
-const Timelines = () => {
-
+const Timelines = ({ viewInternships }) => {
   const classes = useStyles()
 
   return (
-    <Col stretch align="center" >
-      <Typography variant="h4"> 5 Steps to becoming Work Ready </Typography>
+    <Col stretch align="center">
+      <Row>
+        <Typography variant="h4">5 Steps to becoming</Typography>
+        <Typography variant="h4" color="secondary">{`Work Ready`}</Typography>
+      </Row>
+      <Button
+        color="primary"
+        variant="contained"
+        startIcon={<SearchIcon />}
+        onClick={viewInternships}
+      >{`Start Internship Search`}</Button>
       <Timeline align="alternate">
         <TimelineItem>
           <TimelineSeparator>
             <TimelineDot className={classes.green}>
               <HowToRegOutlinedIcon />
             </TimelineDot>
-            <TimelineConnector className={classes.green}/>
+            <TimelineConnector className={classes.green} />
           </TimelineSeparator>
           <TimelineContent>
             <Paper elevation={3} className={classes.paper}>
@@ -61,7 +70,7 @@ const Timelines = () => {
             <TimelineDot className={classes.green}>
               <SearchOutlinedIcon />
             </TimelineDot>
-            <TimelineConnector className={classes.green}/>
+            <TimelineConnector className={classes.green} />
           </TimelineSeparator>
           <TimelineContent>
             <Paper elevation={3} className={classes.paper}>
@@ -88,7 +97,7 @@ const Timelines = () => {
             <TimelineDot className={classes.green}>
               <TouchAppOutlinedIcon />
             </TimelineDot>
-            <TimelineConnector className={classes.green}/>
+            <TimelineConnector className={classes.green} />
           </TimelineSeparator>
           <TimelineContent>
             <Paper elevation={3} className={classes.paper}>
@@ -132,7 +141,7 @@ const Timelines = () => {
               </Typography>
               <Row right>
                 <Typography>Induction</Typography>
-                <CheckBoxOutlinedIcon className={classes.greenCheck}/>
+                <CheckBoxOutlinedIcon className={classes.greenCheck} />
               </Row>
               <Row right>
                 <Typography>Progress reporting</Typography>

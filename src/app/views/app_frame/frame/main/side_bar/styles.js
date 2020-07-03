@@ -23,9 +23,6 @@ const useStyles = makeStyles(theme => ({
   title: {
     paddingTop: theme.spacing(1),
   },
-  logo: {
-    padding: theme.spacing(3),
-  },
   poweredBy: {
     marginBottom: theme.spacing(1),
   },
