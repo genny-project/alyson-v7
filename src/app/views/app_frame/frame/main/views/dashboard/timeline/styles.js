@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     padding: '6px 16px',
   },
@@ -8,20 +8,20 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   green: {
-    backgroundColor: theme.palette.success.main
+    backgroundColor: theme.palette.success.main,
   },
   orange: {
-    backgroundColor: theme.palette.warning.dark
+    backgroundColor: theme.palette.warning.dark,
   },
   grey: {
-    backgroundColor: theme.palette.grey[500]
+    backgroundColor: theme.palette.grey[500],
   },
   greenCheck: {
-    color: theme.palette.success.main
+    color: theme.palette.success.main,
   },
   greyCheck: {
-    color: theme.palette.grey[500]
-  }
+    color: theme.palette.grey[500],
+  },
 }))
 
 export default useStyles
