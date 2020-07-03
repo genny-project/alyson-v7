@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { GoogleApiWrapper, Map, Marker } from 'google-maps-react'
-import { map, forEach, pathOr } from 'ramda'
+import { map, forEach, pathOr, addIndex, length } from 'ramda'
 import { Button } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import {
   getTable,
   getData,
@@ -11,6 +12,9 @@ import {
 import { Row, Col } from '../../components/layouts'
 import ListItem from './list_item'
 import Filters from '../../components/filters'
+import DetailPane from './detail_pane'
+
+import useStyles from './styles'
 
 const MapList = ({
   currentSearch,
@@ -25,22 +29,24 @@ const MapList = ({
   const [loadingPage, setLoadingPage] = useState(true)
   const [dataPoints, setDataPoints] = useState([])
   const [basicFilter, setBasicFilter] = useState('')
+  const [currentDataPoint, setCurrentDataPoint] = useState(null)
 
   const table = getTable(currentSearch)
   const data = getData(table)
   const actions = getActions(table)
 
   const bounds = new google.maps.LatLngBounds()
+  const singlePoint = new google.maps.LatLngBounds()
+
+  if (currentDataPoint !== null) {
+    const { lat, lng } = pathOr({}, ['geometry', 'location'], dataPoints[currentDataPoint])
+    singlePoint.extend({ lat: lat(), lng: lng() })
+  }
 
   forEach(point => {
     const { lat, lng } = pathOr({}, ['geometry', 'location'], point)
     bounds.extend({ lat: lat(), lng: lng() })
   }, dataPoints)
-
-  useEffect(() => {
-    setLoadingPage(true)
-    getWithAddressLatLon({ data, setDataPoints, setLoadingPage })
-  }, [])
 
   const markers = map(({ PRI_NAME, PRI_ASSOC_HC, geometry: { location: { lat, lng } } }) => (
     <Marker
@@ -51,12 +57,36 @@ const MapList = ({
     />
   ))(dataPoints)
 
+  const classes = useStyles({ anySelected: currentDataPoint !== null })
+
+  useEffect(() => {
+    setLoadingPage(true)
+    getWithAddressLatLon({ data, setDataPoints, setLoadingPage })
+  }, [])
+
+  useEffect(
+    () => {
+      if (length(dataPoints) && currentDataPoint === null) setCurrentDataPoint(0)
+    },
+    [dataPoints],
+  )
+
   return (
     <Col top left>
-      <Button onClick={() => setViewing(viewing => ({ ...viewing, view: 'TABLE' }))}>
-        {`Table View`}
-      </Button>
+      <Row>
+        <Button onClick={() => setViewing(viewing => ({ ...viewing, view: 'TABLE' }))}>
+          {`Table View`}
+        </Button>
+        <Button disabled={currentDataPoint === null} onClick={() => setCurrentDataPoint(null)}>
+          {`Clear Selection`}
+        </Button>
+      </Row>
       <Filters
+        dropdowns={[
+          { label: 'Choose a State', options: [{ label: 'Victoria', value: 'VIC' }] },
+          { label: 'Choose an Industry', options: [] },
+          { label: 'Choose a Sub-Industry', options: [] },
+        ]}
         basicFilterOptions={[
           { value: 'distance', label: 'Distance', icon: 'straighten' },
           { value: 'industry', label: 'Industry', icon: 'domain' },
@@ -64,10 +94,11 @@ const MapList = ({
         basicFilterText="Sort by"
         filtersApplied={{ basicFilter }}
         onUpdate={setBasicFilter}
+        submit={{ icon: <SearchIcon />, label: 'Search' }}
       />
-      <Row top left>
-        <Col stretch spacing={4}>
-          {map(item => (
+      <Row top spaceBetween spacing={0} wrap="noWrap" fullWidth>
+        <Col stretch spacing={0} className={classes.itemsColumn} fullWidth>
+          {addIndex(map)((item, idx) => (
             <ListItem
               key={'item' + item.PRI_NAME}
               {...item}
@@ -78,24 +109,47 @@ const MapList = ({
               setViewing={setViewing}
               setLoading={setLoading}
               googleApiKey={googleApiKey}
+              currentDataPoint={currentDataPoint}
+              setCurrentDataPoint={setCurrentDataPoint}
+              idx={idx}
+              first={idx === 0}
+              last={idx === length(dataPoints) - 1}
             />
           ))(dataPoints)}
         </Col>
-        <Map
-          google={google}
-          zoom={14}
-          initialCenter={{
-            lat: -37.8136,
-            lng: 144.9631,
-          }}
-          containerStyle={{
-            width: '45%',
-            height: '60%',
-          }}
-          bounds={bounds}
-        >
-          {markers}
-        </Map>
+        <div className={classes.detailColumn}>
+          <DetailPane
+            dataPoints={dataPoints}
+            currentDataPoint={currentDataPoint}
+            viewing={viewing}
+            attributes={attributes}
+            setViewing={setViewing}
+            setLoading={setLoading}
+            googleApiKey={googleApiKey}
+          />
+        </div>
+        <Col left top className={classes.mapColumn} fullWidth>
+          <Map
+            google={google}
+            zoom={8}
+            initialCenter={{
+              lat: -37.8136,
+              lng: 144.9631,
+            }}
+            containerStyle={{
+              width: '30rem',
+              height: '30rem',
+            }}
+            bounds={currentDataPoint !== null ? singlePoint : bounds}
+            onReady={(mapProps, map) => {
+              map.setOptions({
+                maxZoom: 16,
+              })
+            }}
+          >
+            {markers}
+          </Map>
+        </Col>
       </Row>
     </Col>
   )

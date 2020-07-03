@@ -1,5 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { prop, path, toUpper, contains, map, keys } from 'ramda'
+import {
+  prop,
+  path,
+  toUpper,
+  contains,
+  map,
+  keys,
+  splitAt,
+  length,
+  head,
+  last,
+  pathOr,
+} from 'ramda'
 
 import { Grid, Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
 import onUpdateSignature from './helpers/on-update-signature'
@@ -7,6 +19,7 @@ import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
 import { Row, Col } from '../../components/layouts'
 import RowItem from './row_item'
+import VideoPlayer from './video_player'
 // TODO: Backend should send us the correct detail view specs
 
 const printIntern = [
@@ -95,6 +108,7 @@ const Details = ({
   setLoading,
   googleApiKey,
   mini,
+  noMap,
 }) => {
   const detailView = prop(targetCode, attributes)
 
@@ -163,7 +177,10 @@ const Details = ({
     !contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
     <LinearProgress />
   ) : mini ? (
-    <Row left top spacing={3} className={classes.miniContainer}>
+    <Col stretch fullWidth className={classes.miniContainer}>
+      <Typography variant="h5" style={{ marginBottom: '2rem' }}>
+        {print('name')}
+      </Typography>
       {map(
         ({ valueString, attributeName, attributeCode, type }) => (
           <RowItem
@@ -185,7 +202,10 @@ const Details = ({
         ),
         details,
       )}
-    </Row>
+      {detailType === printBeg ? (
+        <VideoPlayer url={pathOr('', ['PRI_LOOM_URL', 'value'], detailView)} mini />
+      ) : null}
+    </Col>
   ) : (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
       {detailType === printBeg ? (
@@ -238,6 +258,7 @@ const Details = ({
             setSignature={setSignature}
             handleSubmit={handleSubmit}
             googleApiKey={googleApiKey}
+            noMap
           />
         ),
         details,
