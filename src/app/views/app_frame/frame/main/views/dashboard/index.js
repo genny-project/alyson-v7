@@ -41,7 +41,6 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
     })
 
   const classes = useStyles()
-
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
   if (not(isEmpty(dashboard))) {

@@ -170,7 +170,6 @@ const Timelines = () => {
       </TimelineItem>
     </Timeline>
   )
-
 }
 
 export default Timelines
