@@ -6,7 +6,7 @@ const handleSend = async ({ value, onUpdate }) => {
   const result = await geocodeByPlaceId(value.place_id || '')
 
   if (result) {
-    onUpdate(makeAddressData(result))
+    onUpdate({ value: makeAddressData(result) })
   }
 }
 

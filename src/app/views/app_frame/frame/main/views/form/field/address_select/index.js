@@ -17,14 +17,14 @@ import { getIsMobile } from '../../../../utils'
 import handleSendAddress from './helpers/handle-send-address'
 import useStyles from './styles'
 
-const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
+const AddressSelect = ({ fieldData, onUpdate, googleApiKey, initialValue }) => {
   const {
     mandatory,
     question: { code: questionCode },
   } = fieldData
 
   const classes = useStyles()
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState(initialValue || null)
   const [restrictCountry, setRestrictCountry] = useState(true)
 
   useEffect(
@@ -70,6 +70,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey }) => {
           renderInput={params => (
             <TextField
               {...params}
+              placeholder={initialValue || ''}
               required={mandatory}
               label="Address"
               variant="outlined"

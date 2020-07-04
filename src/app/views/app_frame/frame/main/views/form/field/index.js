@@ -75,6 +75,7 @@ const Field = ({
       errors={errors}
       questionCode={questionCode}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'mobile' || fieldType === 'landline' ? (
     <PhoneNumberInput
@@ -83,9 +84,9 @@ const Field = ({
       onUpdate={onUpdate}
       fieldType={fieldType}
       errors={errors}
-      setErrors={setErrors}
       questionCode={questionCode}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'dropdown' || fieldType === 'dropdownmultiple' || fieldType === 'tag' ? (
     <DropdownSelect
@@ -120,6 +121,7 @@ const Field = ({
       setErrors={setErrors}
       questionCode={questionCode}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'image' ? (
     <ImageUpload
@@ -138,6 +140,7 @@ const Field = ({
       onUpdate={onUpdate}
       questionCode={questionCode}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'java.time.localdate' ? (
     <DateTimePicker
@@ -148,6 +151,7 @@ const Field = ({
       setErrors={setErrors}
       questionCode={questionCode}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'time' ? (
     <DateTimePicker
@@ -159,6 +163,7 @@ const Field = ({
       inputType="time"
       questionCode={questionCode}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'htmleditor' ? (
     <HtmlDisplay fieldData={fieldData} label={label} touched={touchedField} />
