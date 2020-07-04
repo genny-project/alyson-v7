@@ -1,12 +1,6 @@
 import React from 'react'
 
-import makeHandleUpdate from '../../helpers/make-handle-update'
-
 const MyInterviewWidget = ({ fieldData, label, onUpdate, user, setErrors }) => {
-  console.log(fieldData)
-
-  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData, setErrors)
-
   const script = document.createElement('script')
   script.src = 'https://embed.myinterview.com/widget/2.28.0/widget.js'
   script.async = true
@@ -17,7 +11,7 @@ const MyInterviewWidget = ({ fieldData, label, onUpdate, user, setErrors }) => {
       container: '#myinterview-container',
       config: {
         apiKey: 'TCeni10RVWO0jEJHN3uF',
-        completeCallback: handleUpdate,
+        completeCallback: value => onUpdate({ value }),
         button: {
           color: 'red',
           size: 'small',

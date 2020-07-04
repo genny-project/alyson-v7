@@ -17,7 +17,7 @@ const Drafts = ({ drafts, setViewing }) => {
   return length(drafts || []) > 1 ? (
     <div>
       <Button
-        test-id='QUE_DRAFTS_GRP'
+        test-id="QUE_DRAFTS_GRP"
         color="inherit"
         style={{ marginRight: '1rem' }}
         variant="outlined"
@@ -30,9 +30,10 @@ const Drafts = ({ drafts, setViewing }) => {
           ({ targetCode, question: { code, name } }) => (
             <MenuItem
               key={'draft' + code}
-              onClick={() =>
+              onClick={() => {
                 setViewing({ view: 'FORM', code, targetCode, parentCode: 'QUE_DRAFTS_GRP' })
-              }
+                setMenu(null)
+              }}
             >
               {name}
             </MenuItem>
