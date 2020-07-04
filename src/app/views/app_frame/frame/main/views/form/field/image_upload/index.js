@@ -5,15 +5,12 @@ import { DropzoneDialog } from 'material-ui-dropzone'
 import { Button, CircularProgress, Snackbar, Avatar } from '@material-ui/core'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import Alert from '@material-ui/lab/Alert'
-import makeHandleUpdate from '../../helpers/make-handle-update'
 
 const UploadImage = ({ fieldData, label, onUpdate, questionCode }) => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [snackbar, setSnackbar] = useState({ open: false, alert: '' })
   const [imageUrl, setImageUrl] = useState('')
-
-  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData)
 
   const handleSave = async files => {
     setOpen(false)
@@ -48,7 +45,7 @@ const UploadImage = ({ fieldData, label, onUpdate, questionCode }) => {
 
   useEffect(
     () => {
-      if (length(imageUrl)) handleUpdate(imageUrl)
+      if (length(imageUrl)) onUpdate({ imageUrl })
     },
     [imageUrl],
   )

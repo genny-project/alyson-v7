@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { pathOr, map, prop, not, isEmpty } from 'ramda'
 import { Grid, Typography, CircularProgress } from '@material-ui/core'
 import { Col } from '../../components/layouts'
-import onSubmit from './field/actions/on-submit'
+import onSubmit from './helpers/actions/on-submit'
 
 import Field from './field'
 
@@ -19,6 +19,11 @@ const Form = ({
   viewing: { viewingRedirect },
   user,
 }) => {
+  const [errors, setErrors] = useState({})
+  const [pristine, setPristine] = useState(true)
+  const [touched, setTouched] = useState({})
+  const classes = useStyles()
+
   if (not(isEmpty(currentAsk))) {
     const title = pathOr('', ['question', 'name'], currentAsk)
     const formFields = pathOr([], ['childAsks'], currentAsk)
@@ -28,16 +33,13 @@ const Form = ({
     const parentCode = prop('questionCode', currentAsk)
     const rootCode = prop('questionCode', currentAsk)
 
-    const classes = useStyles()
-
-    const [errors, setErrors] = useState({})
-    const [pristine, setPristine] = useState(true)
-
     const meta = {
       errors,
       setErrors,
       pristine,
       setPristine,
+      touched,
+      setTouched,
       onSubmit: onSubmit({
         redirect: viewingRedirect || redirect,
         parentCode,
@@ -71,6 +73,7 @@ const Form = ({
               googleApiKey={googleApiKey}
               defaultValues={defaultValues}
               user={user}
+              formFields={formFields}
             />
           </Grid>
         ))(formFields)}

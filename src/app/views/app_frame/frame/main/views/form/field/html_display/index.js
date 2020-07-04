@@ -4,7 +4,7 @@ import { Typography } from '@material-ui/core'
 
 const HtmlDisplay = ({ fieldData, label }) => {
   const { value } = fieldData
-  console.log(fieldData)
+
   return !!value ? (
     <div>
       <Typography>{label}</Typography>

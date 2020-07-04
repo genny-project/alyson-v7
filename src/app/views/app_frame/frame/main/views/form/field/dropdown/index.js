@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { map, path, pick, prop, sortBy, values, head, compose, equals } from 'ramda'
+import React, { useState, useEffect } from 'react'
+import { map, path, pick, prop, sortBy, values, head, compose, propOr } from 'ramda'
 import { TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-
-import makeHandleUpdate from '../../helpers/make-handle-update'
+import getValidationList from '../../helpers/get-validation-list'
 
 import useStyles from './styles'
 
@@ -11,7 +10,6 @@ const DropdownSelect = ({
   fieldData,
   initialValue,
   label,
-  validationList,
   baseEntities,
   multiple,
   onUpdate,
@@ -21,15 +19,14 @@ const DropdownSelect = ({
     head,
     prop('selectionBaseEntityGroupList'),
     head,
-  )(validationList)
+    getValidationList,
+  )(fieldData)
 
   const optionsLinkList = path([optionsGrpName, 'links'], baseEntities) || []
   const targetCodes =
     map(path(['link', 'targetCode']), sortBy(prop('weight'))(optionsLinkList)) || []
 
   const options = map(pick(['name', 'code']), values(pick(values(targetCodes), baseEntities))) || []
-
-  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData)
 
   const {
     mandatory,
@@ -42,7 +39,7 @@ const DropdownSelect = ({
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
-    handleUpdate(prepareData(multiple ? newValue : [newValue]))
+    onUpdate({ value: prepareData(multiple ? newValue : [newValue]) })
   }
 
   useEffect(
@@ -55,16 +52,16 @@ const DropdownSelect = ({
   return (
     <Autocomplete
       className={classes.select}
-      error={errors[questionCode] && !pristine}
+      error={errors[questionCode] && !pristine ? true : undefined}
       label={label}
       multiple={multiple}
       value={value}
       onChange={handleChange}
       required={mandatory}
       options={options}
-      getOptionLabel={prop('name')}
+      getOptionLabel={propOr('', 'name')}
       getOptionSelected={(option, value) => option.code === value.code}
-      renderInput={params => <TextField {...params} label={label} variant="outlined"/>}
+      renderInput={params => <TextField {...params} label={label} variant="outlined" />}
       test-id={questionCode}
     />
   )
