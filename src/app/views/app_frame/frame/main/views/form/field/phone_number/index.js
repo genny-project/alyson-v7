@@ -3,8 +3,8 @@ import { TextField, Typography } from '@material-ui/core'
 
 import useStyles from './styles'
 
-const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate, errors }) => {
-  const [value, setValue] = useState(fieldType === 'mobile' ? '04' : '')
+const PhoneNumberInput = ({ fieldType, label, fieldData, onUpdate, errors, initialValue }) => {
+  const [value, setValue] = useState(initialValue || fieldType === 'mobile' ? '04' : '')
 
   const {
     question: { code: questionCode },

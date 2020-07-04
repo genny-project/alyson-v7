@@ -5,15 +5,15 @@ import { format } from 'date-fns'
 
 import { MuiPickersUtilsProvider, DatePicker, TimePicker } from '@material-ui/pickers'
 
-const DateTimePicker = ({ onUpdate, label, questionCode }) => {
-  const [selectedDate, setSelectedDate] = useState(null)
+const DateTimePicker = ({ onUpdate, label, questionCode, initialValue }) => {
+  const [selectedDate, setSelectedDate] = useState(initialValue || null)
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <DatePicker
         disableToolbar
         autoOk
-        onAccept={() => onUpdate({ value: format(selectedDate, 'yyyy-MM-dd') })}
+        onAccept={() => onUpdate({ value: format(new Date(selectedDate), 'yyyy-MM-dd') })}
         variant="inline"
         inputVariant="outlined"
         format="dd/MM/yyyy"

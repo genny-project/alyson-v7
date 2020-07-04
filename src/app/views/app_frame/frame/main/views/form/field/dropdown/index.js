@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { map, path, pick, prop, sortBy, values, head, compose, propOr } from 'ramda'
+import {
+  map,
+  path,
+  pick,
+  prop,
+  sortBy,
+  values,
+  head,
+  compose,
+  propOr,
+  any,
+  equals,
+  filter,
+} from 'ramda'
 import { TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import getValidationList from '../../helpers/get-validation-list'
@@ -34,7 +47,6 @@ const DropdownSelect = ({
   } = fieldData
   const prepareData = map(prop('code'))
   const [value, setValue] = useState(initialValue || multiple ? [] : null)
-  const [pristine, setPristine] = useState(true)
   const classes = useStyles()
 
   const handleChange = (event, newValue) => {
@@ -52,10 +64,9 @@ const DropdownSelect = ({
   return (
     <Autocomplete
       className={classes.select}
-      error={errors[questionCode] && !pristine ? true : undefined}
       label={label}
       multiple={multiple}
-      value={value}
+      defaultValue={filter(({ code }) => any(equals(code))(initialValue), options)}
       onChange={handleChange}
       required={mandatory}
       options={options}
