@@ -34,7 +34,6 @@ const SubmitButton = ({
       >
         {label}
       </Button>
-      <Typography>{`Please resolve errors to submit, please check ${errorNames}`}</Typography>
     </Row>
   )
 }
