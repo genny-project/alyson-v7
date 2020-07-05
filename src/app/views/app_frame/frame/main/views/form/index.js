@@ -41,15 +41,13 @@ const Form = ({
       touched,
       setTouched,
       onSubmit: onSubmit({
-        redirect: viewingRedirect || redirect,
+        redirect: redirect || viewingRedirect,
         parentCode,
         rootCode,
         setLoading,
         setViewing,
       }),
     }
-
-    console.log(errors, formFields)
 
     return (
       <Grid
