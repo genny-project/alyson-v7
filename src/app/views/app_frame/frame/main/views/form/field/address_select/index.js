@@ -24,7 +24,8 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, initialValue }) => {
   } = fieldData
 
   const classes = useStyles()
-  const [value, setValue] = useState(initialValue || null)
+  const [text, setText] = useState(initialValue || '')
+  const [value, setValue] = useState(null)
   const [restrictCountry, setRestrictCountry] = useState(true)
 
   useEffect(
@@ -70,7 +71,8 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, initialValue }) => {
           renderInput={params => (
             <TextField
               {...params}
-              placeholder={initialValue || ''}
+              value={text}
+              onChange={event => setText(event.target.value)}
               required={mandatory}
               label="Address"
               variant="outlined"

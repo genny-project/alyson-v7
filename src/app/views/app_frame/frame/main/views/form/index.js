@@ -49,6 +49,8 @@ const Form = ({
       }),
     }
 
+    console.log(errors, formFields)
+
     return (
       <Grid
         container

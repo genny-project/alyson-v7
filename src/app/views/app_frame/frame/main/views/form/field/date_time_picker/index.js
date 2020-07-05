@@ -11,10 +11,12 @@ const DateTimePicker = ({ onUpdate, label, questionCode, initialValue }) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <DatePicker
+        variant="inline"
+        openTo="year"
+        fullWidth
         disableToolbar
         autoOk
         onAccept={() => onUpdate({ value: format(new Date(selectedDate), 'yyyy-MM-dd') })}
-        variant="inline"
         inputVariant="outlined"
         format="dd/MM/yyyy"
         id="date-picker-inline"
@@ -22,6 +24,7 @@ const DateTimePicker = ({ onUpdate, label, questionCode, initialValue }) => {
         value={selectedDate}
         onChange={setSelectedDate}
         test-id={questionCode}
+        views={['year', 'month', 'date']}
       />
     </MuiPickersUtilsProvider>
   )

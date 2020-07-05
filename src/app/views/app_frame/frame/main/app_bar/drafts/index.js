@@ -4,7 +4,7 @@ import { map, length } from 'ramda'
 
 import { Button, Menu, MenuItem } from '@material-ui/core'
 
-const Drafts = ({ drafts, setViewing }) => {
+const Drafts = ({ drafts, setViewing, setLoading }) => {
   const [menu, setMenu] = useState(null)
 
   useEffect(
@@ -31,6 +31,7 @@ const Drafts = ({ drafts, setViewing }) => {
             <MenuItem
               key={'draft' + code}
               onClick={() => {
+                setLoading('Retrieving draft...')
                 setViewing({ view: 'FORM', code, targetCode, parentCode: 'QUE_DRAFTS_GRP' })
                 setMenu(null)
               }}

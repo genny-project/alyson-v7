@@ -1,23 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
-import {
-  prop,
-  path,
-  toUpper,
-  contains,
-  map,
-  keys,
-  splitAt,
-  length,
-  head,
-  last,
-  pathOr,
-} from 'ramda'
+import { prop, path, toUpper, contains, map, keys, pathOr } from 'ramda'
 
 import { Grid, Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
 import onUpdateSignature from './helpers/on-update-signature'
 import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
-import { Row, Col } from '../../components/layouts'
+import { Col } from '../../components/layouts'
 import RowItem from './row_item'
 import VideoPlayer from './video_player'
 // TODO: Backend should send us the correct detail view specs
@@ -184,7 +172,7 @@ const Details = ({
       {map(
         ({ valueString, attributeName, attributeCode, type }) => (
           <RowItem
-            key={attributeCode}
+            key={attributeName + 'item'}
             label={attributeName}
             value={valueString}
             code={attributeCode}
@@ -245,7 +233,7 @@ const Details = ({
       {map(
         ({ valueString, attributeName, attributeCode, type }) => (
           <RowItem
-            key={attributeCode}
+            key={attributeName + 'item'}
             label={attributeName}
             value={valueString}
             code={attributeCode}
