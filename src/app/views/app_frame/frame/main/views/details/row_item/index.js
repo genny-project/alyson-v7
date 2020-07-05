@@ -33,7 +33,7 @@ const RowItem = ({
           {label}
         </Typography>
         <Typography variant="subtitle1" className={classes.miniValue} noWrap>
-          {value}
+          {`${value}`}
         </Typography>
       </Row>
     )
@@ -68,11 +68,11 @@ const RowItem = ({
         ) : type === 'url' ? (
           <Link href={value}>{value}</Link>
         ) : type === 'street_view' ? (
-          <StreetView address={value} apiKey={googleApiKey} />
+          <StreetView address={value.full_address} apiKey={googleApiKey} />
         ) : type === 'video' ? (
           <Video url={value} />
         ) : (
-          <Typography>{value}</Typography>
+          <Typography>{`${value.full_address || value}`}</Typography>
         )}
       </Grid>
     </Grid>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import {
   map,
   path,
@@ -46,27 +46,20 @@ const DropdownSelect = ({
     question: { code: questionCode },
   } = fieldData
   const prepareData = map(prop('code'))
-  const [value, setValue] = useState(initialValue || multiple ? [] : null)
   const classes = useStyles()
 
   const handleChange = (event, newValue) => {
-    setValue(newValue)
     onUpdate({ value: prepareData(multiple ? newValue : [newValue]) })
   }
 
-  useEffect(
-    () => {
-      if (initialValue === ' ') setValue(multiple ? [] : null)
-    },
-    [initialValue],
-  )
+  const defaultValue = filter(({ code }) => any(equals(code))(initialValue), options)
 
   return (
     <Autocomplete
       className={classes.select}
       label={label}
       multiple={multiple}
-      defaultValue={filter(({ code }) => any(equals(code))(initialValue), options)}
+      defaultValue={multiple ? defaultValue : head(defaultValue)}
       onChange={handleChange}
       required={mandatory}
       options={options}

@@ -52,6 +52,7 @@ const MainAppBar = ({
             drafts={path(['QUE_DRAFTS_GRP', 'childAsks'], asks)}
             asks={asks}
             setViewing={setViewing}
+            setLoading={setLoading}
           />
           <HeaderMenu
             group={asks['QUE_ADD_ITEMS_GRP']}

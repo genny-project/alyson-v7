@@ -23,13 +23,14 @@ const SubmitButton = ({
     keys,
   )(pickBy(identity, errors))
 
+  // todo: reinstate error checking
   return (
     <Row>
       <Button
         variant="contained"
         color="primary"
         onClick={handleSubmit}
-        disabled={disabled || pristine || anyErrors}
+        disabled={disabled || pristine}
         test-id={questionCode}
       >
         {label}
