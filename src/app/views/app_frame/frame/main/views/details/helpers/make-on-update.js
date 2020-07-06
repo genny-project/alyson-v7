@@ -11,13 +11,14 @@ const helpBackendKeys = attributeCode =>
       ? 'PRI_RATING_RAW'
       : attributeCode
 
-const makeOnUpdate = ({ targetCode, user }) => ({ weight, code, value }) =>
+const makeOnUpdate = ({ targetCode, user }) => ({ weight, code = '', value }) =>
   Bridge.sendFormattedAnswer({
     weight,
     attributeCode: helpBackendKeys(code),
     sourceCode: pathOr('', ['data', 'code'], user),
     targetCode,
     code: replace('PRI', 'QUE', code),
+    identifier: replace('PRI', 'QUE', code),
     value: getFormattedValue(value),
   })
 

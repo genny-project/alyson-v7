@@ -30,7 +30,7 @@ const Details = ({
   const print = prop => pathOr('', [`PRI_${toUpper(prop || '')}`, 'value'], detailView)
   const details = getFieldsForType(detailView, print)
 
-  const [rating, setRating] = useState(0)
+  const [rating, setRating] = useState(pathOr(0, ['PRI_RATING', 'value'], detailView))
   const [signature, setSignature] = useState(null)
   const [editing, setEditing] = useState(false)
   const signatureRef = useRef()
@@ -61,6 +61,13 @@ const Details = ({
         })
     },
     [signature],
+  )
+
+  useEffect(
+    () => {
+      onUpdate({ code: 'PRI_RATING', value: rating })
+    },
+    [rating],
   )
 
   if (!details) {
@@ -119,7 +126,7 @@ const Details = ({
             </Typography>
             <Row left spacing={2}>
               <Avatar alt={print('name')} src={print('user_profile_picture')} />
-              <Col>
+              <Col left>
                 <Typography>{`${print('address_full')}`}</Typography>
                 <Typography>{`${print('email')}`}</Typography>
               </Col>
