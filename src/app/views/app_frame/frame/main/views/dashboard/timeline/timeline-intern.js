@@ -1,4 +1,5 @@
 import React from 'react'
+import { path, map, prop } from 'ramda';
 
 import { Row, Col } from '../../../components/layouts'
 import {
@@ -22,6 +23,43 @@ import SearchIcon from '@material-ui/icons/Search'
 
 import useStyles from './styles'
 
+const content = {
+  header: 'Register',
+  body: ['Register in Internmatch', 'Register Again']
+}
+
+const Card = ({icon, content}) => {
+  const classes = useStyles()
+
+  return (
+    <TimelineItem>
+      <TimelineSeparator>
+        <TimelineDot className={classes.green}>
+          {icon}
+        </TimelineDot>
+        <TimelineConnector className={classes.green} />
+      </TimelineSeparator>
+      <TimelineContent>
+        <Paper elevation={3} className={classes.paper}>
+          <Typography variant="h6" component="h1">
+            {path('header', content)}
+          </Typography>
+            <Typography>
+              {map((body) =>
+                <Row left>
+                  <CheckBoxOutlinedIcon className={classes.greenCheck} />
+                  <Button color="inherit" >
+                    {body}
+                  </Button>
+                </Row>
+              , prop ('body', content))}
+            </Typography>
+        </Paper>
+      </TimelineContent>
+    </TimelineItem>
+  )
+}
+
 const TimelineIntern = ({ viewInternships }) => {
   const classes = useStyles()
 
@@ -38,33 +76,7 @@ const TimelineIntern = ({ viewInternships }) => {
         onClick={viewInternships}
       >{`Start Internship Search`}</Button>
       <Timeline align="alternate">
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot className={classes.green}>
-              <HowToRegOutlinedIcon />
-            </TimelineDot>
-            <TimelineConnector className={classes.green} />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Register
-              </Typography>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography>Register in Internmatch</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography>Complete Profile</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography>Record Introduction Video</Typography>
-              </Row>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
+        <Card content={content} icon={<HowToRegOutlinedIcon />}/>
         <TimelineItem>
           <TimelineSeparator>
             <TimelineDot className={classes.green}>
