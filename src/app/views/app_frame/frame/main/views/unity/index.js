@@ -113,29 +113,7 @@ class UnityRender extends React.Component {
   render() {
     return (
       <div style={{ marginTop: '5rem', marginLeft: '12rem', marginRight: '2rem' }}>
-        <Col>
-          <Typography>{`UnityEvent: ${this.state.eventname}, UnityAnswer: ${
-            this.state.answername
-          }`}</Typography>
-          <Row>
-            <TextField label="unityParam:" onChange={this.myChangeHandler} />
-            <Button onClick={this.onClick} color="primary">
-              SUBMIT PARAM
-            </Button>
-            <Button color="secondary" variant="outlined" onClick={this.handleMenuOpen}>
-              Select Scene
-            </Button>
-          </Row>
-          <Menu open={!!this.state.menu} anchorEl={this.state.menu} onClose={this.handleMenuClose}>
-            {addIndex(map)((scene, idx) => (
-              <MenuItem onClick={this.handleMenu(scene)}>{`Scene ${idx + 1}`}</MenuItem>
-            ))(scenes)}
-          </Menu>
-        </Col>
-
-        <div>
-          <Unity unityContent={this.unityContent} />
-        </div>
+        <Unity unityContent={this.unityContent} />
       </div>
     )
   }
