@@ -17,14 +17,13 @@ import { getIsMobile } from '../../../../utils'
 import handleSendAddress from './helpers/handle-send-address'
 import useStyles from './styles'
 
-const AddressSelect = ({ fieldData, onUpdate, googleApiKey, initialValue }) => {
+const AddressSelect = ({ label, fieldData, onUpdate, googleApiKey, initialValue }) => {
   const {
     mandatory,
     question: { code: questionCode },
   } = fieldData
 
   const classes = useStyles()
-  const [text, setText] = useState(initialValue || '')
   const [value, setValue] = useState(null)
   const [restrictCountry, setRestrictCountry] = useState(true)
 
@@ -57,8 +56,10 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, initialValue }) => {
       </Grid>
       <Grid item {...(getIsMobile() ? '' : { xs: 11 })}>
         <GooglePlacesAutocomplete
+          initialValue={initialValue || ''}
           apiKey={googleApiKey}
           onSelect={selection => setValue(selection)}
+          required={mandatory}
           autocompletionRequest={
             restrictCountry
               ? {
@@ -69,17 +70,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, initialValue }) => {
               : {}
           }
           renderInput={params => (
-            <TextField
-              {...params}
-              value={text}
-              onChange={event => setText(event.target.value)}
-              required={mandatory}
-              label="Address"
-              variant="outlined"
-              fullWidth
-              className={classes.inputField}
-              test-id={questionCode}
-            />
+            <TextField {...params} label={label || 'Address'} variant="outlined" fullWidth />
           )}
           loader={<CircularProgress />}
           renderSuggestions={(active, suggestions, onSelectSuggestion) => (
@@ -89,6 +80,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, initialValue }) => {
               onSelectSuggestion={onSelectSuggestion}
             />
           )}
+          test-id={questionCode}
         />
       </Grid>
     </Grid>

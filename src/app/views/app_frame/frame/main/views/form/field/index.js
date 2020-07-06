@@ -122,6 +122,7 @@ const Field = ({
       questionCode={questionCode}
       touched={touchedField}
       initialValue={initialValue}
+      label={label}
     />
   ) : fieldType === 'image' ? (
     <ImageUpload
