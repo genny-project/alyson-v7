@@ -1,6 +1,7 @@
 import React from 'react'
 import Bridge from '../../../../../../../utils/vertx/Bridge'
-import { map, addIndex, pathOr, replace } from 'ramda'
+import Form from '../form'
+import { map, addIndex, pathOr, replace, length } from 'ramda'
 import { connect } from 'react-redux'
 
 import Unity, { UnityContent } from 'react-unity-webgl'
@@ -27,9 +28,16 @@ class UnityRender extends React.Component {
     this.unityContent = new UnityContent('/unity/safeTrafficTown.json', '/unity/UnityLoader.js')
 
     this.unityContent.on('loaded', () => {
+      this.setState({ unityLoaded: true })
       Bridge.sendEvent({
-        event: 'UNITY_LOADED',
-        data: { code: 'UNITY_LOADED' },
+        event: 'BTN',
+        eventType: 'BTN_CLICK',
+        data: {
+          code: 'UNITY_LOADED',
+          parentCode: 'UNITY_LOADED',
+          targetCode: this.props.user.data.code,
+          rootCode: 'UNITY_LOADED',
+        },
         sendWithToken: true,
       })
     })
@@ -57,6 +65,8 @@ class UnityRender extends React.Component {
     answername: null,
     unityParam: null,
     menu: null,
+    unityLoaded: false,
+    lastSentMessage: null,
   }
 
   myChangeHandler = event => {
@@ -86,34 +96,58 @@ class UnityRender extends React.Component {
     this.unityContent.send('reactObject', 'changeScene', scene)
   }
 
-  componentDidUpdate(prevProps) {
-    console.log(prevProps, this.props)
-    if (this.props.unityEvent.code && this.props.unityEvent.code !== prevProps.unityEvent.code) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.unityLoaded) {
+      Bridge.sendEvent({
+        event: 'BTN',
+        eventType: 'BTN_CLICK',
+        data: {
+          code: 'UNITY_LOADED',
+          parentCode: 'UNITY_LOADED',
+          targetCode: this.props.user.data.code,
+          rootCode: 'UNITY_LOADED',
+        },
+        sendWithToken: true,
+      })
+    }
+
+    if (this.props.unityEvent.code) {
       const action = JSON.parse(replace(/\\/g, '', this.props.unityEvent.code))
 
-      console.log(
-        'SENDING',
-        ...[
-          action[0],
-          action[1],
-          typeof action[2] === 'object' ? JSON.stringify(action[2]) : action[2],
-        ],
-      )
+      const thirdParam = typeof action[2] === 'object' ? JSON.stringify(action[2]) : action[2]
 
-      this.unityContent.send(
-        ...[
-          action[0],
-          action[1],
-          typeof action[2] === 'object' ? JSON.stringify(action[2]) : action[2],
-        ],
-      )
+      if (thirdParam !== this.state.lastSentMessage) {
+        this.unityContent.send(action[0], action[1], thirdParam)
+
+        this.setState({ lastSentMessage: thirdParam })
+      }
     }
   }
 
   render() {
+    const {
+      setViewing,
+      setLoading,
+      currentAsk,
+      attributes,
+      baseEntities,
+      googleApiKey,
+      user,
+    } = this.props
     return (
       <div style={{ marginTop: '5rem', marginLeft: '12rem', marginRight: '2rem' }}>
         <Unity unityContent={this.unityContent} />
+        <Form
+          redirect={() => setViewing({ view: 'UNITY' })}
+          setViewing={setViewing}
+          setLoading={setLoading}
+          currentAsk={currentAsk}
+          attributes={attributes}
+          baseEntities={baseEntities}
+          googleApiKey={googleApiKey}
+          user={user}
+          viewing={{ viewingRedirect: () => setViewing({ view: 'UNITY' }) }}
+        />
       </div>
     )
   }
@@ -121,5 +155,7 @@ class UnityRender extends React.Component {
 
 const mapStateToProps = state => ({
   unityEvent: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'unityEvent'], state),
+  currentAsk: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'currentAsk'], state),
+  user: state.vertx.user,
 })
 export default connect(mapStateToProps)(UnityRender)
