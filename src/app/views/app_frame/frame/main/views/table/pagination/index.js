@@ -42,7 +42,11 @@ const Pagination = ({
       </Grid>
       <Grid item>
         <Typography color="textSecondary">{`${pageStart === 0 ? '0' : pageStart || ''} - ${
-          pageStart + pageSize >= totalResults ? totalResults : pageStart + pageSize || ''
+          pageStart + pageSize >= totalResults
+            ? totalResults === -1
+              ? pageStart + pageSize
+              : totalResults
+            : pageStart + pageSize || ''
         } of ${totalResults === -1 ? 1000 : totalResults || ''}`}</Typography>
       </Grid>
       <Grid item>
