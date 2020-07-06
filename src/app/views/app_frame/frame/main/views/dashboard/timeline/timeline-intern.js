@@ -1,5 +1,5 @@
-import React from 'react'
-import { path, map, prop } from 'ramda';
+import React, { useState } from 'react'
+import { map, prop } from 'ramda';
 
 import { Row, Col } from '../../../components/layouts'
 import {
@@ -23,12 +23,54 @@ import SearchIcon from '@material-ui/icons/Search'
 
 import useStyles from './styles'
 
-const content = {
+const register = {
   header: 'Register',
-  body: ['Register in Internmatch', 'Register Again']
+  body: [
+    { content: 'Register in Internmatch', status: true },
+    { content: 'Complete Profile', status: true },
+    { content: 'Record Introduction Video', status: true },
+  ]
 }
 
-const Card = ({icon, content}) => {
+const search = {
+  header: 'Search',
+  body: [
+    { content: 'Search from recommended Internship Opportunities', status: true },
+    { content: 'Save Opportunities', status: true },
+    { content: 'Complete Accreditation', status: true },
+  ]
+}
+
+const apply = {
+  header: 'Apply',
+  body: [
+    { content: 'Applying for internships', status: true },
+    { content: 'Recommended skill development', status: true },
+    { content: 'Application sent to Host Company', status: true },
+    { content: 'Attend Interviews', status: true },
+    { content: 'Accept offer', status: true },
+  ]
+}
+
+const internships = {
+  header: 'Internships',
+  body: [
+    { content: 'Induction', status: true },
+    { content: 'Progress reporting', status: false },
+    { content: 'Daily Logbook Completion', status: false },
+  ]
+}
+
+const workReady = {
+  header: 'Work Ready',
+  body: [
+    { content: 'Receive Certificate', status: false },
+    { content: 'Update your LinkedIn Profile & Resume', status: false },
+    { content: 'Ask for a recommendation', status: false },
+  ]
+}
+
+const Card = ({icon, content, justify, view = () => console.error('nothing')}) => {
   const classes = useStyles()
 
   return (
@@ -42,17 +84,18 @@ const Card = ({icon, content}) => {
       <TimelineContent>
         <Paper elevation={3} className={classes.paper}>
           <Typography variant="h6" component="h1">
-            {path('header', content)}
+            {prop('header', content)}
           </Typography>
             <Typography>
-              {map((body) =>
-                <Row left>
-                  <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                  <Button color="inherit" >
-                    {body}
+              {map(({content, status}) =>
+                  <Row left>
+                    { status
+                      ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
+                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/> }
+                  <Button color="inherit" onClick={view}>
+                    {content}
                   </Button>
-                </Row>
-              , prop ('body', content))}
+                </Row>, prop ('body', content))}
             </Typography>
         </Paper>
       </TimelineContent>
@@ -76,124 +119,11 @@ const TimelineIntern = ({ viewInternships }) => {
         onClick={viewInternships}
       >{`Start Internship Search`}</Button>
       <Timeline align="alternate">
-        <Card content={content} icon={<HowToRegOutlinedIcon />}/>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot className={classes.green}>
-              <SearchOutlinedIcon />
-            </TimelineDot>
-            <TimelineConnector className={classes.green} />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Search
-              </Typography>
-              <Row right>
-                <Button color="inherit" onClick={viewInternships}>
-                  {`Search from recommended Internship Opportunities`}
-                </Button>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-              </Row>
-              <Row right>
-                <Typography>Save Opportunities</Typography>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-              </Row>
-              <Row right>
-                <Typography>Complete Accreditation</Typography>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-              </Row>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot className={classes.green}>
-              <TouchAppOutlinedIcon />
-            </TimelineDot>
-            <TimelineConnector className={classes.green} />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Apply
-              </Typography>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography>Applying for internships</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography>Recommstarted skill development</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography>Application sent to Host Company</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography>Attstart Interviews</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                <Typography> Accept offer</Typography>
-              </Row>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot className={classes.orange}>
-              <WorkOutlineOutlinedIcon />
-            </TimelineDot>
-            <TimelineConnector className={classes.orange} />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Internships
-              </Typography>
-              <Row right>
-                <Typography>Induction</Typography>
-                <CheckBoxOutlinedIcon className={classes.greenCheck} />
-              </Row>
-              <Row right>
-                <Typography>Progress reporting</Typography>
-                <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
-              </Row>
-              <Row right>
-                <Typography>Daily Logbook Completion</Typography>
-                <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
-              </Row>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot className={classes.grey}>
-              <AssignmentTurnedInOutlinedIcon />
-            </TimelineDot>
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Work Ready
-              </Typography>
-              <Row left>
-                <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
-                <Typography>Receive Certificate</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
-                <Typography>Update your LinkedIn Profile & Resume</Typography>
-              </Row>
-              <Row left>
-                <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck} />
-                <Typography>Ask for a recommendation</Typography>
-              </Row>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
+        <Card content={register} icon={<HowToRegOutlinedIcon />}  />
+        <Card content={search}  icon={<SearchOutlinedIcon />} view={viewInternships} />
+        <Card content={apply} icon={<TouchAppOutlinedIcon />} />
+        <Card content={internships} icon={<WorkOutlineOutlinedIcon />} />
+        <Card content={workReady} icon={<AssignmentTurnedInOutlinedIcon />} />
       </Timeline>
     </Col>
   )
