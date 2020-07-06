@@ -78,7 +78,9 @@ const TimelineIntern = ({ viewInternships }) => {
                 Search
               </Typography>
               <Row right>
-                <Typography>Search from recommended Internship Opportunities</Typography>
+                <Button color="inherit" onClick={viewInternships}>
+                  {`Search from recommended Internship Opportunities`}
+                </Button>
                 <CheckBoxOutlinedIcon className={classes.greenCheck} />
               </Row>
               <Row right>
