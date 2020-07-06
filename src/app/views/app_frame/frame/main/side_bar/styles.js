@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
   },
   logo: {
     padding: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
   },
 }))
 

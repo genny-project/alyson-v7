@@ -63,6 +63,8 @@ const Main = ({
         asks={asks}
         setViewing={setViewing}
         viewing={viewing}
+        setLoading={setLoading}
+        googleApiKey={googleApiKey}
       />
     )
   }
