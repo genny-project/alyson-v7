@@ -1,4 +1,4 @@
-import Timelines from './timeline-intern'
+import TimelineIntern from './timeline-intern'
 import TimelineHC from './timeline-hc'
 
-export { Timelines, TimelineHC }
+export { TimelineIntern, TimelineHC }

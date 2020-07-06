@@ -22,7 +22,7 @@ import SearchIcon from '@material-ui/icons/Search'
 
 import useStyles from './styles'
 
-const Timelines = ({ viewInternships }) => {
+const TimelineIntern = ({ viewInternships }) => {
   const classes = useStyles()
 
   return (
@@ -185,4 +185,4 @@ const Timelines = ({ viewInternships }) => {
   )
 }
 
-export default Timelines
+export default TimelineIntern
