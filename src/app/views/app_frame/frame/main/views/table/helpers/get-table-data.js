@@ -51,13 +51,13 @@ const getColumns = compose(
   pickBy((val, key) => includes('COL_', key || '') && !includes('_EVENT_', key || '')),
   prop('metaData'),
 )
-
+// todo: handle the address data, backend is inconsistent
 const getData = compose(
   map(
     compose(
       mergeAll,
       map(({ attributeCode, value, baseEntityCode }) => ({
-        [attributeCode]: value,
+        [attributeCode]: `${typeof value === 'object' ? value.full_address : value || ''}`,
         targetCode: baseEntityCode,
       })),
       head,

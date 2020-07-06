@@ -1,6 +1,6 @@
 import React from 'react'
 import { path, toLower, includes, has, not, prop } from 'ramda'
-import makeOnUpdate from './actions/on-update'
+import makeOnUpdate from '../helpers/actions/on-update'
 
 import RadioGroup from './radio_group'
 import PhoneNumberInput from './phone_number'
@@ -17,7 +17,8 @@ import MyInterviewWidget from './my_interview_widget'
 const Field = ({
   fieldData,
   baseEntities,
-  meta: { onSubmit, errors, setErrors, pristine, setPristine },
+  meta: { onSubmit, errors, setErrors, pristine, setPristine, touched, setTouched },
+  formFields,
   googleApiKey,
   defaultValues,
   user,
@@ -25,19 +26,32 @@ const Field = ({
   const label = path(['name'], fieldData)
   const dataType = path(['question', 'attribute', 'dataType'], fieldData)
   const fieldType = toLower(path(['typeName'], dataType))
-  const validationList = path(['validationList'], dataType)
 
   const {
     attributeCode,
     question: { code: questionCode },
     mandatory,
   } = fieldData
-  if (questionCode !== 'QUE_SUBMIT' && mandatory && not(has(questionCode, errors)))
-    setErrors({ ...errors, [questionCode]: true })
+
+  if (not(has(questionCode, errors))) {
+    setErrors(errors => ({
+      ...errors,
+      [questionCode]: questionCode !== 'QUE_SUBMIT' && mandatory,
+    }))
+  }
 
   const initialValue = path([attributeCode, 'value'], defaultValues) || false
 
-  const onUpdate = makeOnUpdate({ setErrors, mandatory, setPristine })
+  const touchedField = prop(questionCode, touched)
+
+  const onUpdate = makeOnUpdate({
+    setErrors,
+    mandatory,
+    setPristine,
+    fieldData,
+    touched,
+    setTouched,
+  })
 
   return fieldType === 'text' ||
     fieldType === 'email' ||
@@ -47,30 +61,21 @@ const Field = ({
       initialValue={initialValue}
       fieldData={fieldData}
       label={label}
-      variant="outlined"
-      fullWidth
       onUpdate={onUpdate}
       errors={errors}
-      setErrors={setErrors}
-      pristine={pristine}
-      setPristine={setPristine}
       fieldType={fieldType}
-      questionCode={questionCode}
-      inputType={
-        fieldType === 'abn number' || fieldType === 'java.lang.Integer' ? 'number' : 'text'
-      }
+      touched={touchedField}
     />
   ) : fieldType === 'radio' ? (
     <RadioGroup
       fieldData={fieldData}
       label={label}
-      dataType={dataType}
-      validationList={validationList}
       baseEntities={baseEntities}
       onUpdate={onUpdate}
       errors={errors}
-      setErrors={setErrors}
       questionCode={questionCode}
+      touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'mobile' || fieldType === 'landline' ? (
     <PhoneNumberInput
@@ -79,21 +84,22 @@ const Field = ({
       onUpdate={onUpdate}
       fieldType={fieldType}
       errors={errors}
-      setErrors={setErrors}
       questionCode={questionCode}
+      touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'dropdown' || fieldType === 'dropdownmultiple' || fieldType === 'tag' ? (
     <DropdownSelect
       initialValue={initialValue}
       fieldData={fieldData}
       baseEntities={baseEntities}
-      validationList={validationList}
       label={label}
       multiple={includes('multiple', fieldType) || fieldType === 'tag'}
       onUpdate={onUpdate}
       errors={errors}
       setErrors={setErrors}
       questionCode={questionCode}
+      touched={touchedField}
     />
   ) : fieldType === 'buttonevent' ? (
     <SubmitButton
@@ -104,6 +110,8 @@ const Field = ({
       setErrors={setErrors}
       pristine={pristine}
       questionCode={questionCode}
+      formFields={formFields}
+      touched={touchedField}
     />
   ) : fieldType === 'address' ? (
     <AddressSelect
@@ -112,6 +120,9 @@ const Field = ({
       googleApiKey={googleApiKey}
       setErrors={setErrors}
       questionCode={questionCode}
+      touched={touchedField}
+      initialValue={initialValue}
+      label={label}
     />
   ) : fieldType === 'image' ? (
     <ImageUpload
@@ -119,6 +130,7 @@ const Field = ({
       label={label}
       onUpdate={onUpdate}
       questionCode={questionCode}
+      touched={touchedField}
     />
   ) : fieldType === 'htmlarea' || fieldType === 'textarea' ? (
     <RichTextEditor
@@ -128,6 +140,8 @@ const Field = ({
       setErrors={setErrors}
       onUpdate={onUpdate}
       questionCode={questionCode}
+      touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'java.time.localdate' ? (
     <DateTimePicker
@@ -137,6 +151,8 @@ const Field = ({
       errors={errors}
       setErrors={setErrors}
       questionCode={questionCode}
+      touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'time' ? (
     <DateTimePicker
@@ -147,9 +163,11 @@ const Field = ({
       setErrors={setErrors}
       inputType="time"
       questionCode={questionCode}
+      touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'htmleditor' ? (
-    <HtmlDisplay fieldData={fieldData} label={label} />
+    <HtmlDisplay fieldData={fieldData} label={label} touched={touchedField} />
   ) : fieldType === 'myinterviewwidget' ? (
     <MyInterviewWidget
       fieldData={fieldData}
@@ -158,6 +176,7 @@ const Field = ({
       questionCode={questionCode}
       user={user}
       setErrors={setErrors}
+      touched={touchedField}
     />
   ) : (
     <div />

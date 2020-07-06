@@ -1,22 +1,41 @@
 import React from 'react'
-import { values, any, identity } from 'ramda'
-import { Button } from '@material-ui/core'
+import { values, keys, any, identity, compose, pickBy, map, prop, propEq } from 'ramda'
+import { Button, Typography } from '@material-ui/core'
+import { Row } from '../../../../components/layouts'
 
-const SubmitButton = ({ label, onSubmit, disabled, fieldData, pristine, errors, questionCode }) => {
+const SubmitButton = ({
+  label,
+  onSubmit,
+  disabled,
+  fieldData,
+  pristine,
+  errors,
+  questionCode,
+  formFields,
+}) => {
   const handleSubmit = () => onSubmit({ ask: fieldData })
 
   const anyErrors = any(identity)(values(errors))
 
+  const errorNames = compose(
+    map(prop('attributeName')),
+    map(key => find(propEq('code', key)(formFields))),
+    keys,
+  )(pickBy(identity, errors))
+
+  // todo: reinstate error checking
   return (
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={handleSubmit}
-      disabled={disabled || pristine || anyErrors}
-      test-id={questionCode}
-    >
-      {label}
-    </Button>
+    <Row>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+        disabled={disabled || pristine}
+        test-id={questionCode}
+      >
+        {label}
+      </Button>
+    </Row>
   )
 }
 

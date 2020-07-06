@@ -1,9 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { map, path, pick, prop, sortBy, values, head, compose, equals } from 'ramda'
+import React from 'react'
+import {
+  map,
+  path,
+  pick,
+  prop,
+  sortBy,
+  values,
+  head,
+  compose,
+  propOr,
+  any,
+  equals,
+  filter,
+} from 'ramda'
 import { TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-
-import makeHandleUpdate from '../../helpers/make-handle-update'
+import getValidationList from '../../helpers/get-validation-list'
 
 import useStyles from './styles'
 
@@ -11,7 +23,6 @@ const DropdownSelect = ({
   fieldData,
   initialValue,
   label,
-  validationList,
   baseEntities,
   multiple,
   onUpdate,
@@ -21,7 +32,8 @@ const DropdownSelect = ({
     head,
     prop('selectionBaseEntityGroupList'),
     head,
-  )(validationList)
+    getValidationList,
+  )(fieldData)
 
   const optionsLinkList = path([optionsGrpName, 'links'], baseEntities) || []
   const targetCodes =
@@ -29,42 +41,31 @@ const DropdownSelect = ({
 
   const options = map(pick(['name', 'code']), values(pick(values(targetCodes), baseEntities))) || []
 
-  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData)
-
   const {
     mandatory,
     question: { code: questionCode },
   } = fieldData
   const prepareData = map(prop('code'))
-  const [value, setValue] = useState(initialValue || multiple ? [] : null)
-  const [pristine, setPristine] = useState(true)
   const classes = useStyles()
 
   const handleChange = (event, newValue) => {
-    setValue(newValue)
-    handleUpdate(prepareData(multiple ? newValue : [newValue]))
+    onUpdate({ value: prepareData(multiple ? newValue : [newValue]) })
   }
 
-  useEffect(
-    () => {
-      if (initialValue === ' ') setValue(multiple ? [] : null)
-    },
-    [initialValue],
-  )
+  const defaultValue = filter(({ code }) => any(equals(code))(initialValue), options)
 
   return (
     <Autocomplete
       className={classes.select}
-      error={errors[questionCode] && !pristine}
       label={label}
       multiple={multiple}
-      value={value}
+      defaultValue={multiple ? defaultValue : head(defaultValue)}
       onChange={handleChange}
       required={mandatory}
       options={options}
-      getOptionLabel={prop('name')}
+      getOptionLabel={propOr('', 'name')}
       getOptionSelected={(option, value) => option.code === value.code}
-      renderInput={params => <TextField {...params} label={label} variant="outlined"/>}
+      renderInput={params => <TextField {...params} label={label} variant="outlined" />}
       test-id={questionCode}
     />
   )

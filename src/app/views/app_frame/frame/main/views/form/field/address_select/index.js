@@ -12,16 +12,12 @@ import LockIcon from '@material-ui/icons/LockOutlined'
 import LockOpenIcon from '@material-ui/icons/LockOpenOutlined'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
 import GoogleAutocompleteSuggestions from './google_autocomplete_suggestions'
-import { geocodeByPlaceId } from 'react-google-places-autocomplete'
 
-import makeAddressData from './helpers/make-address-data'
-import makeHandleUpdate from '../../helpers/make-handle-update'
 import { getIsMobile } from '../../../../utils'
+import handleSendAddress from './helpers/handle-send-address'
 import useStyles from './styles'
 
-const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
-  const handleUpdate = makeHandleUpdate(onUpdate)(fieldData)
-
+const AddressSelect = ({ label, fieldData, onUpdate, googleApiKey, initialValue }) => {
   const {
     mandatory,
     question: { code: questionCode },
@@ -31,22 +27,10 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
   const [value, setValue] = useState(null)
   const [restrictCountry, setRestrictCountry] = useState(true)
 
-  const handleSend = async () => {
-    console.log(value)
-    const result = await geocodeByPlaceId(value.place_id || '')
-
-    console.log(result)
-
-    if (result) {
-      handleUpdate(makeAddressData(result))
-    }
-  }
-
   useEffect(
     () => {
       if (value) {
-        setErrors(errors => ({ ...errors, [questionCode]: false }))
-        handleSend()
+        handleSendAddress({ onUpdate, value })
       }
     },
     [value],
@@ -72,8 +56,10 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
       </Grid>
       <Grid item {...(getIsMobile() ? '' : { xs: 11 })}>
         <GooglePlacesAutocomplete
+          initialValue={initialValue || ''}
           apiKey={googleApiKey}
           onSelect={selection => setValue(selection)}
+          required={mandatory}
           autocompletionRequest={
             restrictCountry
               ? {
@@ -84,15 +70,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
               : {}
           }
           renderInput={params => (
-            <TextField
-              {...params}
-              required={mandatory}
-              label="Address"
-              variant="outlined"
-              fullWidth
-              className={classes.inputField}
-              test-id={questionCode}
-            />
+            <TextField {...params} label={label || 'Address'} variant="outlined" fullWidth />
           )}
           loader={<CircularProgress />}
           renderSuggestions={(active, suggestions, onSelectSuggestion) => (
@@ -102,6 +80,7 @@ const AddressSelect = ({ fieldData, onUpdate, googleApiKey, setErrors }) => {
               onSelectSuggestion={onSelectSuggestion}
             />
           )}
+          test-id={questionCode}
         />
       </Grid>
     </Grid>

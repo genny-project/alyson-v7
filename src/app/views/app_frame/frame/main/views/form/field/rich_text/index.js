@@ -1,53 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import { pickAll } from 'ramda';
-import { HtmlEditor, MenuBar } from '@aeaton/react-prosemirror';
-import { options, menu } from '@aeaton/react-prosemirror-config-default';
-import { Typography } from '@material-ui/core';
+import { pickAll } from 'ramda'
+import { HtmlEditor, MenuBar } from '@aeaton/react-prosemirror'
+import { options, menu } from '@aeaton/react-prosemirror-config-default'
+import { Typography } from '@material-ui/core'
 
-import makeHandleUpdate from '../../helpers/make-handle-update';
-
-import useStyles from './styles';
+import useStyles from './styles'
 
 const limitMenu = {
   marks: {
-    ...pickAll( ['em', 'strong', 'underline'], menu.marks ),
+    ...pickAll(['em', 'strong', 'underline'], menu.marks),
   },
   blocks: {
-    ...pickAll( ['plain', 'bullet_list', 'ordered_list'], menu.blocks ),
+    ...pickAll(['plain', 'bullet_list', 'ordered_list'], menu.blocks),
   },
   history: {
     ...menu.history,
   },
-};
+}
 
-const RichTextEditor = ({
-  errors,
-  setErrors,
-  onUpdate,
-  fieldData,
-  label,
-  initialValue,
-  pristine,
-  setPristine,
-  fieldType,
-  inputType,
-  ...rest
-}) => {
-  const [value, setValue] = useState( '' );
+const RichTextEditor = ({ onUpdate, fieldData, label, initialValue }) => {
+  const [value, setValue] = useState(initialValue || '')
   const {
     question: { code: questionCode },
-    mandatory,
-  } = fieldData;
-
-  const handleUpdate = makeHandleUpdate( onUpdate )( fieldData, setErrors );
+  } = fieldData
 
   const handleChange = value => {
-    setValue( value );
-    handleUpdate( value );
-  };
+    setValue(value)
+    onUpdate({ value })
+  }
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <div className={classes.richTextContainer} test-id={questionCode}>
@@ -57,14 +40,8 @@ const RichTextEditor = ({
         onChange={handleChange}
         render={({ editor, view }) => (
           <div>
-            <MenuBar
-              menu={limitMenu}
-              view={view}
-            />
-            <Typography
-              color="textSecondary"
-              className={classes.labelText}
-            >
+            <MenuBar menu={limitMenu} view={view} />
+            <Typography color="textSecondary" className={classes.labelText}>
               {label}
             </Typography>
             {editor}
@@ -72,7 +49,7 @@ const RichTextEditor = ({
         )}
       />
     </div>
-  );
-};
+  )
+}
 
-export default RichTextEditor;
+export default RichTextEditor
