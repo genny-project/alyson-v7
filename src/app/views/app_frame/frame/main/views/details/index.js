@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { prop, pathOr, toUpper, contains, map, keys, includes } from 'ramda'
+import { prop, pathOr, toUpper, map, keys, includes } from 'ramda'
 
 import { Grid, Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
 import onUpdateSignature from './helpers/on-update-signature'
@@ -61,7 +61,7 @@ const Details = ({
   }
 
   return viewing.code === 'QUE_PRI_EVENT_VIEW_AGREEMENT' &&
-    !contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
+    !includes('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
     <LinearProgress />
   ) : mini ? (
     <Col stretch fullWidth className={classes.miniContainer}>
@@ -89,7 +89,7 @@ const Details = ({
         ),
         details,
       )}
-      {detailType === printBeg ? (
+      {includes('PRI_IS_INTERNSHIP', keys(detailView)) ? (
         <VideoPlayer url={pathOr('', ['PRI_LOOM_URL', 'value'], detailView)} mini />
       ) : null}
     </Col>
