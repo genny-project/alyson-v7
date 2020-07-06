@@ -1,5 +1,5 @@
 import React from 'react'
-import { map, addIndex } from 'ramda'
+import { map, addIndex, pathOr } from 'ramda'
 import { connect } from 'react-redux'
 
 import Unity, { UnityContent } from 'react-unity-webgl'
@@ -23,7 +23,7 @@ class UnityRender extends React.Component {
   constructor(props) {
     super(props)
 
-    this.unityContent = new UnityContent('/Build/safeTrafficTown.json', '/Build/UnityLoader.js')
+    this.unityContent = new UnityContent('/unity/safeTrafficTown.json', '/unity/UnityLoader.js')
 
     this.unityContent.on('unityEvent', eventname => {
       this.setState({
@@ -79,7 +79,9 @@ class UnityRender extends React.Component {
 
   componentDidUpdate() {
     if (this.props.unityEvent) {
-      const action = JSON.parse(this.props.unityEvent)
+      console.log(this.props.unityEvent.code)
+
+      const action = JSON.parse(this.props.unityEvent.code)
       this.unityContent.send(...action)
     }
   }
@@ -118,7 +120,4 @@ class UnityRender extends React.Component {
 const mapStateToProps = state => ({
   unityEvent: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'unityEvent'], state),
 })
-export default connect(
-  mapStateToProps,
-  UnityRender,
-)
+export default connect(mapStateToProps)(UnityRender)

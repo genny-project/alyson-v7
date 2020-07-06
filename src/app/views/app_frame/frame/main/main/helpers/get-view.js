@@ -1,4 +1,4 @@
-import { contains, prop, replace } from 'ramda'
+import { includes, prop } from 'ramda'
 import getBackendViewing from '../../helpers/get-backend-viewing'
 
 const getView = ({ viewing: { view, parentCode = '', code = '' }, asks, frames }) =>
@@ -6,19 +6,19 @@ const getView = ({ viewing: { view, parentCode = '', code = '' }, asks, frames }
     ? prop(view, asks)
     : view
       ? view
-      : contains('QUE_VIEW_AGREEMENT', code)
+      : includes('QUE_VIEW_AGREEMENT', code)
         ? 'AGREEMENT'
-        : contains('BUCKET', code)
+        : includes('BUCKET', code)
           ? 'BUCKET'
-          : contains('CARD_RIGHT', parentCode)
+          : includes('CARD_RIGHT', parentCode)
             ? 'BUCKET'
-            : contains('QUE_PRI_EVENT_VIEW', code)
+            : includes('QUE_PRI_EVENT_VIEW', code)
               ? 'DETAIL'
-              : getBackendViewing(frames) === 'UNITY'
+              : includes('STT_SCENARIO', code)
                 ? 'UNITY'
-                : contains('DASHBOARD', code)
+                : includes('DASHBOARD', code)
                   ? 'DASHBOARD'
-                  : contains('GRP', parentCode)
+                  : includes('GRP', parentCode)
                     ? 'TABLE'
                     : 'DASHBOARD'
 
