@@ -1,5 +1,6 @@
 import React from 'react'
-import { map, addIndex, pathOr } from 'ramda'
+import Bridge from '../../../../../../../utils/vertx/Bridge'
+import { map, addIndex, pathOr, replace } from 'ramda'
 import { connect } from 'react-redux'
 
 import Unity, { UnityContent } from 'react-unity-webgl'
@@ -24,6 +25,14 @@ class UnityRender extends React.Component {
     super(props)
 
     this.unityContent = new UnityContent('/unity/safeTrafficTown.json', '/unity/UnityLoader.js')
+
+    this.unityContent.on('loaded', () => {
+      Bridge.sendEvent({
+        event: 'UNITY',
+        data: { code: 'UNITY_LOADED' },
+        sendWithToken,
+      })
+    })
 
     this.unityContent.on('unityEvent', eventname => {
       this.setState({
@@ -77,12 +86,27 @@ class UnityRender extends React.Component {
     this.unityContent.send('reactObject', 'changeScene', scene)
   }
 
-  componentDidUpdate() {
-    if (this.props.unityEvent) {
-      console.log(this.props.unityEvent.code)
+  componentDidUpdate(prevProps) {
+    console.log(prevProps, this.props)
+    if (this.props.unityEvent.code && this.props.unityEvent.code !== prevProps.unityEvent.code) {
+      const action = JSON.parse(replace(/\\/g, '', this.props.unityEvent.code))
 
-      const action = JSON.parse(this.props.unityEvent.code)
-      this.unityContent.send(...action)
+      console.log(
+        'SENDING',
+        ...[
+          action[0],
+          action[1],
+          typeof action[2] === 'object' ? JSON.stringify(action[2]) : action[2],
+        ],
+      )
+
+      this.unityContent.send(
+        ...[
+          action[0],
+          action[1],
+          typeof action[2] === 'object' ? JSON.stringify(action[2]) : action[2],
+        ],
+      )
     }
   }
 
