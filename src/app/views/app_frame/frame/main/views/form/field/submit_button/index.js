@@ -30,7 +30,7 @@ const SubmitButton = ({
         variant="contained"
         color="primary"
         onClick={handleSubmit}
-        disabled={disabled || pristine}
+        disabled={disabled}
         test-id={questionCode}
       >
         {label}
