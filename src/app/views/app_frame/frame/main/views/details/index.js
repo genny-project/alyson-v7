@@ -1,15 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { prop, pathOr, toUpper, map, keys, includes } from 'ramda'
+import { connect } from 'react-redux'
 
-import { Grid, Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
+import { Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
+import { ToggleButton } from '@material-ui/lab'
+import EditIcon from '@material-ui/icons/Edit'
 import onUpdateSignature from './helpers/on-update-signature'
 import onSubmit from './helpers/on-submit'
 import useStyles from './styles'
-import { Col } from '../../components/layouts'
+import { Col, Row } from '../../components/layouts'
 import RowItem from './row_item'
 import VideoPlayer from './video_player'
 
 import getFieldsForType from './helpers/get-fields-for-type'
+import makeOnUpdate from './helpers/make-on-update'
 
 const Details = ({
   viewing,
@@ -20,6 +24,7 @@ const Details = ({
   googleApiKey,
   mini,
   noMap,
+  user,
 }) => {
   const detailView = prop(targetCode, attributes)
   const print = prop => pathOr('', [`PRI_${toUpper(prop || '')}`, 'value'], detailView)
@@ -27,9 +32,11 @@ const Details = ({
 
   const [rating, setRating] = useState(0)
   const [signature, setSignature] = useState(null)
+  const [editing, setEditing] = useState(false)
   const signatureRef = useRef()
   const classes = useStyles()
 
+  const onUpdate = makeOnUpdate({ user, targetCode })
   const handleSubmit = () =>
     onSubmit({
       setViewing,
@@ -46,7 +53,7 @@ const Details = ({
       if (!!signature)
         onUpdateSignature({
           targetCode,
-          sourceCode: 'PER_USER1',
+          sourceCode: pathOr('', ['data', 'code'], user),
           questionCode: 'QUE_AGREEMENT_DOCUMENT_INTERN_SIGNATURE',
           attributeCode: 'PRI_INTERN_AGREEMENT_SIGNATURE',
           askId: 171,
@@ -71,6 +78,7 @@ const Details = ({
       {map(
         ({ valueString, attributeName, attributeCode, type }) => (
           <RowItem
+            weight={pathOr(0, [attributeCode, 'weight'], detailView)}
             key={attributeName + 'item'}
             label={attributeName}
             value={valueString}
@@ -85,6 +93,8 @@ const Details = ({
             handleSubmit={handleSubmit}
             googleApiKey={googleApiKey}
             mini
+            editing={editing}
+            onUpdate={onUpdate}
           />
         ),
         details,
@@ -94,64 +104,69 @@ const Details = ({
       ) : null}
     </Col>
   ) : (
-    <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
-      {includes('PRI_IS_INTERNSHIP', keys(detailView)) ? (
-        <Typography variant="h5" style={{ marginBottom: '2rem' }}>
-          {print('name')}
-        </Typography>
-      ) : null}
-      {!includes('PRI_IS_INTERNSHIP', keys(detailView)) &&
-      !includes('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
-        <div>
-          <Grid item>
+    <Row top left>
+      <Col left spacing={4} className={classes.detailsContainer}>
+        {includes('PRI_IS_INTERNSHIP', keys(detailView)) ? (
+          <Typography variant="h5" style={{ marginBottom: '2rem' }}>
+            {print('name')}
+          </Typography>
+        ) : null}
+        {!includes('PRI_IS_INTERNSHIP', keys(detailView)) &&
+        !includes('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
+          <Col stretch>
             <Typography variant="h5" style={{ marginBottom: '2rem' }}>
               {print('name')}
             </Typography>
-          </Grid>
-          <Grid item>
-            <Grid container direction="row" spacing={2} alignItems="center">
-              <Grid item>
-                <Avatar alt={print('name')} src={print('user_profile_picture')} />
-              </Grid>
-              <Grid item>
-                <Grid container direction="column">
-                  <Grid item>
-                    <Typography>{print('address_full')}</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography>{`${print('email')}`}</Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </div>
-      ) : (
-        <div />
-      )}
-      {map(
-        ({ valueString, attributeName, attributeCode, type }) => (
-          <RowItem
-            key={attributeName + 'item'}
-            label={attributeName}
-            value={valueString}
-            code={attributeCode}
-            rating={rating}
-            setRating={setRating}
-            classes={classes}
-            type={type}
-            signatureRef={signatureRef}
-            signature={signature}
-            setSignature={setSignature}
-            handleSubmit={handleSubmit}
-            googleApiKey={googleApiKey}
-            noMap
-          />
-        ),
-        details,
-      )}
-    </Grid>
+            <Row left spacing={2}>
+              <Avatar alt={print('name')} src={print('user_profile_picture')} />
+              <Col>
+                <Typography>{`${print('address_full')}`}</Typography>
+                <Typography>{`${print('email')}`}</Typography>
+              </Col>
+            </Row>
+          </Col>
+        ) : (
+          <div />
+        )}
+        {map(
+          ({ valueString, attributeName, attributeCode, type }) => (
+            <RowItem
+              weight={pathOr(0, [attributeCode, 'weight'], detailView)}
+              key={attributeName + 'item'}
+              label={attributeName}
+              value={valueString}
+              code={attributeCode}
+              rating={rating}
+              setRating={setRating}
+              classes={classes}
+              type={type}
+              signatureRef={signatureRef}
+              signature={signature}
+              setSignature={setSignature}
+              handleSubmit={handleSubmit}
+              googleApiKey={googleApiKey}
+              noMap={noMap}
+              editing={editing}
+              onUpdate={onUpdate}
+            />
+          ),
+          details,
+        )}
+      </Col>
+      <ToggleButton
+        className={classes.editButton}
+        value="editing"
+        selected={editing}
+        onChange={() => setEditing(!editing)}
+      >
+        <EditIcon color="inherit" />
+      </ToggleButton>
+    </Row>
   )
 }
 
-export default Details
+const mapStateToProps = state => ({
+  user: state.vertx.user,
+})
+
+export default connect(mapStateToProps)(Details)

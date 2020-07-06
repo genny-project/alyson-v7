@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Row } from '../../../components/layouts'
 import { Grid, Typography, Button, Link } from '@material-ui/core'
@@ -6,6 +6,7 @@ import StreetView from '../street_view'
 import SignatureCanvas from 'react-signature-canvas'
 import { Rating } from '@material-ui/lab'
 import Video from '../video_player'
+import DetailsTextField from './text_field'
 
 const RowItem = ({
   signatureRef,
@@ -23,8 +24,13 @@ const RowItem = ({
   googleApiKey,
   mini,
   noMap,
-}) =>
-  mini ? (
+  editing,
+  onUpdate,
+  weight,
+}) => {
+  const [editingValue, setEditingValue] = useState(value || '')
+
+  return mini ? (
     type === 'street_view' || type === 'video' ? null : type === 'html' ? (
       <div dangerouslySetInnerHTML={{ __html: value }} />
     ) : (
@@ -71,11 +77,20 @@ const RowItem = ({
           <StreetView address={value} apiKey={googleApiKey} />
         ) : type === 'video' ? (
           <Video url={value} />
+        ) : editing ? (
+          <DetailsTextField
+            value={editingValue}
+            setValue={setEditingValue}
+            onUpdate={onUpdate}
+            code={code}
+            weight={weight}
+          />
         ) : (
           <Typography>{`${value.full_address || value}`}</Typography>
         )}
       </Grid>
     </Grid>
   )
+}
 
 export default RowItem

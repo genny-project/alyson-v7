@@ -9,9 +9,7 @@ const TextInput = ({ errors, onUpdate, fieldData, label, initialValue, touched }
     mandatory,
   } = fieldData
 
-  const handleChange = ({ target: { value } }) => {
-    setValue(value)
-  }
+  const handleChange = ({ target: { value } }) => setValue(value)
 
   return (
     <TextField

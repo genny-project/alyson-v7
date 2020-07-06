@@ -7,6 +7,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(1),
     width: ({ expand }) => theme.spacing(expand ? 40 : 16),
     transition: theme.transitions.create(['width']),
+    overflowY: 'scroll',
   },
 }))
 

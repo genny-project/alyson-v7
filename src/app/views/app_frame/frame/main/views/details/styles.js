@@ -16,6 +16,9 @@ const useStyles = makeStyles(theme => ({
     maxWidth: theme.spacing(25),
     textOverflow: 'ellipsis',
   },
+  editButton: {
+    marginTop: theme.spacing(4),
+  },
 }))
 
 export default useStyles

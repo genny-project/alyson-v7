@@ -24,11 +24,6 @@ const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing }) =>
 
   setViewing({ view: 'LOADING' })
 
-  await sleep()
-  // Please backend send me the data automatically
-
-  setLoading('Nearly done')
-
   if (typeof redirect === 'function') {
     redirect()
   } else {

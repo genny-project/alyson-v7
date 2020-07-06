@@ -1,4 +1,4 @@
-import { includes, keys, map } from 'ramda'
+import { includes, keys, map, toUpper } from 'ramda'
 
 const printIntern = [
   { label: 'Mobile', code: 'mobile' },
@@ -80,7 +80,12 @@ const printAgreement = [
 ]
 
 const getFieldsForType = (detailView, print) =>
-  map(({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }))(
+  map(({ label, code, type }) => ({
+    type,
+    valueString: print(code),
+    attributeName: label,
+    attributeCode: `PRI_${toUpper(code)}`,
+  }))(
     includes('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView))
       ? printAgreement
       : includes('PRI_IS_INTERN', keys(detailView))

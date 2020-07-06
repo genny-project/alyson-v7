@@ -118,6 +118,7 @@ const Main = ({
               setLoading={setLoading}
               viewing={viewing}
               googleApiKey={googleApiKey}
+              user={user}
             />
           ) : view === 'BUCKET' ? (
             <Bucket
