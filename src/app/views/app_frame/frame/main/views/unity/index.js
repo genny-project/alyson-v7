@@ -25,7 +25,7 @@ class UnityRender extends React.Component {
   constructor(props) {
     super(props)
 
-    this.unityContent = new UnityContent('/unity/safeTrafficTown.json', '/unity/UnityLoader.js')
+    this.unityContent = new UnityContent('/Build/safeTrafficTown.json', '/Build/UnityLoader.js')
 
     this.unityContent.on('loaded', () => {
       this.setState({ unityLoaded: true })
