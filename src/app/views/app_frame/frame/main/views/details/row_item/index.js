@@ -68,7 +68,7 @@ const RowItem = ({
         ) : type === 'url' ? (
           <Link href={value}>{value}</Link>
         ) : type === 'street_view' ? (
-          <StreetView address={value.full_address} apiKey={googleApiKey} />
+          <StreetView address={value} apiKey={googleApiKey} />
         ) : type === 'video' ? (
           <Video url={value} />
         ) : (

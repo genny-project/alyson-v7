@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { prop, path, toUpper, contains, map, keys, pathOr } from 'ramda'
+import { prop, pathOr, toUpper, contains, map, keys, includes } from 'ramda'
 
 import { Grid, Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
 import onUpdateSignature from './helpers/on-update-signature'
@@ -8,86 +8,9 @@ import useStyles from './styles'
 import { Col } from '../../components/layouts'
 import RowItem from './row_item'
 import VideoPlayer from './video_player'
-// TODO: Backend should send us the correct detail view specs
 
-const printIntern = [
-  { label: 'Mobile', code: 'mobile' },
-  { label: 'Education Provider', code: 'assoc_ep' },
-  { label: 'Current Course', code: 'current_course' },
-  { label: 'Student Id', code: 'student_id' },
-  { label: 'Industry', code: 'assoc_industry' },
-  { label: 'Specialisation', code: 'assoc_occupation' },
-  { label: 'Rating', code: 'rating', type: 'rating' },
-  { label: 'Transport Options', code: 'transport_options' },
-  { label: 'Region', code: 'region' },
-  { label: 'Next Scheduled Interview', code: 'next_interview' },
-  { label: 'Map View', code: 'address_full', type: 'street_view' },
-]
+import getFieldsForType from './helpers/get-fields-for-type'
 
-const printBeg = [
-  { label: 'Host Company', code: 'assoc_hc' },
-  { label: 'Host Company Rep', code: 'assoc_hcr' },
-  { label: 'Intern Supervisor', code: 'assoc_supervisor' },
-  { label: 'Internship Address', code: 'address_full' },
-  { label: 'Industry', code: 'assoc_industry' },
-  { label: 'Specialisation', code: 'assoc_occupation' },
-  { label: 'Start Date', code: 'start_date' },
-  { label: 'Days Per Week', code: 'days_per_week' },
-  { label: 'Duration', code: 'internship_duration_stripped' },
-  { label: 'Number of Interns', code: 'assoc_num_interns' },
-  { label: 'Video Presentation of Internship Opportunity', code: 'loom_url', type: 'video' },
-  { label: 'Map View', code: 'address_full', type: 'street_view' },
-]
-
-const printCpy = [
-  { label: 'ABN', code: 'abn' },
-  { label: 'Legal Name', code: 'legal_name' },
-  { label: 'Company Phone', code: 'mobile' },
-  { label: 'Decription', code: 'company_description' },
-  { label: 'Website', code: 'company_website_url', type: 'url' },
-  { label: 'Map View', code: 'address_full', type: 'street_view' },
-]
-
-const printHcr = [
-  { label: 'Company', code: 'assoc_hc' },
-  { label: 'Job Title', code: 'job_title' },
-  { label: 'Mobile', code: 'mobile' },
-  { label: 'Linkedin', code: 'linkedin_url', type: 'url' },
-]
-
-const printEp = [
-  { label: 'ABN', code: 'abn' },
-  { label: 'Legal Name', code: 'legal_name' },
-  { label: 'Provider ID', code: 'provider_id' },
-  { label: 'Phone', code: 'mobile' },
-  { label: 'Address', code: 'address_full' },
-  { label: 'Description', code: 'company_description' },
-  { label: 'Website', code: 'company_website_url', type: 'url' },
-]
-
-const printEpr = [
-  { label: 'Education Provider', code: 'education_provider' },
-  { label: 'Job Title', code: 'job_title' },
-  { label: 'Department', code: 'department' },
-  { label: 'Email', code: 'email' },
-  { label: 'Mobile', code: 'mobile' },
-  { label: 'Linkedin', code: 'linkedin_url' },
-]
-
-const printApp = [
-  { label: 'Student Id', code: 'student_id' },
-  { label: 'Industry', code: 'assoc_industry' },
-  { label: 'Education Provider', code: 'education_provider' },
-  { label: 'Current Course', code: 'current_course' },
-  { label: 'Specialisation', code: 'assoc_occupation' },
-  { label: 'Mobile', code: 'mobile' },
-  { label: 'Email', code: 'email' },
-]
-
-const printAgreement = [
-  { label: 'Agreement', code: 'agreement_html', type: 'html' },
-  { label: 'Intern Signature', code: 'intern_agreement_signature', type: 'signature' },
-]
 const Details = ({
   viewing,
   attributes,
@@ -99,27 +22,8 @@ const Details = ({
   noMap,
 }) => {
   const detailView = prop(targetCode, attributes)
-
-  const print = prop => path([`PRI_${toUpper(prop || '')}`, 'value'], detailView) || ''
-
-  const detailType = contains('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView))
-    ? printAgreement
-    : contains('PRI_IS_INTERN', keys(detailView))
-      ? printIntern
-      : contains('PRI_IS_INTERNSHIP', keys(detailView))
-        ? printBeg
-        : contains('PRI_IS_HOST_CPY_REP', keys(detailView)) ||
-          contains('PRI_IS_RP_REP', keys(detailView))
-          ? printHcr
-          : contains('PRI_IS_HOST_CPY', keys(detailView)) || contains('PRI_IS_RP', keys(detailView))
-            ? printCpy
-            : contains('PRI_IS_EDU_PROVIDER', keys(detailView))
-              ? printEp
-              : contains('PRI_IS_EDU_PRO_REP', keys(detailView))
-                ? printEpr
-                : contains('PRI_COMPASS', keys(detailView))
-                  ? printApp
-                  : false
+  const print = prop => pathOr('', [`PRI_${toUpper(prop || '')}`, 'value'], detailView)
+  const details = getFieldsForType(detailView, print)
 
   const [rating, setRating] = useState(0)
   const [signature, setSignature] = useState(null)
@@ -137,11 +41,6 @@ const Details = ({
       ask: { questionCode: 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT', targetCode },
     })
 
-  const details = map(
-    ({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }),
-    detailType,
-  )
-
   useEffect(
     () => {
       if (!!signature)
@@ -157,7 +56,7 @@ const Details = ({
     [signature],
   )
 
-  if (!detailType) {
+  if (!details) {
     return <CircularProgress />
   }
 
@@ -196,12 +95,13 @@ const Details = ({
     </Col>
   ) : (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
-      {detailType === printBeg ? (
+      {includes('PRI_IS_INTERNSHIP', keys(detailView)) ? (
         <Typography variant="h5" style={{ marginBottom: '2rem' }}>
           {print('name')}
         </Typography>
       ) : null}
-      {detailType !== printAgreement && detailType !== printBeg ? (
+      {!includes('PRI_IS_INTERNSHIP', keys(detailView)) &&
+      !includes('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
         <div>
           <Grid item>
             <Typography variant="h5" style={{ marginBottom: '2rem' }}>
@@ -229,7 +129,6 @@ const Details = ({
       ) : (
         <div />
       )}
-
       {map(
         ({ valueString, attributeName, attributeCode, type }) => (
           <RowItem
