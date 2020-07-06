@@ -1,6 +1,7 @@
 import React from 'react'
 import { path, toLower, includes, has, not, prop } from 'ramda'
 import makeOnUpdate from '../helpers/actions/on-update'
+import { Typography } from '@material-ui/core'
 
 import RadioGroup from './radio_group'
 import PhoneNumberInput from './phone_number'
@@ -29,7 +30,7 @@ const Field = ({
 
   const {
     attributeCode,
-    question: { code: questionCode },
+    question: { code: questionCode, name },
     mandatory,
   } = fieldData
 
@@ -178,6 +179,8 @@ const Field = ({
       setErrors={setErrors}
       touched={touchedField}
     />
+  ) : fieldType === 'json' ? (
+    <Typography>{name}</Typography>
   ) : (
     <div />
   )
