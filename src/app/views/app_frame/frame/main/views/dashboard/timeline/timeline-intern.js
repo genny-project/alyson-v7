@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { map, prop } from 'ramda';
+import { map, prop, addIndex, } from 'ramda';
 
 import { Row, Col } from '../../../components/layouts'
 import {
@@ -35,10 +35,10 @@ const register = {
 const search = {
   header: 'Search',
   body: [
-    { content: 'Search from recommended Internship Opportunities', status: true },
+    { content: 'Search from recommended Internship Opportunities', status: true, redirect: true },
     { content: 'Save Opportunities', status: true },
     { content: 'Complete Accreditation', status: true },
-  ]
+  ],
 }
 
 const apply = {
@@ -70,7 +70,9 @@ const workReady = {
   ]
 }
 
-const Card = ({icon, content, justify, view = () => console.error('nothing')}) => {
+const allData = [ register, search, apply, internships, workReady ]
+
+const Card = ({icon, header, body, side, viewInternships }) => {
   const classes = useStyles()
 
   return (
@@ -84,18 +86,23 @@ const Card = ({icon, content, justify, view = () => console.error('nothing')}) =
       <TimelineContent>
         <Paper elevation={3} className={classes.paper}>
           <Typography variant="h6" component="h1">
-            {prop('header', content)}
+            {header}
           </Typography>
             <Typography>
-              {map(({content, status}) =>
-                  <Row left>
-                    { status
+              {map(({content, status, redirect}) =>
+                  <Row left={side==='right'} right={side==='left'}>
+                  { side === 'right' ?  status
                       ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
-                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/> }
-                  <Button color="inherit" onClick={view}>
+                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/> : null }
+                  <Button color="inherit" onClick={redirect ? viewInternships : () => console.log('nothing')}>
                     {content}
                   </Button>
-                </Row>, prop ('body', content))}
+                  { side === 'left'
+                    ?  status
+                      ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
+                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/>
+                        : null }
+                </Row>, body)}
             </Typography>
         </Paper>
       </TimelineContent>
@@ -119,11 +126,8 @@ const TimelineIntern = ({ viewInternships }) => {
         onClick={viewInternships}
       >{`Start Internship Search`}</Button>
       <Timeline align="alternate">
-        <Card content={register} icon={<HowToRegOutlinedIcon />}  />
-        <Card content={search}  icon={<SearchOutlinedIcon />} view={viewInternships} />
-        <Card content={apply} icon={<TouchAppOutlinedIcon />} />
-        <Card content={internships} icon={<WorkOutlineOutlinedIcon />} />
-        <Card content={workReady} icon={<AssignmentTurnedInOutlinedIcon />} />
+       { addIndex(map)(( card, idx )=> <Card header={card.header} body={card.body} icon={<div/>} side={ idx%2 === 0 ? 'right' : 'left'} viewInternships={viewInternships}/>
+       , allData)}
       </Timeline>
     </Col>
   )
