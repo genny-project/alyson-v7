@@ -28,7 +28,7 @@ class UnityRender extends React.Component {
 
     this.unityContent.on('loaded', () => {
       Bridge.sendEvent({
-        event: 'UNITY',
+        event: 'UNITY_LOADED',
         data: { code: 'UNITY_LOADED' },
         sendWithToken: true,
       })
