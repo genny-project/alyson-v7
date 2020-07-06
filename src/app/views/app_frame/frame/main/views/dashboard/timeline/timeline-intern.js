@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { map, prop, addIndex, } from 'ramda';
+import getIcons from '../helpers/get-icons.js'
 
 import { Row, Col } from '../../../components/layouts'
 import {
@@ -29,7 +30,8 @@ const register = {
     { content: 'Register in Internmatch', status: true },
     { content: 'Complete Profile', status: true },
     { content: 'Record Introduction Video', status: true },
-  ]
+  ],
+  icon: 'register'
 }
 
 const search = {
@@ -39,6 +41,7 @@ const search = {
     { content: 'Save Opportunities', status: true },
     { content: 'Complete Accreditation', status: true },
   ],
+  icon: 'search'
 }
 
 const apply = {
@@ -49,7 +52,8 @@ const apply = {
     { content: 'Application sent to Host Company', status: true },
     { content: 'Attend Interviews', status: true },
     { content: 'Accept offer', status: true },
-  ]
+  ],
+  icon: 'apply'
 }
 
 const internships = {
@@ -58,7 +62,8 @@ const internships = {
     { content: 'Induction', status: true },
     { content: 'Progress reporting', status: false },
     { content: 'Daily Logbook Completion', status: false },
-  ]
+  ],
+  icon: 'internships'
 }
 
 const workReady = {
@@ -67,7 +72,8 @@ const workReady = {
     { content: 'Receive Certificate', status: false },
     { content: 'Update your LinkedIn Profile & Resume', status: false },
     { content: 'Ask for a recommendation', status: false },
-  ]
+  ],
+  icon: 'workReady'
 }
 
 const allData = [ register, search, apply, internships, workReady ]
@@ -90,18 +96,20 @@ const Card = ({icon, header, body, side, viewInternships }) => {
           </Typography>
             <Typography>
               {map(({content, status, redirect}) =>
-                  <Row left={side==='right'} right={side==='left'}>
-                  { side === 'right' ?  status
-                      ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
-                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/> : null }
-                  <Button color="inherit" onClick={redirect ? viewInternships : () => console.log('nothing')}>
-                    {content}
-                  </Button>
-                  { side === 'left'
-                    ?  status
+                <Row left={side==='right'} right={side==='left'}>
+                  { side === 'right'
+                    ? status
                       ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
                       : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/>
-                        : null }
+                    : null }
+                    <Button color="inherit" onClick={redirect ? viewInternships : () => console.log('nothing')}>
+                      {content}
+                    </Button>
+                  { side === 'left'
+                    ? status
+                      ? <CheckBoxOutlinedIcon className={classes.greenCheck} />
+                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/>
+                    : null }
                 </Row>, body)}
             </Typography>
         </Paper>
@@ -126,7 +134,7 @@ const TimelineIntern = ({ viewInternships }) => {
         onClick={viewInternships}
       >{`Start Internship Search`}</Button>
       <Timeline align="alternate">
-       { addIndex(map)(( card, idx )=> <Card header={card.header} body={card.body} icon={<div/>} side={ idx%2 === 0 ? 'right' : 'left'} viewInternships={viewInternships}/>
+       { addIndex(map)(( card, idx )=> <Card header={card.header} body={card.body} icon={getIcons(card.icon)} side={ idx%2 === 0 ? 'right' : 'left'} viewInternships={viewInternships}/>
        , allData)}
       </Timeline>
     </Col>
