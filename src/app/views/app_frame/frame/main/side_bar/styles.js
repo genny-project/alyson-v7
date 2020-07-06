@@ -12,10 +12,7 @@ const useStyles = makeStyles(theme => ({
   drawerPaper: {
     width: DRAWER_WIDTH,
     overflowY: 'scroll',
-    backgroundColor: ({ projectName }) =>
-      projectName === 'Safe Traffic Town'
-        ? theme.palette.primary.main
-        : theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
   },
   grow: {
     flexGrow: 1,
