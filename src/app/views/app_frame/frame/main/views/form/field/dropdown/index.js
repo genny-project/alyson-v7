@@ -67,6 +67,7 @@ const DropdownSelect = ({
       getOptionSelected={(option, value) => option.code === value.code}
       renderInput={params => <TextField {...params} label={label} variant="outlined" />}
       test-id={questionCode}
+      noOptionsText={'Loading options...'}
     />
   )
 }

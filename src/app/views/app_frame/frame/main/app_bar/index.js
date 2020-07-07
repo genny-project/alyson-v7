@@ -1,9 +1,8 @@
 import React from 'react'
 import { path } from 'ramda'
 
-import { AppBar, Toolbar, InputBase, IconButton, LinearProgress } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, LinearProgress } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-import SearchIcon from '@material-ui/icons/Search'
 import HeaderMenu from './header_menu'
 import ProfileMenu from './profile_menu'
 import { getIsMobile } from '../utils'
@@ -19,12 +18,14 @@ const MainAppBar = ({
   sidebarOpen,
   setSidebarOpen,
   loading,
+  currentSearch,
+  viewing,
 }) => {
   const profilePictureURL = path(['attributes', 'PRI_USER_PROFILE_PICTURE', 'value'], user)
   const userFullName = path(['data', 'name'], user)
   const classes = useStyles()
 
-  const fakePictureForDemo = path(['attributes', 'PRI_IMAGE_URL', 'value'], user)
+  const userCode = path(['data', 'code'], user)
 
   return (
     <div className={classes.grow}>
@@ -40,12 +41,14 @@ const MainAppBar = ({
               askId: 272,
               attributeCode: 'PRI_SEARCH_TEXT',
               code: 'QUE_SEARCH',
-              sourceCode: 'PER_USER1',
-              targetCode: 'PER_USER1',
+              sourceCode: userCode,
+              targetCode: userCode,
               weight: 1,
             }}
             setViewing={setViewing}
             setLoading={setLoading}
+            currentSearch={currentSearch}
+            viewing={viewing}
           />
           <div className={classes.grow} />
           <Drafts
@@ -65,7 +68,6 @@ const MainAppBar = ({
             parentCode="QUE_AVATAR_GRP"
             profilePictureURL={profilePictureURL}
             userFullName={userFullName}
-            fakePictureForDemo={fakePictureForDemo}
           />
         </Toolbar>
         {loading ? <LinearProgress className={classes.loadingBar} /> : null}

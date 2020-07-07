@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react'
 
-import { isEmpty, not, includes, tail } from 'ramda'
-import { InputBase, Typography } from '@material-ui/core'
+import { isEmpty, not, includes, tail, prop } from 'ramda'
+import { InputBase, Typography, IconButton, Menu, MenuItem } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
+import MoreIcon from '@material-ui/icons/ExpandMore'
 
 import makeSearch from './helpers/make-search'
 import useStyles from './styles'
 
-const Search = ({ setLoading, question, setViewing }) => {
+const Search = ({ setLoading, question, setViewing, viewing }) => {
   const { askId, attributeCode, code, sourceCode, targetCode, weight } = question
 
   const [value, setValue] = useState('')
   const [focused, setFocused] = useState(false)
+  const [optionsMenu, setOptionsMenu] = useState(null)
+  const [searchType, setSearchType] = useState('')
+
+  const setGlobalSearch = () => setSearchType('')
+  const setLocalSearch = () => setSearchType('!')
 
   const classes = useStyles({ focused })
 
@@ -30,11 +36,18 @@ const Search = ({ setLoading, question, setViewing }) => {
       if (not(isEmpty(value))) {
         if (!includes('$', value)) {
           search(value)
-          setLoading(`Searching for ${value} everywhere...`)
+          setLoading(`Searching for ${value} ${searchType ? 'on this table' : 'everywhere'}...`)
         }
       }
     },
     [value],
+  )
+
+  useEffect(
+    () => {
+      setOptionsMenu(null)
+    },
+    [searchType],
   )
 
   const handleDev = () => {
@@ -59,7 +72,6 @@ const Search = ({ setLoading, question, setViewing }) => {
           <SearchIcon color="inherit" />
         </div>
       )}
-
       <InputBase
         placeholder="Search..."
         onChange={event => setValue(event.target.value)}
@@ -69,6 +81,17 @@ const Search = ({ setLoading, question, setViewing }) => {
         }}
         inputProps={{ 'aria-label': 'search' }}
       />
+      <IconButton
+        disabled={prop('view', viewing) !== 'TABLE'}
+        color="inherit"
+        onClick={event => setOptionsMenu(event.currentTarget)}
+      >
+        <MoreIcon color="inherit" />
+      </IconButton>
+      <Menu open={!!optionsMenu} anchorEl={optionsMenu} onClose={() => setOptionsMenu(null)}>
+        <MenuItem onClick={setGlobalSearch}>{`Search All Internmatch`}</MenuItem>
+        <MenuItem onClick={setLocalSearch}>{`Search Only Current Table`}</MenuItem>
+      </Menu>
     </div>
   )
 }

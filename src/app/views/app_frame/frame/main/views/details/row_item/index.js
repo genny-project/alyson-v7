@@ -66,7 +66,13 @@ const RowItem = ({
             >{`SUBMIT`}</Button>
           </Row>
         ) : type === 'url' ? (
-          <Link href={value}>{value}</Link>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => (window.location = `https://${value}`)}
+          >
+            {value}
+          </Link>
         ) : type === 'street_view' ? (
           <StreetView address={value} apiKey={googleApiKey} />
         ) : type === 'video' ? (
