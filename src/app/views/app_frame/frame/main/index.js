@@ -125,6 +125,7 @@ const Sam = ({
           setSidebarOpen={setSidebarOpen}
           loading={loading}
           setLoading={setLoading}
+          viewing={viewing}
         />
         <Sidebar
           items={getDrawerItems(frames, asks, user)}
@@ -138,6 +139,7 @@ const Sam = ({
           open={sidebarOpen}
           setOpen={setSidebarOpen}
           projectName={projectName}
+          currentSearch={currentSearch}
         />
         <Main
           downloadLink={downloadLink}

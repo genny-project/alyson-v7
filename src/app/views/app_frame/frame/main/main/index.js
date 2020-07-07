@@ -121,7 +121,7 @@ const Main = ({
               viewing={viewing}
               googleApiKey={googleApiKey}
             />
-          ) : view === 'BUCKET' ? (
+          ) : view === 'BUCKET' || view === 'PROCESS' ? (
             <Bucket
               currentSearch={currentSearch}
               setViewing={setViewing}
