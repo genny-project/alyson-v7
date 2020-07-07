@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { contains, prop, has, map, mergeAll } from 'ramda'
+import { contains, has, map, mergeAll, includes } from 'ramda'
 import { Row, Col } from '../../../../components/layouts'
 import {
   Card,
@@ -90,9 +90,8 @@ const Item = ({
       setViewing({
         code: code === 'QUE_PRI_EVENT_OFFER' ? 'QUE_PRI_EVENT_OFFERED_APPLICATION' : code,
         targetCode,
-        view: code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? 'FORM' : 'BUCKET',
-        redirect:
-          code === 'QUE_PRI_EVENT_EDIT_AGREEMENT' ? () => setViewing({ view: 'BUCKET' }) : null,
+        view: includes('_EDIT_', code) ? 'FORM' : includes('_VIEW_', code) ? 'DETAIL' : 'BUCKET',
+        redirect: () => setViewing({ view: 'BUCKET' }),
       })
     }
   }

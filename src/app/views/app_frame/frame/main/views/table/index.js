@@ -40,16 +40,9 @@ const TableView = ({ currentSearch, setViewing, viewing, downloadLink }) => {
 
   useEffect(
     () => {
-      if (title && title !== 'Loading...') setLoadingPage(false)
+      title && title !== 'Loading...' ? setLoadingPage(false) : setLoadingPage(true)
     },
-    [title],
-  )
-
-  useEffect(
-    () => {
-      setLoadingPage(true)
-    },
-    [viewing],
+    [title, viewing],
   )
 
   const classes = useStyles()
@@ -67,7 +60,8 @@ const TableView = ({ currentSearch, setViewing, viewing, downloadLink }) => {
         }
         options={{
           pageSize,
-          maxBodyHeight: 550,
+          maxBodyHeight: 500,
+          search: false,
         }}
         actions={[
           ...map(({ attributeCode, attributeName, baseEntityCode }) => ({

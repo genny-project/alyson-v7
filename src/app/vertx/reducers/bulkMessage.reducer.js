@@ -46,13 +46,12 @@ const reducer = (state = initialState, { type, payload }) => {
   }
 
   if (type === 'UNITY_EVENT') {
-    const unityEvent = path(['code'], payload || {})
     return {
       ...state,
       ...{
         SAM: {
           ...pathOr({}, ['SAM'], state),
-          unityEvent,
+          unityEvent: payload,
         },
       },
     }

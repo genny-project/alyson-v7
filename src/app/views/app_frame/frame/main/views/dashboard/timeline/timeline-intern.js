@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { map, addIndex } from 'ramda';
+import { map, addIndex } from 'ramda'
 import getIcons from '../helpers/get-icons.js'
 import Card from '../card'
 import { Row, Col } from '../../../components/layouts'
 import getStatus from '../helpers/get-status'
 
-import {
-  Timeline,
-} from '@material-ui/lab'
+import { Timeline } from '@material-ui/lab'
 import { Paper, Typography, Button } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -18,7 +16,7 @@ const register = {
     { content: 'Complete Profile', status: true },
     { content: 'Record Introduction Video', status: true },
   ],
-  icon: 'register'
+  icon: 'register',
 }
 
 const search = {
@@ -28,7 +26,7 @@ const search = {
     { content: 'Save Opportunities', status: true },
     { content: 'Complete Accreditation', status: true },
   ],
-  icon: 'search'
+  icon: 'search',
 }
 
 const apply = {
@@ -40,7 +38,7 @@ const apply = {
     { content: 'Attend Interviews', status: true },
     { content: 'Accept offer', status: true },
   ],
-  icon: 'apply'
+  icon: 'apply',
 }
 
 const internships = {
@@ -50,7 +48,7 @@ const internships = {
     { content: 'Progress reporting', status: false },
     { content: 'Daily Logbook Completion', status: false },
   ],
-  icon: 'internships'
+  icon: 'internships',
 }
 
 const workReady = {
@@ -60,13 +58,12 @@ const workReady = {
     { content: 'Update your LinkedIn Profile & Resume', status: false },
     { content: 'Ask for a recommendation', status: false },
   ],
-  icon: 'workReady'
+  icon: 'workReady',
 }
 
-const allData = [ register, search, apply, internships, workReady ]
+const allData = [register, search, apply, internships, workReady]
 
 const TimelineIntern = ({ viewInternships }) => {
-
   return (
     <Col stretch align="center">
       <Row>
@@ -82,16 +79,20 @@ const TimelineIntern = ({ viewInternships }) => {
         {`Start Internship Search`}
       </Button>
       <Timeline align="alternate">
-       { addIndex(map)(({header, body, icon}, idx) =>
-        <Card
-          status={getStatus(body)}
-          header={header}
-          body={body}
-          icon={getIcons(icon)}
-          side={ idx%2 === 0 ? 'right' : 'left'}
-          isLast={ idx === (allData.length -1) }
-          viewInternships={viewInternships} />
-       , allData)}
+        {addIndex(map)(
+          ({ header, body, icon }, idx) => (
+            <Card
+              status={getStatus(body)}
+              header={header}
+              body={body}
+              icon={getIcons(icon)}
+              side={idx % 2 === 0 ? 'right' : 'left'}
+              isLast={idx === allData.length - 1}
+              viewInternships={viewInternships}
+            />
+          ),
+          allData,
+        )}
       </Timeline>
     </Col>
   )

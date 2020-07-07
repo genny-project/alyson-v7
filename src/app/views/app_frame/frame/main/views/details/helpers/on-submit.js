@@ -1,9 +1,6 @@
 import Bridge from '../../../../../../../../utils/vertx/Bridge'
 import debounce from 'lodash.debounce'
 
-const sleep = ms => {
-  return new Promise(resolve => setTimeout(resolve, ms || 8000))
-}
 const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing }) => async ({
   ask,
   value,
@@ -20,26 +17,13 @@ const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing }) =>
     value,
   })
 
-  setLoading('Saving...')
-
-  setViewing({ view: 'LOADING' })
-
-  await sleep()
-  // Please backend send me the data automatically
-
-  setLoading('Nearly done')
-
-  if (typeof redirect === 'function') {
-    redirect()
-  } else {
-    setViewing({
-      view: 'BUCKET',
-      code: `QUE_PRI_EVENT_VIEW_${targetCode}`,
-      parentCode: `QUE_${targetCode}_GRP`,
-      rootCode: 'QUE_TABLE_RESULTS_GRP',
-      targetCode,
-    })
-  }
+  setViewing({
+    view: 'BUCKET',
+    code: `QUE_PRI_EVENT_VIEW_${targetCode}`,
+    parentCode: `QUE_${targetCode}_GRP`,
+    rootCode: 'QUE_TABLE_RESULTS_GRP',
+    targetCode,
+  })
 }
 
 export default onSubmit

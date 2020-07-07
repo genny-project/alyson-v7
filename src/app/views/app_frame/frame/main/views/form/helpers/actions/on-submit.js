@@ -5,7 +5,7 @@ const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms || 8000))
 }
 
-const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing }) => async ({
+const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing, noSaving }) => async ({
   ask,
   value,
 }) => {
@@ -21,19 +21,21 @@ const onSubmit = ({ redirect, parentCode, rootCode, setLoading, setViewing }) =>
     value,
   })
 
-  setViewing({ view: 'LOADING' })
-  setLoading('Saving...')
+  if (!noSaving) {
+    setViewing({ view: 'LOADING' })
+    setLoading('Saving...')
 
-  if (typeof redirect === 'function') {
-    redirect({ setViewing, setLoading })
-  } else {
-    setViewing({
-      code: `QUE_PRI_EVENT_VIEW_${targetCode}`,
-      parentCode: `QUE_${targetCode}_GRP`,
-      rootCode: 'QUE_TABLE_RESULTS_GRP',
-      targetCode,
-      view: 'DETAIL',
-    })
+    if (typeof redirect === 'function') {
+      redirect({ setViewing, setLoading })
+    } else {
+      setViewing({
+        code: `QUE_PRI_EVENT_VIEW_${targetCode}`,
+        parentCode: `QUE_${targetCode}_GRP`,
+        rootCode: 'QUE_TABLE_RESULTS_GRP',
+        targetCode,
+        view: 'DETAIL',
+      })
+    }
   }
 }
 

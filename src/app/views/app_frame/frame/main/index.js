@@ -51,12 +51,6 @@ const Sam = ({
 
   useEffect(
     () => {
-      if (
-        !!viewing.view &&
-        includes('_EVENT_VIEW', viewing.code || '') &&
-        viewing.rootCode !== 'QUE_TABLE_RESULTS_GRP'
-      )
-        setViewing({ ...viewing, view: false })
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
         if (
           (!viewing.code === 'QUE_TABLE_NEXT_BTN' &&
@@ -68,7 +62,7 @@ const Sam = ({
           setLoading(true)
         }
 
-        if (includes('MENU', prop('code', viewing) || '')) {
+        if (viewing.view === 'FORM') {
           setStaleTarget(
             prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
           )
@@ -125,6 +119,7 @@ const Sam = ({
           setSidebarOpen={setSidebarOpen}
           loading={loading}
           setLoading={setLoading}
+          viewing={viewing}
         />
         <Sidebar
           items={getDrawerItems(frames, asks, user)}
@@ -138,6 +133,7 @@ const Sam = ({
           open={sidebarOpen}
           setOpen={setSidebarOpen}
           projectName={projectName}
+          currentSearch={currentSearch}
         />
         <Main
           downloadLink={downloadLink}

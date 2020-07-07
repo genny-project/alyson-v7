@@ -56,7 +56,9 @@ const AddressSelect = ({ label, fieldData, onUpdate, googleApiKey, initialValue 
       </Grid>
       <Grid item {...(getIsMobile() ? '' : { xs: 11 })}>
         <GooglePlacesAutocomplete
-          initialValue={initialValue || ''}
+          initialValue={
+            typeof initialValue === 'object' ? initialValue.full_address : initialValue || ''
+          }
           apiKey={googleApiKey}
           onSelect={selection => setValue(selection)}
           required={mandatory}

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { map, addIndex } from 'ramda';
+import { map, addIndex } from 'ramda'
 import getIcons from '../helpers/get-icons.js'
 import Card from '../card'
 import { Row, Col } from '../../../components/layouts'
 import getStatus from '../helpers/get-status'
 
-import {
-  Timeline,
-} from '@material-ui/lab'
+import { Timeline } from '@material-ui/lab'
 import { Paper, Typography, Button } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -18,7 +16,7 @@ const register = {
     { content: 'Complete Profile', status: true },
     { content: 'Record Introduction Video', status: true },
   ],
-  icon: 'register'
+  icon: 'register',
 }
 
 const postInternships = {
@@ -27,7 +25,7 @@ const postInternships = {
     { content: 'List internship opportunities', status: true },
     { content: 'Invite recommended interns to apply', status: true },
   ],
-  icon: 'postInternships'
+  icon: 'postInternships',
 }
 
 const select = {
@@ -37,7 +35,7 @@ const select = {
     { content: 'Shortlist applicants', status: true },
     { content: 'Book Interviews', status: true },
   ],
-  icon: 'select'
+  icon: 'select',
 }
 
 const internship = {
@@ -48,7 +46,7 @@ const internship = {
     { content: 'Completion Check In', status: false },
     { content: 'Approve intern logbooks', status: false },
   ],
-  icon: 'internship'
+  icon: 'internship',
 }
 
 const completionOfInternship = {
@@ -58,25 +56,29 @@ const completionOfInternship = {
     { content: 'Intern Recommendation', status: false },
     { content: 'Post another opportunity', status: false },
   ],
-  icon: 'completionOfInternship'
+  icon: 'completionOfInternship',
 }
 
-const allData = [ register, postInternships, select, internship, completionOfInternship ]
+const allData = [register, postInternships, select, internship, completionOfInternship]
 
 const TimelineHC = () => {
   return (
     <Col stretch align="center">
       <Typography variant="h4">5 Steps for securing an Intern</Typography>
       <Timeline align="alternate">
-       { addIndex(map)(({header, body, icon}, idx) =>
-        <Card
-          status={getStatus(body)}
-          header={header}
-          body={body}
-          icon={getIcons(icon)}
-          side={ idx%2 === 0 ? 'right' : 'left' }
-          isLast={ idx === (allData.length -1)} />
-       , allData)}
+        {addIndex(map)(
+          ({ header, body, icon }, idx) => (
+            <Card
+              status={getStatus(body)}
+              header={header}
+              body={body}
+              icon={getIcons(icon)}
+              side={idx % 2 === 0 ? 'right' : 'left'}
+              isLast={idx === allData.length - 1}
+            />
+          ),
+          allData,
+        )}
       </Timeline>
     </Col>
   )
