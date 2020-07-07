@@ -19,6 +19,8 @@ const useStyles = makeStyles(theme => ({
   greyCheck: {
     color: theme.palette.grey[500],
   },
+  iconColor: {
+    color: ({isComplete, isOngoing, isNotStarted}) => isComplete ? theme.palette.success.main : isOngoing ? theme.palette.warning.dark : theme.palette.grey[500]}
 }))
 
 export default useStyles

@@ -67,17 +67,6 @@ const allData = [ register, search, apply, internships, workReady ]
 
 const TimelineIntern = ({ viewInternships }) => {
 
-  const [completion, setCompletion] = useState([])
-
-  useEffect(() => {
-    {allData.map((value) => setCompletion((completion) => ({
-      ...completion,
-      [value.icon]: getStatus(value)
-      })))
-    }
-  }, [])
-
-
   return (
     <Col stretch align="center">
       <Row>
@@ -95,7 +84,7 @@ const TimelineIntern = ({ viewInternships }) => {
       <Timeline align="alternate">
        { addIndex(map)(({header, body, icon}, idx) =>
         <Card
-          status={completion[icon]}
+          status={getStatus(body)}
           header={header}
           body={body}
           icon={getIcons(icon)}

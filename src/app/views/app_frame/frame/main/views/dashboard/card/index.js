@@ -15,14 +15,16 @@ import {
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 
-const Card = ({icon, header, body, side, isLast, status, viewInternships }) => {
+const Card = ({icon, header, body, side, isLast, viewInternships, status }) => {
 
-  const classes = useStyles()
+  const classes = useStyles(status)
+
+  console.error('status', status)
 
   return (
     <TimelineItem>
       <TimelineSeparator>
-        <TimelineDot className={classes.green}>
+        <TimelineDot className={classes.iconColor}>
           {icon}
         </TimelineDot>
          { !isLast ? <TimelineConnector className={classes.green} /> : null}

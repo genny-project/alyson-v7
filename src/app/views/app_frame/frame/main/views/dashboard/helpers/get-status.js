@@ -1,19 +1,15 @@
-import { any, all, equals } from 'ramda';
+import { any, all, equals, map, prop } from 'ramda';
 
 const equalsFalse = equals(false)
 const equalsTrue = equals(true)
-const check = (step) => step.body.map(({status})=> status)
+const getStatusOffBody = map(prop('status'))
 
-const getStatus = (step) => {
-
-  const isComplete = all(equalsTrue)(check(step))
-  const isNotStarted = all(equalsFalse)(check(step))
-  const isOngoingComplete = any(equalsTrue)(check(step))
-  const isOngoingNotComplete = any(equalsFalse)(check(step))
-  const isOngoing = isOngoingComplete && isOngoingNotComplete
-
-  return {isComplete, isNotStarted, isOngoing}
-
-}
+const getStatus = (body) => ({
+  isComplete: all(equalsTrue)(getStatusOffBody(body)),
+  isNotStarted: all(equalsFalse)(getStatusOffBody(body)),
+  isOngoingComplete: any(equalsTrue)(getStatusOffBody(body)),
+  isOngoingNotComplete: any(equalsFalse)(getStatusOffBody(body)),
+  isOngoing: any(equalsTrue)(getStatusOffBody(body)) && any(equalsFalse)(getStatusOffBody(body))
+})
 
 export default getStatus
