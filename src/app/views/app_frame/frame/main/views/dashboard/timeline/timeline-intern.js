@@ -1,28 +1,14 @@
 import React, { useState } from 'react'
-import { map, prop, addIndex, } from 'ramda';
+import { map, addIndex } from 'ramda';
 import getIcons from '../helpers/get-icons.js'
+import Card from '../card'
 
 import { Row, Col } from '../../../components/layouts'
 import {
   Timeline,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineConnector,
-  TimelineContent,
-  TimelineOppositeContent,
-  TimelineDot,
 } from '@material-ui/lab'
 import { Paper, Typography, Button } from '@material-ui/core'
-import TouchAppOutlinedIcon from '@material-ui/icons/TouchAppOutlined'
-import WorkOutlineOutlinedIcon from '@material-ui/icons/WorkOutlineOutlined'
-import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined'
-import HowToRegOutlinedIcon from '@material-ui/icons/HowToRegOutlined'
-import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined'
-import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
-import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 import SearchIcon from '@material-ui/icons/Search'
-
-import useStyles from './styles'
 
 const register = {
   header: 'Register',
@@ -78,49 +64,7 @@ const workReady = {
 
 const allData = [ register, search, apply, internships, workReady ]
 
-const Card = ({icon, header, body, side, viewInternships }) => {
-  const classes = useStyles()
-
-  return (
-    <TimelineItem>
-      <TimelineSeparator>
-        <TimelineDot className={classes.green}>
-          {icon}
-        </TimelineDot>
-        <TimelineConnector className={classes.green} />
-      </TimelineSeparator>
-      <TimelineContent>
-        <Paper elevation={3} className={classes.paper}>
-          <Typography variant="h6" component="h1">
-            {header}
-          </Typography>
-            <Typography>
-              {map(({content, status, redirect}) =>
-                <Row left={side==='right'} right={side==='left'}>
-                  { side === 'right'
-                    ? status
-                      ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
-                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/>
-                    : null }
-                    <Button color="inherit" onClick={redirect ? viewInternships : () => console.log('nothing')}>
-                      {content}
-                    </Button>
-                  { side === 'left'
-                    ? status
-                      ? <CheckBoxOutlinedIcon className={classes.greenCheck} />
-                      : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/>
-                    : null }
-                </Row>, body)}
-            </Typography>
-        </Paper>
-      </TimelineContent>
-    </TimelineItem>
-  )
-}
-
 const TimelineIntern = ({ viewInternships }) => {
-  const classes = useStyles()
-
   return (
     <Col stretch align="center">
       <Row>
@@ -132,9 +76,18 @@ const TimelineIntern = ({ viewInternships }) => {
         variant="contained"
         startIcon={<SearchIcon />}
         onClick={viewInternships}
-      >{`Start Internship Search`}</Button>
+      >
+        {`Start Internship Search`}
+      </Button>
       <Timeline align="alternate">
-       { addIndex(map)(( card, idx )=> <Card header={card.header} body={card.body} icon={getIcons(card.icon)} side={ idx%2 === 0 ? 'right' : 'left'} viewInternships={viewInternships}/>
+       { addIndex(map)(({header, body, icon}, idx) =>
+        <Card
+          header={header}
+          body={body}
+          icon={getIcons(icon)}
+          side={ idx%2 === 0 ? 'right' : 'left'}
+          isLast={ idx === (allData.length -1) }
+          viewInternships={viewInternships} />
        , allData)}
       </Timeline>
     </Col>
