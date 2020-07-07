@@ -19,8 +19,6 @@ const Card = ({icon, header, body, side, isLast, viewInternships, status }) => {
 
   const classes = useStyles(status)
 
-  console.error('status', status)
-
   return (
     <TimelineItem>
       <TimelineSeparator>
