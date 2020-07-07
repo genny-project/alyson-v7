@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { map, addIndex } from 'ramda';
 import getIcons from '../helpers/get-icons.js'
 import Card from '../card'
-
 import { Row, Col } from '../../../components/layouts'
+import getStatus from '../helpers/get-status'
+
 import {
   Timeline,
 } from '@material-ui/lab'
@@ -63,19 +64,18 @@ const completionOfInternship = {
 const allData = [ register, postInternships, select, internship, completionOfInternship ]
 
 const TimelineHC = () => {
-
   return (
     <Col stretch align="center">
       <Typography variant="h4">5 Steps for securing an Intern</Typography>
       <Timeline align="alternate">
-       { addIndex(map)(({header, body, icon}, idx)=>
+       { addIndex(map)(({header, body, icon}, idx) =>
         <Card
+          status={getStatus(body)}
           header={header}
           body={body}
           icon={getIcons(icon)}
-          side={ idx%2 === 0 ? 'right' : 'left'}
-          length={allData.length}
-        />
+          side={ idx%2 === 0 ? 'right' : 'left' }
+          isLast={ idx === (allData.length -1)} />
        , allData)}
       </Timeline>
     </Col>
