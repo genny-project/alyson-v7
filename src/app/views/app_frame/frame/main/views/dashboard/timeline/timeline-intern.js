@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { map, addIndex } from 'ramda';
+import React, { useState, useEffect } from 'react'
+import { map, addIndex, any, all, equals } from 'ramda';
 import getIcons from '../helpers/get-icons.js'
 import Card from '../card'
 
@@ -64,7 +64,36 @@ const workReady = {
 
 const allData = [ register, search, apply, internships, workReady ]
 
+const equalsFalse = equals(false)
+const equalsTrue = equals(true)
+const check = (step) => step.body.map(({status})=> status)
+
+const checkStatus = (step) => {
+
+  const isComplete = all(equalsTrue)(check(step))
+  const isNotStarted = all(equalsFalse)(check(step))
+  const isOngoingComplete = any(equalsTrue)(check(step))
+  const isOngoingNotComplete = any(equalsFalse)(check(step))
+  const isOngoing = isOngoingComplete && isOngoingNotComplete
+
+  return {isComplete, isNotStarted, isOngoing}
+
+}
+
+
 const TimelineIntern = ({ viewInternships }) => {
+  const [completion, setCompletion] = useState([])
+
+  useEffect(() => {
+    {allData.map((value) => setCompletion((completion) => completion.concat({
+        header: value.icon,
+        status: checkStatus(value)
+      })))
+    }
+  }, [])
+
+  console.error('completion', completion)
+
   return (
     <Col stretch align="center">
       <Row>
