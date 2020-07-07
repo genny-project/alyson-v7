@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { identity, pathOr, prop } from 'ramda'
+import { identity, pathOr, path } from 'ramda'
 import { connect } from 'react-redux'
 
 import Unity from 'react-unity-webgl'
@@ -9,7 +9,6 @@ import buildUnityContent from './helpers/build-unity-content'
 
 const UnityRender = ({
   setViewing,
-  viewing,
   setLoading,
   currentAsk,
   attributes,
@@ -18,7 +17,6 @@ const UnityRender = ({
   user,
   unityEvent,
 }) => {
-  const [lastUnityEvent, setLastUnityEvent] = useState(unityEvent || '')
   const [loaded, setLoaded] = useState(false)
 
   const { unityContent, sendToUnity, sendLoadedSignal } = buildUnityContent({
@@ -30,20 +28,15 @@ const UnityRender = ({
 
   useEffect(
     () => {
-      if (unityEvent && unityEvent !== lastUnityEvent) {
+      if (unityEvent) {
         sendToUnity(unityEvent)
-        setLastUnityEvent(unityEvent)
       }
     },
     [unityEvent],
   )
 
-  useEffect(
-    () => {
-      if (loaded) sendLoadedSignal()
-    },
-    [viewing],
-  )
+  if (path(['childAsks', 0, 'name'], currentAsk) === 'Loading Questions' && loaded)
+    sendLoadedSignal()
 
   return (
     <div style={{ marginTop: '5rem', marginLeft: '12rem', marginRight: '2rem' }}>
@@ -58,6 +51,7 @@ const UnityRender = ({
         googleApiKey={googleApiKey}
         user={user}
         viewing={{ redirect: () => setViewing({ view: 'UNITY' }) }}
+        noSaving
       />
     </div>
   )
