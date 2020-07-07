@@ -18,6 +18,7 @@ const Form = ({
   googleApiKey,
   viewing: { redirect: viewingRedirect },
   user,
+  noSaving,
 }) => {
   const [errors, setErrors] = useState({})
   const [pristine, setPristine] = useState(true)
@@ -41,6 +42,7 @@ const Form = ({
       touched,
       setTouched,
       onSubmit: onSubmit({
+        noSaving,
         redirect: redirect || viewingRedirect,
         parentCode,
         rootCode,
