@@ -4,9 +4,6 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: '6px 16px',
   },
-  secondaryTail: {
-    backgroundColor: theme.palette.secondary.main,
-  },
   green: {
     backgroundColor: theme.palette.success.main,
   },
@@ -22,6 +19,8 @@ const useStyles = makeStyles(theme => ({
   greyCheck: {
     color: theme.palette.grey[500],
   },
+  iconColor: {
+    backgroundColor: ({isComplete, isOngoing, isNotStarted}) => isComplete ? theme.palette.success.main : isOngoing ? theme.palette.warning.dark : theme.palette.grey[500]}
 }))
 
 export default useStyles
