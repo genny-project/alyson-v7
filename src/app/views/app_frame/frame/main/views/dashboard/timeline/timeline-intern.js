@@ -70,14 +70,13 @@ const TimelineIntern = ({ viewInternships }) => {
   const [completion, setCompletion] = useState([])
 
   useEffect(() => {
-    {allData.map((value) => setCompletion((completion) => completion.concat({
-        header: value.icon,
-        status: getStatus(value)
+    {allData.map((value) => setCompletion((completion) => ({
+      ...completion,
+      [value.icon]: getStatus(value)
       })))
     }
   }, [])
 
-  console.error('completion', completion)
 
   return (
     <Col stretch align="center">
@@ -96,6 +95,7 @@ const TimelineIntern = ({ viewInternships }) => {
       <Timeline align="alternate">
        { addIndex(map)(({header, body, icon}, idx) =>
         <Card
+          status={completion[icon]}
           header={header}
           body={body}
           icon={getIcons(icon)}

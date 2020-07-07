@@ -1,7 +1,7 @@
 import React from 'react'
 import useStyles from './styles'
 import { Row } from '../../../components/layouts'
-import { map } from 'ramda';
+import { map, filter } from 'ramda';
 
 import { Paper, Typography, Button } from '@material-ui/core'
 import {
@@ -15,7 +15,7 @@ import {
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 
-const Card = ({icon, header, body, side, isLast, viewInternships }) => {
+const Card = ({icon, header, body, side, isLast, status, viewInternships }) => {
 
   const classes = useStyles()
 
