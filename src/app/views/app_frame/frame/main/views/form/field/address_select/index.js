@@ -35,7 +35,6 @@ const AddressSelect = ({ label, fieldData, onUpdate, googleApiKey, initialValue 
     },
     [value],
   )
-  console.log(initialValue)
 
   return (
     <Grid container direction={getIsMobile() ? 'column' : 'row'} spacing={2}>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { map, length, split, head, toUpper, compose } from 'ramda'
+import { map, length, split, head, toUpper, compose, includes } from 'ramda'
 
 import { List, ListItem, ListItemText, Collapse, ClickAwayListener } from '@material-ui/core'
 
@@ -50,7 +50,11 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
                     className={classes.listItem}
                     button
                     onClick={() =>
-                      setViewing({ view: 'TABLE', parentCode: questionCode, code: childCode })
+                      setViewing({
+                        view: includes('STT_SCENARIO', childCode) ? 'UNITY' : 'TABLE',
+                        parentCode: questionCode,
+                        code: childCode,
+                      })
                     }
                     test-id={`${childCode}`}
                   >

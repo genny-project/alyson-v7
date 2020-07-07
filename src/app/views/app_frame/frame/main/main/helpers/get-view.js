@@ -14,12 +14,10 @@ const getView = ({ viewing: { view, parentCode = '', code = '' }, asks, frames }
             ? 'BUCKET'
             : includes('QUE_PRI_EVENT_VIEW', code)
               ? 'DETAIL'
-              : includes('STT_SCENARIO', code)
-                ? 'UNITY'
-                : includes('DASHBOARD', code)
-                  ? 'DASHBOARD'
-                  : includes('GRP', parentCode)
-                    ? 'TABLE'
-                    : 'DASHBOARD'
+              : includes('DASHBOARD', code)
+                ? 'DASHBOARD'
+                : includes('GRP', parentCode)
+                  ? 'TABLE'
+                  : 'DASHBOARD'
 
 export default getView

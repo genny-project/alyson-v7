@@ -116,7 +116,8 @@ const Details = ({
               <Grid item>
                 <Grid container direction="column">
                   <Grid item>
-                    <Typography>{print('address_full')}</Typography>
+                    <Typography>{`${prop('full_address', print('address_full') || {}) ||
+                      print('address_full')}`}</Typography>
                   </Grid>
                   <Grid item>
                     <Typography>{`${print('email')}`}</Typography>
