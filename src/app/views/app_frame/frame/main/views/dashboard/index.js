@@ -46,7 +46,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
   if (not(isEmpty(dashboard))) {
-    return isIntern ? (
+    return isAdmin ? (
       <TimelineIntern viewInternships={viewInternships} />
     ) : isSupervisor ? (
       <TimelineHC />
