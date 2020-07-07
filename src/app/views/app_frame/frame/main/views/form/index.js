@@ -16,7 +16,7 @@ const Form = ({
   attributes,
   baseEntities,
   googleApiKey,
-  viewing: { viewingRedirect },
+  viewing: { redirect: viewingRedirect },
   user,
 }) => {
   const [errors, setErrors] = useState({})
