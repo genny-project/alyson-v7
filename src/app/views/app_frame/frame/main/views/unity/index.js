@@ -22,14 +22,13 @@ const UnityRender = ({
   const { unityContent, sendToUnity, sendLoadedSignal } = buildUnityContent({
     user,
     onLoaded: () => setLoaded(true),
-    onUnityAnswer: identity,
-    onUnityEvent: identity,
+    question: pathOr({}, ['childAsks', 0], currentAsk),
   })
 
   useEffect(
     () => {
       if (unityEvent) {
-        sendToUnity(unityEvent)
+        sendToUnity(unityEvent, loaded)
       }
     },
     [unityEvent],
