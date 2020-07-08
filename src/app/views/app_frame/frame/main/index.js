@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import {ErrorBoundary} from 'react-error-boundary'
 import { Bridge } from '../../../../../utils/vertx/index'
 
-import { ThemeProvider } from '@material-ui/core'
+import { ThemeProvider, Typography } from '@material-ui/core'
 
 import { getDrawerItems, getAppBarItems } from './helpers/get-components'
 import getAgency from './helpers/get-agency'
@@ -15,6 +15,7 @@ import Sidebar from './side_bar'
 import AppBar from './app_bar'
 import Main from './main'
 import SidePanel from './side_panel'
+import {Row, Col} from './components/layouts'
 
 import getDataForEvent from './helpers/get-data-for-event'
 import getGoogleApiKey from './helpers/get-google-api-key'
@@ -52,11 +53,14 @@ const Sam = ({
 
   const ErrorFallback = ({error, componentStack, resetErrorBoundary}) => {
     return (
-      <div role="alert">
-        <p>This is testing of Error Boundary.</p>
-        <pre>{error.message}</pre>
-        <pre>{componentStack}</pre>
-      </div>
+      <Col spacing={10}>
+        <Row>
+          <Typography variant="h4" color="secondary">{`Error Occurred.`}</Typography>
+          <Typography variant="h4"> {`Please contact the development team`}</Typography>
+        </Row>
+        {/*<pre>{error.message}</pre>
+        <pre>{componentStack}</pre>*/}
+      </Col>
     )
   }
 
