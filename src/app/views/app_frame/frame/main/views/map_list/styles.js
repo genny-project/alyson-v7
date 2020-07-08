@@ -8,6 +8,7 @@ const useStyles = makeStyles(theme => ({
     width: ({ anySelected }) => (anySelected ? theme.spacing(70) : theme.spacing(0)),
     overflow: 'hidden',
     transition: theme.transitions.create(['width']),
+    marginRight: theme.spacing(1),
   },
   mapColumn: {
     width: ({ anySelected }) => (anySelected ? theme.spacing(40) : theme.spacing(40)),

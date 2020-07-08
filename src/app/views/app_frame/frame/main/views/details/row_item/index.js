@@ -27,12 +27,12 @@ const RowItem = ({
     type === 'street_view' || type === 'video' ? null : type === 'html' ? (
       <div dangerouslySetInnerHTML={{ __html: value }} />
     ) : (
-      <Row spaceBetween fullWidth>
-        <Typography color="secondary" variant="subtitle2">
+      <Row fullWidth left>
+        <Typography color="secondary" variant="subtitle2" className={classes.miniLabel}>
           {label}
         </Typography>
         <Typography variant="subtitle1" className={classes.miniValue} noWrap>
-          {`${value}`}
+          {`${typeof value === 'object' ? value.full_address : value}`}
         </Typography>
       </Row>
     )

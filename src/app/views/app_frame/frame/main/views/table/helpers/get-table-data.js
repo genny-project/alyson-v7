@@ -98,7 +98,7 @@ const makeActionData = ({ attributeCode, targetCode }) => ({
   targetCode,
 })
 
-const getWithAddressLatLon = async ({ data, setDataPoints, setLoadingPage }) => {
+const getWithAddressLatLon = async ({ data, setDataPoints }) => {
   const result = await compose(
     Promise.all.bind(Promise),
     map(({ PRI_ADDRESS_FULL: address }) => geocodeByAddress(address)),
@@ -106,7 +106,6 @@ const getWithAddressLatLon = async ({ data, setDataPoints, setLoadingPage }) => 
   )(data || [])
 
   setDataPoints(addIndex(map)((geo, idx) => ({ ...head(geo), ...data[idx] }), result))
-  setLoadingPage(false)
 }
 
 export {
