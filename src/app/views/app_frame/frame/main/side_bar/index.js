@@ -59,8 +59,6 @@ const MainSideBar = ({
     )
   })(dropDowns)
 
-  console.log(projectName)
-
   return (
     <Drawer
       variant={getIsMobile() ? 'temporary' : 'permanent'}
