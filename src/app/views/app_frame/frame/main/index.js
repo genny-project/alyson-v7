@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
 
 import { includes, prop, replace, has, pathOr, length, keys } from 'ramda'
 import { connect } from 'react-redux'
@@ -48,6 +49,16 @@ const Sam = ({
   const dataForEvent = getDataForEvent(viewing, user)
 
   const theme = makeTheme({ attributes, asks })
+
+  const ErrorFallback = ({error, componentStack, resetErrorBoundary}) => {
+    return (
+      <div role="alert">
+        <p>This is testing of Error Boundary.</p>
+        <pre>{error.message}</pre>
+        <pre>{componentStack}</pre>
+      </div>
+    )
+  }
 
   useEffect(
     () => {
@@ -107,6 +118,7 @@ const Sam = ({
   )
 
   return (
+    <ErrorBoundary FallbackComponent={ErrorFallback} >
     <ThemeProvider theme={theme}>
       <div>
         <AppBar
@@ -164,6 +176,7 @@ const Sam = ({
         setSidePanelOpen={setSidePanelOpen}
       />
     </ThemeProvider>
+    </ErrorBoundary>
   )
 }
 
