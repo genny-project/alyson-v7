@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { GoogleApiWrapper, Map, Marker } from 'google-maps-react'
-import { map, forEach, pathOr, addIndex, length } from 'ramda'
+import React, { useState, useEffect } from 'react'
+import { GoogleApiWrapper, Map } from 'google-maps-react'
+import { map, addIndex, length } from 'ramda'
 import { Button } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import {
@@ -13,6 +13,8 @@ import { Row, Col } from '../../components/layouts'
 import ListItem from './list_item'
 import Filters from '../../components/filters'
 import DetailPane from './detail_pane'
+import makeMarkers from './helpers/make-markers'
+import extendBoundsFromData from './helpers/extend-bounds-from-data'
 
 import useStyles from './styles'
 
@@ -20,13 +22,11 @@ const MapList = ({
   currentSearch,
   setViewing,
   viewing,
-  downloadLink,
   google,
   attributes,
   setLoading,
   apiKey: googleApiKey,
 }) => {
-  const [loadingPage, setLoadingPage] = useState(true)
   const [dataPoints, setDataPoints] = useState([])
   const [basicFilter, setBasicFilter] = useState('')
   const [currentDataPoint, setCurrentDataPoint] = useState(null)
@@ -36,40 +36,31 @@ const MapList = ({
   const actions = getActions(table)
 
   const bounds = new google.maps.LatLngBounds()
-  const singlePoint = new google.maps.LatLngBounds()
-
-  if (currentDataPoint !== null) {
-    const { lat, lng } = pathOr({}, ['geometry', 'location'], dataPoints[currentDataPoint])
-    singlePoint.extend({ lat: lat(), lng: lng() })
-  }
-
-  forEach(point => {
-    const { lat, lng } = pathOr({}, ['geometry', 'location'], point)
-    bounds.extend({ lat: lat(), lng: lng() })
-  }, dataPoints)
-
-  const markers = map(({ PRI_NAME, PRI_ASSOC_HC, geometry: { location: { lat, lng } } }) => (
-    <Marker
-      key={PRI_NAME + 'marker'}
-      title={PRI_NAME}
-      name={PRI_ASSOC_HC}
-      position={{ lat: lat(), lng: lng() }}
-    />
-  ))(dataPoints)
-
-  const classes = useStyles({ anySelected: currentDataPoint !== null })
 
   useEffect(() => {
-    setLoadingPage(true)
-    getWithAddressLatLon({ data, setDataPoints, setLoadingPage })
+    getWithAddressLatLon({ data, setDataPoints })
   }, [])
 
   useEffect(
     () => {
-      if (length(dataPoints) && currentDataPoint === null) setCurrentDataPoint(0)
+      if (length(dataPoints) && currentDataPoint === null) {
+        setCurrentDataPoint(0)
+        extendBoundsFromData({ dataPoints, bounds })
+      }
     },
     [dataPoints],
   )
+
+  useEffect(
+    () => {
+      if (currentDataPoint !== null) {
+        extendBoundsFromData({ bounds, dataPoints: [dataPoints[currentDataPoint]] })
+      }
+    },
+    [currentDataPoint],
+  )
+
+  const classes = useStyles({ anySelected: currentDataPoint !== null })
 
   return (
     <Col top left>
@@ -140,14 +131,14 @@ const MapList = ({
               width: '30rem',
               height: '30rem',
             }}
-            bounds={currentDataPoint !== null ? singlePoint : bounds}
+            bounds={bounds}
             onReady={(mapProps, map) => {
               map.setOptions({
                 maxZoom: 16,
               })
             }}
           >
-            {markers}
+            {makeMarkers(dataPoints)}
           </Map>
         </Col>
       </Row>

@@ -52,16 +52,6 @@ const Sam = ({
   useEffect(
     () => {
       if (viewing.code || viewing.parentCode || viewing.targetCode) {
-        if (
-          (!viewing.code === 'QUE_TABLE_NEXT_BTN' &&
-            !viewing.code === 'QUE_TABLE_PREVIOUS_BTN' &&
-            viewing.parentCode &&
-            !has(viewing.targetCode, baseEntities)) ||
-          viewing.code === 'QUE_TAB_BUCKET_VIEW'
-        ) {
-          setLoading(true)
-        }
-
         if (viewing.view === 'FORM') {
           setStaleTarget(
             prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
