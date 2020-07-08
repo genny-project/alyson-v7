@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { includes, prop, replace, has, pathOr, length, keys } from 'ramda'
 import { connect } from 'react-redux'
+import { ErrorBoundary } from 'react-error-boundary'
 import { Bridge } from '../../../../../utils/vertx/index'
 
 import { ThemeProvider } from '@material-ui/core'
@@ -9,6 +10,7 @@ import { ThemeProvider } from '@material-ui/core'
 import { getDrawerItems, getAppBarItems } from './helpers/get-components'
 import getAgency from './helpers/get-agency'
 import getAgencyCompany from './helpers/get-agency-company'
+import getErrorFallback from './helpers/get-error'
 
 import Sidebar from './side_bar'
 import AppBar from './app_bar'
@@ -99,60 +101,68 @@ const Sam = ({
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <AppBar
-          items={getAppBarItems(frames, asks, themes)}
-          asks={asks}
-          frames={frames}
-          user={user}
-          setViewing={setViewing}
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          loading={loading}
-          setLoading={setLoading}
-          viewing={viewing}
-        />
-        <Sidebar
-          items={getDrawerItems(frames, asks, user)}
-          asks={asks}
-          frames={frames}
-          user={user}
-          agencyCompany={agencyCompany}
-          setViewing={setViewing}
-          viewing={viewing}
-          attributes={attributes}
-          open={sidebarOpen}
-          setOpen={setSidebarOpen}
-          projectName={projectName}
-          currentSearch={currentSearch}
-        />
-        <Main
-          downloadLink={downloadLink}
-          loading={loading}
-          setLoading={setLoading}
-          viewing={viewing}
-          setViewing={setViewing}
-          asks={asks}
-          frames={frames}
-          user={user}
-          baseEntities={baseEntities}
-          googleApiKey={googleApiKey}
-          attributes={attributes}
-          projectName={projectName}
-          currentSearch={currentSearch}
-          dialogContent={dialogContent}
-          setDialogContent={setDialogContent}
-          drawerItems={getDrawerItems(frames, asks, user)}
-          dashboard={dashboard}
-          currentAsk={currentAsk}
-        />
-      </div>
-      <SidePanel
-        sidePanelOpen={sidePanelOpen}
-        toggleSidePanel={toggleSidePanel}
-        baseEntities={baseEntities}
-        attributes={attributes}
-        setSidePanelOpen={setSidePanelOpen}
-      />
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
+          <AppBar
+            items={getAppBarItems(frames, asks, themes)}
+            asks={asks}
+            frames={frames}
+            user={user}
+            setViewing={setViewing}
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            loading={loading}
+            setLoading={setLoading}
+            viewing={viewing}
+          />
+        </ErrorBoundary>
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
+          <Sidebar
+            items={getDrawerItems(frames, asks, user)}
+            asks={asks}
+            frames={frames}
+            user={user}
+            agencyCompany={agencyCompany}
+            setViewing={setViewing}
+            viewing={viewing}
+            attributes={attributes}
+            open={sidebarOpen}
+            setOpen={setSidebarOpen}
+            projectName={projectName}
+            currentSearch={currentSearch}
+          />
+        </ErrorBoundary>
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
+          <Main
+            downloadLink={downloadLink}
+            loading={loading}
+            setLoading={setLoading}
+            viewing={viewing}
+            setViewing={setViewing}
+            asks={asks}
+            frames={frames}
+            user={user}
+            baseEntities={baseEntities}
+            googleApiKey={googleApiKey}
+            attributes={attributes}
+            projectName={projectName}
+            currentSearch={currentSearch}
+            dialogContent={dialogContent}
+            setDialogContent={setDialogContent}
+            drawerItems={getDrawerItems(frames, asks, user)}
+            dashboard={dashboard}
+            currentAsk={currentAsk}
+          />
+        </ErrorBoundary>
+        </div>
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
+          <SidePanel
+            sidePanelOpen={sidePanelOpen}
+            toggleSidePanel={toggleSidePanel}
+            baseEntities={baseEntities}
+            attributes={attributes}
+            setSidePanelOpen={setSidePanelOpen}
+          />
+        </ErrorBoundary>
     </ThemeProvider>
   )
 }
