@@ -9,7 +9,7 @@ const getErrorFallback = ({error, componentStack, resetErrorBoundary}) => {
   return (
     <Col spacing={10}>
       <Row>
-        <Typography variant="h6"> {`Ooops! Something went wrong. Please refresh your browser and try again.`}</Typography>
+        <Typography variant="h6"> {`Ooops! Something went wrong. Please refresh your browser and try again.`} </Typography>
         <SentimentVeryDissatisfiedIcon />
       </Row>
     </Col>

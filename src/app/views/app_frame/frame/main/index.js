@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { includes, prop, replace, has, pathOr, length, keys } from 'ramda'
 import { connect } from 'react-redux'
-import {ErrorBoundary} from 'react-error-boundary'
+import { ErrorBoundary } from 'react-error-boundary'
 import { Bridge } from '../../../../../utils/vertx/index'
 
 import { ThemeProvider } from '@material-ui/core'
@@ -164,15 +164,15 @@ const Sam = ({
           />
         </ErrorBoundary>
         </div>
-      <ErrorBoundary FallbackComponent={getErrorFallback} >
-        <SidePanel
-          sidePanelOpen={sidePanelOpen}
-          toggleSidePanel={toggleSidePanel}
-          baseEntities={baseEntities}
-          attributes={attributes}
-          setSidePanelOpen={setSidePanelOpen}
-        />
-      </ErrorBoundary>
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
+          <SidePanel
+            sidePanelOpen={sidePanelOpen}
+            toggleSidePanel={toggleSidePanel}
+            baseEntities={baseEntities}
+            attributes={attributes}
+            setSidePanelOpen={setSidePanelOpen}
+          />
+        </ErrorBoundary>
     </ThemeProvider>
   )
 }
