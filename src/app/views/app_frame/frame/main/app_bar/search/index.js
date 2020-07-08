@@ -4,7 +4,7 @@ import { isEmpty, not, includes, tail, prop } from 'ramda'
 import { InputBase, Typography, IconButton, Menu, MenuItem } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import MoreIcon from '@material-ui/icons/ExpandMore'
-
+import ClearIcon from '@material-ui/icons/Clear'
 import makeSearch from './helpers/make-search'
 import useStyles from './styles'
 
@@ -36,7 +36,7 @@ const Search = ({ setLoading, question, setViewing, viewing }) => {
       if (not(isEmpty(value))) {
         if (!includes('$', value)) {
           search(value)
-          setLoading(`Searching for ${value} ${searchType ? 'on this table' : 'everywhere'}...`)
+          setLoading(`Searching for ${value} ${searchType ? 'here' : 'everywhere'}...`)
         }
       }
     },
@@ -54,6 +54,11 @@ const Search = ({ setLoading, question, setViewing, viewing }) => {
     if (includes('$', value)) {
       setViewing(JSON.parse(tail(value)))
     }
+  }
+
+  const handleClearSearch = () => {
+    setViewing({ ...viewing })
+    setValue('')
   }
 
   return (
@@ -81,16 +86,18 @@ const Search = ({ setLoading, question, setViewing, viewing }) => {
         }}
         inputProps={{ 'aria-label': 'search' }}
       />
-      <IconButton
-        disabled={prop('view', viewing) !== 'TABLE'}
-        color="inherit"
-        onClick={event => setOptionsMenu(event.currentTarget)}
-      >
+      <IconButton color="inherit" onClick={handleClearSearch}>
+        <ClearIcon color="inherit" />
+      </IconButton>
+      <IconButton color="inherit" onClick={event => setOptionsMenu(event.currentTarget)}>
         <MoreIcon color="inherit" />
       </IconButton>
       <Menu open={!!optionsMenu} anchorEl={optionsMenu} onClose={() => setOptionsMenu(null)}>
-        <MenuItem onClick={setGlobalSearch}>{`Search All Internmatch`}</MenuItem>
-        <MenuItem onClick={setLocalSearch}>{`Search Only Current Table`}</MenuItem>
+        <MenuItem
+          selected={!searchType}
+          onClick={setGlobalSearch}
+        >{`Search All Internmatch`}</MenuItem>
+        <MenuItem selecteed={!!searchType} onClick={setLocalSearch}>{`Search Here`}</MenuItem>
       </Menu>
     </div>
   )

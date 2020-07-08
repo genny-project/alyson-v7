@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { includes, prop, replace, has, pathOr, length, keys } from 'ramda'
+import { includes, prop, replace, pathOr, length, keys } from 'ramda'
 import { connect } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
 import { Bridge } from '../../../../../utils/vertx/index'
@@ -59,6 +59,10 @@ const Sam = ({
             prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}),
           )
           setLoading(true)
+        }
+
+        if (includes('AGREEMENT', viewing.code) && !viewing.STOP) {
+          setViewing({ ...viewing, STOP: true }) // help me Obi Wan
         }
 
         Bridge.sendEvent({

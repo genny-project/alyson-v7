@@ -8,6 +8,7 @@ import {
   getData,
   getActions,
   getWithAddressLatLon,
+  getTitle,
 } from '../table/helpers/get-table-data'
 import { Row, Col } from '../../components/layouts'
 import ListItem from './list_item'
@@ -27,15 +28,22 @@ const MapList = ({
   setLoading,
   apiKey: googleApiKey,
 }) => {
+  const [loadingPage, setLoadingPage] = useState(true)
   const [dataPoints, setDataPoints] = useState([])
-  const [basicFilter, setBasicFilter] = useState('')
+  const [basicFilter, setBasicFilter] = useState('relevance')
   const [currentDataPoint, setCurrentDataPoint] = useState(null)
 
   const table = getTable(currentSearch)
   const data = getData(table)
   const actions = getActions(table)
+  const title = getTitle(table)
 
   const bounds = new google.maps.LatLngBounds()
+
+  extendBoundsFromData({
+    bounds,
+    dataPoints: currentDataPoint !== null ? [dataPoints[currentDataPoint]] : dataPoints,
+  })
 
   useEffect(() => {
     getWithAddressLatLon({ data, setDataPoints })
@@ -45,7 +53,6 @@ const MapList = ({
     () => {
       if (length(dataPoints) && currentDataPoint === null) {
         setCurrentDataPoint(0)
-        extendBoundsFromData({ dataPoints, bounds })
       }
     },
     [dataPoints],
@@ -53,11 +60,9 @@ const MapList = ({
 
   useEffect(
     () => {
-      if (currentDataPoint !== null) {
-        extendBoundsFromData({ bounds, dataPoints: [dataPoints[currentDataPoint]] })
-      }
+      title && title !== 'Loading...' ? setLoadingPage(false) : setLoadingPage(true)
     },
-    [currentDataPoint],
+    [title, viewing],
   )
 
   const classes = useStyles({ anySelected: currentDataPoint !== null })
@@ -79,7 +84,7 @@ const MapList = ({
           { label: 'Choose a Sub-Industry', options: [] },
         ]}
         basicFilterOptions={[
-          { value: 'distance', label: 'Distance', icon: 'straighten' },
+          { value: 'relevance', label: 'Relevance', icon: 'how_to_reg' },
           { value: 'industry', label: 'Industry', icon: 'domain' },
         ]}
         basicFilterText="Sort by"
