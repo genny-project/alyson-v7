@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import {ErrorBoundary} from 'react-error-boundary'
 
 import { includes, prop, replace, has, pathOr, length, keys } from 'ramda'
 import { connect } from 'react-redux'
+import {ErrorBoundary} from 'react-error-boundary'
 import { Bridge } from '../../../../../utils/vertx/index'
 
 import { ThemeProvider } from '@material-ui/core'
@@ -118,65 +118,71 @@ const Sam = ({
   )
 
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback} >
     <ThemeProvider theme={theme}>
       <div>
-        <AppBar
-          items={getAppBarItems(frames, asks, themes)}
-          asks={asks}
-          frames={frames}
-          user={user}
-          setViewing={setViewing}
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          loading={loading}
-          setLoading={setLoading}
-          viewing={viewing}
-        />
-        <Sidebar
-          items={getDrawerItems(frames, asks, user)}
-          asks={asks}
-          frames={frames}
-          user={user}
-          agencyCompany={agencyCompany}
-          setViewing={setViewing}
-          viewing={viewing}
-          attributes={attributes}
-          open={sidebarOpen}
-          setOpen={setSidebarOpen}
-          projectName={projectName}
-          currentSearch={currentSearch}
-        />
-        <Main
-          downloadLink={downloadLink}
-          loading={loading}
-          setLoading={setLoading}
-          viewing={viewing}
-          setViewing={setViewing}
-          asks={asks}
-          frames={frames}
-          user={user}
+        <ErrorBoundary FallbackComponent={ErrorFallback} >
+          <AppBar
+            items={getAppBarItems(frames, asks, themes)}
+            asks={asks}
+            frames={frames}
+            user={user}
+            setViewing={setViewing}
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            loading={loading}
+            setLoading={setLoading}
+            viewing={viewing}
+          />
+        </ErrorBoundary>
+        <ErrorBoundary FallbackComponent={ErrorFallback} >
+          <Sidebar
+            items={getDrawerItems(frames, asks, user)}
+            asks={asks}
+            frames={frames}
+            user={user}
+            agencyCompany={agencyCompany}
+            setViewing={setViewing}
+            viewing={viewing}
+            attributes={attributes}
+            open={sidebarOpen}
+            setOpen={setSidebarOpen}
+            projectName={projectName}
+            currentSearch={currentSearch}
+          />
+        </ErrorBoundary>
+        <ErrorBoundary FallbackComponent={ErrorFallback} >
+          <Main
+            downloadLink={downloadLink}
+            loading={loading}
+            setLoading={setLoading}
+            viewing={viewing}
+            setViewing={setViewing}
+            asks={asks}
+            frames={frames}
+            user={user}
+            baseEntities={baseEntities}
+            googleApiKey={googleApiKey}
+            attributes={attributes}
+            projectName={projectName}
+            currentSearch={currentSearch}
+            dialogContent={dialogContent}
+            setDialogContent={setDialogContent}
+            drawerItems={getDrawerItems(frames, asks, user)}
+            dashboard={dashboard}
+            currentAsk={currentAsk}
+          />
+        </ErrorBoundary>
+        </div>
+      <ErrorBoundary FallbackComponent={ErrorFallback} >
+        <SidePanel
+          sidePanelOpen={sidePanelOpen}
+          toggleSidePanel={toggleSidePanel}
           baseEntities={baseEntities}
-          googleApiKey={googleApiKey}
           attributes={attributes}
-          projectName={projectName}
-          currentSearch={currentSearch}
-          dialogContent={dialogContent}
-          setDialogContent={setDialogContent}
-          drawerItems={getDrawerItems(frames, asks, user)}
-          dashboard={dashboard}
-          currentAsk={currentAsk}
+          setSidePanelOpen={setSidePanelOpen}
         />
-      </div>
-      <SidePanel
-        sidePanelOpen={sidePanelOpen}
-        toggleSidePanel={toggleSidePanel}
-        baseEntities={baseEntities}
-        attributes={attributes}
-        setSidePanelOpen={setSidePanelOpen}
-      />
+      </ErrorBoundary>
     </ThemeProvider>
-    </ErrorBoundary>
   )
 }
 
