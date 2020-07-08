@@ -46,10 +46,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
   if (not(isEmpty(dashboard))) {
-    if (isAdmin === true) {
-      throw new Error ('This error is coming from the Dashboard.')
-    }
-    return isIntern ? (
+    return isAdmin ? (
       <TimelineIntern viewInternships={viewInternships} />
     ) : isSupervisor ? (
       <TimelineHC />

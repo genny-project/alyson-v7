@@ -5,17 +5,17 @@ import { connect } from 'react-redux'
 import {ErrorBoundary} from 'react-error-boundary'
 import { Bridge } from '../../../../../utils/vertx/index'
 
-import { ThemeProvider, Typography } from '@material-ui/core'
+import { ThemeProvider } from '@material-ui/core'
 
 import { getDrawerItems, getAppBarItems } from './helpers/get-components'
 import getAgency from './helpers/get-agency'
 import getAgencyCompany from './helpers/get-agency-company'
+import getErrorFallback from './helpers/get-error'
 
 import Sidebar from './side_bar'
 import AppBar from './app_bar'
 import Main from './main'
 import SidePanel from './side_panel'
-import {Row, Col} from './components/layouts'
 
 import getDataForEvent from './helpers/get-data-for-event'
 import getGoogleApiKey from './helpers/get-google-api-key'
@@ -50,19 +50,6 @@ const Sam = ({
   const dataForEvent = getDataForEvent(viewing, user)
 
   const theme = makeTheme({ attributes, asks })
-
-  const ErrorFallback = ({error, componentStack, resetErrorBoundary}) => {
-    return (
-      <Col spacing={10}>
-        <Row>
-          <Typography variant="h4" color="secondary">{`Error Occurred.`}</Typography>
-          <Typography variant="h4"> {`Please contact the development team`}</Typography>
-        </Row>
-        {/*<pre>{error.message}</pre>
-        <pre>{componentStack}</pre>*/}
-      </Col>
-    )
-  }
 
   useEffect(
     () => {
@@ -124,7 +111,7 @@ const Sam = ({
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <ErrorBoundary FallbackComponent={ErrorFallback} >
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
           <AppBar
             items={getAppBarItems(frames, asks, themes)}
             asks={asks}
@@ -138,7 +125,7 @@ const Sam = ({
             viewing={viewing}
           />
         </ErrorBoundary>
-        <ErrorBoundary FallbackComponent={ErrorFallback} >
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
           <Sidebar
             items={getDrawerItems(frames, asks, user)}
             asks={asks}
@@ -154,7 +141,7 @@ const Sam = ({
             currentSearch={currentSearch}
           />
         </ErrorBoundary>
-        <ErrorBoundary FallbackComponent={ErrorFallback} >
+        <ErrorBoundary FallbackComponent={getErrorFallback} >
           <Main
             downloadLink={downloadLink}
             loading={loading}
@@ -177,7 +164,7 @@ const Sam = ({
           />
         </ErrorBoundary>
         </div>
-      <ErrorBoundary FallbackComponent={ErrorFallback} >
+      <ErrorBoundary FallbackComponent={getErrorFallback} >
         <SidePanel
           sidePanelOpen={sidePanelOpen}
           toggleSidePanel={toggleSidePanel}
