@@ -177,6 +177,7 @@ class Vertx {
       // debugger // eslint-disable-line
       // this.handleLogoutOnLogoutEvent();
       store.dispatch(push('/logout'))
+      window.location.assign("https://internmatch.io/")
 
       return
     }
