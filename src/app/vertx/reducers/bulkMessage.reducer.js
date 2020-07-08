@@ -95,8 +95,9 @@ const reducer = (state = initialState, { type, payload }) => {
     const dataMessages = filter(has('parentCode'), messages || {})
     const metaDataMessages = filter(isMetaData, messages || {})
 
-    const data = mapAndMergeAll(({ parentCode, items }) => ({
+    const data = mapAndMergeAll(({ parentCode, items, dataType }) => ({
       [parentCode]: {
+        dataType,
         data: map(({ code, baseEntityAttributes }) => ({
           [code]: baseEntityAttributes,
         }))(items),
@@ -122,6 +123,16 @@ const reducer = (state = initialState, { type, payload }) => {
 
     const isBucket = key => any(test => includes(test, key || ''))(['APPLICATIONS'])
 
+    if (path([head(keys(data)), 'dataType'], data) === 'BaseEntity') {
+      return {
+        ...state,
+        ...{
+          SAM: {
+            activeBaseEntity: { ...fullData },
+          },
+        },
+      }
+    }
     if (!isBucket(key || '')) {
       return {
         ...state,

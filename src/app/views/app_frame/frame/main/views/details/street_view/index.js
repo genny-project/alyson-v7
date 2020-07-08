@@ -7,7 +7,9 @@ import { CircularProgress } from '@material-ui/core'
 import useStyles from './styles'
 
 const getGeo = async ({ address, setGeo }) => {
-  const result = await geocodeByAddress(address)
+  const result = await geocodeByAddress(
+    typeof address === 'object' ? address.full_address : address,
+  )
   setGeo(head(result))
 }
 

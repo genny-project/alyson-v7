@@ -11,7 +11,6 @@ const RowItem = ({
   signatureRef,
   signature,
   setSignature,
-  key,
   label,
   value,
   code,

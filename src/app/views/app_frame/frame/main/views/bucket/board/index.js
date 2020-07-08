@@ -11,7 +11,7 @@ import useStyles from './styles'
 
 const isBucket = key => any(test => key.indexOf(test) >= 0)(['APPLICATIONS', 'AVAILABLE_INTERNS'])
 
-const Board = ({ data: { lanes, meta }, setViewing, current, setCurrent, refreshBuckets }) => {
+const Board = ({ data: { lanes, meta }, setViewing, current, setCurrent }) => {
   const classes = useStyles()
 
   return (
@@ -29,7 +29,6 @@ const Board = ({ data: { lanes, meta }, setViewing, current, setCurrent, refresh
           isBucket(id) ? (
             <Lane
               key={'lane' + id}
-              refreshBuckets={refreshBuckets}
               current={current}
               setCurrent={setCurrent}
               setViewing={setViewing}

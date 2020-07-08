@@ -29,7 +29,6 @@ const Item = ({
   targetCode,
   expandedColumn,
   column,
-  refreshBuckets,
   current,
   setCurrent,
   actions,
@@ -90,7 +89,7 @@ const Item = ({
       setViewing({
         code: code === 'QUE_PRI_EVENT_OFFER' ? 'QUE_PRI_EVENT_OFFERED_APPLICATION' : code,
         targetCode,
-        view: includes('_EDIT_', code) ? 'FORM' : includes('_VIEW_', code) ? 'DETAIL' : 'BUCKET',
+        view: includes('_EDIT_', code) ? 'FORM' : includes('_VIEW', code) ? 'DETAIL' : 'BUCKET',
         redirect: () => setViewing({ view: 'BUCKET' }),
       })
     }

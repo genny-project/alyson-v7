@@ -1,24 +1,10 @@
 import React from 'react'
-import {
-  map,
-  filter,
-  compose,
-  includes,
-  prop,
-  pickBy,
-  values,
-  path,
-  head,
-  length,
-  sortBy,
-} from 'ramda'
+import { map, filter, compose, includes, prop, pickBy, values, path, head, sortBy } from 'ramda'
 import { Drawer, List, Typography, Container } from '@material-ui/core'
 import Image from 'material-ui-image'
-
 import NavigationItem from './navigation_item'
 
 import { getLinksFrom } from '../helpers/get-components'
-
 import { getIsMobile } from '../utils'
 
 import useStyles from './styles'
@@ -47,7 +33,6 @@ const MainSideBar = ({
   }
 
   const logoUrl = path([targetCode, 'PRI_LOGO', 'value'], attributes)
-  const title = path([targetCode, 'PRI_NAME', 'value'], attributes)
   const poweredBy = path([targetCode, 'PRI_POWERED_BY', 'value'], attributes)
 
   const classes = useStyles({ projectName })
@@ -74,6 +59,8 @@ const MainSideBar = ({
     )
   })(dropDowns)
 
+  console.log(projectName)
+
   return (
     <Drawer
       variant={getIsMobile() ? 'temporary' : 'permanent'}
@@ -85,7 +72,13 @@ const MainSideBar = ({
       ModalProps={{ keepMounted: true }}
     >
       {logoUrl ? (
-        <Image color="transparent" src={logoUrl} disableSpinner className={classes.logo} />
+        <Image
+          color="transparent"
+          aspectRatio={projectName === 'INTERNMATCH' ? 791 / 236 : 1}
+          src={logoUrl}
+          disableSpinner
+          className={classes.logo}
+        />
       ) : null}
       <List>{dropDownComponents}</List>
       <div className={classes.grow} />
