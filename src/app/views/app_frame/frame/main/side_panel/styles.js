@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core'
 
 const SIDEPANEL_WIDTH = 100
-const MINI_SIDEPANEL_WIDTH = 20
+const MINI_SIDEPANEL_WIDTH = 0
 const SIDEPANEL_NOTES_WIDTH = 500
 import { APP_BAR_HEIGHT } from '../app_bar/styles'
 
