@@ -8,7 +8,12 @@ const getAll = async ({ setNotes, accessToken, setApiLoading, handleError, handl
   try {
     const response = await axios.get(
       'https://internmatch-cyrus.gada.io/v7/notes',
-
+       {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      }
     )
 
     setNotes( path( ['data', 'items'], response ) || [] )
