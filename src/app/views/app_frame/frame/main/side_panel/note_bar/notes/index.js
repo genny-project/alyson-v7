@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { map, pathOr } from 'ramda'
+import { map, pathOr, length, path } from 'ramda'
 import { connect } from 'react-redux'
 
 import {
   Button,
   InputBase,
-  Grid,
   Card,
-  CardActionArea,
   CardContent,
   CardActions,
   Typography,
   CardHeader,
-  LinearProgress,
+  Snackbar,
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import AddIcon from '@material-ui/icons/Add'
+import { Alert } from '@material-ui/lab'
 
 import Note from './note'
 
@@ -24,56 +23,60 @@ import { Col, Row } from '../../../components/layouts'
 import useStyles from './styles'
 
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
+import formatError from './helpers/format-error'
 
 const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
   const [notes, setNotes] = useState({})
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
-  const [error, setError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('There was an error!')
-
-  console.error('status', errorMessage)
+  const [error, setError] = useState('')
 
   const classes = useStyles()
 
-  const handleError = () => {
-    console.error('invoked')
-    setError(true)
-  }
-
-  const handleErrorMessage = ( message ) => {
-    console.error('triggered')
-    setErrorMessage(message)
-  }
-
-  const handleResponse = () => {
+  const onError = error => {
+    console.log(error)
+    setError(formatError(error))
     setApiLoading(false)
-    getAll({ setNotes, accessToken, setApiLoading })
+  }
+  const onCloseSnackbar = () => setError('')
+
+  const handleResponse = response => {
+    console.log(response)
+    setNotes(path(['data', 'items'], response) || [])
+    setApiLoading(false)
   }
 
   const handleSubmit = () => {
     setNoteHeader('')
     setNoteContent('')
-    postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage, handleResponse })
+    postNote({
+      noteContent,
+      noteHeader,
+      setNotes,
+      accessToken,
+      setApiLoading,
+      onError,
+      handleResponse,
+    })
   }
 
   const removeNotes = id => {
-    return deleteNote({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage, handleResponse })
-    // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
+    return deleteNote({
+      id,
+      accessToken,
+      setNotes,
+      setApiLoading,
+      onError,
+      handleResponse,
+    })
   }
 
   useEffect(
     () => {
-      getAll({ setNotes, accessToken, setApiLoading, handleError, handleErrorMessage })
+      getAll({ setNotes, accessToken, setApiLoading, onError, handleResponse })
     },
     [accessToken],
   )
-
-  if (error) {
-    return (
-      <Typography>{errorMessage}</Typography>
-    )
-  }
 
   return (
     <Col top stretch className={classes.notesContainer}>
@@ -90,8 +93,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
             setNotes={setNotes}
             accessToken={accessToken}
             setApiLoading={setApiLoading}
-            handleError={handleError}
-            handleErrorMessage={handleErrorMessage}
+            onError={onError}
             handleResponse={handleResponse}
           />
         ),
@@ -128,6 +130,11 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
           </Row>
         </CardActions>
       </Card>
+      <Snackbar open={!!length(error)} autoHideDuration={6000} onClose={onCloseSnackbar}>
+        <Alert elevation={6} variant="filled" onClose={onCloseSnackbar} severity="error">
+          {error}
+        </Alert>
+      </Snackbar>
     </Col>
   )
 }

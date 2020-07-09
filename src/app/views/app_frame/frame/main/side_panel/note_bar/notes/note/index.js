@@ -38,102 +38,66 @@ const Note = ({
   setNotes,
   accessToken,
   setApiLoading,
-  handleError,
-  handleErrorMessage,
-  handleResponse
+  onError,
+  handleResponse,
 }) => {
-  const [hover, setHover] = useState( false )
-  const [editing, setEditing] = useState( false )
-  const [newContent, setNewContent] = useState( content )
+  const [hover, setHover] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [newContent, setNewContent] = useState(content)
 
   const dateFns = new DateFnsAdapter()
-  const parsedDate = new Date( created )
+  const parsedDate = new Date(created)
 
   const name = baseEntities[sourceCode].name
-  const profileImage = pathOr( '', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes )
+  const profileImage = pathOr('', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes)
 
   const handleSubmit = () => {
-    editNote({ newContent, id, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage,  handleResponse })
-    setEditing( false )
-    setHover( false )
+    editNote({ newContent, id, setNotes, accessToken, setApiLoading, onError, handleResponse })
+    setEditing(false)
+    setHover(false)
   }
   const classes = useStyles({ hover })
 
   return (
     <div
-      onMouseEnter={event => setHover( event.currentTarget )}
-      onMouseLeave={() => setHover( false )}
+      onMouseEnter={event => setHover(event.currentTarget)}
+      onMouseLeave={() => setHover(false)}
       className={classes.card}
     >
-      <Row
-        justify="flex-start"
-        className={classes.cardContainer}
-      >
-        <Avatar
-          variant="rounded"
-          src={profileImage}
-        />
-        <Col
-          alignItems="flex-start"
-          spacing={0}
-        >
+      <Row justify="flex-start" className={classes.cardContainer}>
+        <Avatar variant="rounded" src={profileImage} />
+        <Col alignItems="flex-start" spacing={0}>
           <Row justify="flex-start">
-            <Typography
-              variant="subtitle2"
-              color={hover ? 'primary' : 'textPrimary'}
-            >
+            <Typography variant="subtitle2" color={hover ? 'primary' : 'textPrimary'}>
               {name}
             </Typography>
-            <Typography
-              variant="caption"
-              color={hover ? 'primary' : 'textPrimary'}
-            >
-              {`${dateFns.format( parsedDate, 'p' )}`}
-
+            <Typography variant="caption" color={hover ? 'primary' : 'textPrimary'}>
+              {`${dateFns.format(parsedDate, 'p')}`}
             </Typography>
           </Row>
           {editing ? (
             <InputBase
               autoFocus
               value={newContent}
-              onChange={event => setNewContent( event.target.value )}
+              onChange={event => setNewContent(event.target.value)}
               className={classes.input}
             />
           ) : (
-            <Typography variant="body2">
-              {content}
-            </Typography>
+            <Typography variant="body2">{content}</Typography>
           )}
         </Col>
-        <Popper
-          open={!!hover}
-          anchorEl={hover}
-          placement="top-end"
-          className={classes.popper}
-        >
-          <Card >
-            <ButtonGroup
-              color="primary"
-              size="small"
-            >
+        <Popper open={!!hover} anchorEl={hover} placement="top-end" className={classes.popper}>
+          <Card>
+            <ButtonGroup color="primary" size="small">
               <Button>
                 {editing ? (
-                  <ClearIcon
-                    fontSize="small"
-                    onClick={() => setEditing( false )}
-                  />
+                  <ClearIcon fontSize="small" onClick={() => setEditing(false)} />
                 ) : (
-                  <EditIcon
-                    fontSize="small"
-                    onClick={() => setEditing( true )}
-                  />
+                  <EditIcon fontSize="small" onClick={() => setEditing(true)} />
                 )}
               </Button>
               <Button>
-                <DeleteIcon
-                  fontSize="small"
-                  onClick={() => removeNotes( id )}
-                />
+                <DeleteIcon fontSize="small" onClick={() => removeNotes(id)} />
               </Button>
               <Button>
                 <MoreIcon fontSize="small" />
@@ -144,12 +108,8 @@ const Note = ({
       </Row>
       <Row>
         {editing ? (
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleSubmit}
-          >
-SUBMIT
+          <Button variant="outlined" color="primary" onClick={handleSubmit}>
+            {`SUBMIT`}
           </Button>
         ) : (
           <div />

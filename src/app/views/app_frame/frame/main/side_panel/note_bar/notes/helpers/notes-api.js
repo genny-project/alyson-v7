@@ -2,35 +2,31 @@ import { map, path } from 'ramda'
 
 import axios from 'axios'
 
-const getAll = async ({ setNotes, accessToken, setApiLoading, handleError, handleErrorMessage }) => {
-  setApiLoading( true )
+const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) => {
+  setApiLoading(true)
 
   try {
-    const response = await axios.get(
-      'https://internmatch-cyrus.gada.io/v7/notes',
-       {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      }
-    )
+    const response = await axios.get('https://internmatch-cyrus.gada.io/v7/notes', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
 
-    setNotes( path( ['data', 'items'], response ) || [] )
-    response.status === 200 ? setApiLoading( false ) : handleError()
-
-  } catch ( error ) {
-    handleError()
-    handleErrorMessage('Error trying to Fetch the note!')
-    console.error( error )
+    console.log(response)
+    response.status === 200 ? handleResponse(response) : onError(response)
+  } catch (error) {
+    onError(error)
   }
 }
 
-const postNote = async ({ noteContent, setNotes, accessToken, handleResponse, handleError, handleErrorMessage, setApiLoading }) => {
-  setApiLoading( true )
+const postNote = async ({ noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
+  setApiLoading(true)
 
   try {
-    const response = await axios.post( 'https://internmatch-cyrus.gada.io/v7/notes', {
+    const response = await axios.post(
+      'https://internmatch-cyrus.gada.io/v7/notes',
+      {
         sourceCode: 'PER_USER1',
         content: noteContent,
         tags: [],
@@ -41,50 +37,57 @@ const postNote = async ({ noteContent, setNotes, accessToken, handleResponse, ha
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     )
 
-    response.status === 201 ? handleResponse() : handleError()
-
-  } catch ( error ) {
-    handleError()
-    handleErrorMessage('Error trying to post the note!')
-    console.error( error )
+    response.status === 201 ? handleResponse(response) : onError(error)
+  } catch (error) {
+    onError(error)
   }
 }
 
-const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage, handleResponse }) => {
-  setApiLoading( true )
+const deleteNote = async ({
+  id,
+  accessToken,
+  setNotes,
+  setApiLoading,
+  onError,
+  handleResponse,
+}) => {
+  setApiLoading(true)
 
   try {
-    const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      }
-    )
+    const response = await axios.delete(`https://internmatch-cyrus.gada.io/v7/notes/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
 
-    getAll({ setNotes, accessToken, setApiLoading })
-    response.status === 200 ? handleResponse() : handleError()
-
-  } catch ( error ) {
-    handleError()
-    handleErrorMessage('Error trying to delete the note!')
-    console.error( error )
+    response.status === 200 ? handleResponse(response) : onError(error)
+  } catch (error) {
+    onError(error)
   }
 }
 
-const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage,  handleResponse }) => {
-  setApiLoading( true )
+const editNote = async ({
+  id,
+  newContent,
+  accessToken,
+  setNotes,
+  setApiLoading,
+  onError,
+  handleResponse,
+}) => {
+  setApiLoading(true)
 
   try {
-    const response = await axios.put( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
+    const response = await axios.put(
+      `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
       {
-        content: newContent
+        content: newContent,
       },
       {
         headers: {
@@ -94,14 +97,10 @@ const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, 
     )
 
     getAll({ setNotes, accessToken, setApiLoading })
-    response.status === 200 ? handleResponse() : handleError()
-
-  } catch ( error ) {
-    handleError()
-    handleErrorMessage('Error trying to edit the note!')
-    console.error(error)
+    response.status === 200 ? handleResponse() : onError(error)
+  } catch (error) {
+    onError(error)
   }
-
 }
 
 export { getAll, postNote, deleteNote, editNote }
