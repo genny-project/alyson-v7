@@ -3,9 +3,6 @@ import { map, path } from 'ramda'
 import axios from 'axios'
 
 const getAll = async ({ setNotes, accessToken, setApiLoading }) => {
-
-    console.error('get', setApiLoading)
-
   setApiLoading( true )
 
   try {
@@ -28,9 +25,6 @@ const getAll = async ({ setNotes, accessToken, setApiLoading }) => {
 }
 
 const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) => {
-
-    console.error('post', setApiLoading)
-
   setApiLoading( true )
 
   const response = await axios.post( 'https://internmatch-cyrus.gada.io/v7/notes',  {
@@ -57,8 +51,7 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) =
 }
 
 const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
-
-  console.error('delete', setApiLoading)
+  setApiLoading( true )
 
   const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
     {
@@ -77,9 +70,7 @@ const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
 }
 
 const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading }) => {
-
-    console.error('edit', setApiLoading)
-
+  setApiLoading( true )
 
   const response = await axios.put( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
     {
