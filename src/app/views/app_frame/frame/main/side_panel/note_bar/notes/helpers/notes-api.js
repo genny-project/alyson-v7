@@ -16,7 +16,6 @@ const getAll = async ({ setNotes, accessToken, setApiLoading }) => {
       }
     )
 
-    // console.log( 'response from GET', response )
     setNotes( path( ['data', 'items'], response ) || [] )
     response.status === 200 ? setApiLoading( false ) : null
   } catch ( error ) {
@@ -46,8 +45,6 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) =
   getAll({ setNotes, accessToken, setApiLoading })
 
   response.status === 201 ? setApiLoading( false ) : null
-
-  // console.error( 'response from POST', response )
 }
 
 const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
@@ -61,8 +58,6 @@ const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
       },
     }
   )
-
-  // console.error( 'response from DELETE', response )
 
   getAll({ setNotes, accessToken, setApiLoading })
 
@@ -87,7 +82,6 @@ const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading }
 
   response.status === 200 ? setApiLoading( false ) : null
 
-  // console.error( 'response from PUT', response )
 }
 
 export { getAll, postNote, deleteNote, editNote }
