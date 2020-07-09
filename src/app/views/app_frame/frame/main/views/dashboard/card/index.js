@@ -1,7 +1,9 @@
 import React from 'react'
-import useStyles from './styles'
-import { Row } from '../../../components/layouts'
 import { map, filter } from 'ramda';
+import { nanoid } from 'nanoid'
+
+import { Row } from '../../../components/layouts'
+import useStyles from './styles'
 
 import { Paper, Typography, Button } from '@material-ui/core'
 import {
@@ -34,7 +36,7 @@ const Card = ({icon, header, body, side, isLast, viewInternships, status }) => {
           </Typography>
             <Typography>
               {map(({content, status, redirect}) =>
-                <Row left={side==='right'} right={side==='left'}>
+                <Row left={side==='right'} right={side==='left'} key={nanoid()}>
                   { side === 'right'
                     ? status
                       ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>

@@ -32,6 +32,7 @@ const Field = ({
     attributeCode,
     question: { code: questionCode, name },
     mandatory,
+    disabled,
   } = fieldData
 
   if (not(has(questionCode, errors))) {
@@ -113,6 +114,7 @@ const Field = ({
       questionCode={questionCode}
       formFields={formFields}
       touched={touchedField}
+      disabled={disabled}
     />
   ) : fieldType === 'address' ? (
     <AddressSelect
@@ -178,9 +180,12 @@ const Field = ({
       user={user}
       setErrors={setErrors}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'json' ? (
     <Typography>{name}</Typography>
+  ) : fieldType === 'textinfo' ? (
+    <Typography>{initialValue || ''}</Typography>
   ) : (
     <div />
   )

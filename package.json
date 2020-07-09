@@ -74,6 +74,7 @@
     "material-ui-image": "^3.2.3",
     "memoize-one": "^4.0.2",
     "moment": "^2.22.2",
+    "nanoid": "^3.1.10",
     "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.3",

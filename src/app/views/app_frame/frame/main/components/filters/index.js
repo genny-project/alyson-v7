@@ -25,7 +25,7 @@ const Filters = ({
       <ToggleButtonGroup
         value={basicFilter}
         exclusive
-        onChange={onUpdate}
+        onChange={(event, value) => onUpdate(value)}
         aria-label="text alignment"
       >
         {map(({ icon, label, value }) => (
@@ -37,8 +37,8 @@ const Filters = ({
         ))(basicFilterOptions || [])}
       </ToggleButtonGroup>
       <Divider orientation="vertical" />
-      {map(({ label, options }) => (
-        <Dropdown label={label} options={options} onChange={onUpdate} />
+      {map(({ label, options, disabled }) => (
+        <Dropdown disabled={disabled} label={label} options={options} onChange={onUpdate} />
       ))(dropdowns)}
       {submit ? (
         <Button startIcon={submitIcon} color="primary" variant="contained">

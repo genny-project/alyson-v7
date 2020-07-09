@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { map, addIndex } from 'ramda'
+import { nanoid } from 'nanoid'
+
 import getIcons from '../helpers/get-icons.js'
 import Card from '../card'
 import { Row, Col } from '../../../components/layouts'
@@ -82,6 +84,7 @@ const TimelineIntern = ({ viewInternships }) => {
         {addIndex(map)(
           ({ header, body, icon }, idx) => (
             <Card
+              key={nanoid()}
               status={getStatus(body)}
               header={header}
               body={body}

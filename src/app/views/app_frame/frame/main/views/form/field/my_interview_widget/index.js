@@ -1,6 +1,11 @@
 import React from 'react'
+import DoneIcon from '@material-ui/icons/DoneOutline'
+import { Typography } from '@material-ui/core'
+import { Row } from '../../../../components/layouts'
 
-const MyInterviewWidget = ({ fieldData, label, onUpdate, user, setErrors }) => {
+import useStyles from './styles'
+
+const MyInterviewWidget = ({ fieldData, label, onUpdate, user, setErrors, initialValue }) => {
   const script = document.createElement('script')
   script.src = 'https://embed.myinterview.com/widget/2.28.0/widget.js'
   script.async = true
@@ -47,7 +52,17 @@ const MyInterviewWidget = ({ fieldData, label, onUpdate, user, setErrors }) => {
       },
     })
   }
-  return <div id="myinterview-container" />
+
+  const classes = useStyles()
+  return initialValue ? (
+    <Row left>
+      <DoneIcon className={classes.doneIcon} />
+      <Typography
+      >{`Success! We are processing your video and you will be able to check it later in your profile view.`}</Typography>
+    </Row>
+  ) : (
+    <div id="myinterview-container" />
+  )
 }
 
 export default MyInterviewWidget

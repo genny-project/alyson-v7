@@ -89,7 +89,8 @@ const Details = ({
         ),
         details,
       )}
-      {includes('PRI_IS_INTERNSHIP', keys(detailView)) ? (
+      {includes('PRI_IS_INTERNSHIP', keys(detailView)) &&
+      pathOr('', ['PRI_LOOM_URL', 'value'], detailView) ? (
         <VideoPlayer url={pathOr('', ['PRI_LOOM_URL', 'value'], detailView)} mini />
       ) : null}
     </Col>

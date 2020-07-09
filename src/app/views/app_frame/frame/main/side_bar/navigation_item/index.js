@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
-import { map, length, split, head, toUpper, compose, includes } from 'ramda'
+import { map, length, includes } from 'ramda'
 
 import { List, ListItem, ListItemText, Collapse, ClickAwayListener } from '@material-ui/core'
 
 import useStyles from './styles'
 
-const getViewName = compose(
-  toUpper,
-  head,
-  split(' '),
-)
+const getViewName = code =>
+  includes('BUCKET', code)
+    ? 'PROCESS'
+    : includes('STT_SCENARIO', code)
+      ? 'UNITY'
+      : includes('DASHBOARD', code)
+        ? 'DASHBOARD'
+        : 'TABLE'
 
 const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setViewing }) => {
   const [open, setOpen] = useState(false)
@@ -26,7 +29,7 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
           onClick={
             hasChildren
               ? () => setOpen(!open)
-              : () => setViewing({ view: getViewName(name), code: questionCode })
+              : () => setViewing({ view: getViewName(questionCode), code: questionCode })
           }
           test-id={`${questionCode}`}
           className={classes.listItem}
@@ -51,7 +54,7 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
                     button
                     onClick={() =>
                       setViewing({
-                        view: includes('STT_SCENARIO', childCode) ? 'UNITY' : 'TABLE',
+                        view: getViewName(childCode),
                         parentCode: questionCode,
                         code: childCode,
                       })
