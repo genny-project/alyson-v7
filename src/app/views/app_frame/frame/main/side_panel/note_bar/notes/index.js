@@ -64,6 +64,8 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
             attributes={attributes}
             editNote={editNote}
             setNotes={setNotes}
+            accessToken={accessToken}
+            setApiLoading={setApiLoading}
           />
         ),
         [...notes] || [],

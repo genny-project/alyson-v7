@@ -3,6 +3,9 @@ import { map, path } from 'ramda'
 import axios from 'axios'
 
 const getAll = async ({ setNotes, accessToken, setApiLoading }) => {
+
+    console.error('get', setApiLoading)
+
   setApiLoading( true )
 
   try {
@@ -25,6 +28,9 @@ const getAll = async ({ setNotes, accessToken, setApiLoading }) => {
 }
 
 const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) => {
+
+    console.error('post', setApiLoading)
+
   setApiLoading( true )
 
   const response = await axios.post( 'https://internmatch-cyrus.gada.io/v7/notes',  {
@@ -52,10 +58,13 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) =
 
 const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
 
+  console.error('delete', setApiLoading)
+
   const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
       },
     }
   )
@@ -68,11 +77,24 @@ const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
 }
 
 const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading }) => {
-  const response = await axios.put( `https://internmatch-cyrus.gada.io/v7/notes/${id}`, {
-    content: newContent,
-  })
+
+    console.error('edit', setApiLoading)
+
+
+  const response = await axios.put( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
+    {
+      content: newContent
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  )
 
   getAll({ setNotes, accessToken, setApiLoading })
+
+  response.status === 200 ? setApiLoading( false ) : null
 
   // console.error( 'response from PUT', response )
 }

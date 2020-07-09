@@ -36,6 +36,8 @@ const Note = ({
   attributes,
   editNote,
   setNotes,
+  accessToken,
+  setApiLoading
 }) => {
   const [hover, setHover] = useState( false )
   const [editing, setEditing] = useState( false )
@@ -48,7 +50,7 @@ const Note = ({
   const profileImage = pathOr( '', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes )
 
   const handleSubmit = () => {
-    editNote({ newContent, id, setNotes })
+    editNote({ newContent, id, setNotes, accessToken, setApiLoading })
     setEditing( false )
     setHover( false )
   }
