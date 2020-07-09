@@ -2,7 +2,7 @@ import { map, path } from 'ramda'
 
 import axios from 'axios'
 
-const getAll = async ({ setNotes, accessToken, setApiLoading, setError }) => {
+const getAll = async ({ setNotes, accessToken, setApiLoading, handleError }) => {
   setApiLoading( true )
 
   try {
@@ -17,13 +17,15 @@ const getAll = async ({ setNotes, accessToken, setApiLoading, setError }) => {
     )
 
     setNotes( path( ['data', 'items'], response ) || [] )
-    response.status === 200 ? setApiLoading( false ) : setError(true)
+    response.status === 200 ? setApiLoading( false ) : handleError()
+
   } catch ( error ) {
+    handleError()
     console.error( error )
   }
 }
 
-const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) => {
+const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading, handleError }) => {
   setApiLoading( true )
 
   try {
@@ -44,17 +46,15 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) =
     )
 
     getAll({ setNotes, accessToken, setApiLoading })
+    response.status === 201 ? setApiLoading( false ) : handleError()
 
-    response.status === 201 ? setApiLoading( false ) : null
   } catch ( error ) {
+    handleError()
     console.error( error )
   }
-
-
-
 }
 
-const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
+const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleError }) => {
   setApiLoading( true )
 
   try {
@@ -68,16 +68,15 @@ const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
     )
 
     getAll({ setNotes, accessToken, setApiLoading })
+    response.status === 200 ? setApiLoading( false ) : handleError()
 
-    response.status === 200 ? setApiLoading( false ) : null
   } catch ( error ) {
+    handleError()
     console.error( error )
   }
-
-
 }
 
-const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading }) => {
+const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, handleError }) => {
   setApiLoading( true )
 
   try {
@@ -91,15 +90,12 @@ const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading }
         },
       },
     )
-
     getAll({ setNotes, accessToken, setApiLoading })
-
-    response.status === 200 ? setApiLoading( false ) : null
+    response.status === 200 ? setApiLoading( false ) : handleError()
   } catch ( error ) {
+    handleError()
     console.error(error)
   }
-
-
 
 }
 
