@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { map, prop } from 'ramda'
 import { Button, Menu, MenuItem } from '@material-ui/core'
 
-const HeaderMenu = ({ group, setViewing, parentCode }) => {
+const HeaderMenu = ({ group = {}, setViewing, parentCode }) => {
   const [menu, setMenu] = useState(null)
 
   return (
@@ -20,14 +20,14 @@ const HeaderMenu = ({ group, setViewing, parentCode }) => {
         {map(item => (
           <MenuItem
             test-id={prop('questionCode', item)}
-            key={`menuItem${prop('questionCode', item)}`}
+            key={`menuItem${prop('questionCode', item || {})}`}
             onClick={() => {
               setMenu(null)
               setViewing({
                 view: 'FORM',
-                code: prop('questionCode', item),
+                code: prop('questionCode', item || {}),
                 parentCode,
-                targetCode: prop('targetCode', item),
+                targetCode: prop('targetCode', item || {}),
               })
             }}
           >
