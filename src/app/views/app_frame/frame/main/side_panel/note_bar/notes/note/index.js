@@ -39,7 +39,8 @@ const Note = ({
   accessToken,
   setApiLoading,
   handleError,
-  handleErrorMessage
+  handleErrorMessage,
+  handleResponse
 }) => {
   const [hover, setHover] = useState( false )
   const [editing, setEditing] = useState( false )
@@ -52,7 +53,7 @@ const Note = ({
   const profileImage = pathOr( '', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes )
 
   const handleSubmit = () => {
-    editNote({ newContent, id, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage })
+    editNote({ newContent, id, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage,  handleResponse })
     setEditing( false )
     setHover( false )
   }

@@ -46,14 +46,19 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
     setErrorMessage(message)
   }
 
+  const handleResponse = () => {
+    setApiLoading(false)
+    getAll({ setNotes, accessToken, setApiLoading })
+  }
+
   const handleSubmit = () => {
     setNoteHeader('')
     setNoteContent('')
-    postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage })
+    postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage, handleResponse })
   }
 
   const removeNotes = id => {
-    return deleteNote({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage })
+    return deleteNote({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage, handleResponse })
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
@@ -87,6 +92,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
             setApiLoading={setApiLoading}
             handleError={handleError}
             handleErrorMessage={handleErrorMessage}
+            handleResponse={handleResponse}
           />
         ),
         [...notes] || [],

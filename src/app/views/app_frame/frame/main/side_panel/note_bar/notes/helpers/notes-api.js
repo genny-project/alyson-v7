@@ -26,7 +26,7 @@ const getAll = async ({ setNotes, accessToken, setApiLoading, handleError, handl
   }
 }
 
-const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage }) => {
+const postNote = async ({ noteContent, setNotes, accessToken, handleResponse, handleError, handleErrorMessage, setApiLoading }) => {
   setApiLoading( true )
 
   try {
@@ -46,8 +46,7 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading, han
       }
     )
 
-    getAll({ setNotes, accessToken, setApiLoading })
-    response.status === 201 ? setApiLoading( false ) : handleError()
+    response.status === 201 ? handleResponse() : handleError()
 
   } catch ( error ) {
     handleError()
@@ -56,7 +55,7 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading, han
   }
 }
 
-const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage }) => {
+const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage, handleResponse }) => {
   setApiLoading( true )
 
   try {
@@ -70,7 +69,7 @@ const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleErro
     )
 
     getAll({ setNotes, accessToken, setApiLoading })
-    response.status === 200 ? setApiLoading( false ) : handleError()
+    response.status === 200 ? handleResponse() : handleError()
 
   } catch ( error ) {
     handleError()
@@ -79,7 +78,7 @@ const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleErro
   }
 }
 
-const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage }) => {
+const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage,  handleResponse }) => {
   setApiLoading( true )
 
   try {
@@ -95,7 +94,7 @@ const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, 
     )
 
     getAll({ setNotes, accessToken, setApiLoading })
-    response.status === 200 ? setApiLoading( false ) : handleError()
+    response.status === 200 ? handleResponse() : handleError()
 
   } catch ( error ) {
     handleError()
