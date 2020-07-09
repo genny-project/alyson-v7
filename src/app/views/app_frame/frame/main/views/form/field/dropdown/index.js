@@ -13,7 +13,7 @@ import {
   equals,
   filter,
 } from 'ramda'
-import { TextField } from '@material-ui/core'
+import { TextField, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import getValidationList from '../../helpers/get-validation-list'
 
@@ -63,7 +63,12 @@ const DropdownSelect = ({
       onChange={handleChange}
       required={mandatory}
       options={options}
-      getOptionLabel={propOr('', 'name')}
+      getOptionLabel={prop('name')}
+      renderOption={({ name, code }) => (
+        <Typography color="secondary" test-id={code}>
+          {name}
+        </Typography>
+      )}
       getOptionSelected={(option, value) => option.code === value.code}
       renderInput={params => <TextField {...params} label={label} variant="outlined" />}
       test-id={questionCode}

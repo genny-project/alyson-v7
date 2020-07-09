@@ -5,7 +5,14 @@ import { List, ListItem, ListItemText, Collapse, ClickAwayListener } from '@mate
 
 import useStyles from './styles'
 
-const getViewName = code => (includes('BUCKET', code) ? 'PROCESS' : 'TABLE')
+const getViewName = code =>
+  includes('BUCKET', code)
+    ? 'PROCESS'
+    : includes('STT_SCENARIO', code)
+      ? 'UNITY'
+      : includes('DASHBOARD', code)
+        ? 'DASHBOARD'
+        : 'TABLE'
 
 const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setViewing }) => {
   const [open, setOpen] = useState(false)
@@ -47,7 +54,7 @@ const NavigationItem = ({ childAsks, name, questionCode, currentViewing, setView
                     button
                     onClick={() =>
                       setViewing({
-                        view: includes('STT_SCENARIO', childCode) ? 'UNITY' : 'TABLE',
+                        view: getViewName(childCode),
                         parentCode: questionCode,
                         code: childCode,
                       })
