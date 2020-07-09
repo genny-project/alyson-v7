@@ -41,8 +41,6 @@ const DropdownSelect = ({
 
   const options = map(pick(['name', 'code']), values(pick(values(targetCodes), baseEntities))) || []
 
-  console.log(options)
-
   const {
     mandatory,
     question: { code: questionCode },
