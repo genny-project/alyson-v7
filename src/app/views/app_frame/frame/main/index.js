@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { includes, prop, replace, pathOr, length, keys } from 'ramda'
+import { includes, prop, replace, pathOr, length, keys, not, equals } from 'ramda'
 import { connect } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
 import { Bridge } from '../../../../../utils/vertx/index'
@@ -45,9 +45,7 @@ const Sam = ({
   const [loading, setLoading] = useState(false)
   const [staleTarget, setStaleTarget] = useState('')
   const [sidePanelOpen, setSidePanelOpen] = useState(false)
-  const toggleSidePanel = () => setSidePanelOpen(sidePanelOpen => !sidePanelOpen)
-
-  const dataForEvent = getDataForEvent(viewing, user)
+  const toggleSidePanel = () => setSidePanelOpen(!sidePanelOpen)
 
   const theme = makeTheme({ attributes, asks })
 
@@ -67,7 +65,7 @@ const Sam = ({
 
         Bridge.sendEvent({
           event: 'BTN',
-          data: dataForEvent,
+          data: getDataForEvent(viewing, user),
           eventType: 'BTN_CLICK',
           sendWithToken: true,
         })
@@ -78,34 +76,15 @@ const Sam = ({
 
   useEffect(
     () => {
-      if (includes('MENU', prop('code', viewing) || '')) {
-        if (
-          prop('targetCode', asks[replace('MENU', 'GRP', prop('code', viewing))] || {}) !==
-          staleTarget
-        ) {
-          setLoading(false)
-        }
-      } else {
-        setLoading(false)
-        setDialogContent(null)
-      }
+      if (not(equals(prop('targetCode', currentAsk), staleTarget))) setLoading(false)
     },
     [asks, currentSearch, baseEntities],
-  )
-
-  useEffect(
-    () => {
-      if (length(keys(viewing)) === 1 && viewing.view === 'BUCKET') {
-        setLoading(false)
-      }
-    },
-    [viewing],
   )
 
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <ErrorBoundary FallbackComponent={getErrorFallback} >
+        <ErrorBoundary FallbackComponent={getErrorFallback}>
           <AppBar
             items={getAppBarItems(frames, asks, themes)}
             asks={asks}
@@ -119,7 +98,7 @@ const Sam = ({
             viewing={viewing}
           />
         </ErrorBoundary>
-        <ErrorBoundary FallbackComponent={getErrorFallback} >
+        <ErrorBoundary FallbackComponent={getErrorFallback}>
           <Sidebar
             items={getDrawerItems(frames, asks, user)}
             asks={asks}
@@ -135,7 +114,7 @@ const Sam = ({
             currentSearch={currentSearch}
           />
         </ErrorBoundary>
-        <ErrorBoundary FallbackComponent={getErrorFallback} >
+        <ErrorBoundary FallbackComponent={getErrorFallback}>
           <Main
             downloadLink={downloadLink}
             loading={loading}
@@ -157,16 +136,16 @@ const Sam = ({
             currentAsk={currentAsk}
           />
         </ErrorBoundary>
-        </div>
-        <ErrorBoundary FallbackComponent={getErrorFallback} >
-          <SidePanel
-            sidePanelOpen={sidePanelOpen}
-            toggleSidePanel={toggleSidePanel}
-            baseEntities={baseEntities}
-            attributes={attributes}
-            setSidePanelOpen={setSidePanelOpen}
-          />
-        </ErrorBoundary>
+      </div>
+      <ErrorBoundary FallbackComponent={getErrorFallback}>
+        <SidePanel
+          sidePanelOpen={sidePanelOpen}
+          toggleSidePanel={toggleSidePanel}
+          baseEntities={baseEntities}
+          attributes={attributes}
+          setSidePanelOpen={setSidePanelOpen}
+        />
+      </ErrorBoundary>
     </ThemeProvider>
   )
 }
