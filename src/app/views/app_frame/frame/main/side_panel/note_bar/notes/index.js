@@ -30,8 +30,9 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
   const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('There was an error!')
 
-  console.error('status', error)
+  console.error('status', errorMessage)
 
   const classes = useStyles()
 
@@ -40,29 +41,32 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
     setError(true)
   }
 
+  const handleErrorMessage = ( message ) => {
+    console.error('triggered')
+    setErrorMessage(message)
+  }
+
   const handleSubmit = () => {
     setNoteHeader('')
     setNoteContent('')
-    postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading, handleError })
+    postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage })
   }
 
   const removeNotes = id => {
-    return deleteNote({ id, accessToken, setNotes, setApiLoading, handleError })
+    return deleteNote({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage })
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
   useEffect(
     () => {
-      getAll({ setNotes, accessToken, setApiLoading, handleError })
+      getAll({ setNotes, accessToken, setApiLoading, handleError, handleErrorMessage })
     },
     [accessToken],
   )
 
   if (error) {
     return (
-      <div>
-        <p>Error tryin to fetch the notes!</p>
-      </div>
+      <Typography>{errorMessage}</Typography>
     )
   }
 
@@ -82,6 +86,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
             accessToken={accessToken}
             setApiLoading={setApiLoading}
             handleError={handleError}
+            handleErrorMessage={handleErrorMessage}
           />
         ),
         [...notes] || [],

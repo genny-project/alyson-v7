@@ -2,18 +2,13 @@ import { map, path } from 'ramda'
 
 import axios from 'axios'
 
-const getAll = async ({ setNotes, accessToken, setApiLoading, handleError }) => {
+const getAll = async ({ setNotes, accessToken, setApiLoading, handleError, handleErrorMessage }) => {
   setApiLoading( true )
 
   try {
     const response = await axios.get(
       'https://internmatch-cyrus.gada.io/v7/notes',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      }
+
     )
 
     setNotes( path( ['data', 'items'], response ) || [] )
@@ -21,11 +16,12 @@ const getAll = async ({ setNotes, accessToken, setApiLoading, handleError }) => 
 
   } catch ( error ) {
     handleError()
+    handleErrorMessage('Error trying to Fetch the note!')
     console.error( error )
   }
 }
 
-const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading, handleError }) => {
+const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading, handleError, handleErrorMessage }) => {
   setApiLoading( true )
 
   try {
@@ -50,11 +46,12 @@ const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading, han
 
   } catch ( error ) {
     handleError()
+    handleErrorMessage('Error trying to post the note!')
     console.error( error )
   }
 }
 
-const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleError }) => {
+const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage }) => {
   setApiLoading( true )
 
   try {
@@ -72,11 +69,12 @@ const deleteNote = async ({ id, accessToken, setNotes, setApiLoading, handleErro
 
   } catch ( error ) {
     handleError()
+    handleErrorMessage('Error trying to delete the note!')
     console.error( error )
   }
 }
 
-const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, handleError }) => {
+const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, handleError, handleErrorMessage }) => {
   setApiLoading( true )
 
   try {
@@ -90,10 +88,13 @@ const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading, 
         },
       },
     )
+
     getAll({ setNotes, accessToken, setApiLoading })
     response.status === 200 ? setApiLoading( false ) : handleError()
+
   } catch ( error ) {
     handleError()
+    handleErrorMessage('Error trying to edit the note!')
     console.error(error)
   }
 
