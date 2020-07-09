@@ -178,6 +178,7 @@ const Field = ({
       user={user}
       setErrors={setErrors}
       touched={touchedField}
+      initialValue={initialValue}
     />
   ) : fieldType === 'json' ? (
     <Typography>{name}</Typography>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { Bridge } from '../../../../../../../utils/vertx/index'
+
 import { GoogleApiWrapper, Map } from 'google-maps-react'
-import { map, addIndex, length } from 'ramda'
+import { map, addIndex, length, toUpper } from 'ramda'
 import { Button } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import {
@@ -39,6 +41,18 @@ const MapList = ({
   const title = getTitle(table)
 
   const bounds = new google.maps.LatLngBounds()
+
+  const handleUpdateFilter = filter => {
+    setBasicFilter(filter)
+    Bridge.sendEvent({
+      event: 'BTN',
+      data: {
+        code: `QUE_INTERNSHIPS_SORT_${toUpper(filter)}`,
+      },
+      eventType: 'BTN_CLICK',
+      sendWithToken: true,
+    })
+  }
 
   extendBoundsFromData({
     bounds,
@@ -79,9 +93,13 @@ const MapList = ({
       </Row>
       <Filters
         dropdowns={[
-          { label: 'Choose a State', options: [{ label: 'Victoria', value: 'VIC' }] },
-          { label: 'Choose an Industry', options: [] },
-          { label: 'Choose a Sub-Industry', options: [] },
+          {
+            disabled: true,
+            label: 'Choose a State',
+            options: [{ label: 'Victoria', value: 'VIC' }],
+          },
+          { disabled: true, label: 'Choose an Industry', options: [] },
+          { disabled: true, label: 'Choose a Sub-Industry', options: [] },
         ]}
         basicFilterOptions={[
           { value: 'relevance', label: 'Relevance', icon: 'how_to_reg' },
@@ -89,7 +107,7 @@ const MapList = ({
         ]}
         basicFilterText="Sort by"
         filtersApplied={{ basicFilter }}
-        onUpdate={setBasicFilter}
+        onUpdate={handleUpdateFilter}
         submit={{ icon: <SearchIcon />, label: 'Search' }}
       />
       <Row top spaceBetween spacing={0} wrap="noWrap" fullWidth>

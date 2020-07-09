@@ -44,21 +44,6 @@ const MainSideBar = ({
     pickBy((val, key) => includes('TREE', key)),
   )(components)
 
-  const dropDownComponents = map(dropDown => {
-    const { name, questionCode, childAsks } = dropDown || {}
-
-    return (
-      <NavigationItem
-        key={`navItem${name}`}
-        name={name}
-        questionCode={questionCode}
-        childAsks={childAsks}
-        currentViewing={prop('code', viewing)}
-        setViewing={setViewing}
-      />
-    )
-  })(dropDowns)
-
   return (
     <Drawer
       variant={getIsMobile() ? 'temporary' : 'permanent'}
@@ -78,7 +63,18 @@ const MainSideBar = ({
           className={classes.logo}
         />
       ) : null}
-      <List>{dropDownComponents}</List>
+      <List>
+        {map(({ name, questionCode, childAsks }) => (
+          <NavigationItem
+            key={`navItem${name}`}
+            name={name}
+            questionCode={questionCode}
+            childAsks={childAsks}
+            currentViewing={prop('code', viewing)}
+            setViewing={setViewing}
+          />
+        ))(dropDowns)}
+      </List>
       <div className={classes.grow} />
       <Container className={classes.poweredBy}>
         <Typography variant="caption" color="inherit">
