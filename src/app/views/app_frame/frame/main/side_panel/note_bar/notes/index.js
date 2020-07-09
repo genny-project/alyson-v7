@@ -29,8 +29,16 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
   const [notes, setNotes] = useState({})
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
+  const [error, setError] = useState(false)
+
+  console.error('status', error)
 
   const classes = useStyles()
+
+  const handleError = () => {
+    console.error('invoked')
+    setError(true)
+  }
 
   const handleSubmit = () => {
     setNoteHeader('')
@@ -43,13 +51,20 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
     // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
   }
 
-
   useEffect(
     () => {
-      getAll({ setNotes, accessToken, setApiLoading })
+      getAll({ setNotes, accessToken, setApiLoading, handleError })
     },
     [accessToken],
   )
+
+  if (error) {
+    return (
+      <div>
+        <p>Error tryin to fetch the notes!</p>
+      </div>
+    )
+  }
 
   return (
     <Col top stretch className={classes.notesContainer}>
