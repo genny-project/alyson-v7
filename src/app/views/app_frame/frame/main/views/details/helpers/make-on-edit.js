@@ -8,12 +8,12 @@ const getType = compose(
   keys,
 )
 
-const makeOnEdit = ({ detailView, setViewing }) => () => {
+const makeOnEdit = ({ detailView, setViewing, targetCode }) => () => {
   Bridge.sendFormattedEvent({
     parentCode: 'QUE_EDIT_ITEMS_GRP',
     rootCode: 'QUE_EDIT_ITEMS_GRP',
     code: getType(detailView),
-    targetCode: getType(detailView),
+    targetCode,
     name: 'Edit',
     attributeCode: 'QQQ_QUESTION_GROUP',
     eventType: 'BTN_CLICK',
