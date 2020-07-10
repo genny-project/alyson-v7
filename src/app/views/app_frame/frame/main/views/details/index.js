@@ -1,9 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { prop, pathOr, toUpper, map, keys, includes } from 'ramda'
 
-import { Grid, Typography, Avatar, LinearProgress, CircularProgress } from '@material-ui/core'
+import {
+  Grid,
+  Typography,
+  Avatar,
+  LinearProgress,
+  CircularProgress,
+  Button,
+} from '@material-ui/core'
 import onUpdateSignature from './helpers/on-update-signature'
 import onSubmit from './helpers/on-submit'
+import makeOnEdit from './helpers/make-on-edit'
 import useStyles from './styles'
 import { Col } from '../../components/layouts'
 import RowItem from './row_item'
@@ -40,6 +48,8 @@ const Details = ({
     })({
       ask: { questionCode: 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT', targetCode },
     })
+
+  const onEdit = makeOnEdit({ detailView, setViewing })
 
   useEffect(
     () => {
@@ -96,6 +106,7 @@ const Details = ({
     </Col>
   ) : (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
+      <Button onClick={onEdit}>{`EDIT`}</Button>
       {includes('PRI_IS_INTERNSHIP', keys(detailView)) ? (
         <Typography variant="h5" style={{ marginBottom: '2rem' }}>
           {print('name')}
