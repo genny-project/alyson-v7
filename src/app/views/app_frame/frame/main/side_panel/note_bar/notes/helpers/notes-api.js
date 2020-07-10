@@ -96,8 +96,8 @@ const editNote = async ({
       },
     )
 
-    getAll({ setNotes, accessToken, setApiLoading })
-    response.status === 200 ? handleResponse() : onError(error)
+    getAll({ setNotes, accessToken, setApiLoading, onError, handleResponse})
+    response.status === 200 ? handleResponse(response) : onError(error)
   } catch (error) {
     onError(error)
   }
