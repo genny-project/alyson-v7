@@ -49,7 +49,7 @@ const Details = ({
       ask: { questionCode: 'QQQ_QUESTION_GROUP_BUTTON_CANCEL_SUBMIT', targetCode },
     })
 
-  const onEdit = makeOnEdit({ detailView, setViewing })
+  const onEdit = makeOnEdit({ detailView, setViewing, targetCode })
 
   useEffect(
     () => {
