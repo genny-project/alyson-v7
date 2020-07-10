@@ -26,7 +26,7 @@ import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 import formatError from './helpers/format-error'
 
 const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
-  const [notes, setNotes] = useState({})
+  const [notes, setNotes] = useState([])
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
   const [error, setError] = useState('')
@@ -40,9 +40,14 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
   }
   const onCloseSnackbar = () => setError('')
 
-  const handleResponse = response => {
+  const handleResponse = (response, type) => {
+    if (type === 'getAll') {
+      setNotes(path(['data', 'items'], response) || [])
+    } else if (type === 'edit') {
+      setNotes({})
+    }
     console.log(response)
-    setNotes(path(['data', 'items'], response) || [])
+
     setApiLoading(false)
   }
 
@@ -73,10 +78,12 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
 
   useEffect(
     () => {
-      getAll({ setNotes, accessToken, setApiLoading, onError, handleResponse })
+      getAll({ accessToken, setApiLoading, onError, handleResponse })
     },
     [accessToken],
   )
+
+  console.log(notes)
 
   return (
     <Col top stretch className={classes.notesContainer}>

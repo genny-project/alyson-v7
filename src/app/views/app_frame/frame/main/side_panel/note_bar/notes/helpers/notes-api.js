@@ -13,8 +13,7 @@ const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) =
       },
     })
 
-    console.log(response)
-    response.status === 200 ? handleResponse(response) : onError(response)
+    response.status === 200 ? handleResponse(response, 'getAll') : onError(response)
   } catch (error) {
     onError(error)
   }
@@ -30,7 +29,6 @@ const postNote = async ({ noteContent, accessToken, handleResponse, onError, set
         sourceCode: 'PER_USER1',
         content: noteContent,
         tags: [],
-        id: 0,
         created: new Date(),
         targetCode: 'PER_USER1',
       },
@@ -42,7 +40,7 @@ const postNote = async ({ noteContent, accessToken, handleResponse, onError, set
       },
     )
 
-    response.status === 201 ? handleResponse(response) : onError(error)
+    response.status === 201 ? handleResponse(response, 'post') : onError(error)
   } catch (error) {
     onError(error)
   }
@@ -66,7 +64,7 @@ const deleteNote = async ({
       },
     })
 
-    response.status === 200 ? handleResponse(response) : onError(error)
+    response.status === 200 ? handleResponse(response, 'delete') : onError(error)
   } catch (error) {
     onError(error)
   }
@@ -96,8 +94,7 @@ const editNote = async ({
       },
     )
 
-    getAll({ setNotes, accessToken, setApiLoading, onError, handleResponse})
-    response.status === 200 ? handleResponse(response) : onError(error)
+    response.status === 200 ? handleResponse(response, 'edit') : onError(error)
   } catch (error) {
     onError(error)
   }
