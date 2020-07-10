@@ -96,6 +96,7 @@ const Details = ({
     </Col>
   ) : (
     <Grid container direction="column" spacing={4} className={classes.detailsContainer}>
+      <Button onClick={() => {}}>{`EDIT`}</Button>
       {includes('PRI_IS_INTERNSHIP', keys(detailView)) ? (
         <Typography variant="h5" style={{ marginBottom: '2rem' }}>
           {print('name')}
