@@ -25,7 +25,7 @@ import useStyles from './styles'
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 import formatError from './helpers/format-error'
 
-const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
+const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote }) => {
   const [notes, setNotes] = useState([])
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
@@ -34,7 +34,6 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
   const classes = useStyles()
 
   const onError = error => {
-    console.log(error)
     setError(formatError(error))
     setApiLoading(false)
   }
@@ -46,7 +45,6 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
     } else if (type === 'edit') {
       setNotes({})
     }
-    console.log(response)
 
     setApiLoading(false)
   }
@@ -80,32 +78,33 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
     () => {
       getAll({ accessToken, setApiLoading, onError, handleResponse })
     },
-    [accessToken],
+    [accessToken, currentNote],
   )
 
-  console.log(notes)
-
   return (
-    <Col top stretch className={classes.notesContainer}>
-      {map(
-        ({ id, ...rest }) => (
-          <Note
-            baseEntities={baseEntities}
-            id={id}
-            key={`note${id}`}
-            {...rest}
-            removeNotes={removeNotes}
-            attributes={attributes}
-            editNote={editNote}
-            setNotes={setNotes}
-            accessToken={accessToken}
-            setApiLoading={setApiLoading}
-            onError={onError}
-            handleResponse={handleResponse}
-          />
-        ),
-        [...notes] || [],
-      )}
+    <div className={classes.notesContainer}>
+      <div className={classes.notesSection}>
+        {map(
+          ({ id, ...rest }) => (
+            <Note
+              baseEntities={baseEntities}
+              id={id}
+              key={`note${id}`}
+              {...rest}
+              removeNotes={removeNotes}
+              attributes={attributes}
+              editNote={editNote}
+              setNotes={setNotes}
+              accessToken={accessToken}
+              setApiLoading={setApiLoading}
+              onError={onError}
+              handleResponse={handleResponse}
+              currentNote={currentNote}
+            />
+          ),
+          [...notes] || [],
+        )}
+      </div>
       <Card variant="outlined">
         <CardHeader
           title={
@@ -142,7 +141,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
           {error}
         </Alert>
       </Snackbar>
-    </Col>
+    </div>
   )
 }
 

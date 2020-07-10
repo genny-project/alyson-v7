@@ -10,7 +10,7 @@ import Notes from './notes'
 
 import useStyles from './styles'
 
-const NoteBar = ({ setShowNotes, baseEntities, attributes }) => {
+const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
   const [apiLoading, setApiLoading] = useState(false)
 
   const classes = useStyles()
@@ -32,7 +32,12 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes }) => {
         </Row>
       </Row>
       <Divider />
-      <Notes baseEntities={baseEntities} attributes={attributes} setApiLoading={setApiLoading} />
+      <Notes
+        currentNote={currentNote}
+        baseEntities={baseEntities}
+        attributes={attributes}
+        setApiLoading={setApiLoading}
+      />
     </Col>
   )
 }

@@ -18,9 +18,7 @@ const useStyles = makeStyles(theme => ({
   input: {
     fontSize: '0.88rem',
   },
-  card: {
-    borderRadius: theme.spacing(1),
-  },
+  card: {},
 }))
 
 export default useStyles

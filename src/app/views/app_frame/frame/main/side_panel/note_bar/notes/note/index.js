@@ -1,14 +1,11 @@
 import React, { useState } from 'react'
 
-import { pathOr } from 'ramda'
+import { pathOr, prop } from 'ramda'
 import DateFnsAdapter from '@date-io/date-fns'
 import { Row, Col } from '../../../../components/layouts'
 import {
   Card,
-  CardHeader,
-  Collapse,
-  CardContent,
-  CardActions,
+  Badge,
   Typography,
   Button,
   Avatar,
@@ -40,10 +37,13 @@ const Note = ({
   setApiLoading,
   onError,
   handleResponse,
+  currentNote,
 }) => {
   const [hover, setHover] = useState(false)
   const [editing, setEditing] = useState(false)
   const [newContent, setNewContent] = useState(content)
+
+  const currentNoteId = prop('id', currentNote)
 
   const dateFns = new DateFnsAdapter()
   const parsedDate = new Date(created)
@@ -56,66 +56,68 @@ const Note = ({
     setEditing(false)
     setHover(false)
   }
-  const classes = useStyles({ hover })
+  const classes = useStyles({ hover, isCurrent: currentNoteId === id })
 
   return (
-    <div
-      onMouseEnter={event => setHover(event.currentTarget)}
-      onMouseLeave={() => setHover(false)}
-      className={classes.card}
-    >
-      <Row justify="flex-start" className={classes.cardContainer}>
-        <Avatar variant="rounded" src={profileImage} />
-        <Col alignItems="flex-start" spacing={0}>
-          <Row justify="flex-start">
-            <Typography variant="subtitle2" color={hover ? 'primary' : 'textPrimary'}>
-              {name}
-            </Typography>
-            <Typography variant="caption" color={hover ? 'primary' : 'textPrimary'}>
-              {`${dateFns.format(parsedDate, 'p')}`}
-            </Typography>
-          </Row>
+    <Badge color="secondary" variant="dot" invisible={currentNoteId !== id}>
+      <div
+        onMouseEnter={event => setHover(event.currentTarget)}
+        onMouseLeave={() => setHover(false)}
+        className={classes.card}
+      >
+        <Row justify="flex-start" className={classes.cardContainer}>
+          <Avatar variant="rounded" src={profileImage} />
+          <Col alignItems="flex-start" spacing={0}>
+            <Row justify="flex-start">
+              <Typography variant="subtitle2" color={hover ? 'primary' : 'textPrimary'}>
+                {name}
+              </Typography>
+              <Typography variant="caption" color={hover ? 'primary' : 'textPrimary'}>
+                {`${dateFns.format(parsedDate, 'p')}`}
+              </Typography>
+            </Row>
+            {editing ? (
+              <InputBase
+                autoFocus
+                value={newContent}
+                onChange={event => setNewContent(event.target.value)}
+                className={classes.input}
+              />
+            ) : (
+              <Typography variant="body2">{content}</Typography>
+            )}
+          </Col>
+          <Popper open={!!hover} anchorEl={hover} placement="top-end" className={classes.popper}>
+            <Card>
+              <ButtonGroup color="primary" size="small">
+                <Button>
+                  {editing ? (
+                    <ClearIcon fontSize="small" onClick={() => setEditing(false)} />
+                  ) : (
+                    <EditIcon fontSize="small" onClick={() => setEditing(true)} />
+                  )}
+                </Button>
+                <Button>
+                  <DeleteIcon fontSize="small" onClick={() => removeNotes(id)} />
+                </Button>
+                <Button>
+                  <MoreIcon fontSize="small" />
+                </Button>
+              </ButtonGroup>
+            </Card>
+          </Popper>
+        </Row>
+        <Row>
           {editing ? (
-            <InputBase
-              autoFocus
-              value={newContent}
-              onChange={event => setNewContent(event.target.value)}
-              className={classes.input}
-            />
+            <Button variant="outlined" color="primary" onClick={handleSubmit}>
+              {`SUBMIT`}
+            </Button>
           ) : (
-            <Typography variant="body2">{content}</Typography>
+            <div />
           )}
-        </Col>
-        <Popper open={!!hover} anchorEl={hover} placement="top-end" className={classes.popper}>
-          <Card>
-            <ButtonGroup color="primary" size="small">
-              <Button>
-                {editing ? (
-                  <ClearIcon fontSize="small" onClick={() => setEditing(false)} />
-                ) : (
-                  <EditIcon fontSize="small" onClick={() => setEditing(true)} />
-                )}
-              </Button>
-              <Button>
-                <DeleteIcon fontSize="small" onClick={() => removeNotes(id)} />
-              </Button>
-              <Button>
-                <MoreIcon fontSize="small" />
-              </Button>
-            </ButtonGroup>
-          </Card>
-        </Popper>
-      </Row>
-      <Row>
-        {editing ? (
-          <Button variant="outlined" color="primary" onClick={handleSubmit}>
-            {`SUBMIT`}
-          </Button>
-        ) : (
-          <div />
-        )}
-      </Row>
-    </div>
+        </Row>
+      </div>
+    </Badge>
   )
 }
 
