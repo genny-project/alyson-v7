@@ -1,5 +1,3 @@
-import { map, path } from 'ramda'
-
 import axios from 'axios'
 
 const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) => {
@@ -49,7 +47,6 @@ const postNote = async ({ noteContent, accessToken, handleResponse, onError, set
 const deleteNote = async ({
   id,
   accessToken,
-  setNotes,
   setApiLoading,
   onError,
   handleResponse,
@@ -74,7 +71,6 @@ const editNote = async ({
   id,
   newContent,
   accessToken,
-  setNotes,
   setApiLoading,
   onError,
   handleResponse,

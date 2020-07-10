@@ -1,10 +1,8 @@
-import React, { useContext, useState } from 'react'
-import { Drawer, IconButton, Typography, Divider, LinearProgress } from '@material-ui/core'
+import React, { useState } from 'react'
+import { IconButton, Typography, Divider, LinearProgress } from '@material-ui/core'
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
-
-import { NoteBarContext } from '../../contexts'
 
 import Notes from './notes'
 

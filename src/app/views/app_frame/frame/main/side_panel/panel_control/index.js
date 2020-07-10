@@ -1,6 +1,5 @@
 import React from 'react'
 
-import NextIcon from '@material-ui/icons/NavigateNext'
 import CloseIcon from '@material-ui/icons/NavigateBefore'
 
 import useStyles from './styles'

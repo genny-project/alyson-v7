@@ -8,17 +8,14 @@ import {
   Card,
   CardContent,
   CardActions,
-  Typography,
   CardHeader,
   Snackbar,
 } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
-import AddIcon from '@material-ui/icons/Add'
 import { Alert } from '@material-ui/lab'
 
 import Note from './note'
 
-import { Col, Row } from '../../../components/layouts'
+import { Row } from '../../../components/layouts'
 
 import useStyles from './styles'
 
