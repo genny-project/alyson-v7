@@ -1,10 +1,12 @@
 import axios from 'axios'
 
+const notesUrl = process.env.API_URL_NOTES
+
 const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) => {
   setApiLoading(true)
 
   try {
-    const response = await axios.get('https://internmatch-cyrus.gada.io/v7/notes', {
+    const response = await axios.get(notesUrl, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
@@ -22,7 +24,7 @@ const postNote = async ({ noteContent, accessToken, handleResponse, onError, set
 
   try {
     const response = await axios.post(
-      'https://internmatch-cyrus.gada.io/v7/notes',
+      notesUrl,
       {
         sourceCode: 'PER_USER1',
         content: noteContent,
@@ -54,7 +56,7 @@ const deleteNote = async ({
   setApiLoading(true)
 
   try {
-    const response = await axios.delete(`https://internmatch-cyrus.gada.io/v7/notes/${id}`, {
+    const response = await axios.delete(`${notesUrl}/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
@@ -79,7 +81,7 @@ const editNote = async ({
 
   try {
     const response = await axios.put(
-      `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
+      `${notesUrl}/${id}`,
       {
         content: newContent,
       },
