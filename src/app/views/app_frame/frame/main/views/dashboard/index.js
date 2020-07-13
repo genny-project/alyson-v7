@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { isEmpty, not, path } from 'ramda'
 import { Typography, Badge, Button } from '@material-ui/core'
 import { Row, Col } from '../../components/layouts'
-import { TimelineIntern, TimelineHC } from './timeline'
+import { TimelineIntern, TimelineHC, TimelineSTT } from './timeline'
 import InfoIcon from '@material-ui/icons/Info'
 import Loader from 'react-spinners/ClimbingBoxLoader'
 import getUserRole from './helpers/get-user-role'
@@ -96,6 +96,9 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
   }
 
   return (
+    (projectName === 'Safe Traffic Town' && <TimelineSTT />) ? (
+      <TimelineSTT viewInternships={viewInternships}/>
+    ) :
     <Col className={classes.loading} spacing={4}>
       <Loader size={20} />
       <Typography>{`Preparing Dashboard`}</Typography>
