@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { map, path, values, pick, compose, head, prop } from 'ramda'
+import { map, path, values, pick, compose, head, prop, toLower } from 'ramda'
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@material-ui/core'
 import getValidationList from '../../helpers/get-validation-list'
 
@@ -22,7 +22,9 @@ const BuiltRadioGroup = ({
   const targetCodes = map(path(['link', 'targetCode']), optionsLinkList)
   const options = values(pick(values(targetCodes), baseEntities))
 
-  const [value, setValue] = useState(initialValue || '')
+  const [value, setValue] = useState(
+    typeof initialValue === 'object' ? `SEL_GENDER_${initialValue[0]}` : initialValue || '',
+  )
 
   const handleChange = ({ target: { value } }) => {
     setValue(value)
