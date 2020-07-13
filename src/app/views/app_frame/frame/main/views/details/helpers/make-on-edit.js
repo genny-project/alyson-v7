@@ -10,7 +10,7 @@ const getType = compose(
         : thing, // go yell at chris for this
   type => `QUE_EDIT_${type}_GRP`,
   replace('PRI_IS_', ''),
-  find(includes('PRI_IS_')),
+  find(key => includes('PRI_IS_', key) && key !== 'PRI_IS_PHONE'), //yell at adam for this
   keys,
 )
 
