@@ -7,6 +7,7 @@ import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedI
 import HowToRegOutlinedIcon from '@material-ui/icons/HowToRegOutlined'
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined'
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined'
+import MenuBookIcon from '@material-ui/icons/MenuBook'
 
 const mapIcons = {
   register: <HowToRegOutlinedIcon />,
@@ -17,7 +18,8 @@ const mapIcons = {
   postInternships: <ListAltOutlinedIcon />,
   select: <TouchAppOutlinedIcon />,
   internship: <WorkOutlineOutlinedIcon />,
-  completionOfInternship: <AssignmentTurnedInOutlinedIcon />
+  completionOfInternship: <AssignmentTurnedInOutlinedIcon />,
+  learn: <MenuBookIcon />
 }
 
 const getIcons = icons => prop(icons || '', mapIcons)

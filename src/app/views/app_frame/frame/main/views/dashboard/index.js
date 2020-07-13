@@ -97,7 +97,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
 
   return (
     (projectName === 'Safe Traffic Town' && <TimelineSTT />) ? (
-      <TimelineSTT />
+      <TimelineSTT viewInternships={viewInternships}/>
     ) :
     <Col className={classes.loading} spacing={4}>
       <Loader size={20} />
