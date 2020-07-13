@@ -45,7 +45,7 @@ const UploadImage = ({ fieldData, label, onUpdate, questionCode }) => {
 
   useEffect(
     () => {
-      if (length(imageUrl)) onUpdate({ imageUrl })
+      if (length(imageUrl)) onUpdate({ value: imageUrl, ask: fieldData })
     },
     [imageUrl],
   )
