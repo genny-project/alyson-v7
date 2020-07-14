@@ -42,7 +42,7 @@ const Card = ({icon, header, body, side, isLast, viewInternships, status, setVie
                       ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
                       : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/>
                     : null }
-                    <Button color="inherit" onClick={redirect ? viewInternships : () => setViewing({code: code, parentCode:parentCode, view: 'FORM'})}>
+                    <Button color="inherit" onClick={ () => setViewing({code: code, parentCode:parentCode, view: 'FORM'})}>
                       {content}
                     </Button>
                   { side === 'left'
