@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { map, addIndex } from 'ramda'
+import { map, addIndex, path, prop } from 'ramda'
 import { nanoid } from 'nanoid'
 
 import getIcons from '../helpers/get-icons.js'
@@ -65,7 +65,10 @@ const workReady = {
 
 const allData = [register, search, apply, internships, workReady]
 
-const TimelineIntern = ({ viewInternships }) => {
+const TimelineIntern = ({ viewInternships, setViewing, asks }) => {
+
+  const timeline = map(({name, question, sourceCode, childAsks})=>({header: name, parentCode:sourceCode, code: prop('code', question), body:map(({name})=>({content:name, status:false}), childAsks)}))(path(['QUE_DASHBOARD_TIMELINE_GRP', 'childAsks'], asks))
+
   return (
     <Col stretch align="center">
       <Row>
@@ -82,19 +85,22 @@ const TimelineIntern = ({ viewInternships }) => {
       </Button>
       <Timeline align="alternate">
         {addIndex(map)(
-          ({ header, body, icon }, idx) => (
+          ({ header, body, parentCode, code }, idx) => (
             <Card
               key={nanoid()}
               status={getStatus(body)}
               header={header}
               body={body}
-              icon={getIcons(icon)}
+              icon={getIcons(header)}
               side={idx % 2 === 0 ? 'right' : 'left'}
               isLast={idx === allData.length - 1}
               viewInternships={viewInternships}
+              setViewing={setViewing}
+              parentCode={parentCode}
+              code={code}
             />
           ),
-          allData,
+          timeline,
         )}
       </Timeline>
     </Col>

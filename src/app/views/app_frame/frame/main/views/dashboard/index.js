@@ -32,22 +32,22 @@ const InfoBadge = ({ onClick, label, value }) => {
   )
 }
 
-const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
+const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
   const viewInterns = () =>
     setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
-  const viewInternships = () =>
+    const viewInternships = () =>
     setViewing({
-      parentCode: 'QUE_TREE_ITEM_INTERNSHIPS_GRP',
-      code: 'QUE_TREE_ITEM_INTERNSHIPS_ACTIVE',
-      view: 'MAP_LIST',
+      parentCode: 'QUE_ADD_ITEMS_GRP',
+      code: 'QUE_HOST_CPY_MENU',
+      view: 'FORM',
     })
 
   const classes = useStyles()
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
   if (not(isEmpty(dashboard))) {
-    return isAdmin ? (
-      <TimelineIntern viewInternships={viewInternships} />
+    return isIntern ? (
+      <TimelineIntern viewInternships={viewInternships} setViewing={setViewing}/>
     ) : isSupervisor ? (
       <TimelineHC />
     ) : projectName === 'Safe Traffic Town' ? (
@@ -99,6 +99,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user }) => {
     (projectName === 'Safe Traffic Town' && <TimelineSTT />) ? (
       <TimelineSTT viewInternships={viewInternships}/>
     ) :
+    isIntern ? <TimelineIntern viewInternships={viewInternships} setViewing={setViewing} asks={asks}/> :
     <Col className={classes.loading} spacing={4}>
       <Loader size={20} />
       <Typography>{`Preparing Dashboard`}</Typography>
