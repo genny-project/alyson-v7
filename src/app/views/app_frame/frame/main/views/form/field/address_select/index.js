@@ -72,7 +72,7 @@ const AddressSelect = ({ label, fieldData, onUpdate, googleApiKey, initialValue 
               : {}
           }
           renderInput={params => (
-            <TextField {...params} label={label || 'Address'} variant="outlined" fullWidth />
+            <TextField {...params} label={label || 'Address'} variant="outlined" fullWidth test-id={questionCode}/>
           )}
           loader={<CircularProgress />}
           renderSuggestions={(active, suggestions, onSelectSuggestion) => (
@@ -82,7 +82,6 @@ const AddressSelect = ({ label, fieldData, onUpdate, googleApiKey, initialValue 
               onSelectSuggestion={onSelectSuggestion}
             />
           )}
-          test-id={questionCode}
         />
       </Grid>
     </Grid>
