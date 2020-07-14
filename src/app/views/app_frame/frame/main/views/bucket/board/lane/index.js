@@ -25,7 +25,7 @@ const Lane = ({
   const [expand, setExpand] = useState(true)
   const classes = useStyles({ expand: expand && length(items) > 0 })
   return (
-    <Grid item key={'lane' + id}>
+    <Grid item key={'lane' + id} test-id={title}>
       <Col className={classes.lane} wrap="nowrap" top>
         <ColumnHeader
           icon={getIconForTitle(title || '')}

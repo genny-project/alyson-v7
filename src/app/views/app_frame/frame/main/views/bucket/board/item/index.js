@@ -122,6 +122,7 @@ const Item = ({
                   onClick={event => {
                     setMenu(event.currentTarget)
                   }}
+                  test-id={email}
                 >
                   <MoreVertIcon />
                 </IconButton>
@@ -192,7 +193,7 @@ const Item = ({
         <Menu open={!!menu} anchorEl={menu} onClose={() => setMenu(null)}>
           {map(
             ({ code, attributeName }) => (
-              <MenuItem key={targetCode + code} onClick={handleAction(code)}>
+              <MenuItem key={targetCode + code} onClick={handleAction(code)} test-id={code}>
                 {attributeName}
               </MenuItem>
             ),
