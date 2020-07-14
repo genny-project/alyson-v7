@@ -164,6 +164,12 @@ class MessageHandler {
     const { msg_type, data_type, cmd_type, messages, asks } = message
     const isValidMessage = this.validMessageTypes.includes(msg_type)
 
+    if (message.status) {
+      store.dispatch({ type: 'NOTES_MESSAGE', payload: message })
+
+      return
+    }
+
     if (cmd_type === 'DOWNLOAD_FILE') {
       store.dispatch({ type: 'DOWNLOAD_LINK', payload: message })
 

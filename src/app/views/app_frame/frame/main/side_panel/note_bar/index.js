@@ -1,16 +1,14 @@
-import React, { useContext, useState } from 'react'
-import { Drawer, IconButton, Typography, Divider, LinearProgress } from '@material-ui/core'
+import React, { useState } from 'react'
+import { IconButton, Typography, Divider, LinearProgress } from '@material-ui/core'
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
-
-import { NoteBarContext } from '../../contexts'
 
 import Notes from './notes'
 
 import useStyles from './styles'
 
-const NoteBar = ({ setShowNotes, baseEntities, attributes }) => {
+const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
   const [apiLoading, setApiLoading] = useState(false)
 
   const classes = useStyles()
@@ -32,7 +30,12 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes }) => {
         </Row>
       </Row>
       <Divider />
-      <Notes baseEntities={baseEntities} attributes={attributes} setApiLoading={setApiLoading} />
+      <Notes
+        currentNote={currentNote}
+        baseEntities={baseEntities}
+        attributes={attributes}
+        setApiLoading={setApiLoading}
+      />
     </Col>
   )
 }

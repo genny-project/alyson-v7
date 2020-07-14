@@ -34,6 +34,7 @@ const Sam = ({
   currentSearch,
   downloadLink,
   currentAsk,
+  currentNote,
 }) => {
   const googleApiKey = getGoogleApiKey(keycloak)
   const agency = getAgency(user)
@@ -144,6 +145,7 @@ const Sam = ({
           baseEntities={baseEntities}
           attributes={attributes}
           setSidePanelOpen={setSidePanelOpen}
+          currentNote={currentNote}
         />
       </ErrorBoundary>
     </ThemeProvider>
@@ -155,6 +157,7 @@ const mapStateToProps = state => ({
   currentSearch: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'active'], state),
   downloadLink: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'downloadLink'], state),
   currentAsk: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'currentAsk'], state),
+  currentNote: pathOr({}, ['vertx', 'bulkMessage', 'SAM', 'currentNote'], state),
   baseEntities: state.vertx.baseEntities.data,
   attributes: state.vertx.baseEntities.attributes,
   asks: state.vertx.asks,

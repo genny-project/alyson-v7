@@ -1,73 +1,107 @@
 import React, { useEffect, useState } from 'react'
-import { map, pathOr } from 'ramda'
+import { map, pathOr, length, path } from 'ramda'
 import { connect } from 'react-redux'
 
 import {
   Button,
   InputBase,
-  Grid,
   Card,
-  CardActionArea,
   CardContent,
   CardActions,
-  Typography,
   CardHeader,
-  LinearProgress,
+  Snackbar,
 } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
-import AddIcon from '@material-ui/icons/Add'
+import { Alert } from '@material-ui/lab'
 
 import Note from './note'
 
-import { Col, Row } from '../../../components/layouts'
+import { Row } from '../../../components/layouts'
 
 import useStyles from './styles'
 
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
+import formatError from './helpers/format-error'
 
-const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
-  const [notes, setNotes] = useState({})
+const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote }) => {
+  const [notes, setNotes] = useState([])
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
+  const [error, setError] = useState('')
 
   const classes = useStyles()
+
+  const onError = error => {
+    setError(formatError(error))
+    setApiLoading(false)
+  }
+  const onCloseSnackbar = () => setError('')
+
+  const handleResponse = (response, type) => {
+    if (type === 'getAll') {
+      setNotes(path(['data', 'items'], response) || [])
+    } else if (type === 'edit') {
+      setNotes({})
+    }
+
+    setApiLoading(false)
+  }
 
   const handleSubmit = () => {
     setNoteHeader('')
     setNoteContent('')
-    postNote({ noteContent, noteHeader, setNotes, accessToken, setApiLoading })
+    postNote({
+      noteContent,
+      noteHeader,
+      setNotes,
+      accessToken,
+      setApiLoading,
+      onError,
+      handleResponse,
+    })
   }
 
   const removeNotes = id => {
-    return deleteNote({ id, accessToken, setNotes, setApiLoading })
-    // setNotes(( notes ) => notes.filter(( note ) => note.id !== id ))
+    return deleteNote({
+      id,
+      accessToken,
+      setNotes,
+      setApiLoading,
+      onError,
+      handleResponse,
+    })
   }
-
 
   useEffect(
     () => {
-      getAll({ setNotes, accessToken, setApiLoading })
+      getAll({ accessToken, setApiLoading, onError, handleResponse })
     },
-    [accessToken],
+    [accessToken, currentNote],
   )
 
   return (
-    <Col top stretch className={classes.notesContainer}>
-      {map(
-        ({ id, ...rest }) => (
-          <Note
-            baseEntities={baseEntities}
-            id={id}
-            key={`note${id}`}
-            {...rest}
-            removeNotes={removeNotes}
-            attributes={attributes}
-            editNote={editNote}
-            setNotes={setNotes}
-          />
-        ),
-        [...notes] || [],
-      )}
+    <div className={classes.notesContainer}>
+      <div className={classes.notesSection}>
+        {map(
+          ({ id, ...rest }) => (
+            <Note
+              baseEntities={baseEntities}
+              id={id}
+              key={`note${id}`}
+              {...rest}
+              removeNotes={removeNotes}
+              attributes={attributes}
+              editNote={editNote}
+              setNotes={setNotes}
+              accessToken={accessToken}
+              setApiLoading={setApiLoading}
+              onError={onError}
+              handleResponse={handleResponse}
+              currentNote={currentNote}
+            />
+          ),
+          [...notes] || [],
+        )}
+      </div>
       <Card variant="outlined">
         <CardHeader
           title={
@@ -99,7 +133,12 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading }) => {
           </Row>
         </CardActions>
       </Card>
-    </Col>
+      <Snackbar open={!!length(error)} autoHideDuration={6000} onClose={onCloseSnackbar}>
+        <Alert elevation={6} variant="filled" onClose={onCloseSnackbar} severity="error">
+          {error}
+        </Alert>
+      </Snackbar>
+    </div>
   )
 }
 

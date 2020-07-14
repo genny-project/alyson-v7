@@ -29,6 +29,21 @@ const isMetaData = compose(
 )
 
 const reducer = (state = initialState, { type, payload }) => {
+  if (type === 'NOTES_MESSAGE') {
+    const currentNote = head(prop('items', payload))
+    const status = prop('status', payload)
+
+    return {
+      ...state,
+      ...{
+        SAM: {
+          ...pathOr({}, ['SAM'], state),
+          currentNote: { ...currentNote, status },
+        },
+      },
+    }
+  }
+
   if (type === 'ASK_DATA') {
     const currentAsk = path(['items', 0], payload)
 

@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => ({
   control: {
     padding: theme.spacing(2),
   },
+  notesSection: {},
   notesContainer: {
     padding: theme.spacing(1),
   },

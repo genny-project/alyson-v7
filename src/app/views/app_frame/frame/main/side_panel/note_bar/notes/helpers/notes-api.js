@@ -1,80 +1,101 @@
-import { map, path } from 'ramda'
-
 import axios from 'axios'
 
-const getAll = async ({ setNotes, accessToken, setApiLoading }) => {
-  setApiLoading( true )
+const notesUrl = process.env.API_URL_NOTES
+
+const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) => {
+  setApiLoading(true)
 
   try {
-    const response = await axios.get(
-      'https://internmatch-cyrus.gada.io/v7/notes',
+    const response = await axios.get(notesUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    response.status === 200 ? handleResponse(response, 'getAll') : onError(response)
+  } catch (error) {
+    onError(error)
+  }
+}
+
+const postNote = async ({ noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
+  setApiLoading(true)
+
+  try {
+    const response = await axios.post(
+      notesUrl,
+      {
+        sourceCode: 'PER_USER1',
+        content: noteContent,
+        tags: [],
+        created: new Date(),
+        targetCode: 'PER_USER1',
+      },
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     )
 
-    // console.log( 'response from GET', response )
-    setNotes( path( ['data', 'items'], response ) || [] )
-    response.status === 200 ? setApiLoading( false ) : null
-  } catch ( error ) {
-    console.error( error )
+    response.status === 201 ? handleResponse(response, 'post') : onError(error)
+  } catch (error) {
+    onError(error)
   }
 }
 
-const postNote = async ({ noteContent, setNotes, accessToken, setApiLoading }) => {
-  setApiLoading( true )
+const deleteNote = async ({
+  id,
+  accessToken,
+  setApiLoading,
+  onError,
+  handleResponse,
+}) => {
+  setApiLoading(true)
 
-  const response = await axios.post( 'https://internmatch-cyrus.gada.io/v7/notes',  {
-    sourceCode: 'PER_USER1',
-    content: noteContent,
-    tags: [],
-    id: 0,
-    created: new Date(),
-    targetCode: 'PER_USER1',
-  },
-  {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    },
-  }
-  )
-
-  getAll({ setNotes, accessToken, setApiLoading })
-
-  response.status === 201 ? setApiLoading( false ) : null
-
-  // console.error( 'response from POST', response )
-}
-
-const deleteNote = async ({ id, accessToken, setNotes, setApiLoading }) => {
-
-  const response = await axios.delete( `https://internmatch-cyrus.gada.io/v7/notes/${id}`,
-    {
+  try {
+    const response = await axios.delete(`${notesUrl}/${id}`, {
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
-    }
-  )
+    })
 
-  // console.error( 'response from DELETE', response )
-
-  getAll({ setNotes, accessToken, setApiLoading })
-
-  response.status === 200 ? setApiLoading( false ) : null
+    response.status === 200 ? handleResponse(response, 'delete') : onError(error)
+  } catch (error) {
+    onError(error)
+  }
 }
 
-const editNote = async ({ id, newContent, accessToken, setNotes, setApiLoading }) => {
-  const response = await axios.put( `https://internmatch-cyrus.gada.io/v7/notes/${id}`, {
-    content: newContent,
-  })
+const editNote = async ({
+  id,
+  newContent,
+  accessToken,
+  setApiLoading,
+  onError,
+  handleResponse,
+}) => {
+  setApiLoading(true)
 
-  getAll({ setNotes, accessToken, setApiLoading })
+  try {
+    const response = await axios.put(
+      `${notesUrl}/${id}`,
+      {
+        content: newContent,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
 
-  // console.error( 'response from PUT', response )
+    response.status === 200 ? handleResponse(response, 'edit') : onError(error)
+  } catch (error) {
+    onError(error)
+  }
 }
 
 export { getAll, postNote, deleteNote, editNote }
