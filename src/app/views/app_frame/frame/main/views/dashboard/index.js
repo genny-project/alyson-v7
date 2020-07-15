@@ -47,7 +47,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
 
   if (not(isEmpty(dashboard))) {
     return isIntern ? (
-      <TimelineIntern viewInternships={viewInternships} setViewing={setViewing}/>
+      <TimelineIntern viewInternships={viewInternships} setViewing={setViewing} user={user} asks={asks}/>
     ) : isSupervisor ? (
       <TimelineHC />
     ) : projectName === 'Safe Traffic Town' ? (
