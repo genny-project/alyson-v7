@@ -99,7 +99,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
     (projectName === 'Safe Traffic Town' && <TimelineSTT />) ? (
       <TimelineSTT viewInternships={viewInternships}/>
     ) :
-    isIntern ? <TimelineIntern viewInternships={viewInternships} setViewing={setViewing} asks={asks}/> :
+    isIntern ? <TimelineIntern viewInternships={viewInternships} setViewing={setViewing} asks={asks} user={user}/> :
     <Col className={classes.loading} spacing={4}>
       <Loader size={20} />
       <Typography>{`Preparing Dashboard`}</Typography>

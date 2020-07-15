@@ -66,7 +66,7 @@ const workReady = {
 
 const allData = [register, search, apply, internships, workReady]
 
-const TimelineIntern = ({ viewInternships, setViewing, asks }) => {
+const TimelineIntern = ({ viewInternships, setViewing, asks, user }) => {
 
   return (
     <Col stretch align="center">
@@ -99,7 +99,7 @@ const TimelineIntern = ({ viewInternships, setViewing, asks }) => {
               code={code}
             />
           ),
-          getTimeline(asks)
+          getTimeline(asks,user)
         )}
       </Timeline>
     </Col>
