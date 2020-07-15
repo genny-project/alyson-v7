@@ -96,7 +96,6 @@ const TimelineIntern = ({ viewInternships, setViewing, asks, user }) => {
               viewInternships={viewInternships}
               setViewing={setViewing}
               parentCode={parentCode}
-              code={code}
             />
           ),
           getTimeline(asks,user)

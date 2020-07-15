@@ -17,7 +17,7 @@ import {
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 
-const Card = ({icon, header, body, side, isLast, viewInternships, status, setViewing, parentCode, code }) => {
+const Card = ({icon, header, body, side, isLast, viewInternships, status, setViewing, parentCode }) => {
 
   const classes = useStyles(status)
 
@@ -35,14 +35,14 @@ const Card = ({icon, header, body, side, isLast, viewInternships, status, setVie
             {header}
           </Typography>
             <Typography>
-              {map(({content, status, redirect}) =>
+              {map(({content, status, redirect, code}) =>
                 <Row left={side==='right'} right={side==='left'} key={nanoid()}>
                   { side === 'right'
                     ? status
                       ? <CheckBoxOutlinedIcon className={classes.greenCheck}/>
                       : <CheckBoxOutlineBlankOutlinedIcon className={classes.greyCheck}/>
                     : null }
-                    <Button color="inherit" onClick={ () => setViewing({code: code, parentCode:parentCode, view: 'FORM'})}>
+                    <Button color="inherit" onClick={ () => setViewing({ code: code, view: 'FORM'})}>
                       {content}
                     </Button>
                   { side === 'left'
