@@ -6,6 +6,7 @@ import getIcons from '../helpers/get-icons.js'
 import Card from '../card'
 import { Row, Col } from '../../../components/layouts'
 import getStatus from '../helpers/get-status'
+import getTimeline from '../helpers/get-timeline'
 
 import { Timeline } from '@material-ui/lab'
 import { Paper, Typography, Button } from '@material-ui/core'
@@ -67,8 +68,6 @@ const allData = [register, search, apply, internships, workReady]
 
 const TimelineIntern = ({ viewInternships, setViewing, asks }) => {
 
-  const timeline = map(({name, question, sourceCode, childAsks})=>({header: name, parentCode:sourceCode, code: prop('code', question), body:map(({name})=>({content:name, status:false}), childAsks)}))(path(['QUE_DASHBOARD_TIMELINE_GRP', 'childAsks'], asks))
-
   return (
     <Col stretch align="center">
       <Row>
@@ -100,7 +99,7 @@ const TimelineIntern = ({ viewInternships, setViewing, asks }) => {
               code={code}
             />
           ),
-          timeline,
+          getTimeline(asks)
         )}
       </Timeline>
     </Col>
