@@ -94,7 +94,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env':{
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
-        'API_URL_NOTES': JSON.stringify('https://internmatch-cyrus.gada.io/v7/notes')
+        'API_URL_NOTES': JSON.stringify(process.env.ENV_GENNY_BRIDGE_URL + 'v7/notes' )
       },
       __DEV__: process.env.NODE_ENV !== 'production' || true,
     }),

@@ -2,6 +2,8 @@ import axios from 'axios'
 
 const notesUrl = process.env.API_URL_NOTES
 
+console.error('notesUrl', notesUrl)
+
 const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) => {
   setApiLoading(true)
 
@@ -19,16 +21,16 @@ const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) =
   }
 }
 
-const postNote = async ({ noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
+const postNote = async ({ noteHeader, noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
   setApiLoading(true)
-
+  console.error({noteHeader})
   try {
     const response = await axios.post(
       notesUrl,
       {
         sourceCode: 'PER_USER1',
         content: noteContent,
-        tags: [],
+        tags: [...noteHeader],
         created: new Date(),
         targetCode: 'PER_USER1',
       },
