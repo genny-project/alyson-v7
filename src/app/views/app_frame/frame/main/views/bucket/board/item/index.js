@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { contains, has, map, mergeAll, includes } from 'ramda'
+import { contains, has, map, mergeAll, includes, path } from 'ramda'
 import { Row, Col } from '../../../../components/layouts'
 import {
   Card,
@@ -122,7 +122,7 @@ const Item = ({
                   onClick={event => {
                     setMenu(event.currentTarget)
                   }}
-                  test-id={email}
+                  test-id={path([ 0, 'baseEntityCode'], item)}
                 >
                   <MoreVertIcon />
                 </IconButton>

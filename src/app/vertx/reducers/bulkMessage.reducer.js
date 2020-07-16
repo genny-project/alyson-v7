@@ -30,7 +30,6 @@ const isMetaData = compose(
 
 const reducer = (state = initialState, { type, payload }) => {
   if (type === 'NOTES_MESSAGE') {
-    console.error('bulk reducer', {type: type, payload:payload})
     const currentNote = head(prop('items', payload))
     const status = prop('status', payload)
 
