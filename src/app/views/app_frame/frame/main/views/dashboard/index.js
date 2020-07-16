@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { isEmpty, not, path } from 'ramda'
 import { Typography, Badge, Button } from '@material-ui/core'
 import { Row, Col } from '../../components/layouts'
-import { TimelineIntern, TimelineHC, TimelineSTT } from './timeline'
+import { TimelineIntern, TimelineHC, TimelineSTT, TimelineGeneric } from './timeline'
 import InfoIcon from '@material-ui/icons/Info'
 import Loader from 'react-spinners/ClimbingBoxLoader'
 import getUserRole from './helpers/get-user-role'
@@ -47,7 +47,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
 
   if (not(isEmpty(dashboard))) {
     return isIntern ? (
-      <TimelineIntern viewInternships={viewInternships} setViewing={setViewing} user={user} asks={asks}/>
+      <TimelineGeneric viewInternships={viewInternships} setViewing={setViewing} user={user} asks={asks}/>
     ) : isSupervisor ? (
       <TimelineHC />
     ) : projectName === 'Safe Traffic Town' ? (
@@ -99,7 +99,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
     (projectName === 'Safe Traffic Town' && <TimelineSTT />) ? (
       <TimelineSTT viewInternships={viewInternships}/>
     ) :
-    isIntern ? <TimelineIntern viewInternships={viewInternships} setViewing={setViewing} asks={asks} user={user}/> :
+    isIntern ? <TimelineGeneric viewInternships={viewInternships} setViewing={setViewing} asks={asks} user={user}/> :
     <Col className={classes.loading} spacing={4}>
       <Loader size={20} />
       <Typography>{`Preparing Dashboard`}</Typography>
