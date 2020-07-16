@@ -46,7 +46,7 @@ const reducer = (state = initialState, { type, payload }) => {
   }
 
   if (type === 'ASK_DATA') {
-    const currentAsk = path(['items', 0], payload)
+    const currentAsk = pathOr({}, ['items', 0], payload)
 
     if (currentAsk.name !== 'Drafts') {
       return {
