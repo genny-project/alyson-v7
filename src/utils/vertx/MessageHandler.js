@@ -155,7 +155,6 @@ class MessageHandler {
   }
 
   onMessage = message => {
-
     if (isDevMode) {
       console.warn('INCOMING MESSAGE:', { message }) // eslint-disable-line
     }
@@ -166,7 +165,6 @@ class MessageHandler {
     const isValidMessage = this.validMessageTypes.includes(msg_type)
 
     if (message.status) {
-      console.error('message', message)
       store.dispatch({ type: 'NOTES_MESSAGE', payload: message })
 
       return

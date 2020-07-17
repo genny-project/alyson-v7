@@ -19,7 +19,7 @@ const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) =
   }
 }
 
-const postNote = async ({ noteHeader, noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
+const postNote = async ({ noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
   setApiLoading(true)
   try {
     const response = await axios.post(
@@ -27,7 +27,7 @@ const postNote = async ({ noteHeader, noteContent, accessToken, handleResponse, 
       {
         sourceCode: 'PER_USER1',
         content: noteContent,
-        tags: [...noteHeader],
+        tags: [],
         created: new Date(),
         targetCode: 'PER_USER1',
       },
