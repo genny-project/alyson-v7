@@ -21,7 +21,6 @@ const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) =
 
 const postNote = async ({ noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
   setApiLoading(true)
-
   try {
     const response = await axios.post(
       notesUrl,
