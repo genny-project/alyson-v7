@@ -12,7 +12,7 @@ import { Timeline } from '@material-ui/lab'
 import { Paper, Typography, Button } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 
-const TimelineGeneric = ({ viewInternships, setViewing, asks, user }) => {
+const TimelineGeneric = ({ setViewing, asks, user }) => {
 
   return (
     <Col stretch align="center">
@@ -33,7 +33,6 @@ const TimelineGeneric = ({ viewInternships, setViewing, asks, user }) => {
         color="primary"
         variant="contained"
         startIcon={<SearchIcon />}
-        onClick={viewInternships}
       >
         {`Start Internship Search`}
       </Button>
@@ -48,7 +47,6 @@ const TimelineGeneric = ({ viewInternships, setViewing, asks, user }) => {
               icon={getIcons(header)}
               side={idx % 2 === 0 ? 'right' : 'left'}
               isLast={idx === getTimeline(asks,user).length - 1}
-              viewInternships={viewInternships}
               setViewing={setViewing}
               parentCode={parentCode}
             />

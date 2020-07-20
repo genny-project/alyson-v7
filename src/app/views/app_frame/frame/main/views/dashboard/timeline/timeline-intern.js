@@ -66,7 +66,7 @@ const workReady = {
 
 const allData = [register, search, apply, internships, workReady]
 
-const TimelineIntern = ({ viewInternships, setViewing, asks, user }) => {
+const TimelineIntern = ({ setViewing, asks, user }) => {
 
   return (
     <Col stretch align="center">
@@ -78,7 +78,6 @@ const TimelineIntern = ({ viewInternships, setViewing, asks, user }) => {
         color="primary"
         variant="contained"
         startIcon={<SearchIcon />}
-        onClick={viewInternships}
       >
         {`Start Internship Search`}
       </Button>
@@ -93,7 +92,6 @@ const TimelineIntern = ({ viewInternships, setViewing, asks, user }) => {
               icon={getIcons(header)}
               side={idx % 2 === 0 ? 'right' : 'left'}
               isLast={idx === allData.length - 1}
-              viewInternships={viewInternships}
               setViewing={setViewing}
               parentCode={parentCode}
             />

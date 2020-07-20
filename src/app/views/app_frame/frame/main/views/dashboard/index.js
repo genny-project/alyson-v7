@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { isEmpty, not, path } from 'ramda'
+import { isEmpty, not, path, compose } from 'ramda'
 import { Typography, Badge, Button } from '@material-ui/core'
 import { Row, Col } from '../../components/layouts'
 import { TimelineIntern, TimelineHC, TimelineSTT, TimelineGeneric } from './timeline'
@@ -33,25 +33,14 @@ const InfoBadge = ({ onClick, label, value }) => {
 }
 
 const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
-  const viewInterns = () =>
-    setViewing({ code: 'QUE_TREE_ITEM_INTERNS_GRP', parentCode: 'QUE_TREE_ITEM_CONTACTS_GRP' })
-    const viewInternships = () =>
-    setViewing({
-      parentCode: 'QUE_ADD_ITEMS_GRP',
-      code: 'QUE_HOST_CPY_MENU',
-      view: 'FORM',
-    })
 
   const classes = useStyles()
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
-  if (not(isEmpty(dashboard))) {
-    return isIntern ? (
-      <TimelineGeneric viewInternships={viewInternships} setViewing={setViewing} user={user} asks={asks}/>
-    ) : isSupervisor ? (
-      <TimelineHC />
-    ) : projectName === 'Safe Traffic Town' ? (
-      <Typography>{`STT Dashboard`}</Typography>
+  if (compose( not, isEmpty)(dashboard)) {
+
+    return path( ['QUE_DASHBOARD_TIMELINE_GRP'], asks ) ? (
+      <TimelineGeneric setViewing={setViewing} user={user} asks={asks}/>
     ) : (
       <Col spacing={10} className={classes.dashboardContainer}>
         {path(['data', 'name'], user) ? (
@@ -66,27 +55,22 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
           <InfoBadge
             label={'All Interns'}
             value={path(['PRI_COUNT_ALL_INTERNS', 'value'], dashboard)}
-            onClick={viewInterns}
           />
           <InfoBadge
-            onClick={viewInternships}
             label={'All Internships'}
             value={path(['PRI_COUNT_ALL_INTERNSHIPS', 'value'], dashboard)}
           />
         </Row>
         <Row justify="space-between" spacing={9}>
           <InfoBadge
-            onClick={viewInterns}
             value={path(['PRI_COUNT_APPLIED_INTERNS', 'value'], dashboard)}
             label={'Applied Interns'}
           />
           <InfoBadge
-            onClick={viewInterns}
             value={path(['PRI_COUNT_PLACED_INTERNS', 'value'], dashboard)}
             label={'Placed Interns'}
           />
           <InfoBadge
-            onClick={viewInternships}
             value={path(['PRI_COUNT_IN_PROGRESS_INTERNSHIPS', 'value'], dashboard)}
             label={'In Progress Internships'}
           />
@@ -96,10 +80,6 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
   }
 
   return (
-    (projectName === 'Safe Traffic Town' && <TimelineSTT />) ? (
-      <TimelineSTT viewInternships={viewInternships}/>
-    ) :
-    isIntern ? <TimelineGeneric viewInternships={viewInternships} setViewing={setViewing} asks={asks} user={user}/> :
     <Col className={classes.loading} spacing={4}>
       <Loader size={20} />
       <Typography>{`Preparing Dashboard`}</Typography>

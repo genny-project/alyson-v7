@@ -61,7 +61,7 @@ const workReady = {
 
 const allData = [register, learn, applyKnowledge, feedback, workReady]
 
-const TimelineSTT = ({ viewInternships }) => {
+const TimelineSTT = ({ }) => {
   return (
     <Col stretch align="center">
       <Row>
@@ -79,7 +79,6 @@ const TimelineSTT = ({ viewInternships }) => {
               icon={getIcons(icon)}
               side={idx % 2 === 0 ? 'right' : 'left'}
               isLast={idx === allData.length - 1}
-              viewInternships={viewInternships}
             />
           ),
           allData,

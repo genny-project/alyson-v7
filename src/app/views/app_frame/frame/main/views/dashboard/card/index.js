@@ -17,7 +17,7 @@ import {
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 
-const Card = ({icon, header, body, side, isLast, viewInternships, status, setViewing, parentCode }) => {
+const Card = ({icon, header, body, side, isLast, status, setViewing, parentCode }) => {
 
   const classes = useStyles(status)
 
