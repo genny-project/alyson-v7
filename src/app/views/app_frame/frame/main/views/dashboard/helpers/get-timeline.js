@@ -1,6 +1,6 @@
 import { map, path } from 'ramda'
 
-const getTimeline = ( asks, user ) =>
+const getTimeline = ( asks ) => ( user ) =>
   map(({ name, questionCode, childAsks }) => ({
     header: name,
     parentCode: questionCode,
@@ -8,7 +8,7 @@ const getTimeline = ( asks, user ) =>
       content: name,
       status: user.attributes[attributeCode].valueBoolean,
       attributeCode: attributeCode,
-      code: path( ['code'], question ) }), childAsks ) }))
-  ( path( ['QUE_DASHBOARD_TIMELINE_GRP', 'childAsks'], asks ))
+      code: path( ['code'], question ) }), childAsks )
+  }))
 
 export default getTimeline

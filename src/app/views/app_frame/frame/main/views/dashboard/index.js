@@ -80,7 +80,9 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
   }
 
   return (
-    <Col className={classes.loading} spacing={4}>
+    path( ['QUE_DASHBOARD_TIMELINE_GRP'], asks ) ? (
+      <TimelineGeneric setViewing={setViewing} user={user} asks={asks}/>
+    ) : <Col className={classes.loading} spacing={4}>
       <Loader size={20} />
       <Typography>{`Preparing Dashboard`}</Typography>
     </Col>

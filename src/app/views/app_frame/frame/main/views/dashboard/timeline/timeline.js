@@ -7,6 +7,7 @@ import Card from '../card'
 import { Row, Col } from '../../../components/layouts'
 import getStatus from '../helpers/get-status'
 import getTimeline from '../helpers/get-timeline'
+import getTimelineAttribute from '../helpers/get-timeline-attribute'
 
 import { Timeline } from '@material-ui/lab'
 import { Paper, Typography, Button } from '@material-ui/core'
@@ -46,12 +47,12 @@ const TimelineGeneric = ({ setViewing, asks, user }) => {
               body={body}
               icon={getIcons(header)}
               side={idx % 2 === 0 ? 'right' : 'left'}
-              isLast={idx === getTimeline(asks,user).length - 1}
+              isLast={idx === getTimeline(asks)(user)(getTimelineAttribute(asks)).length - 1}
               setViewing={setViewing}
               parentCode={parentCode}
             />
           ),
-          getTimeline(asks,user)
+          getTimeline(asks)(user)(getTimelineAttribute(asks))
         )}
       </Timeline>
     </Col>
