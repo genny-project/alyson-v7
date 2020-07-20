@@ -6,7 +6,7 @@ import getIcons from '../helpers/get-icons.js'
 import Card from '../card'
 import { Row, Col } from '../../../components/layouts'
 import getStatus from '../helpers/get-status'
-import getTimeline from '../helpers/get-timeline'
+import createGetTimeline from '../helpers/create-get-timeline'
 
 import { Timeline } from '@material-ui/lab'
 import { Paper, Typography, Button } from '@material-ui/core'
@@ -96,7 +96,7 @@ const TimelineIntern = ({ setViewing, asks, user }) => {
               parentCode={parentCode}
             />
           ),
-          getTimeline(asks,user)
+          createGetTimeline(asks,user)
         )}
       </Timeline>
     </Col>

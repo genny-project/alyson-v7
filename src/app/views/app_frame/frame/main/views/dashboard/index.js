@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { isEmpty, not, path, compose } from 'ramda'
+import { path } from 'ramda'
 import { Typography, Badge, Button } from '@material-ui/core'
 import { Row, Col } from '../../components/layouts'
 import { TimelineIntern, TimelineHC, TimelineSTT, TimelineGeneric } from './timeline'
@@ -7,6 +7,7 @@ import InfoIcon from '@material-ui/icons/Info'
 import Loader from 'react-spinners/ClimbingBoxLoader'
 import getUserRole from './helpers/get-user-role'
 import SearchIcon from '@material-ui/icons/Search'
+import isNotEmpty from '../../utils/ramda/is-not-empty'
 
 import useStyles from './styles'
 
@@ -37,7 +38,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
   const classes = useStyles()
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
-  if (compose( not, isEmpty)(dashboard)) {
+  if (isNotEmpty(dashboard)) {
 
     return path( ['QUE_DASHBOARD_TIMELINE_GRP'], asks ) ? (
       <TimelineGeneric setViewing={setViewing} user={user} asks={asks}/>
