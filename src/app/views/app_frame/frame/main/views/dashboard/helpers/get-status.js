@@ -1,7 +1,7 @@
-import { any, all, equals, map, prop } from 'ramda';
+import { any, all, equals, map, prop, complement } from 'ramda';
 
 const equalsFalse = equals(false)
-const equalsTrue = equals(true)
+const equalsTrue = complement(equalsFalse)
 const getStatusOffBody = map(prop('status'))
 
 const getStatus = (body) => ({
