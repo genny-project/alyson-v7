@@ -25,6 +25,7 @@ const Actions = ({ actions, data }) => {
             key={'iconActions' + icon}
             className={classes.button}
             onClick={() => onClick({ targetCode })}
+            test-id={targetCode}
           >
             {icon}
           </Icon>
