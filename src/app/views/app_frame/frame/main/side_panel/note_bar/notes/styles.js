@@ -26,6 +26,10 @@ const useStyles = makeStyles(theme => ({
   },
   inputBase:{
     margin: theme.spacing(1)
+  },
+  divider: {
+    width: '90%',
+    marginLeft: theme.spacing(2.5)
   }
 }))
 

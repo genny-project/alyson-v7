@@ -107,7 +107,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
             className={classes.inputBase}
           />
         </CardContent>
-        <Divider />
+        <Divider className={classes.divider}/>
         <Tags userTags={userTags} onSelect={handleSubmit} />
       </Card>
 

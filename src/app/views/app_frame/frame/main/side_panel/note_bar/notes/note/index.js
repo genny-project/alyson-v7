@@ -84,7 +84,7 @@ const Note = ({
                 className={classes.input}
               />
             ) : (
-              <Typography variant="body2">{content}</Typography>
+              <Typography variant="body2" className={classes.content}>{content}</Typography>
             )}
           </Col>
           <Popper open={!!hover} anchorEl={hover} placement="top-end" className={classes.popper}>
