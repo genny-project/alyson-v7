@@ -1,15 +1,20 @@
 import { makeStyles } from '@material-ui/core'
+import { amber, grey } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
   tagInfo: {
-    padding: '2rem',
-    paddingLeft: '0.5rem',
+    padding: '1rem',
   },
   small: {
     width: theme.spacing(7),
     height: theme.spacing(3),
-    marginLeft: '1rem'
+    marginLeft: '0.7rem',
+    color: '#fff',
+    backgroundColor: amber[500]
   },
+  chip:{
+    backgroundColor: grey[300]
+  }
 }))
 
 export default useStyles

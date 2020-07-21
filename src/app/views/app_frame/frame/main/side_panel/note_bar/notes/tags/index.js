@@ -10,9 +10,9 @@ const Tags = ({ onSelect, userTags }) => {
   const classes = useStyles()
 
   return (
-    <Col top left>
-      <Typography className={classes.tagInfo}>{`Select a tag to submit`}</Typography>
-      <Row>
+    <Col top left className={classes.tagInfo}>
+      <Typography variant='subtitle1'>{`Select a tag to submit`}</Typography>
+      <Row left wrap>
         {map(
           ({ value, name, icon, label }) => (
             <Tooltip title={name} placement="top">
@@ -20,7 +20,7 @@ const Tags = ({ onSelect, userTags }) => {
                 label={label}
                 icon={<Avatar variant="rounded" className={classes.small}>{icon || 'done'}</Avatar>}
                 onClick={() => onSelect(generateTag({name, value}))}
-                color="primary"
+                className={classes.chip}
               />
             </Tooltip>
           ),

@@ -14,10 +14,19 @@ const useStyles = makeStyles(theme => ({
   control: {
     padding: theme.spacing(2),
   },
-  notesSection: {},
+  notesSection: {
+    overflowY: 'scroll',
+    overflowX: 'hidden',
+    maxHeight: '50vh',
+    marginBottom: theme.spacing(3),
+    flexWrap: 'noWrap',
+  },
   notesContainer: {
     padding: theme.spacing(1),
   },
+  inputBase:{
+    margin: theme.spacing(1)
+  }
 }))
 
 export default useStyles

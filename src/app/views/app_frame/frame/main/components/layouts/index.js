@@ -15,6 +15,7 @@ const Row = ({
   justify,
   fullWidth,
   style,
+  wrap,
   ...rest
 }) => (
   <Grid
@@ -34,6 +35,7 @@ const Row = ({
             : justify || 'center'
     }
     style={{ ...style, ...(fullWidth ? { width: '100%' } : {}) }}
+    wrap={wrap ? 'wrap' : 'nowrap'}
     {...rest}
   >
     {addIndex(map)(

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { map, pathOr, length, path } from 'ramda'
 import { connect } from 'react-redux'
 
-import { InputBase, Card, CardContent, CardActions, Snackbar } from '@material-ui/core'
+import { InputBase, Card, CardContent, CardActions, Snackbar, Divider } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 
 import Note from './note'
@@ -101,14 +101,16 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
             autoFocus
             value={noteContent}
             multiline
-            style={{ margin: 4 }}
             placeholder="Post a note"
             fullWidth
             onChange={e => setNoteContent(e.target.value)}
+            className={classes.inputBase}
           />
         </CardContent>
+        <Divider />
+        <Tags userTags={userTags} onSelect={handleSubmit} />
       </Card>
-      <Tags userTags={userTags} onSelect={handleSubmit} />
+
       <Snackbar open={!!length(error)} autoHideDuration={6000} onClose={onCloseSnackbar}>
         <Alert elevation={6} variant="filled" onClose={onCloseSnackbar} severity="error">
           {error}

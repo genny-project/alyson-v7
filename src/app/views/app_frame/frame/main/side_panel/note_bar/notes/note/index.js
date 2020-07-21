@@ -65,10 +65,10 @@ const Note = ({
         onMouseLeave={() => setHover(false)}
         className={classes.card}
       >
-        <Row justify="flex-start" className={classes.cardContainer}>
+        <Row className={classes.cardContainer}>
           <Avatar variant="rounded" src={profileImage} />
           <Col alignItems="flex-start" spacing={0}>
-            <Row justify="flex-start">
+            <Row stretch>
               <Typography variant="subtitle2" color={hover ? 'primary' : 'textPrimary'}>
                 {name}
               </Typography>

@@ -6,6 +6,7 @@ const useStyles = makeStyles(theme => ({
   },
   cardContainer: {
     margin: theme.spacing(1),
+    justifyContent: "flex-start"
   },
   popper: {
     zIndex: theme.zIndex.modal + 10,
@@ -18,7 +19,16 @@ const useStyles = makeStyles(theme => ({
   input: {
     fontSize: '0.88rem',
   },
-  card: {},
+  card: {
+    borderStyle: 'solid',
+    borderColor: theme.palette.grey[400],
+    borderWidth: theme.spacing(0.02),
+    borderRadius: theme.spacing(0.5),
+    backgroundColor: theme.palette.grey[50],
+    margin: theme.spacing(0.5),
+    marginLeft: theme.spacing(2),
+    minWidth: '40vh'
+  },
 }))
 
 export default useStyles
