@@ -2,7 +2,19 @@ import axios from 'axios'
 
 const notesUrl = process.env.API_URL_NOTES
 
-const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) => {
+const getUserTags = async ({ setUserTags }) => {
+  setUserTags([
+    { name: 'One One', value: 1 },
+    { name: 'Two One', value: 1 },
+    { name: 'Three One', value: 1 },
+    { name: 'sdfsdf One One', value: 1 },
+    { name: 'gdfgdfgdfgdfg One One', value: 1 },
+    { name: 'Four One One', value: 1 },
+    { name: 'FiveOne One One', value: 1 },
+  ])
+}
+
+const getAll = async ({ accessToken, setApiLoading, handleResponse, onError, setUserTags }) => {
   setApiLoading(true)
 
   try {
@@ -13,13 +25,22 @@ const getAll = async ({ accessToken, setApiLoading, handleResponse, onError }) =
       },
     })
 
+    await getUserTags({ setUserTags })
+
     response.status === 200 ? handleResponse(response, 'getAll') : onError(response)
   } catch (error) {
     onError(error)
   }
 }
 
-const postNote = async ({ noteContent, accessToken, handleResponse, onError, setApiLoading }) => {
+const postNote = async ({
+  noteContent,
+  accessToken,
+  handleResponse,
+  onError,
+  setApiLoading,
+  tag,
+}) => {
   setApiLoading(true)
   try {
     const response = await axios.post(
@@ -27,7 +48,7 @@ const postNote = async ({ noteContent, accessToken, handleResponse, onError, set
       {
         sourceCode: 'PER_USER1',
         content: noteContent,
-        tags: [],
+        tags: [tag],
         created: new Date(),
         targetCode: 'PER_USER1',
       },
@@ -45,13 +66,7 @@ const postNote = async ({ noteContent, accessToken, handleResponse, onError, set
   }
 }
 
-const deleteNote = async ({
-  id,
-  accessToken,
-  setApiLoading,
-  onError,
-  handleResponse,
-}) => {
+const deleteNote = async ({ id, accessToken, setApiLoading, onError, handleResponse }) => {
   setApiLoading(true)
 
   try {
@@ -97,4 +112,4 @@ const editNote = async ({
   }
 }
 
-export { getAll, postNote, deleteNote, editNote }
+export { getAll, postNote, deleteNote, editNote, getUserTags }

@@ -2,28 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { map, pathOr, length, path } from 'ramda'
 import { connect } from 'react-redux'
 
-import {
-  Button,
-  InputBase,
-  Card,
-  CardContent,
-  CardActions,
-  CardHeader,
-  Snackbar,
-} from '@material-ui/core'
+import { InputBase, Card, CardContent, CardActions, Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 
 import Note from './note'
-
+import Tags from './tags'
 import { Row } from '../../../components/layouts'
 
 import useStyles from './styles'
-
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 import formatError from './helpers/format-error'
 
 const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote }) => {
   const [notes, setNotes] = useState([])
+  const [userTags, setUserTags] = useState([])
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
   const [error, setError] = useState('')
@@ -46,11 +38,12 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
     setApiLoading(false)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = tag => {
     setNoteHeader('')
     setNoteContent('')
     postNote({
       noteContent,
+      tag,
       noteHeader,
       setNotes,
       accessToken,
@@ -73,7 +66,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
 
   useEffect(
     () => {
-      getAll({ accessToken, setApiLoading, onError, handleResponse })
+      getAll({ accessToken, setApiLoading, onError, handleResponse, setUserTags })
     },
     [accessToken, currentNote],
   )
@@ -103,17 +96,6 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
         )}
       </div>
       <Card variant="outlined">
-        <CardHeader
-          title={
-            <InputBase
-              value={noteHeader}
-              style={{ margin: 4 }}
-              placeholder="Tags"
-              fullWidth
-              onChange={e => setNoteHeader(e.target.value)}
-            />
-          }
-        />
         <CardContent>
           <InputBase
             autoFocus
@@ -125,14 +107,8 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
             onChange={e => setNoteContent(e.target.value)}
           />
         </CardContent>
-        <CardActions disableSpacing>
-          <Row justify="flex-end">
-            <Button variant="contained" color="inherit" onClick={handleSubmit}>
-              Done
-            </Button>
-          </Row>
-        </CardActions>
       </Card>
+      <Tags userTags={userTags} onSelect={handleSubmit} />
       <Snackbar open={!!length(error)} autoHideDuration={6000} onClose={onCloseSnackbar}>
         <Alert elevation={6} variant="filled" onClose={onCloseSnackbar} severity="error">
           {error}
