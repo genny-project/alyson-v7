@@ -1,5 +1,5 @@
 import React from 'react'
-import { map } from 'ramda'
+import { map, toUpper, compose, replace, concat } from 'ramda'
 import { Chip, Icon, Typography, Tooltip, Avatar } from '@material-ui/core'
 import { Row, Col } from '../../../../components/layouts'
 
@@ -7,7 +7,7 @@ import useStyles from './styles'
 
 const generatetag = name => {
   return {
-    name: `TAG_${name.replace(/ /g,"_").toUpperCase()}`,
+    name: concat('TAG_', compose(toUpper, replace(/ /g, '_'))(name)),
     value: 1
   }
 }
