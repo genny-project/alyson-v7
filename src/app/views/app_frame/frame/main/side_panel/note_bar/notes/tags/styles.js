@@ -13,7 +13,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: amber[500]
   },
   chip:{
-    backgroundColor: grey[300]
+    backgroundColor: theme.palette.primary.main,
+    color: '#fff',
   }
 }))
 

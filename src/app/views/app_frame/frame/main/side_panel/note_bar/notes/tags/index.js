@@ -18,7 +18,6 @@ const Tags = ({ onSelect, userTags }) => {
             <Tooltip title={name} placement="top">
               <Chip
                 label={label}
-                icon={<Avatar variant="rounded" className={classes.small}>{icon || 'done'}</Avatar>}
                 onClick={() => onSelect(generateTag({name, value}))}
                 className={classes.chip}
               />

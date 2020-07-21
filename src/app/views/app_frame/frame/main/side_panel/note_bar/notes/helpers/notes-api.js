@@ -6,9 +6,9 @@ const getUserTags = async ({ setUserTags }) => {
   setUserTags([
     { label: 'Bus Dev', name: 'Business Development Activity', value: 1, icon: 'BD' },
     { label: 'Placement', name: 'Intern Placement Activity', value: 1, icon: 'PLMT' },
-    { label: 'Interview', name: 'Interview Activity and feedback', value: 1, icon: 'INTV' },
+    { label: 'Interview', name: 'Interview Activity and Feedback', value: 1, icon: 'INTV' },
     { label: 'Internship', name: 'Internship Progress Activity', value: 1, icon: 'INTS' },
-    { label: 'Post Internship', name: 'Other', value: 1, icon: 'PINT' },
+    { label: 'Post Internship', name: 'Post Internship Follow up', value: 1, icon: 'PINT' },
   ])
 }
 
