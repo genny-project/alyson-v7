@@ -2,15 +2,9 @@ import React from 'react'
 import { map, toUpper, compose, replace, concat } from 'ramda'
 import { Chip, Icon, Typography, Tooltip, Avatar } from '@material-ui/core'
 import { Row, Col } from '../../../../components/layouts'
+import generateTag from '../helpers/generate-tag'
 
 import useStyles from './styles'
-
-const generatetag = name => {
-  return {
-    name: concat('TAG_', compose(toUpper, replace(/ /g, '_'))(name)),
-    value: 1
-  }
-}
 
 const Tags = ({ onSelect, userTags }) => {
   const classes = useStyles()
@@ -25,7 +19,7 @@ const Tags = ({ onSelect, userTags }) => {
               <Chip
                 label={label}
                 icon={<Avatar variant="rounded" className={classes.small}>{icon || 'done'}</Avatar>}
-                onClick={() => onSelect(generatetag(name))}
+                onClick={() => onSelect(generateTag({name, value}))}
                 color="primary"
               />
             </Tooltip>
