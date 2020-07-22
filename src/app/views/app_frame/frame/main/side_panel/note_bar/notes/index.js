@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { map, pathOr, length, path } from 'ramda'
 import { connect } from 'react-redux'
 
-import { InputBase, Card, CardContent, CardActions, Snackbar, Divider } from '@material-ui/core'
+import { InputBase, Card, CardContent, CardActions, Snackbar, Divider, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 
 import Note from './note'
@@ -19,6 +19,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
   const [noteContent, setNoteContent] = useState('')
   const [noteHeader, setNoteHeader] = useState('')
   const [error, setError] = useState('')
+  const [charactersLeftToType, setCharactersLeftToTry] = useState(250)
 
   const classes = useStyles()
 
@@ -71,6 +72,12 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
     [accessToken, currentNote],
   )
 
+  useEffect(
+    () => {
+      setCharactersLeftToTry(250 -  noteContent.length)
+    }, [noteContent]
+  )
+
   return (
     <div className={classes.notesContainer}>
       <div className={classes.notesSection}>
@@ -107,8 +114,9 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
             className={classes.inputBase}
           />
         </CardContent>
+          <Typography variant="caption">{`${charactersLeftToType}/250 characters left`}</Typography>
         <Divider className={classes.divider}/>
-        <Tags userTags={userTags} onSelect={handleSubmit} />
+        <Tags userTags={userTags} onSelect={handleSubmit} noteContent={noteContent}/>
       </Card>
 
       <Snackbar open={!!length(error)} autoHideDuration={6000} onClose={onCloseSnackbar}>

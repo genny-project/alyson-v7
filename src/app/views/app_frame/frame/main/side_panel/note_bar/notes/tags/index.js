@@ -6,7 +6,7 @@ import generateTag from '../helpers/generate-tag'
 
 import useStyles from './styles'
 
-const Tags = ({ onSelect, userTags }) => {
+const Tags = ({ onSelect, userTags, noteContent }) => {
   const classes = useStyles()
 
   return (
@@ -20,6 +20,7 @@ const Tags = ({ onSelect, userTags }) => {
                 label={label}
                 onClick={() => onSelect(generateTag({name, value}))}
                 className={classes.chip}
+                disabled = {noteContent.length === 0 || noteContent.length > 250}
               />
             </Tooltip>
           ),
