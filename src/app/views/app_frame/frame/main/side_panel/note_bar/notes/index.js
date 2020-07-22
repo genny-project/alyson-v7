@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { map, pathOr, length, path } from 'ramda'
 import { connect } from 'react-redux'
 
-import { InputBase, Card, CardContent, Snackbar, Divider, Typography } from '@material-ui/core'
+import { InputBase, Card, CardContent, Snackbar, Divider, Typography, Collapse, IconButton } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import clsx from 'clsx'
 
 import Note from './note'
 import Tags from './tags'
+import { Row } from '../../../components/layouts'
 
 import useStyles from './styles'
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
@@ -19,14 +22,18 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
   const [noteHeader, setNoteHeader] = useState( '' )
   const [error, setError] = useState( '' )
   const [charactersLeftToType, setCharactersLeftToTry] = useState( 250 )
+  const [expanded, setExpanded] = useState( true )
 
-  const classes = useStyles({noteContent})
+  const classes = useStyles({ noteContent, expanded })
 
   const onError = error => {
     setError( formatError( error ))
     setApiLoading( false )
   }
+
   const onCloseSnackbar = () => setError( '' )
+
+  const handleExpandClick = () => setExpanded( !expanded )
 
   const handleResponse = ( response, type ) => {
     if ( type === 'getAll' ) {
@@ -101,32 +108,54 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
           [...notes] || [],
         )}
       </div>
-      <Card variant="outlined">
-        <CardContent>
-          <InputBase
-            autoFocus
-            value={noteContent}
-            multiline
-            placeholder="Post a note"
-            fullWidth
-            onChange={e => setNoteContent( e.target.value )}
-            className={classes.inputBase}
-          />
-        </CardContent>
-        <Typography
-          variant="caption"
-          className={classes.charactersLeft}
-        >
-          {`${charactersLeftToType}/250 characters left`}
-        </Typography>
-        <Divider className={classes.divider} />
-        <Tags
-          userTags={userTags}
-          onSelect={handleSubmit}
-          noteContent={noteContent}
-        />
-      </Card>
 
+      <Row>
+        { expanded
+          ? <Typography> {`Collapse Note`} </Typography>
+          : <Typography> {`Expand to add a note`} </Typography> }
+        <IconButton
+          className={clsx( classes.expand, {
+            [classes.expandOpen]: expanded,
+          })}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </IconButton>
+      </Row>
+
+      <Collapse
+        in={expanded}
+        timeout="auto"
+        unmountOnExit
+      >
+        <Card variant="outlined">
+          <CardContent>
+            <InputBase
+              autoFocus
+              value={noteContent}
+              multiline
+              placeholder="Post a note"
+              fullWidth
+              onChange={e => setNoteContent( e.target.value )}
+              className={classes.inputBase}
+            />
+          </CardContent>
+          <Typography
+            variant="caption"
+            className={classes.charactersLeft}
+          >
+            {`${charactersLeftToType}/250 characters left`}
+          </Typography>
+          <Divider className={classes.divider} />
+          <Tags
+            userTags={userTags}
+            onSelect={handleSubmit}
+            noteContent={noteContent}
+          />
+        </Card>
+      </Collapse>
       <Snackbar
         open={!!length( error )}
         autoHideDuration={6000}

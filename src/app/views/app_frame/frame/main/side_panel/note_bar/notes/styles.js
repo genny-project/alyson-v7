@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   notesSection: {
     overflowY: 'scroll',
     overflowX: 'hidden',
-    maxHeight: '45vh',
+    maxHeight: ({expanded}) => expanded ? '45vh' : '70vh',
     marginBottom: theme.spacing(3),
     flexWrap: 'noWrap',
   },
@@ -34,7 +34,17 @@ const useStyles = makeStyles(theme => ({
   },
   charactersLeft: {
     marginLeft: theme.spacing(2.5)
-  }
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
 }))
 
 export default useStyles

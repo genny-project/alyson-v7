@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.grey[50],
     margin: theme.spacing(0.5),
     marginLeft: theme.spacing(2),
-    minWidth: '40vh',
+    width: '55vh',
   },
   content: {
     marginTop: theme.spacing(0.5),

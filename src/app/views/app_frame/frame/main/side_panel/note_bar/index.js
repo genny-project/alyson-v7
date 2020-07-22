@@ -3,6 +3,8 @@ import { IconButton, Typography, Divider, LinearProgress } from '@material-ui/co
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
+import MoreIcon from '@material-ui/icons/MoreVert'
+
 
 import Notes from './notes'
 
@@ -21,6 +23,9 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
           Note
         </Typography>
         <Row>
+          <IconButton color="primary">
+            <MoreIcon color="inherit" />
+          </IconButton>
           <IconButton color="primary">
             <SearchIcon color="inherit" />
           </IconButton>
