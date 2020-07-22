@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   notesSection: {
     overflowY: 'scroll',
     overflowX: 'hidden',
-    maxHeight: '50vh',
+    maxHeight: '45vh',
     marginBottom: theme.spacing(3),
     flexWrap: 'noWrap',
   },
