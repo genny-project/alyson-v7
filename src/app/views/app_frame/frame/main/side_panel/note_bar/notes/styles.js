@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
   divider: {
     width: '90%',
     marginLeft: theme.spacing(2.5)
+  },
+  charactersLeft: {
+    marginLeft: theme.spacing(2.5)
   }
 }))
 

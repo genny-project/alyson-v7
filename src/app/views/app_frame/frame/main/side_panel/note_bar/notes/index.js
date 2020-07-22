@@ -2,46 +2,45 @@ import React, { useEffect, useState } from 'react'
 import { map, pathOr, length, path } from 'ramda'
 import { connect } from 'react-redux'
 
-import { InputBase, Card, CardContent, CardActions, Snackbar, Divider, Typography } from '@material-ui/core'
+import { InputBase, Card, CardContent, Snackbar, Divider, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 
 import Note from './note'
 import Tags from './tags'
-import { Row } from '../../../components/layouts'
 
 import useStyles from './styles'
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 import formatError from './helpers/format-error'
 
 const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote }) => {
-  const [notes, setNotes] = useState([])
-  const [userTags, setUserTags] = useState([])
-  const [noteContent, setNoteContent] = useState('')
-  const [noteHeader, setNoteHeader] = useState('')
-  const [error, setError] = useState('')
-  const [charactersLeftToType, setCharactersLeftToTry] = useState(250)
+  const [notes, setNotes] = useState( [] )
+  const [userTags, setUserTags] = useState( [] )
+  const [noteContent, setNoteContent] = useState( '' )
+  const [noteHeader, setNoteHeader] = useState( '' )
+  const [error, setError] = useState( '' )
+  const [charactersLeftToType, setCharactersLeftToTry] = useState( 250 )
 
   const classes = useStyles()
 
   const onError = error => {
-    setError(formatError(error))
-    setApiLoading(false)
+    setError( formatError( error ))
+    setApiLoading( false )
   }
-  const onCloseSnackbar = () => setError('')
+  const onCloseSnackbar = () => setError( '' )
 
-  const handleResponse = (response, type) => {
-    if (type === 'getAll') {
-      setNotes(path(['data', 'items'], response) || [])
-    } else if (type === 'edit') {
+  const handleResponse = ( response, type ) => {
+    if ( type === 'getAll' ) {
+      setNotes( path( ['data', 'items'], response ) || [] )
+    } else if ( type === 'edit' ) {
       setNotes({})
     }
 
-    setApiLoading(false)
+    setApiLoading( false )
   }
 
   const handleSubmit = tag => {
-    setNoteHeader('')
-    setNoteContent('')
+    setNoteHeader( '' )
+    setNoteContent( '' )
     postNote({
       noteContent,
       tag,
@@ -74,7 +73,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
 
   useEffect(
     () => {
-      setCharactersLeftToTry(250 -  noteContent.length)
+      setCharactersLeftToTry( 250 -  noteContent.length )
     }, [noteContent]
   )
 
@@ -110,17 +109,35 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
             multiline
             placeholder="Post a note"
             fullWidth
-            onChange={e => setNoteContent(e.target.value)}
+            onChange={e => setNoteContent( e.target.value )}
             className={classes.inputBase}
           />
         </CardContent>
-          <Typography variant="caption">{`${charactersLeftToType}/250 characters left`}</Typography>
-        <Divider className={classes.divider}/>
-        <Tags userTags={userTags} onSelect={handleSubmit} noteContent={noteContent}/>
+        <Typography
+          variant="caption"
+          className={classes.charactersLeft}
+        >
+          {`${charactersLeftToType}/250 characters left`}
+        </Typography>
+        <Divider className={classes.divider} />
+        <Tags
+          userTags={userTags}
+          onSelect={handleSubmit}
+          noteContent={noteContent}
+        />
       </Card>
 
-      <Snackbar open={!!length(error)} autoHideDuration={6000} onClose={onCloseSnackbar}>
-        <Alert elevation={6} variant="filled" onClose={onCloseSnackbar} severity="error">
+      <Snackbar
+        open={!!length( error )}
+        autoHideDuration={6000}
+        onClose={onCloseSnackbar}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={onCloseSnackbar}
+          severity="error"
+        >
           {error}
         </Alert>
       </Snackbar>
@@ -129,7 +146,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
 }
 
 const mapStateToProps = state => ({
-  accessToken: pathOr('', ['keycloak', 'accessToken'], state),
+  accessToken: pathOr( '', ['keycloak', 'accessToken'], state ),
 })
 
-export default connect(mapStateToProps)(Notes)
+export default connect( mapStateToProps )( Notes )
