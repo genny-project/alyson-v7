@@ -15,9 +15,8 @@ import useStyles from './styles'
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 import formatError from './helpers/format-error'
 
-const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote }) => {
+const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote, userTags,  setUserTags}) => {
   const [notes, setNotes] = useState( [] )
-  const [userTags, setUserTags] = useState( [] )
   const [noteContent, setNoteContent] = useState( '' )
   const [noteHeader, setNoteHeader] = useState( '' )
   const [error, setError] = useState( '' )

@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { IconButton, Typography, Divider, LinearProgress } from '@material-ui/core'
+import { IconButton, Typography, Divider, LinearProgress, Menu, MenuItem } from '@material-ui/core'
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
 import MoreIcon from '@material-ui/icons/MoreVert'
-
 
 import Notes from './notes'
 
@@ -12,8 +11,13 @@ import useStyles from './styles'
 
 const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
   const [apiLoading, setApiLoading] = useState(false)
+  const [filterByTag, setFilterByTag] = useState(null)
+  const [optionsMenu, setOptionsMenu] = useState(null)
+  const [userTags, setUserTags] = useState( [] )
 
   const classes = useStyles()
+
+  console.error({userTags})
 
   return (
     <Col top stretch>
@@ -23,8 +27,8 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
           Note
         </Typography>
         <Row>
-          <IconButton color="primary">
-            <MoreIcon color="inherit" />
+          <IconButton color="primary" onClick={event => setOptionsMenu(event.currentTarget)}>
+            <MoreIcon />
           </IconButton>
           <IconButton color="primary">
             <SearchIcon color="inherit" />
@@ -40,7 +44,16 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
         baseEntities={baseEntities}
         attributes={attributes}
         setApiLoading={setApiLoading}
+        userTags={userTags}
+        setUserTags={setUserTags}
       />
+      <Menu open={!!optionsMenu} anchorEl={optionsMenu} onClose={() => setOptionsMenu(null)}>
+        {userTags.map(({label}) => (
+          <MenuItem key={label}>
+            {label}
+          </MenuItem>
+        ))}
+      </Menu>
     </Col>
   )
 }
