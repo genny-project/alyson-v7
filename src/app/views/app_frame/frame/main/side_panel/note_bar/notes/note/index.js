@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import copy from 'copy-to-clipboard'
 import { pathOr, prop } from 'ramda'
 import DateFnsAdapter from '@date-io/date-fns'
 import { Row, Col } from '../../../../components/layouts'
@@ -14,7 +15,9 @@ import {
   ButtonGroup,
   InputBase,
   Chip,
+  Snackbar
 } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 
 import useStyles from './styles'
 
@@ -22,6 +25,7 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import ClearIcon from '@material-ui/icons/Clear'
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 const Note = ({
   content,
@@ -44,6 +48,7 @@ const Note = ({
   const [hover, setHover] = useState( false )
   const [editing, setEditing] = useState( false )
   const [newContent, setNewContent] = useState( content )
+  const [snackBarOpen, setSnackBarOpen] = useState( false )
 
   const currentNoteId = prop( 'id', currentNote )
 
@@ -60,7 +65,15 @@ const Note = ({
     setEditing( false )
     setHover( false )
   }
+
   const classes = useStyles({ hover, isCurrent: currentNoteId === id })
+
+  const handleClickSnackBar = () => {
+    copy(content)
+    setSnackBarOpen(true)
+  }
+
+  const handleCloseSnackbar = () => setSnackBarOpen(false)
 
   return (
     <Badge
@@ -138,6 +151,12 @@ const Note = ({
                 size="small"
               >
                 <Button>
+                  <FileCopyIcon
+                    fontSize="small"
+                    onClick={handleClickSnackBar}
+                  />
+                </Button>
+                <Button>
                   {editing ? (
                     <ClearIcon
                       fontSize="small"
@@ -176,6 +195,21 @@ const Note = ({
             <div />
           )}
         </Row>
+
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleCloseSnackbar}
+          severity="success"
+        >
+          {`copied to clipboard`}
+        </Alert>
+      </Snackbar>
       </div>
     </Badge>
   )
