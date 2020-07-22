@@ -41,46 +41,72 @@ const Note = ({
   handleResponse,
   currentNote,
 }) => {
-  const [hover, setHover] = useState(false)
-  const [editing, setEditing] = useState(false)
-  const [newContent, setNewContent] = useState(content)
+  const [hover, setHover] = useState( false )
+  const [editing, setEditing] = useState( false )
+  const [newContent, setNewContent] = useState( content )
 
-  const currentNoteId = prop('id', currentNote)
+  const currentNoteId = prop( 'id', currentNote )
 
   const dateFns = new DateFnsAdapter()
-  const parsedDate = new Date(created)
+  const parsedDate = new Date( created )
 
   const name = baseEntities[sourceCode].name
-  const profileImage = pathOr('', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes)
-  const tag =  pathOr('N/A', [0, 'name'], tags)
-
+  const nameInitials = name.split( ' ' ).map(( n ) => n[0] ).join( '' );
+  const profileImage = pathOr( '', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes )
+  const tag =  pathOr( 'N/A', [0, 'name'], tags )
 
   const handleSubmit = () => {
     editNote({ newContent, id, setNotes, accessToken, setApiLoading, onError, handleResponse })
-    setEditing(false)
-    setHover(false)
+    setEditing( false )
+    setHover( false )
   }
   const classes = useStyles({ hover, isCurrent: currentNoteId === id })
 
   return (
-    <Badge color="secondary" variant="dot" invisible={currentNoteId !== id}>
+    <Badge
+      color="secondary"
+      variant="dot"
+      invisible={currentNoteId !== id}
+    >
       <div
-        onMouseEnter={event => setHover(event.currentTarget)}
-        onMouseLeave={() => setHover(false)}
+        onMouseEnter={event => setHover( event.currentTarget )}
+        onMouseLeave={() => setHover( false )}
         className={classes.card}
       >
         <Row className={classes.cardContainer}>
-          <Avatar variant="rounded" src={profileImage} />
-          <Col alignItems="flex-start" spacing={0}>
+          {profileImage
+            ? (
+              <Avatar
+                variant="rounded"
+                src={profileImage}
+              />
+            )
+            : (
+              <Avatar>
+                {nameInitials}
+              </Avatar>
+            )}
+
+          <Col
+            alignItems="flex-start"
+            spacing={0}
+          >
             <Row stretch>
-              <Typography variant="subtitle2" color={hover ? 'primary' : 'textPrimary'}>
+              <Typography
+                variant="subtitle2"
+                color={hover ? 'primary' : 'textPrimary'}
+              >
                 {name}
               </Typography>
-              <Typography variant="caption" color={hover ? 'primary' : 'textPrimary'}>
-                {`${dateFns.format(parsedDate, 'PPP')}`}
+              <Typography
+                variant="caption"
+                color={hover ? 'primary' : 'textPrimary'}
+              >
+                {`${dateFns.format( parsedDate, 'd\' \'MMM\' \'yy\' \'p' )}`}
               </Typography>
               <Chip
-                label={tagAbbreviation(tag)}
+                size="small"
+                label={tagAbbreviation( tag )}
                 className={classes.tag}
               />
             </Row>
@@ -88,25 +114,47 @@ const Note = ({
               <InputBase
                 autoFocus
                 value={newContent}
-                onChange={event => setNewContent(event.target.value)}
+                onChange={event => setNewContent( event.target.value )}
                 className={classes.input}
               />
             ) : (
-              <Typography variant="body2" className={classes.content}>{content}</Typography>
+              <Typography
+                variant="body2"
+                className={classes.content}
+              >
+                {content}
+              </Typography>
             )}
           </Col>
-          <Popper open={!!hover} anchorEl={hover} placement="top-end" className={classes.popper}>
+          <Popper
+            open={!!hover}
+            anchorEl={hover}
+            placement="top-end"
+            className={classes.popper}
+          >
             <Card>
-              <ButtonGroup color="primary" size="small">
+              <ButtonGroup
+                color="primary"
+                size="small"
+              >
                 <Button>
                   {editing ? (
-                    <ClearIcon fontSize="small" onClick={() => setEditing(false)} />
+                    <ClearIcon
+                      fontSize="small"
+                      onClick={() => setEditing( false )}
+                    />
                   ) : (
-                    <EditIcon fontSize="small" onClick={() => setEditing(true)} />
+                    <EditIcon
+                      fontSize="small"
+                      onClick={() => setEditing( true )}
+                    />
                   )}
                 </Button>
                 <Button>
-                  <DeleteIcon fontSize="small" onClick={() => removeNotes(id)} />
+                  <DeleteIcon
+                    fontSize="small"
+                    onClick={() => removeNotes( id )}
+                  />
                 </Button>
                 <Button>
                   <MoreIcon fontSize="small" />
@@ -117,8 +165,12 @@ const Note = ({
         </Row>
         <Row>
           {editing ? (
-            <Button variant="outlined" color="primary" onClick={handleSubmit}>
-              {`SUBMIT`}
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              {'SUBMIT'}
             </Button>
           ) : (
             <div />
