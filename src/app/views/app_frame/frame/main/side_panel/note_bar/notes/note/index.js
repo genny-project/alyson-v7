@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { pathOr, prop } from 'ramda'
 import DateFnsAdapter from '@date-io/date-fns'
 import { Row, Col } from '../../../../components/layouts'
+import tagAbbreviation from '../helpers/create-tag-abbreviation'
 import {
   Card,
   Badge,
@@ -12,6 +13,7 @@ import {
   Popper,
   ButtonGroup,
   InputBase,
+  Chip,
 } from '@material-ui/core'
 
 import useStyles from './styles'
@@ -50,6 +52,8 @@ const Note = ({
 
   const name = baseEntities[sourceCode].name
   const profileImage = pathOr('', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes)
+  const tag =  pathOr('N/A', [0, 'name'], tags)
+
 
   const handleSubmit = () => {
     editNote({ newContent, id, setNotes, accessToken, setApiLoading, onError, handleResponse })
@@ -73,8 +77,12 @@ const Note = ({
                 {name}
               </Typography>
               <Typography variant="caption" color={hover ? 'primary' : 'textPrimary'}>
-                {`${dateFns.format(parsedDate, 'p')}`}
+                {`${dateFns.format(parsedDate, 'PPP')}`}
               </Typography>
+              <Chip
+                label={tagAbbreviation(tag)}
+                className={classes.tag}
+              />
             </Row>
             {editing ? (
               <InputBase

@@ -32,6 +32,10 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     marginTop: theme.spacing(0.5),
+  },
+  tag:{
+    backgroundColor: theme.palette.grey[300],
+    color: '#000'
   }
 }))
 
