@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
   inputBase:{
     margin: theme.spacing(1),
-    color: ({noteContent}) => noteContent.length > 250 ? theme.palette.secondary.main : '#000'
+    color: ({noteContent}) => noteContent.length > 250 ? theme.palette.secondary.dark : '#000'
   },
   divider: {
     width: '90%',
