@@ -104,7 +104,7 @@ const Note = ({
             alignItems="flex-start"
             spacing={0}
           >
-            <Row stretch>
+            <Row style={{width:'45vh', justifyContent: 'space-between'}}>
               <Typography
                 variant="subtitle2"
                 color={hover ? 'primary' : 'textPrimary'}
