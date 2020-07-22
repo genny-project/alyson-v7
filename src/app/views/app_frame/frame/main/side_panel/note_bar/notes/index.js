@@ -20,7 +20,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
   const [error, setError] = useState( '' )
   const [charactersLeftToType, setCharactersLeftToTry] = useState( 250 )
 
-  const classes = useStyles()
+  const classes = useStyles({noteContent})
 
   const onError = error => {
     setError( formatError( error ))
