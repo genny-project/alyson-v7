@@ -1,6 +1,6 @@
 import { map, path } from 'ramda'
 
-const createGetTimeline = ( asks ) => ( user ) =>
+const createGetTimeline = ( user ) =>
   map(({ name, questionCode, childAsks }) => ({
     header: name,
     parentCode: questionCode,

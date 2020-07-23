@@ -22,7 +22,7 @@ const TimelineGeneric = ({ setViewing, asks, user }) => {
       <Typography variant="h6">{`Hello, ${path(
           ['data', 'name'],
           user,
-        )} from ${path(['attributes', 'PRI_ASSOC_EP', 'value'], user)}!`}</Typography>
+        )} from ${path(['attributes', 'PRI_ASSOC_ENTITY_NAME', 'value'], user)}!`}</Typography>
       ) : (
         <div />
       )}
@@ -47,12 +47,12 @@ const TimelineGeneric = ({ setViewing, asks, user }) => {
               body={body}
               icon={getIcons(header)}
               side={idx % 2 === 0 ? 'right' : 'left'}
-              isLast={idx === createGetTimeline(asks)(user)(getTimelineAttribute(asks)).length - 1}
+              isLast={idx === createGetTimeline(user)(getTimelineAttribute(asks)).length - 1}
               setViewing={setViewing}
               parentCode={parentCode}
             />
           ),
-          createGetTimeline(asks)(user)(getTimelineAttribute(asks))
+          createGetTimeline(user)(getTimelineAttribute(asks))
         )}
       </Timeline>
     </Col>
