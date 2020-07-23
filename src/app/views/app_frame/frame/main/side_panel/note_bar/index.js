@@ -4,7 +4,7 @@ import { map, filter, path } from 'ramda'
 import { IconButton, Typography, Divider, LinearProgress, Menu, MenuItem, Tooltip } from '@material-ui/core'
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
-import SearchIcon from '@material-ui/icons/Search'
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 import Notes from './notes'
 import useStyles from './styles'
@@ -32,7 +32,7 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
         <Row>
           <Tooltip title="Search by tag" placement="left">
             <IconButton color="primary" onClick={event => setOptionsMenu(event.currentTarget)}>
-              <SearchIcon />
+              <LocalOfferIcon />
             </IconButton>
           </Tooltip>
           <IconButton className={classes.icon} color="primary" onClick={() => setShowNotes(false)}>
