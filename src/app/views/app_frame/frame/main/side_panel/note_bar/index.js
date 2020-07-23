@@ -23,8 +23,6 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
 
   const classes = useStyles()
 
-  console.error('notes', {notes: notes, filteredNotes})
-
   return (
     <Col top stretch>
       {apiLoading ? <LinearProgress /> : <div className={classes.loadingBarSpot} />}
