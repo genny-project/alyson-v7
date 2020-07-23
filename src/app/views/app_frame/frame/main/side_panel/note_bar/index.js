@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { map, filter, path } from 'ramda'
 
-import { IconButton, Typography, Divider, LinearProgress, Menu, MenuItem } from '@material-ui/core'
+import { IconButton, Typography, Divider, LinearProgress, Menu, MenuItem, Tooltip } from '@material-ui/core'
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
-import MoreIcon from '@material-ui/icons/MoreVert'
 
 import Notes from './notes'
 import useStyles from './styles'
@@ -31,12 +30,11 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
           Note
         </Typography>
         <Row>
-          <IconButton color="primary" onClick={event => setOptionsMenu(event.currentTarget)}>
-            <MoreIcon />
-          </IconButton>
-          <IconButton color="primary">
-            <SearchIcon color="inherit" />
-          </IconButton>
+          <Tooltip title="Search by tag" placement="left">
+            <IconButton color="primary" onClick={event => setOptionsMenu(event.currentTarget)}>
+              <SearchIcon />
+            </IconButton>
+          </Tooltip>
           <IconButton className={classes.icon} color="primary" onClick={() => setShowNotes(false)}>
             <ClearIcon color="inherit" />
           </IconButton>
@@ -60,6 +58,7 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
         )}>
           {`All`}
         </MenuItem>
+        <Divider />
         {userTags.map(({label, abbreviation}) => (
           <MenuItem key={label} onClick={() => setFilteredNotes(
             filter((note) => path(['tags', 0, 'name'], note) === abbreviation, map( note => note)(notes))
