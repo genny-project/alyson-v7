@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { map, filter, path } from 'ramda'
+
 import { IconButton, Typography, Divider, LinearProgress, Menu, MenuItem } from '@material-ui/core'
 import { Col, Row } from '../../components/layouts'
 import ClearIcon from '@material-ui/icons/Clear'
@@ -6,16 +8,22 @@ import SearchIcon from '@material-ui/icons/Search'
 import MoreIcon from '@material-ui/icons/MoreVert'
 
 import Notes from './notes'
-
 import useStyles from './styles'
 
 const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
   const [apiLoading, setApiLoading] = useState(false)
-  const [filterByTag, setFilterByTag] = useState(null)
   const [optionsMenu, setOptionsMenu] = useState(null)
   const [userTags, setUserTags] = useState( [] )
+  const [notes, setNotes] = useState( [] )
+  const [filteredNotes, setFilteredNotes] = useState([])
+
+  useEffect(() => {
+    setFilteredNotes([...notes])
+  }, [notes])
 
   const classes = useStyles()
+
+  console.error('notes', {notes: notes, filteredNotes})
 
   return (
     <Col top stretch>
@@ -44,10 +52,20 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
         setApiLoading={setApiLoading}
         userTags={userTags}
         setUserTags={setUserTags}
+        notes={notes}
+        setNotes={setNotes}
+        filteredNotes={filteredNotes}
       />
       <Menu open={!!optionsMenu} anchorEl={optionsMenu} onClose={() => setOptionsMenu(null)}>
-        {userTags.map(({label}) => (
-          <MenuItem key={label}>
+        <MenuItem key={`All`} onClick={() => setFilteredNotes(
+          map( note => note)(notes)
+        )}>
+          {`All`}
+        </MenuItem>
+        {userTags.map(({label, abbreviation}) => (
+          <MenuItem key={label} onClick={() => setFilteredNotes(
+            filter((note) => path(['tags', 0, 'name'], note) === abbreviation, map( note => note)(notes))
+          )}>
             {label}
           </MenuItem>
         ))}

@@ -4,11 +4,11 @@ const notesUrl = process.env.API_URL_NOTES
 
 const getUserTags = async ({ setUserTags }) => {
   setUserTags([
-    { label: 'Bus Dev', name: 'Business Development Activity', value: 1, icon: 'BD' },
-    { label: 'Placement', name: 'Intern Placement Activity', value: 1, icon: 'PLMT' },
-    { label: 'Interview', name: 'Interview Activity and Feedback', value: 1, icon: 'INTV' },
-    { label: 'Internship', name: 'Internship Progress Activity', value: 1, icon: 'INTS' },
-    { label: 'Post Internship', name: 'Post Internship Follow up', value: 1, icon: 'PINT' },
+    { label: 'Bus Dev', name: 'Business Development Activity', value: 1, abbreviation: 'tag_business_development_activity' },
+    { label: 'Placement', name: 'Intern Placement Activity', value: 1, abbreviation: 'tag_intern_placement_activity' },
+    { label: 'Interview', name: 'Interview Activity and Feedback', value: 1, abbreviation: 'tag_interview_activity_and_feedback' },
+    { label: 'Internship', name: 'Internship Progress Activity', value: 1, abbreviation: 'tag_internship_progress_activity' },
+    { label: 'Post Internship', name: 'Post Internship Follow up', value: 1, abbreviation: 'tag_post_internship_follow_up' },
   ])
 }
 
