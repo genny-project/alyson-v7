@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { pathOr, prop } from 'ramda'
+import { pathOr, prop, pathOr } from 'ramda'
 import DateFnsAdapter from '@date-io/date-fns'
 import { Row, Col } from '../../../../components/layouts'
 import {
@@ -48,7 +48,7 @@ const Note = ({
   const dateFns = new DateFnsAdapter()
   const parsedDate = new Date(created)
 
-  const name = baseEntities[sourceCode].name
+  const name = pathOr('', [sourceCode, 'name'], baseEntities)
   const profileImage = pathOr('', [targetCode, 'PRI_IMAGE_URL', 'value'], attributes)
 
   const handleSubmit = () => {
