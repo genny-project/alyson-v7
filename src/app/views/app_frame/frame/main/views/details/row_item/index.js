@@ -22,6 +22,7 @@ const RowItem = ({
   googleApiKey,
   mini,
   noMap,
+  testCode
 }) =>
   mini ? (
     type === 'street_view' || type === 'video' ? null : type === 'html' ? (
@@ -39,15 +40,16 @@ const RowItem = ({
   ) : (
     <Grid item>
       <Grid container direction="row">
-        <Typography className={classes.label}>{label}</Typography>
+        <Typography className={classes.label} test-id={code}>{label}</Typography>
         {type === 'rating' ? (
           <Rating
             name="rating"
             value={rating}
             onChange={(event, newValue) => setRating(newValue)}
+            test-id={testCode}
           />
         ) : type === 'html' ? (
-          <div dangerouslySetInnerHTML={{ __html: value }} />
+          <div dangerouslySetInnerHTML={{ __html: value }} test-id={testCode}/>
         ) : type === 'signature' ? (
           <Row>
             <div style={{ border: '1px solid grey', borderRadius: '1rem', minWidth: '40rem' }}>
@@ -55,6 +57,7 @@ const RowItem = ({
                 ref={ref => (signatureRef = ref)}
                 onEnd={() => setSignature(signatureRef.toDataURL())}
                 canvasProps={{ width: '700', height: '300' }}
+                test-id={testCode}
               />
             </div>
             <Button
@@ -62,6 +65,7 @@ const RowItem = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
+              test-id={testCode}
             >{`SUBMIT`}</Button>
           </Row>
         ) : type === 'url' ? (
@@ -69,15 +73,16 @@ const RowItem = ({
             component="button"
             variant="body2"
             onClick={() => (window.location = `https://${value}`)}
+            test-id={testCode}
           >
             {value}
           </Link>
         ) : type === 'street_view' ? (
-          <StreetView address={value} apiKey={googleApiKey} />
+          <StreetView address={value} apiKey={googleApiKey} test-id={testCode}/>
         ) : type === 'video' ? (
-          <Video url={value} />
+          <Video url={value} test-id={testCode}/>
         ) : (
-          <Typography>{`${value.full_address || value}`}</Typography>
+          <Typography test-id={testCode}>{`${value.full_address || value}`}</Typography>
         )}
       </Grid>
     </Grid>

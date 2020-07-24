@@ -79,8 +79,8 @@ const printAgreement = [
   { label: 'Intern Signature', code: 'intern_agreement_signature', type: 'signature' },
 ]
 
-const getFieldsForType = (detailView, print) =>
-  map(({ label, code, type }) => ({ type, valueString: print(code), attributeName: label }))(
+const getFieldsForType = (detailView, print, testIdCode) =>
+  map(({ label, code, type }) => ({ type, valueString: print(code), attributeName: label, attributeCode: code, testCode: testIdCode(code)}))(
     includes('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView))
       ? printAgreement
       : includes('PRI_IS_INTERN', keys(detailView))

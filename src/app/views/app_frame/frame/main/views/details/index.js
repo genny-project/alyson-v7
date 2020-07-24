@@ -31,7 +31,8 @@ const Details = ({
 }) => {
   const detailView = prop(targetCode, attributes)
   const print = prop => pathOr('', [`PRI_${toUpper(prop || '')}`, 'value'], detailView)
-  const details = getFieldsForType(detailView, print)
+  const testIdCode = prop => pathOr('', [`PRI_${toUpper(prop || '')}`, 'attributeCode'], detailView)
+  const details = getFieldsForType(detailView, print, testIdCode)
 
   const [rating, setRating] = useState(0)
   const [signature, setSignature] = useState(null)
@@ -116,7 +117,7 @@ const Details = ({
       !includes('PRI_INTERN_AGREEMENT_SIGNATURE', keys(detailView)) ? (
         <div>
           <Grid item>
-            <Typography variant="h5" style={{ marginBottom: '2rem' }}>
+            <Typography variant="h5" style={{ marginBottom: '2rem' }} test-id={testIdCode('name')}>
               {print('name')}
             </Typography>
           </Grid>
@@ -128,10 +129,10 @@ const Details = ({
               <Grid item>
                 <Grid container direction="column">
                   <Grid item>
-                    <Typography>{`${prop('full_address', print('address_full') || {}) ||
+                    <Typography test-id={testIdCode('address_full')}>{`${prop('full_address', print('address_full') || {}) ||
                       print('address_full')}`}</Typography>
                   </Grid>
-                  <Grid item>
+                  <Grid item test-id={testIdCode('email')}>
                     <Typography>{`${print('email')}`}</Typography>
                   </Grid>
                 </Grid>
@@ -143,7 +144,7 @@ const Details = ({
         <div />
       )}
       {map(
-        ({ valueString, attributeName, attributeCode, type }) => (
+        ({ valueString, attributeName, attributeCode, type, testCode }) => (
           <RowItem
             key={attributeName + 'item'}
             label={attributeName}
@@ -159,6 +160,7 @@ const Details = ({
             handleSubmit={handleSubmit}
             googleApiKey={googleApiKey}
             noMap
+            testCode={testCode}
           />
         ),
         details,
