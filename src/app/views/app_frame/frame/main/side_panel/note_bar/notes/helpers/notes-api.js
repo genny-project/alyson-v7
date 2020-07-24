@@ -12,11 +12,11 @@ const getUserTags = async ({ setUserTags }) => {
   ])
 }
 
-const getAll = async ({ accessToken, setApiLoading, handleResponse, onError, setUserTags }) => {
+const getAll = async ({ accessToken, setApiLoading, handleResponse, onError, setUserTags, sourceCode }) => {
   setApiLoading(true)
 
   try {
-    const response = await axios.get(notesUrl, {
+    const response = await axios.get(`${notesUrl}/${sourceCode}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
@@ -38,13 +38,14 @@ const postNote = async ({
   onError,
   setApiLoading,
   tag,
+  sourceCode,
 }) => {
   setApiLoading(true)
   try {
     const response = await axios.post(
       notesUrl,
       {
-        sourceCode: 'PER_USER1',
+        sourceCode: sourceCode,
         content: noteContent,
         tags: [tag],
         created: new Date(),
@@ -64,7 +65,7 @@ const postNote = async ({
   }
 }
 
-const deleteNote = async ({ id, accessToken, setApiLoading, onError, handleResponse }) => {
+const deleteNote = async ({ id, accessToken, setApiLoading, onError, handleResponse, sourceCode }) => {
   setApiLoading(true)
 
   try {
@@ -88,6 +89,7 @@ const editNote = async ({
   setApiLoading,
   onError,
   handleResponse,
+  sourceCode
 }) => {
   setApiLoading(true)
 

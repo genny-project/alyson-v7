@@ -17,6 +17,7 @@ const SidePanel = ({
   attributes,
   setSidePanelOpen,
   currentNote,
+  user
 }) => {
   const [showNotes, setShowNotes] = useState(false)
   const [openSnackbar, setOpenSnackbar] = useState(false)
@@ -60,6 +61,7 @@ const SidePanel = ({
               baseEntities={baseEntities}
               attributes={attributes}
               currentNote={currentNote}
+              user={user}
             />
           ) : (
             <Col justify="space-between" alignItems="flex-start">

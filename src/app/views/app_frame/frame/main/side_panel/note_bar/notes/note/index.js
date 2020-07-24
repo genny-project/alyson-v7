@@ -61,7 +61,7 @@ const Note = ({
   const tag =  pathOr( 'N/A', [0, 'name'], tags )
 
   const handleSubmit = () => {
-    editNote({ newContent, id, setNotes, accessToken, setApiLoading, onError, handleResponse })
+    editNote({ newContent, id, setNotes, accessToken, setApiLoading, onError, handleResponse, sourceCode })
     setEditing( false )
     setHover( false )
   }

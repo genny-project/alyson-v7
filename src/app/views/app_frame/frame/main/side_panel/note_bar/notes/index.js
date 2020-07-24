@@ -15,7 +15,7 @@ import useStyles from './styles'
 import { getAll, postNote, deleteNote, editNote } from './helpers/notes-api'
 import formatError from './helpers/format-error'
 
-const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote, userTags,  setUserTags, notes, setNotes, filteredNotes}) => {
+const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNote, userTags,  setUserTags, notes, setNotes, filteredNotes, user}) => {
   const [noteContent, setNoteContent] = useState( '' )
   const [noteHeader, setNoteHeader] = useState( '' )
   const [error, setError] = useState( '' )
@@ -32,6 +32,8 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
   const onCloseSnackbar = () => setError( '' )
 
   const handleExpandClick = () => setExpanded( !expanded )
+
+  const sourceCode = path(['data', 'code'], user)
 
   const handleResponse = ( response, type ) => {
     if ( type === 'getAll' ) {
@@ -55,6 +57,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
       setApiLoading,
       onError,
       handleResponse,
+      sourceCode,
     })
   }
 
@@ -66,12 +69,13 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
       setApiLoading,
       onError,
       handleResponse,
+      sourceCode,
     })
   }
 
   useEffect(
     () => {
-      getAll({ accessToken, setApiLoading, onError, handleResponse, setUserTags })
+      getAll({ accessToken, setApiLoading, onError, handleResponse, setUserTags, sourceCode })
     },
     [accessToken, currentNote],
   )
@@ -101,6 +105,7 @@ const Notes = ({ baseEntities, attributes, accessToken, setApiLoading, currentNo
               onError={onError}
               handleResponse={handleResponse}
               currentNote={currentNote}
+              sourceCode={sourceCode}
             />
           ),
           [...filteredNotes] || [],

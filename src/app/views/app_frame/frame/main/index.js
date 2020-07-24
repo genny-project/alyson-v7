@@ -146,6 +146,7 @@ const Sam = ({
           attributes={attributes}
           setSidePanelOpen={setSidePanelOpen}
           currentNote={currentNote}
+          user={user}
         />
       </ErrorBoundary>
     </ThemeProvider>

@@ -9,7 +9,7 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import Notes from './notes'
 import useStyles from './styles'
 
-const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
+const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote, user }) => {
   const [apiLoading, setApiLoading] = useState(false)
   const [optionsMenu, setOptionsMenu] = useState(null)
   const [userTags, setUserTags] = useState( [] )
@@ -51,6 +51,7 @@ const NoteBar = ({ setShowNotes, baseEntities, attributes, currentNote }) => {
         notes={notes}
         setNotes={setNotes}
         filteredNotes={filteredNotes}
+        user={user}
       />
       <Menu open={!!optionsMenu} anchorEl={optionsMenu} onClose={() => setOptionsMenu(null)}>
         <MenuItem key={`All`} onClick={() => setFilteredNotes(
