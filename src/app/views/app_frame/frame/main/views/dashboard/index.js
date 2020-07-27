@@ -38,7 +38,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
   const classes = useStyles()
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
-  if (isNotEmpty(dashboard)) {
+  if ((dashboard)) {
 
     return path( ['QUE_DASHBOARD_TIMELINE_GRP'], asks ) ? (
       <TimelineGeneric setViewing={setViewing} user={user} asks={asks}/>
@@ -48,7 +48,7 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
           <Typography variant="h4" className={classes.welcomeText}>{`Hello, ${path(
             ['data', 'name'],
             user,
-          )}!`}</Typography>
+          )} from ${path(['attributes', 'PRI_ASSOC_ENTITY_NAME', 'value'], user)}!`}</Typography>
         ) : (
           <div />
         )}
