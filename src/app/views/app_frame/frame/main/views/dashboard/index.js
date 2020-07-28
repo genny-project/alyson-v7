@@ -7,7 +7,7 @@ import InfoIcon from '@material-ui/icons/Info'
 import Loader from 'react-spinners/ClimbingBoxLoader'
 import getUserRole from './helpers/get-user-role'
 import SearchIcon from '@material-ui/icons/Search'
-import isNotEmpty from '../../utils/ramda/is-not-empty'
+import getCount from './helpers/get-count'
 
 import useStyles from './styles'
 
@@ -38,7 +38,6 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks, attributes 
   const classes = useStyles()
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
-    if (isNotEmpty(dashboard)) {
     return path( ['QUE_DASHBOARD_TIMELINE_GRP'], asks ) ? (
       <TimelineGeneric setViewing={setViewing} user={user} asks={asks}/>
     ) : (
@@ -54,39 +53,29 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks, attributes 
         <Row justify="space-between" spacing={9}>
           <InfoBadge
             label={'All Interns'}
-            value={path(['CNS_COUNT_INTERN_ALL', 'PRI_COUNT_LONG', 'value'], attributes)}
+            value={getCount(attributes)('CNS_COUNT_INTERN_ALL')}
           />
           <InfoBadge
             label={'All Internships'}
-            value={path(['CNS_COUNT_INTERNSHIP_ALL', 'PRI_COUNT_LONG', 'value'], attributes)}
+            value={getCount(attributes)('CNS_COUNT_INTERNSHIP_ALL')}
           />
         </Row>
         <Row justify="space-between" spacing={9}>
           <InfoBadge
-            value={path(['CNS_COUNT_INTERN_APPLIED', 'PRI_COUNT_LONG', 'value'], attributes)}
+            value={getCount(attributes)('CNS_COUNT_INTERN_APPLIED')}
             label={'Applied Interns'}
           />
           <InfoBadge
-            value={path(['CNS_COUNT_INTERN_PLACED', 'PRI_COUNT_LONG', 'value'], attributes)}
+            value={getCount(attributes)('CNS_COUNT_INTERN_PLACED')}
             label={'Placed Interns'}
           />
           <InfoBadge
-            value={path(['CNS_COUNT_INTERNSHIP_IN_PROGRESS', 'PRI_COUNT_LONG', 'value'], attributes)}
+            value={getCount(attributes)('CNS_COUNT_INTERNSHIP_IN_PROGRESS')}
             label={'In Progress Internships'}
           />
         </Row>
       </Col>
     )
-  }
-
-  return (
-    path( ['QUE_DASHBOARD_TIMELINE_GRP'], asks ) ? (
-      <TimelineGeneric setViewing={setViewing} user={user} asks={asks}/>
-    ) : <Col className={classes.loading} spacing={4}>
-      <Loader size={20} />
-      <Typography>{`Preparing Dashboard`}</Typography>
-    </Col>
-  )
 }
 
 export default Dashboard
