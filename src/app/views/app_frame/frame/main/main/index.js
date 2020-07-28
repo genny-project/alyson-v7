@@ -89,6 +89,7 @@ const Main = ({
           setViewing={setViewing}
           dashboard={dashboard}
           asks={asks}
+          attributes={attributes}
         />
       ) : view === 'MAP_LIST' ? (
         <MapList

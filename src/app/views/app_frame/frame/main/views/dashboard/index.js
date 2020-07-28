@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { path } from 'ramda'
+import { path, map } from 'ramda'
 import { Typography, Badge, Button } from '@material-ui/core'
 import { Row, Col } from '../../components/layouts'
 import { TimelineIntern, TimelineHC, TimelineSTT, TimelineGeneric } from './timeline'
@@ -33,13 +33,12 @@ const InfoBadge = ({ onClick, label, value }) => {
   )
 }
 
-const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
+const Dashboard = ({ projectName, setViewing, dashboard, user, asks, attributes }) => {
 
   const classes = useStyles()
   const { isAdmin, isAgent, isSupervisor, isIntern } = getUserRole(user)
 
-  if ((dashboard)) {
-
+    if (isNotEmpty(dashboard)) {
     return path( ['QUE_DASHBOARD_TIMELINE_GRP'], asks ) ? (
       <TimelineGeneric setViewing={setViewing} user={user} asks={asks}/>
     ) : (
@@ -55,24 +54,24 @@ const Dashboard = ({ projectName, setViewing, dashboard, user, asks }) => {
         <Row justify="space-between" spacing={9}>
           <InfoBadge
             label={'All Interns'}
-            value={path(['PRI_COUNT_ALL_INTERNS', 'value'], dashboard)}
+            value={path(['CNS_COUNT_INTERN_ALL', 'PRI_COUNT_LONG', 'value'], attributes)}
           />
           <InfoBadge
             label={'All Internships'}
-            value={path(['PRI_COUNT_ALL_INTERNSHIPS', 'value'], dashboard)}
+            value={path(['CNS_COUNT_INTERNSHIP_ALL', 'PRI_COUNT_LONG', 'value'], attributes)}
           />
         </Row>
         <Row justify="space-between" spacing={9}>
           <InfoBadge
-            value={path(['PRI_COUNT_APPLIED_INTERNS', 'value'], dashboard)}
+            value={path(['CNS_COUNT_INTERN_APPLIED', 'PRI_COUNT_LONG', 'value'], attributes)}
             label={'Applied Interns'}
           />
           <InfoBadge
-            value={path(['PRI_COUNT_PLACED_INTERNS', 'value'], dashboard)}
+            value={path(['CNS_COUNT_INTERN_PLACED', 'PRI_COUNT_LONG', 'value'], attributes)}
             label={'Placed Interns'}
           />
           <InfoBadge
-            value={path(['PRI_COUNT_IN_PROGRESS_INTERNSHIPS', 'value'], dashboard)}
+            value={path(['CNS_COUNT_INTERNSHIP_IN_PROGRESS', 'PRI_COUNT_LONG', 'value'], attributes)}
             label={'In Progress Internships'}
           />
         </Row>
